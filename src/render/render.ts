@@ -11,6 +11,7 @@ import type {
   RenderContentArgs,
   RenderFunctionArgs,
   RenderServerlessData,
+  RenderContentTemplate,
   RenderItem,
   RenderItemArgs,
   RenderItemReturn,
@@ -184,6 +185,59 @@ const getRenderFunctions = (): GenericFunctions => {
 }
 
 /**
+ * Function - get content and templates in expected format to map
+ *
+ * @private
+ * @param {import('./RenderTypes').RenderItem[]} content
+ * @param {import('./RenderTypes').RenderItem[]} [_templates]
+ * @return {import('./RenderTypes').RenderContentTemplate}
+ */
+const _getContentTemplate = (content: RenderItem[], _templates: RenderItem[] = []): RenderContentTemplate => {
+  /* Content must be array */
+
+  if (!isArrayStrict(content)) {
+    return {
+      content: [],
+      templates: _templates
+    }
+  }
+
+  /* One level loop */
+
+  const _content = content.map((c, i) => {
+    /* Check if template */
+
+    if (tag.exists(c, 'template')) {
+      _templates.push(structuredClone(c))
+
+      /* Replace template with template break */
+
+      return {
+        metadata: {
+          tags: [
+            {
+              id: 'templateBreak',
+              name: ''
+            }
+          ]
+        }
+      }
+    }
+
+    /* Output */
+
+    return c
+  })
+
+  /* Output */
+
+  return {
+    content: _content,
+    templates: _templates
+  }
+}
+
+/**
  * Function - map out content slots to templates for contentTemplate
  *
  * @private
@@ -192,74 +246,77 @@ const getRenderFunctions = (): GenericFunctions => {
  * @return {import('./RenderTypes').RenderItem[]}
  */
 const _mapContentTemplate = (templates: RenderItem[], content: RenderItem[] = []): RenderItem[] => {
-  /* Transform templates */
+  /* Templates must be arrays */
 
-  if (isArrayStrict(templates)) {
-    /* Clone templates */
+  if (!isArrayStrict(templates)) {
+    return templates
+  }
 
-    templates = templates.map((t) => structuredClone(t))
+  /* Recurse templates */
 
-    /* Recurse cloned template */
+  templates.forEach((t, i) => {
+    /* Remove template break */
 
-    templates.forEach((t, i) => {
-      /* Remove template break */
+    if (tag.exists(content[0], 'templateBreak') && content.length >= 1) {
+      content.shift()
+    }
 
-      if (tag.exists(content[0], 'templateBreak') && content.length >= 1) {
-        content.shift()
-      }
+    /* Check if slot */
 
-      /* Check if slot */
+    const isSlot = tag.exists(t, 'templateSlot')
 
-      const isSlot = tag.exists(t, 'templateSlot')
+    /* Check for repeatable template item */
 
-      /* Check for repeatable template item */
+    const children = t.content
 
-      const children = t.content
-      const repeat = t.repeat
+    if (isArrayStrict(children) && !isSlot) {
+      let repeat: RenderItem | undefined
 
-      if (isObjectStrict(repeat) && isArrayStrict(children) && !isSlot) {
-        const repeatId = repeat.id
+      const repeatIndex = children.findIndex((c) => {
+        const isRepeat = tag.exists(c, 'templateRepeat')
 
-        const repeatIndex = children.findIndex((c) => {
-          return c.id === repeatId
+        if (isRepeat) {
+          repeat = c
+        }
+
+        return isRepeat
+      })
+
+      if (repeatIndex !== -1 && repeat !== undefined) {
+        let breakIndex = content.findIndex((c) => {
+          return tag.exists(c, 'templateBreak')
         })
 
-        if (repeatIndex !== -1) {
-          let breakIndex = content.findIndex((c) => {
-            return tag.exists(c, 'templateBreak')
-          })
+        breakIndex = breakIndex === -1 ? content.length : breakIndex
 
-          breakIndex = breakIndex === -1 ? content.length : breakIndex
+        let insertIndex = repeatIndex
 
-          let insertIndex = repeatIndex
+        for (let i = insertIndex; i < breakIndex - 1; i += 1) {
+          children.splice(insertIndex, 0, structuredClone(repeat))
 
-          for (let i = insertIndex; i < breakIndex - 1; i += 1) {
-            children.splice(insertIndex, 0, structuredClone(repeat))
-
-            insertIndex = i
-          }
+          insertIndex = i
         }
       }
+    }
 
-      /* Replace slot with content */
+    /* Replace slot with content */
 
-      if (isSlot && content.length >= 1) {
-        const fill = content.shift()
+    if (isSlot && content.length >= 1) {
+      const fill = content.shift()
 
-        if (fill !== undefined) {
-          templates[i] = fill
-        }
-
-        return
+      if (fill !== undefined) {
+        templates[i] = fill
       }
 
-      /* Recurse children */
+      return
+    }
 
-      if (isArray(children)) {
-        templates[i].content = _mapContentTemplate(children, content)
-      }
-    })
-  }
+    /* Recurse children */
+
+    if (isArray(children)) {
+      templates[i].content = _mapContentTemplate(children, content)
+    }
+  })
 
   /* Output */
 
@@ -321,8 +378,9 @@ const renderContent = async (args: RenderContentArgs): Promise<void> => {
 
     /* Map out content to template */
 
-    if (contentType === 'contentTemplate' && isArray(props.templates)) {
-      const templates = _mapContentTemplate(props.templates, isArray(props.content) ? props.content : [])
+    if (contentType === 'contentTemplate') {
+      const contentTemplate = _getContentTemplate(isArray(props.content) ? props.content : [])
+      const templates = _mapContentTemplate(contentTemplate.templates, contentTemplate.content)
 
       children = templates
     }

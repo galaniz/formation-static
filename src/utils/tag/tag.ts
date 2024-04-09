@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { Tag } from './tagTypes'
+import type { Tag, TagGetReturn } from './tagTypes'
 import { isObjectStrict } from '../isObject/isObject'
 import { isStringStrict } from '../isString/isString'
 import { isArrayStrict } from '../isArray/isArray'
@@ -26,10 +26,7 @@ const tag: Tag = {
       return
     }
 
-    const tagInfo = {
-      id: '',
-      name: ''
-    }
+    let tagInfo: TagGetReturn | undefined
 
     tags.find((tag) => {
       if (!isObjectStrict(tag)) {
@@ -39,8 +36,10 @@ const tag: Tag = {
       const tagId = tag.id
 
       if (tagId === id) {
-        tagInfo.id = tagId
-        tagInfo.name = isStringStrict(tag.name) ? tag.name : ''
+        tagInfo = {
+          id: tagId,
+          name: isStringStrict(tag.name) ? tag.name : ''
+        }
 
         return true
       }

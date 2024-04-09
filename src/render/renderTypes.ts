@@ -171,6 +171,16 @@ export interface RenderRichText {
 }
 
 /**
+ * @typedef RenderContentTemplate
+ * @prop {RenderItem[]} content
+ * @prop {RenderItem[]} templates
+ */
+export interface RenderContentTemplate {
+  content: RenderItem[]
+  templates: RenderItem[]
+}
+
+/**
  * @typedef {object} RenderFunctionArgs
  * @prop {RenderItem} args
  * @prop {import('../global/globalTypes').ParentArgs[]} parents

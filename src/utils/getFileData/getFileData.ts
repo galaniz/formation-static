@@ -53,9 +53,11 @@ const getFileData = async (
 
     const { all = true, id = '' } = params
 
-    /* Single file */
+    /* Store data */
 
     const data: FileDataReturn = {}
+
+    /* Single file */
 
     if (isStringStrict(id) && !all) {
       const file = await readFile(resolve(config.static.dir, `${id}.json`), { encoding: 'utf8' })

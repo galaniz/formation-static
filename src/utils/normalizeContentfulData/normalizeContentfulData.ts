@@ -270,7 +270,7 @@ const _normalizeItem = (item: ContentfulDataItem, data: RenderItem[], isInternal
       }
 
       if (isObjectStrict(field)) {
-        if (prop === 'content' && field.nodeType === 'document') {
+        if (field.nodeType === 'document') {
           const { content } = field
 
           if (isArrayStrict(content)) {
