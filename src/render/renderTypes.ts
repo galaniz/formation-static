@@ -351,20 +351,20 @@ export interface RenderLayoutArgs {
 /**
  * @typedef RenderAllData
  * @type {import('../global/globalTypes').Generic}
- * @prop {import('../components/Navigation/NavigationTypes').Navigation[]} navigation
- * @prop {import('../components/Navigation/NavigationTypes').NavigationItem[]} navigationItem
- * @prop {object} content
+ * @prop {import('../components/Navigation/NavigationTypes').Navigation[]} [navigation]
+ * @prop {import('../components/Navigation/NavigationTypes').NavigationItem[]} [navigationItem]
+ * @prop {RenderRedirect[]} [redirect]
+ * @prop {Object.<string, RenderItem[]>} content
  * @prop {RenderItem[]} content.page
- * @prop {RenderRedirect[]} redirect
  */
 export interface RenderAllData extends Generic {
-  navigation: Navigation[]
-  navigationItem: NavigationItem[]
+  navigation?: Navigation[]
+  navigationItem?: NavigationItem[]
+  redirect?: RenderRedirect[]
   content: {
     page: RenderItem[]
     [key: string]: RenderItem[]
   }
-  redirect: RenderRedirect[]
 }
 
 /**

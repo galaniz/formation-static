@@ -598,7 +598,11 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   /* Add to data by slugs store */
 
-  const formattedSlug = slug !== 'index' && slug !== '' ? `/${slug}/` : '/'
+  let formattedSlug = slug !== 'index' && slug !== '' ? `/${slug}/` : '/'
+
+  if (slug.includes('.html')) {
+    formattedSlug = slug
+  }
 
   _slugs[formattedSlug] = {
     contentType,
@@ -796,8 +800,13 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
 
   /* Store navigations and items */
 
-  config.navigation = navigation
-  config.navigationItem = navigationItem
+  if (navigation !== undefined) {
+    config.navigation = navigation
+  }
+
+  if (navigationItem !== undefined) {
+    config.navigationItem = navigationItem
+  }
 
   /* Add formation functions */
 

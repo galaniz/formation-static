@@ -22,7 +22,7 @@ import { getPath } from '../../utils/getPath/getPath'
  *
  * @private
  * @param {object} data
- * @param {object} output
+ * @param {Object.<string, string>} output
  * @param {string} output.html
  * @param {string} output.plain
  * @param {number} depth

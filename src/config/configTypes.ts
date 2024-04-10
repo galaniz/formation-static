@@ -205,7 +205,7 @@ export interface ConfigArchive {
  * @prop {boolean} build
  * @prop {boolean} cache
  * @prop {string} dir
- * @prop {object} urls
+ * @prop {Object<string, string>} urls
  * @prop {string} urls.dev
  * @prop {string} urls.prod
  */
@@ -319,7 +319,7 @@ export interface ConfigCms {
 /**
  * @typedef {object} ConfigStatic
  * @prop {string} dir
- * @prop {object} image
+ * @prop {Object.<string, string>} image
  * @prop {string} image.inputDir
  * @prop {string} image.outputDir
  * @prop {string} image.dataFile
