@@ -42,7 +42,7 @@ const getContentfulData = async (
 
       cacheData = await applyFilters('cacheData', cacheData, cacheDataFilterArgs)
 
-      if (isObject(cacheData) && Object.keys(cacheData).length > 0) {
+      if (isObject(cacheData)) {
         return structuredClone(cacheData)
       }
     }
@@ -115,6 +115,20 @@ const getContentfulData = async (
     return newData
   } catch (error) {
     console.error(config.console.red, '[SSF] Error fetching Contentful data: ', error)
+
+    /* Store in cache (avoid extra calls when no result) */
+
+    if (config.env.cache) {
+      const cacheDataFilterArgs = {
+        key,
+        type: 'set',
+        data: {}
+      }
+
+      await applyFilters('cacheData', {}, cacheDataFilterArgs)
+    }
+
+    /* Output */
 
     return {}
   }

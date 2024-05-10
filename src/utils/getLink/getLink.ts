@@ -24,7 +24,7 @@ const getLink = (internalLink?: InternalLink, externalLink?: string): string => 
     const res = getSlug({
       id: internalLink.id,
       contentType: internalLink.contentType,
-      linkContentType: internalLink.linkContentType,
+      pageData: internalLink,
       slug: isString(slug) ? slug : ''
     })
 

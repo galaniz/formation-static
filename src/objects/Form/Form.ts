@@ -112,8 +112,12 @@ const Form = async (props: FormProps): Promise<FormReturn> => {
     }
   }
 
-  if (Object.keys(messages).length > 0 && config.scriptMeta[`form-${id}`] === undefined) {
-    config.scriptMeta[`form-${id}`] = messages
+  if (Object.keys(messages).length > 0) {
+    if (config.scriptMeta.forms === undefined) {
+      config.scriptMeta.forms = {}
+    }
+
+    config.scriptMeta.forms[id] = messages
   }
 
   config.scriptMeta.sendUrl = '/ajax/'

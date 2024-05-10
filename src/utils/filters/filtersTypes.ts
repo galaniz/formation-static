@@ -12,13 +12,14 @@ import type { FormPropsFilter } from '../../objects/Form/FormTypes'
 import type {
   RichTextPropsFilter,
   RichTextOutputFilter,
+  RichTextContentItemFilter,
   RichTextContentFilter,
   RichTextContentOutputFilter
 } from '../../text/RichText/RichTextTypes'
 import type { ContentfulDataReturn } from '../getContentfulData/getContentfulDataTypes'
 import type { FileDataReturn } from '../getFileData/getFileDataTypes'
 import type { AjaxResFilter } from '../../serverless/Ajax/AjaxTypes'
-import type { RenderNameFilter, RenderItemFilter, RenderContentFilter } from '../../render/renderTypes'
+import type { RenderItemFilter, RenderContentFilter } from '../../render/renderTypes'
 
 /**
  * @typedef {
@@ -57,9 +58,8 @@ export type CacheDataFilter = (data: CacheData, args: CacheDataFilterArgs) => Pr
  * @prop {import('../../text/RichText/RichTextTypes').RichTextPropsFilter} richTextProps
  * @prop {import('../../text/RichText/RichTextTypes').RichTextOutputFilter} richTextOutput
  * @prop {import('../../text/RichText/RichTextTypes').RichTextContentFilter} richTextContent
+ * @prop {import('../../text/RichText/RichTextTypes').RichTextContentItemFilter} richTextContentItem
  * @prop {import('../../text/RichText/RichTextTypes').RichTextContentOutputFilter} richTextContentOutput
- * @prop {import('../../render/RenderTypes').RenderNameFilter} renderArchiveName
- * @prop {import('../../render/RenderTypes').RenderNameFilter} renderLinkContentTypeName
  * @prop {import('../../render/RenderTypes').RenderItemFilter} renderItem
  * @prop {import('../../render/RenderTypes').RenderContentFilter} renderContent
  * @prop {import('../../render/RenderTypes').RenderContentFilter} renderContentStart
@@ -74,10 +74,9 @@ export interface Filters extends GenericFunctions {
   formProps: FormPropsFilter
   richTextProps: RichTextPropsFilter
   richTextOutput: RichTextOutputFilter
+  richTextContentItem: RichTextContentItemFilter
   richTextContent: RichTextContentFilter
   richTextContentOutput: RichTextContentOutputFilter
-  renderArchiveName: RenderNameFilter
-  renderLinkContentTypeName: RenderNameFilter
   renderItem: RenderItemFilter
   renderContent: RenderContentFilter
   renderContentStart: RenderContentFilter
@@ -95,10 +94,9 @@ export interface Filters extends GenericFunctions {
  * @prop {import('../../objects/Form/FormTypes').FormPropsFilter[]} formProps
  * @prop {import('../../text/RichText/RichTextTypes').RichTextPropsFilter[]} richTextProps
  * @prop {import('../../text/RichText/RichTextTypes').RichTextOutputFilter[]} richTextOutput
+ * @prop {import('../../text/RichText/RichTextTypes').RichTextContentItemFilter[]} richTextContentItem
  * @prop {import('../../text/RichText/RichTextTypes').RichTextContentFilter[]} richTextContent
  * @prop {import('../../text/RichText/RichTextTypes').RichTextContentOutputFilter[]} richTextContentOutput
- * @prop {import('../../render/RenderTypes').RenderNameFilter[]} renderArchiveName
- * @prop {import('../../render/RenderTypes').RenderNameFilter[]} renderLinkContentTypeName
  * @prop {import('../../render/RenderTypes').RenderItemFilter[]} renderItem
  * @prop {import('../../render/RenderTypes').RenderContentFilter[]} renderContent
  * @prop {import('../../render/RenderTypes').RenderContentFilter[]} renderContentStart
@@ -113,10 +111,9 @@ export interface FiltersFunctions {
   formProps: FormPropsFilter[]
   richTextProps: RichTextPropsFilter[]
   richTextOutput: RichTextOutputFilter[]
+  richTextContentItem: RichTextContentItemFilter[]
   richTextContent: RichTextContentFilter[]
   richTextContentOutput: RichTextContentOutputFilter[]
-  renderArchiveName: RenderNameFilter[]
-  renderLinkContentTypeName: RenderNameFilter[]
   renderItem: RenderItemFilter[]
   renderContent: RenderContentFilter[]
   renderContentStart: RenderContentFilter[]

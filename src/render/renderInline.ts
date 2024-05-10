@@ -16,22 +16,15 @@ import { isString } from '../utils/isString/isString'
  * @return {Promise<string>}
  */
 const renderInlineContent = async (items: RenderItem[]): Promise<string> => {
-  const storeContent = {
-    html: ''
-  }
-
-  await renderContent({
+  return await renderContent({
     content: items,
     parents: [],
     pageData: {},
     pageContains: [],
     pageHeadings: [],
     navigations: {},
-    renderFunctions: getRenderFunctions(),
-    output: storeContent
+    renderFunctions: getRenderFunctions()
   })
-
-  return storeContent.html
 }
 
 /**

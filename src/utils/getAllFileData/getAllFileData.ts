@@ -17,7 +17,7 @@ import { undefineProps } from '../undefineProps/undefineProps'
 import { resolveInternalLinks } from '../resolveInternalLinks/resolveInternalLinks'
 import { isObjectStrict } from '../isObject/isObject'
 import { isStringStrict } from '../isString/isString'
-import { isArray, isArrayStrict } from '../isArray/isArray'
+import { isArray } from '../isArray/isArray'
 import { isFunction } from '../isFunction/isFunction'
 
 /**
@@ -61,11 +61,11 @@ const getAllFileData = async (args: AllFileDataArgs): Promise<RenderAllData | un
       }
     }
 
-    config.contentTypes.partial.forEach((contentType) => {
+    config.partialTypes.forEach((contentType) => {
       allData[contentType] = []
     })
 
-    config.contentTypes.whole.forEach((contentType) => {
+    config.wholeTypes.forEach((contentType) => {
       allData.content[contentType] = []
     })
 
@@ -126,8 +126,8 @@ const getAllFileData = async (args: AllFileDataArgs): Promise<RenderAllData | un
 
     /* Empty archive data */
 
-    config.archive.posts = {}
-    config.archive.terms = {}
+    const archivePosts: any = {}
+    // const archiveTerms: any = {}
 
     /* Set content */
 
@@ -158,32 +158,33 @@ const getAllFileData = async (args: AllFileDataArgs): Promise<RenderAllData | un
 
       /* Archive */
 
-      if (config.contentTypes.archive[contentType] !== undefined) {
+      if (config.archiveMeta[contentType] !== undefined) {
         const dataItemCopy = undefineProps(dataItem, excludeProps.archive.posts)
 
-        if (config.archive.posts[contentType] === undefined) {
-          config.archive.posts[contentType] = []
+        if (archivePosts[contentType] === undefined) {
+          archivePosts[contentType] = []
         }
 
-        config.archive.posts[contentType].push(dataItemCopy)
+        archivePosts[contentType].push(dataItemCopy)
       }
     })
 
     /* Term content */
 
+    /*
     Object.keys(config.contentTypes.taxonomy).forEach((tax) => {
       const { contentTypes, props } = config.contentTypes.taxonomy[tax]
 
-      if (config.archive.terms[tax] === undefined) {
-        config.archive.terms[tax] = {}
+      if (archiveTerms.terms[tax] === undefined) {
+        archiveTerms.terms[tax] = {}
       }
 
       contentTypes.forEach((ct, i) => {
         const contentData = allData.content[ct]
 
         if (isArrayStrict(contentData)) {
-          if (config.archive.terms[tax][ct] === undefined) {
-            config.archive.terms[tax][ct] = {}
+          if (archiveTerms.terms[tax][ct] === undefined) {
+            archiveTerms.terms[tax][ct] = {}
           }
 
           contentData.forEach((cd) => {
@@ -203,11 +204,11 @@ const getAllFileData = async (args: AllFileDataArgs): Promise<RenderAllData | un
                   return
                 }
 
-                if (config.archive.terms[tax][ct][termId] === undefined) {
-                  config.archive.terms[tax][ct][termId] = []
+                if (archiveTerms[tax][ct][termId] === undefined) {
+                  archiveTerms[tax][ct][termId] = []
                 }
 
-                const archiveTaxContentTypeTerm = config.archive.terms[tax][ct][termId]
+                const archiveTaxContentTypeTerm = archiveTerms[tax][ct][termId]
 
                 if (isArray(archiveTaxContentTypeTerm)) {
                   archiveTaxContentTypeTerm.push(dataCopy)
@@ -218,6 +219,7 @@ const getAllFileData = async (args: AllFileDataArgs): Promise<RenderAllData | un
         }
       })
     })
+    */
 
     /* Filter all data */
 

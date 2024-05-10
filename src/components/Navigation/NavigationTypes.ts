@@ -10,12 +10,14 @@ import type { InternalLink, Generic, HtmlString } from '../../global/globalTypes
  * @typedef {object} NavigationProps
  * @prop {Navigation[]} navigations
  * @prop {NavigationItem[]} items
- * @prop {string} [current]
+ * @prop {string} [currentLink]
+ * @prop {string} [currentType]
  */
 export interface NavigationProps {
   navigations: Navigation[]
   items: NavigationItem[]
-  current?: string
+  currentLink?: string
+  currentType?: string
 }
 
 /**
@@ -60,6 +62,7 @@ export interface NavigationByLocation {
  * @prop {boolean} [current]
  * @prop {boolean} [external]
  * @prop {boolean} [descendentCurrent]
+ * @prop {boolean} [archiveCurrent]
  */
 export interface NavigationItem extends Generic {
   id?: string
@@ -71,6 +74,7 @@ export interface NavigationItem extends Generic {
   current?: boolean
   external?: boolean
   descendentCurrent?: boolean
+  archiveCurrent?: boolean
 }
 
 /**
@@ -85,12 +89,10 @@ export interface NavigationItemsById {
  * @type {NavigationItem}
  * @prop {string} slug
  * @prop {string} contentType
- * @prop {string} [linkContentType]
  */
 export interface NavigationBreadcrumbItem extends NavigationItem {
   slug: string
   contentType: string
-  linkContentType?: string
 }
 
 /**

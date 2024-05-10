@@ -27,6 +27,9 @@
  * @prop {string} [args.labelClasses] - Back end option
  * @prop {string} [args.classes] - Back end option
  * @prop {string} [args.visuallyHiddenClass] - Back end option
+ * @prop {string} [args.radioIcon] - Back end option
+ * @prop {string} [args.checkboxIcon] - Back end option
+ * @prop {string} [args.selectIcon] - Back end option
  */
 export interface FieldProps {
   args: {
@@ -52,6 +55,9 @@ export interface FieldProps {
     labelClasses?: string
     classes?: string
     visuallyHiddenClass?: string
+    radioIcon?: string
+    checkboxIcon?: string
+    selectIcon?: string
     [key: string]: unknown
   }
 }
@@ -77,6 +83,8 @@ export interface FieldOption {
  * @prop {string} [classes]
  * @prop {string} [attr]
  * @prop {string} [type]
+ * @prop {string} [icon]
+ * @prop {string} [labelClass]
  */
 export interface FieldCheckboxRadioArgs {
   opts?: FieldOption[]
@@ -84,14 +92,15 @@ export interface FieldCheckboxRadioArgs {
   classes?: string
   attr?: string
   type?: string
+  icon?: string
   labelClass?: string
 }
 
 /**
  * @typedef {function} FieldPropsFilter
- * @prop {FieldProps} props
- * @prop {object} args
- * @prop {string} args.renderType
+ * @param {FieldProps} props
+ * @param {object} args
+ * @param {string} args.renderType
  * @return {Promise<FieldProps>}
  */
 export type FieldPropsFilter = (props: FieldProps, args: { renderType: string }) => Promise<FieldProps>

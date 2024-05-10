@@ -8,8 +8,8 @@ import type {
   Generic,
   GenericFunctions,
   GenericStrings,
-  HtmlString,
   InternalLink,
+  Taxonomy,
   ParentArgs
 } from '../global/globalTypes'
 import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes'
@@ -133,6 +133,14 @@ export interface RenderTag {
 }
 
 /**
+ * @typedef {object} RenderMetaTags
+ * @prop {RenderTag[]} [tags]
+ */
+export interface RenderMetaTags {
+  tags?: RenderTag[]
+}
+
+/**
  * @typedef {object} RenderFile
  * @prop {string} [path]
  * @prop {string} [url]
@@ -162,12 +170,14 @@ export interface RenderFile {
  * @prop {string} [link]
  * @prop {import('../global/globalTypes').InternalLink} [internalLink]
  * @prop {RenderItem[]|string} [content]
+ * @prop {string} [attr]
  */
 export interface RenderRichText {
   tag?: string
   link?: string
   internalLink?: InternalLink
   content?: RenderItem[] | string
+  attr?: string
 }
 
 /**
@@ -189,6 +199,7 @@ export interface RenderContentTemplate {
  * @prop {import('../global/globalTypes').GenericStrings} navigations
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {import('../text/RichText/RichTextTypes').RichTextHeading[]} [headings]
+ * @prop {RenderItem[]} [children]
  */
 export interface RenderFunctionArgs {
   args: RenderItem
@@ -198,6 +209,7 @@ export interface RenderFunctionArgs {
   navigations: GenericStrings
   serverlessData?: RenderServerlessData
   headings?: RichTextHeading[]
+  children?: RenderItem[]
 }
 
 /**
@@ -209,7 +221,6 @@ export interface RenderFunctionArgs {
  * @prop {import('../global/globalTypes').GenericFunctions} renderFunctions
  * @prop {number} [headingsIndex]
  * @prop {number} [depth]
- * @prop {import('../global/globalTypes').HtmlString} output
  */
 export interface RenderContentArgs extends RenderCommon {
   content: RenderItem[]
@@ -218,21 +229,32 @@ export interface RenderContentArgs extends RenderCommon {
   renderFunctions: GenericFunctions
   headingsIndex?: number
   depth?: number
-  output: HtmlString
 }
 
 /**
- * @typedef RenderItem
+ * @typedef RenderItemBase
  * @type {import('../global/globalTypes').Generic}
- * @prop {string} id
- * @prop {string} slug
+ * @type {import('../global/globalTypes').Taxonomy}
+ */
+type RenderItemBase = Generic & Partial<Taxonomy>
+
+/**
+ * @typedef RenderItem
+ * @type {RenderItemBase}
+ * @prop {string} [id]
+ * @prop {string} [contentType]
+ * @prop {string} [renderType]
+ * @prop {string} [slug]
  * @prop {string} [title]
  * @prop {RenderItem|RenderItem[]} [content]
  * @prop {RenderMetaReturn} [meta]
  * @prop {string} [basePermalink]
- * @prop {string} [linkContentType]
+ * @prop {string} [archive]
+ * @prop {RenderItem} [parent]
+ * @prop {import('../global/globalTypes').Taxonomy} [taxonomy]
+ * @prop {RenderMetaTags} [metadata]
  */
-export interface RenderItem extends Generic {
+export interface RenderItem extends RenderItemBase {
   id?: string
   contentType?: string
   renderType?: string
@@ -242,16 +264,12 @@ export interface RenderItem extends Generic {
   slug?: string
   title?: string
   content?: RenderItem[] | string
-  repeat?: RenderItem
-  templates?: RenderItem[]
   meta?: RenderMetaReturn
   basePermalink?: string
   archive?: string
-  linkContentType?: string
   parent?: RenderItem
-  metadata?: {
-    tags?: RenderTag[]
-  }
+  taxonomy?: Taxonomy
+  metadata?: RenderMetaTags
 }
 
 /**
@@ -404,13 +422,6 @@ export type RenderContentFilter = (content: string, args: ParentArgs) => Promise
  * @return {Promise<string>}
  */
 export type RenderItemFilter = (output: string, args: RenderItemActionArgs) => Promise<string>
-
-/**
- * @typedef {function} RenderNameFilter
- * @param {string} name
- * @return {Promise<string>}
- */
-export type RenderNameFilter = (name: string) => Promise<string>
 
 /**
  * @typedef {function} RenderStartAction

@@ -25,6 +25,7 @@ const _getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
     classes = '',
     attr = '',
     type = 'checkbox',
+    icon = '',
     labelClass = ''
   } = args
 
@@ -46,10 +47,13 @@ const _getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
     const id: string = uuid()
 
     return `
-      <div data-${type}-opt>
+      <div data-option-field data-type="${type}">
         <input type="${type}" name="${name}" id="${id}" class="${classes}" value="${value}"${attr}${selected ? ' checked' : ''}>
-        <label for="${id}"${labelClass} data-label>
-          <span>${text}</span>
+        <label for="${id}" data-option>
+          <span${labelClass} data-label>
+            <span data-label-text>${text}</span>
+          </span>
+          <span data-control data-type="${type}">${icon}</span>
         </label>
       </div>
     `
@@ -101,7 +105,10 @@ const Field = async (props: FieldProps): Promise<string> => {
     fieldClasses = '',
     labelClasses = '',
     classes = '',
-    visuallyHiddenClass = ''
+    visuallyHiddenClass = '',
+    radioIcon = '',
+    checkboxIcon = '',
+    selectIcon = ''
   } = args
 
   let { fieldset = false } = args
@@ -154,6 +161,10 @@ const Field = async (props: FieldProps): Promise<string> => {
 
   const checkboxRadio = type === 'checkbox' || type === 'radio'
 
+  /* Icon */
+
+  const icon = type === 'radio' ? radioIcon : checkboxIcon
+
   /* Options */
 
   const opts: FieldOption[] = []
@@ -186,7 +197,7 @@ const Field = async (props: FieldProps): Promise<string> => {
   const attr: string[] = []
 
   if (required) {
-    attr.push('aria-required="true"')
+    attr.push(fieldset ? 'data-aria-required="true"' : 'aria-required="true"')
   }
 
   if (isStringStrict(value) && !checkboxRadioOpts) {
@@ -209,6 +220,10 @@ const Field = async (props: FieldProps): Promise<string> => {
     attr.push(`data-invalid-message="${invalidErrorMessage}"`)
   }
 
+  if (classesArr.length > 0) {
+    attr.push(`class="${classesArr.join(' ')}"`)
+  }
+
   if (rows > 0 && type === 'textarea') {
     attr.push(`rows="${rows}"`)
   }
@@ -229,28 +244,31 @@ const Field = async (props: FieldProps): Promise<string> => {
   const labelClass = isStringStrict(labelClasses) ? ` class="${labelClasses}"` : ''
 
   if (checkboxRadio) {
-    labelAfter = `
-      <label for="${id}">
-        <span${labelClass} data-label>
-          <span>${label}</span>
-        </span>
-        <span data-control data-type="${type}"></span>
-      </label>
-    `
-
     if (fieldset) {
       labelBefore = `
         <legend${labelRequired}>
-          <span>${label}${required ? `<span${isStringStrict(visuallyHiddenClass) ? ` class="${visuallyHiddenClass}"` : ''}> required</span>` : ''}
+          <span data-legend-text>${label}${required ? `<span${isStringStrict(visuallyHiddenClass) ? ` class="${visuallyHiddenClass}"` : ''}> required</span>` : ''}
             ${labelRequiredIcon}
           </span>
         </legend>
+      `
+    } else {
+      labelAfter = `
+        <label for="${id}" data-option>
+          <span${labelClass} data-label${labelRequired}>
+            <span data-label-text>
+              ${label}
+              ${labelRequiredIcon}
+            </span>
+          </span>
+          <span data-control data-type="${type}">${icon}</span>
+        </label>
       `
     }
   } else {
     labelBefore = `
       <label for="${id}"${labelClass} data-label${labelRequired}>
-        <span>
+        <span data-label-text>
           ${label}
           ${labelRequiredIcon}
         </span>
@@ -270,7 +288,7 @@ const Field = async (props: FieldProps): Promise<string> => {
     case 'number':
     case 'password':
     case 'tel': {
-      input = `<input type="${type}" name="${name}" id="${id}" class="${classesArr.join(' ')}"${attrs}>`
+      input = `<input type="${type}" name="${name}" id="${id}"${attrs}>`
 
       if (checkboxRadioOpts) {
         input = _getCheckboxRadioOpts({
@@ -279,6 +297,7 @@ const Field = async (props: FieldProps): Promise<string> => {
           classes,
           attr: attrs,
           type,
+          icon,
           labelClass
         })
       }
@@ -286,7 +305,7 @@ const Field = async (props: FieldProps): Promise<string> => {
       break
     }
     case 'textarea': {
-      input = `<textarea name="${name}" id="${id}" class="${classesArr.join(' ')}"${attrs}></textarea>`
+      input = `<textarea name="${name}" id="${id}"${attrs}></textarea>`
       break
     }
     case 'select': {
@@ -303,8 +322,8 @@ const Field = async (props: FieldProps): Promise<string> => {
 
         input = `
           <div data-type="select">
-            <select name="${name}" id="${id}" class="${classesArr.join(' ')}"${attrs}>${optsOutput}</select>
-            <div data-select-arrow></div>
+            <select name="${name}" id="${id}"${attrs}>${optsOutput}</select>
+            <div data-select-icon>${selectIcon}</div>
           </div>
         `
       }

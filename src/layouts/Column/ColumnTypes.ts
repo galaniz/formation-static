@@ -65,9 +65,9 @@ export interface ColumnReturn {
 
 /**
  * @typedef {function} ColumnPropsFilter
- * @prop {ColumnProps} props
- * @prop {Object.<string, string>} args
- * @prop {string} args.renderType
+ * @param {ColumnProps} props
+ * @param {Object.<string, string>} args
+ * @param {string} args.renderType
  * @return {Promise<ColumnProps>}
  */
 export type ColumnPropsFilter = (props: ColumnProps, args: { renderType: string }) => Promise<ColumnProps>

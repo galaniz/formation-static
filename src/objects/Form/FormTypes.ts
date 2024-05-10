@@ -104,9 +104,9 @@ export interface FormMessages {
 
 /**
  * @typedef {function} FormPropsFilter
- * @prop {FormProps} props
- * @prop {object} args
- * @prop {string} args.renderType
+ * @param {FormProps} props
+ * @param {object} args
+ * @param {string} args.renderType
  * @return {Promise<FormProps>}
  */
 export type FormPropsFilter = (props: FormProps, args: { renderType: string }) => Promise<FormProps>

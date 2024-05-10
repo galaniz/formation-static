@@ -22,6 +22,8 @@ import { isArrayStrict } from '../../utils/isArray/isArray'
 import { isObjectStrict } from '../../utils/isObject/isObject'
 import { isStringStrict, isString } from '../../utils/isString/isString'
 import { isFunction } from '../../utils/isFunction/isFunction'
+import { normalizeContentType } from '../../utils/normalizeContentType/normalizeContentType'
+import { config } from '../../config/config'
 
 /**
  * Class - recursively generate navigation output
@@ -46,7 +48,14 @@ class Navigation {
    *
    * @type {string}
    */
-  current: string = ''
+  currentLink: string = ''
+
+  /**
+   * Current content type to compare against
+   *
+   * @type {string}
+   */
+  currentType: string = ''
 
   /**
    * Store initialize success
@@ -99,7 +108,8 @@ class Navigation {
     const {
       navigations = [],
       items = [],
-      current = ''
+      currentLink = '',
+      currentType = ''
     } = props
 
     /* Check that required items exist */
@@ -112,7 +122,8 @@ class Navigation {
 
     this.navigations = navigations
     this.items = items
-    this.current = current
+    this.currentLink = currentLink
+    this.currentType = normalizeContentType(currentType)
 
     /* Items by id */
 
@@ -190,7 +201,11 @@ class Navigation {
     }
 
     if (isStringStrict(link) && !external) {
-      props.current = props.link === this.current
+      props.current = props.link === this.currentLink
+    }
+
+    if (id === config.archiveMeta?.[this.currentType]?.id) {
+      props.archiveCurrent = true
     }
 
     let descendentCurrent = false
@@ -340,7 +355,8 @@ class Navigation {
         external = false,
         children = [],
         current = false,
-        descendentCurrent = false
+        descendentCurrent = false,
+        archiveCurrent = false
       } = item
 
       /* Filters args */
@@ -362,6 +378,10 @@ class Navigation {
 
       if (descendentCurrent) {
         itemAttrs += ' data-descendent-current="true"'
+      }
+
+      if (archiveCurrent) {
+        itemAttrs += ' data-archive-current="true"'
       }
 
       output.html += `<li data-depth="${depth}"${itemClasses}${itemAttrs}>`
@@ -399,6 +419,10 @@ class Navigation {
 
       if (descendentCurrent) {
         linkAttrsArr.push('data-descendent-current="true"')
+      }
+
+      if (archiveCurrent) {
+        linkAttrsArr.push('data-archive-current="true"')
       }
 
       const linkAttrs = (linkAttrsArr.length > 0) ? ` ${linkAttrsArr.join(' ')}` : ''
@@ -552,7 +576,7 @@ class Navigation {
         id: item.id,
         slug: item.slug,
         contentType: item.contentType,
-        linkContentType: item.linkContentType
+        pageData: item.internalLink
       })
 
       const permalink = isString(slug) ? getPermalink(slug) : ''

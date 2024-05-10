@@ -13,6 +13,13 @@ import { isNumber } from '../isNumber/isNumber'
 import { escape } from '../escape/escape'
 
 /**
+ * Store shortcode callbacks by name
+ *
+ * @type {import('./shortcodesTypes').Shortcodes}
+ */
+let shortcodes: Shortcodes = {}
+
+/**
  * Regex for searching x="" in strings
  *
  * @private
@@ -108,7 +115,7 @@ const _getShortcodeData = (content: string, tagNames: string, props?: Partial<Sh
             const type = attributeTypes[key]
 
             if (type === 'number') {
-              const num = parseInt(val)
+              const num = parseInt(val, 10)
 
               val = isNaN(num) ? 0 : num
             }
@@ -161,13 +168,6 @@ const _getShortcodeData = (content: string, tagNames: string, props?: Partial<Sh
 
   return data
 }
-
-/**
- * Store shortcode callbacks by name
- *
- * @type {import('./shortcodesTypes').Shortcodes}
- */
-let shortcodes: Shortcodes = {}
 
 /**
  * Function - add shortcode to shortcodes object

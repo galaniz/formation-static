@@ -3,40 +3,37 @@
  */
 
 /**
- * @typedef {object} SlugBase
- * @prop {string} slug
+ * @typedef {object} Taxonomy
+ * @prop {string} id
  * @prop {string} title
+ * @prop {string} contentType
+ * @prop {string} [slug]
+ * @prop {boolean} [isPage]
+ * @prop {boolean} [useContentTypeSlug]
  */
-export interface SlugBase {
-  slug: string
+export interface Taxonomy {
+  id: string
   title: string
-}
-
-/**
- * @typedef SlugParent
- * @type {SlugBase}
- * @prop {string} [contentType]
- * @prop {string} [id]
- */
-export interface SlugParent extends SlugBase {
-  contentType?: string
-  id?: string
+  contentType: string
+  slug?: string
+  isPage?: boolean
+  useContentTypeSlug?: boolean
 }
 
 /**
  * @typedef {object} InternalLinkBase
- * @prop {string} id
- * @prop {string} contentType
- * @prop {string} slug
+ * @prop {string} [id]
+ * @prop {string} [contentType]
+ * @prop {string} [slug]
  * @prop {string} [title]
- * @prop {string} [linkContentType]
+ * @prop {Taxonomy} [taxonomy]
  */
 export interface InternalLinkBase {
-  id: string
-  contentType: string
-  slug: string
+  id?: string
+  contentType?: string
+  slug?: string
   title?: string
-  linkContentType?: string
+  taxonomy?: Taxonomy
 }
 
 /**

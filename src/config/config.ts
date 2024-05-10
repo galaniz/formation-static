@@ -20,28 +20,16 @@ let config: Config = {
     description: '',
     image: ''
   },
-  slug: {
-    parents: {},
-    archives: {},
-    bases: {
-      page: {
-        slug: '',
-        title: ''
-      }
-    }
-  },
-  contentTypes: {
-    partial: [
-      'navigation',
-      'navigationItem',
-      'redirect'
-    ],
-    whole: [
-      'page'
-    ],
-    archive: {},
-    taxonomy: {}
-  },
+  partialTypes: [
+    'navigation',
+    'navigationItem',
+    'redirect'
+  ],
+  wholeTypes: [
+    'page'
+  ],
+  archiveMeta: {},
+  normalTypes: {},
   renderTypes: {},
   renderFunctions: {},
   ajaxFunctions: {},
@@ -55,15 +43,11 @@ let config: Config = {
       200, 400, 600, 800, 1000, 1200, 1600, 2000
     ]
   },
+  parents: {},
   navigation: [],
   navigationItem: [],
   scriptMeta: {},
   formMeta: {},
-  archive: {
-    ids: {},
-    posts: {},
-    terms: {}
-  },
   env: {
     dev: true,
     prod: false,
@@ -82,29 +66,21 @@ let config: Config = {
         data: '',
         name: 'slugs.json'
       },
-      slugArchives: {
+      parents: {
         data: '',
-        name: 'slug-archives.json'
-      },
-      slugParents: {
-        data: '',
-        name: 'slug-parents.json'
+        name: 'parents.json'
       },
       navigations: {
         data: '',
         name: 'navigations.json'
       },
-      archiveIds: {
+      navigationItems: {
         data: '',
-        name: 'archive-ids.json'
+        name: 'navigation-items.json'
       },
-      archivePosts: {
+      archiveMeta: {
         data: '',
-        name: 'archive-posts.json'
-      },
-      archiveTerms: {
-        data: '',
-        name: 'archive-terms.json'
+        name: 'archive-meta.json'
       },
       formMeta: {
         data: '',

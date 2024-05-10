@@ -87,7 +87,7 @@ const getAllContentfulData = async (args: AllContentfulDataArgs = {}): Promise<R
     /* Get partial data - not serverless */
 
     if (serverlessData === undefined || !isEntry) {
-      const partial = config.contentTypes.partial
+      const partial = config.partialTypes
 
       for (let i = 0; i < partial.length; i += 1) {
         const contentType = partial[i]
@@ -114,7 +114,7 @@ const getAllContentfulData = async (args: AllContentfulDataArgs = {}): Promise<R
     /* Get whole data (for page generation) - not serverless or preview */
 
     if ((serverlessData === undefined && previewData === undefined) || !isEntry) {
-      const whole = config.contentTypes.whole
+      const whole = config.wholeTypes
 
       for (let i = 0; i < whole.length; i += 1) {
         const contentType = whole[i]

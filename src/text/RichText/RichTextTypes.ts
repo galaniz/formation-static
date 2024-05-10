@@ -20,10 +20,22 @@ export interface RichTextHeading {
 }
 
 /**
+ * @typedef {object} RichTextElement
+ * @prop {string} opening
+ * @prop {string} content
+ * @prop {string} closing
+ */
+export interface RichTextElement {
+  opening: string
+  content: string
+  closing: string
+}
+
+/**
  * @typedef {object} RichTextProps
  * @prop {object} args
  * @prop {string} [args.tag]
- * @prop {RenderRichText[]|string} [args.content]
+ * @prop {import('../../render/renderTypes').RenderRichText[]|string} [args.content]
  * @prop {string} [args.classes]
  * @prop {string} [args.textStyle]
  * @prop {string} [args.headingStyle]
@@ -33,7 +45,7 @@ export interface RichTextHeading {
  * @prop {import('../../global/globalTypes').InternalLink} [args.internalLink]
  * @prop {string} [args.style]
  * @prop {string} [args.attr]
- * @prop {boolean} [args.dataAttr=true]
+ * @prop {boolean|string[]} [args.dataAttr=true]
  * @prop {import('../../global/globalTypes').ParentArgs} [parents]
  * @prop {RichTextHeading[]} [headings]
  */
@@ -50,7 +62,7 @@ export interface RichTextProps {
     internalLink?: InternalLink
     style?: string
     attr?: string
-    dataAttr?: boolean
+    dataAttr?: boolean | string[]
     [key: string]: unknown
   }
   parents?: ParentArgs[]
@@ -59,21 +71,21 @@ export interface RichTextProps {
 
 /**
  * @typedef {object} RichTextContentProps
- * @prop {RenderRichText[]} content
+ * @prop {import('../../render/renderTypes').RenderRichText[]} content
  * @prop {RichTextProps} props
- * @prop {boolean} dataAttr
+ * @prop {boolean|string[]} dataAttr
  * @prop {string} [_output]
  */
 export interface RichTextContentProps {
   content: RenderRichText[]
   props: RichTextProps
-  dataAttr: boolean
+  dataAttr: boolean | string[]
   _output?: string
 }
 
 /**
  * @typedef {object} RichTextContentFilterArgs
- * @prop {RenderRichText} args
+ * @prop {import('../../render/renderTypes').RenderRichText} args
  * @prop {RichTextProps} props
  */
 export interface RichTextContentFilterArgs {
@@ -82,13 +94,48 @@ export interface RichTextContentFilterArgs {
 }
 
 /**
- * @typedef {function} RichTextPropsFilter
+ * @typedef RichTextContentOutputFilterArgs
+ * @type {RichTextContentFilterArgs}
+ * @prop {RichTextElement} element
+ */
+export interface RichTextContentOutputFilterArgs extends RichTextContentFilterArgs {
+  element: RichTextElement
+}
+
+/**
+ * @typedef RichTextOutputFilterArgs
  * @prop {RichTextProps} props
- * @prop {object} args
- * @prop {string} args.renderType
+ * @prop {RichTextElement} element
+ */
+export interface RichTextOutputFilterArgs {
+  props: RichTextProps
+  element: RichTextElement
+}
+
+/**
+ * @typedef {function} RichTextPropsFilter
+ * @param {RichTextProps} props
+ * @param {object} args
+ * @param {string} args.renderType
  * @return {Promise<RichTextProps>}
  */
 export type RichTextPropsFilter = (props: RichTextProps, args: { renderType: string }) => Promise<RichTextProps>
+
+/**
+ * @typedef {function} RichTextOutputFilter
+ * @param {string} output
+ * @param {RichTextContentOutputFilterArgs} args
+ * @return {Promise<string>}
+ */
+export type RichTextOutputFilter = (output: string, args: RichTextContentOutputFilterArgs) => Promise<string>
+
+/**
+ * @typedef {function} RichTextContentItemFilter
+ * @param {import('../../render/renderTypes').RenderRichText} item
+ * @param {RichTextProps} args
+ * @return {Promise<import('../../render/renderTypes').RenderRichText>}
+ */
+export type RichTextContentItemFilter = (item: RenderRichText, args: RichTextProps) => Promise<RenderRichText>
 
 /**
  * @typedef {function} RichTextContentFilter
@@ -104,11 +151,3 @@ export type RichTextContentFilter = (content: string, args: RichTextContentFilte
  * @param {RichTextContentFilterArgs} args
  */
 export type RichTextContentOutputFilter = (content: string, args: RichTextContentFilterArgs) => Promise<string>
-
-/**
- * @typedef {function} RichTextOutputFilter
- * @param {string} output
- * @param {RichTextProps} props
- * @return {Promise<string>}
- */
-export type RichTextOutputFilter = (output: string, props: RichTextProps) => Promise<string>

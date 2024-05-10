@@ -6,8 +6,10 @@
 
 import type {
   RichTextProps,
+  RichTextOutputFilterArgs,
   RichTextContentProps,
-  RichTextContentFilterArgs
+  RichTextContentFilterArgs,
+  RichTextContentOutputFilterArgs
 } from './RichTextTypes'
 import { getLink } from '../../utils/getLink/getLink'
 import { getExcerpt } from '../../utils/getExcerpt/getExcerpt'
@@ -34,6 +36,22 @@ const _containsShortcode = (tag: string = '', content: string = ''): boolean => 
 }
 
 /**
+ * Function - check if data rich attribute should be added
+ *
+ * @private
+ * @param {boolean|string[]} dataAttr
+ * @param {string} tag
+ * @return {boolean}
+ */
+const _addDataAttr = (dataAttr: boolean | string[] = true, tag: string = ''): boolean => {
+  if (isArrayStrict(dataAttr)) {
+    return dataAttr.includes(tag)
+  }
+
+  return dataAttr
+}
+
+/**
  * Function - recursively output content
  *
  * @private
@@ -52,10 +70,13 @@ const _getContent = async (args: RichTextContentProps): Promise<string> => {
   } = args
 
   for (let i = 0; i < content.length; i += 1) {
-    const item = content[i]
+    let item = content[i]
+
+    item = await applyFilters('richTextContentItem', item, props)
 
     const {
       link = '',
+      attr = '',
       internalLink,
       content: c
     } = item
@@ -80,8 +101,12 @@ const _getContent = async (args: RichTextContentProps): Promise<string> => {
 
     const attrs: string[] = []
 
-    if (dataAttr) {
+    if (_addDataAttr(dataAttr, tag)) {
       attrs.push(`data-rich="${tag}"`)
+    }
+
+    if (isStringStrict(attr)) {
+      attrs.push(attr)
     }
 
     /* Link */
@@ -123,16 +148,28 @@ const _getContent = async (args: RichTextContentProps): Promise<string> => {
 
     /* Output */
 
+    let opening = ''
+    let closing = ''
+    let inner = ''
+
     if (isStringStrict(tag) && outputStr.trim() !== '') {
-      outputStr = `<${tag}${(attrs.length > 0) ? ` ${attrs.join(' ')}` : ''}>${outputStr}</${tag}>`
+      opening = `<${tag}${(attrs.length > 0) ? ` ${attrs.join(' ')}` : ''}>`
+      closing = `</${tag}>`
+      inner = outputStr
+      outputStr = `${opening}${outputStr}${closing}`
     }
 
-    const richTextContentOutput: RichTextContentFilterArgs = {
+    const richTextContentOutputArgs: RichTextContentOutputFilterArgs = {
       args: item,
-      props
+      props,
+      element: {
+        opening,
+        closing,
+        content: inner
+      }
     }
 
-    outputStr = await applyFilters('richTextContentOutput', outputStr, richTextContentOutput)
+    outputStr = await applyFilters('richTextContentOutput', outputStr, richTextContentOutputArgs)
 
     _output += outputStr
   }
@@ -214,6 +251,14 @@ const RichText = async (props: RichTextProps): Promise<string> => {
     classesArr.push(align)
   }
 
+  /* Simpler props */
+
+  const filterProps = {
+    ...props
+  }
+
+  filterProps.args.content = undefined
+
   /* Generate output */
 
   let output = ''
@@ -230,7 +275,7 @@ const RichText = async (props: RichTextProps): Promise<string> => {
 
     output = await _getContent({
       content,
-      props,
+      props: filterProps,
       dataAttr
     })
   }
@@ -239,7 +284,7 @@ const RichText = async (props: RichTextProps): Promise<string> => {
 
   const attrs: string[] = []
 
-  if (dataAttr) {
+  if (_addDataAttr(dataAttr, tag)) {
     attrs.push(`data-rich="${tag}"`)
   }
 
@@ -303,11 +348,27 @@ const RichText = async (props: RichTextProps): Promise<string> => {
     tag = ''
   }
 
+  let opening = ''
+  let closing = ''
+  let inner = ''
+
   if (tag !== '' && output.trim() !== '') {
-    output = `<${tag}${(attrs.length > 0) ? ` ${attrs.join(' ')}` : ''}>${output}</${tag}>`
+    opening = `<${tag}${(attrs.length > 0) ? ` ${attrs.join(' ')}` : ''}>`
+    closing = `</${tag}>`
+    inner = output
+    output = `${opening}${output}${closing}`
   }
 
-  output = await applyFilters('richTextOutput', output, props)
+  const richTextOutputArgs: RichTextOutputFilterArgs = {
+    props: filterProps,
+    element: {
+      opening,
+      closing,
+      content: inner
+    }
+  }
+
+  output = await applyFilters('richTextOutput', output, richTextOutputArgs)
 
   return output
 }

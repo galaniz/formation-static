@@ -11,6 +11,7 @@ import type { ParentArgs } from '../../global/globalTypes'
  * @prop {object} args
  * @prop {string} [args.tag]
  * @prop {string} [args.layout]
+ * @prop {string} [args.background]
  * @prop {string} [args.maxWidth]
  * @prop {string} [args.paddingTop]
  * @prop {string} [args.paddingTopLarge]
@@ -20,7 +21,6 @@ import type { ParentArgs } from '../../global/globalTypes'
  * @prop {string} [args.gapLarge]
  * @prop {string} [args.justify]
  * @prop {string} [args.align]
- * @prop {boolean} [args.richTextStyles]
  * @prop {string} [args.classes] - Back end option
  * @prop {string} [args.style] - Back end option
  * @prop {string} [args.attr] - Back end option
@@ -31,6 +31,7 @@ export interface ContainerProps {
   args: {
     tag?: string
     layout?: string
+    background?: string
     maxWidth?: string
     paddingTop?: string
     paddingTopLarge?: string
@@ -43,7 +44,6 @@ export interface ContainerProps {
     classes?: string
     style?: string
     attr?: string
-    richTextStyles?: boolean
     nest?: boolean
     [key: string]: unknown
   }
@@ -62,9 +62,9 @@ export interface ContainerReturn {
 
 /**
  * @typedef {function} ContainerPropsFilter
- * @prop {ContainerProps} props
- * @prop {object} args
- * @prop {string} args.renderType
+ * @param {ContainerProps} props
+ * @param {object} args
+ * @param {string} args.renderType
  * @return {Promise<ContainerProps>}
  */
 export type ContainerPropsFilter = (props: ContainerProps, args: { renderType: string }) => Promise<ContainerProps>

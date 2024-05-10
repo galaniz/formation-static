@@ -5,29 +5,31 @@
 /* Imports */
 
 import type { SlugArgs, SlugReturn } from './getSlugTypes'
-import type { SlugBase, SlugParent } from '../../global/globalTypes'
+import type { ConfigParent } from '../../config/configTypes'
 import { config } from '../../config/config'
-import { getArchiveId } from '../getArchiveId/getArchiveId'
+import { getArchiveInfo } from '../getArchiveInfo/getArchiveInfo'
+import { getTaxonomyInfo } from '../getTaxonomyInfo/getTaxonomyInfo'
 import { isObjectStrict } from '../isObject/isObject'
+import { isStringStrict } from '../isString/isString'
 
 /**
  * Function - recurse to get ascendents
  *
  * @private
  * @param {string} id
- * @param {import('../../global/globalTypes').SlugParent[]} p
+ * @param {import('../../config/configTypes').ConfigParent[]} parents
  * @return {void}
  */
-const _getParentSlug = (id: string = '', p: SlugParent[] = []): void => {
-  if (config.slug.parents[id] !== undefined && id !== '') {
-    p.unshift(config.slug.parents[id])
+const _getParentSlug = (id: string = '', parents: ConfigParent[] = []): void => {
+  if (config.parents[id] !== undefined && id !== '') {
+    parents.unshift(config.parents[id])
 
-    _getParentSlug(config.slug.parents[id].id, p)
+    _getParentSlug(config.parents[id].id, parents)
   }
 }
 
 /**
- * Function - get slug with base from slug base and parents
+ * Function - get slug with archive/taxonomy base and parents
  *
  * @param {import('./getSlugTypes').SlugArgs} args
  * @return {string|import('./getSlugTypes').SlugReturn}
@@ -38,7 +40,7 @@ const getSlug = (args: SlugArgs): string | SlugReturn => {
     slug = '',
     page = 0,
     contentType = 'page',
-    linkContentType = 'default',
+    pageData = undefined,
     returnParents = false
   } = isObjectStrict(args) ? args : {}
 
@@ -48,60 +50,99 @@ const getSlug = (args: SlugArgs): string | SlugReturn => {
     return ''
   }
 
-  /* Archive id */
+  /* Parts */
 
-  const archiveId = getArchiveId(contentType, linkContentType)
+  let parts: string[] = []
 
-  /* Slug base */
+  /* Term/taxonomy */
 
-  const slugBase: SlugBase = config.slug.bases[contentType]
+  const taxonomyInfo = getTaxonomyInfo(contentType, pageData)
 
-  let slugBaseSlug = ''
-  let slugBaseOutput = ''
+  const {
+    id: taxonomyId,
+    slug: taxonomySlug,
+    title: taxonomyTitle,
+    contentType: taxonomyType,
+    useContentTypeSlug: taxonomyUseTypeSlug,
+    isPage: taxonomyIsPage
+  } = taxonomyInfo
 
-  if (isObjectStrict(slugBase)) {
-    slugBaseSlug = slugBase.slug
+  /* Archive */
 
-    if (slugBaseSlug === 'archive' && archiveId !== '') {
-      slugBaseSlug = config.slug.archives[archiveId].slug
+  const archiveType = isStringStrict(taxonomyType) ? taxonomyType : contentType
+  const archiveInfo = getArchiveInfo(archiveType)
+
+  const {
+    id: archiveId,
+    slug: archiveSlug,
+    title: archiveTitle
+  } = archiveInfo
+
+  /* Archive and/or taxonomy parent */
+
+  let archiveParent
+
+  if (archiveSlug !== '' && archiveId !== '') {
+    parts.push(archiveSlug)
+
+    archiveParent = {
+      contentType: 'page',
+      title: archiveTitle,
+      slug: archiveSlug,
+      id: archiveId
     }
-
-    slugBaseOutput = `${slugBaseSlug}${slugBaseSlug !== '' ? '/' : ''}`
   }
 
-  /* Parents */
+  if (contentType === 'taxonomy' && !taxonomyUseTypeSlug) {
+    parts = []
+    archiveParent = undefined
+  }
 
-  let p: string | SlugBase[] = []
-  let pp: SlugParent[] = []
+  if (contentType === 'term' && taxonomySlug !== '' && taxonomyId !== '') {
+    if (taxonomyUseTypeSlug) {
+      parts.push(taxonomySlug)
+    } else {
+      parts = [taxonomySlug]
+    }
 
-  _getParentSlug(contentType === 'page' ? id : archiveId, p)
+    if (taxonomyIsPage) {
+      archiveParent = {
+        contentType: 'taxonomy',
+        title: taxonomyTitle,
+        slug: taxonomySlug,
+        id: taxonomyId
+      }
+    }
+  }
 
-  if (p.length > 0) {
-    pp = p
+  /* Page parents */
 
-    p = `${p.map((item: { slug: string }): string => item.slug).join('/')}/`
-  } else {
-    p = ''
+  const parents: ConfigParent[] = []
+
+  _getParentSlug(contentType === 'page' ? id : archiveId, parents)
+
+  if (parents.length > 0) {
+    parts.push(`${parents.map(({ slug }) => slug).join('/')}`)
   }
 
   /* Slug */
 
-  const s = `${p}${slugBaseOutput}${slug}${page !== 0 ? `/?page=${page}` : ''}`
+  if (isStringStrict(slug)) {
+    parts.push(slug)
+  }
+
+  const s = `${parts.length > 0 ? parts.join('/') : ''}${page !== 0 ? `/?page=${page}` : ''}`
 
   /* Parents and slug return */
 
   if (returnParents) {
-    if (slugBaseSlug !== '' && archiveId !== '') {
-      pp.unshift({
-        ...slugBase,
-        contentType: 'page',
-        id: archiveId
-      })
+    if (archiveParent !== undefined) {
+      parents.unshift(archiveParent)
     }
 
     return {
       slug: s,
-      parents: pp
+      parents
     }
   }
 
