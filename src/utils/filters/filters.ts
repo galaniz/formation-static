@@ -30,7 +30,8 @@ let filters: FiltersFunctions = {
   renderContentStart: [],
   renderContentEnd: [],
   ajaxRes: [],
-  cacheData: []
+  cacheData: [],
+  storeData: []
 }
 
 /**
@@ -126,7 +127,8 @@ const resetFilters = (): void => {
     renderContentStart: [],
     renderContentEnd: [],
     ajaxRes: [],
-    cacheData: []
+    cacheData: [],
+    storeData: []
   }
 }
 

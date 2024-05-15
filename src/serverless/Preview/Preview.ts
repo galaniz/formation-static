@@ -12,6 +12,7 @@ import { isStringStrict } from '../../utils/isString/isString'
 import { setFilters } from '../../utils/filters/filters'
 import { setActions } from '../../utils/actions/actions'
 import { setShortcodes } from '../../utils/shortcodes/shortcodes'
+import { getPathDepth } from '../../utils/getPathDepth/getPathDepth'
 import { render } from '../../render/render'
 
 /**
@@ -20,7 +21,7 @@ import { render } from '../../render/render'
  * @param {import('./PreviewTypes').PreviewArgs} args
  * @return {Promise<Response>} Response
  */
-const Preview = async ({ request, next, env, siteConfig }: PreviewArgs): Promise<Response> => {
+const Preview = async ({ request, functionPath, next, env, siteConfig }: PreviewArgs): Promise<Response> => {
   /* Params */
 
   const { searchParams } = new URL(request.url)
@@ -38,6 +39,8 @@ const Preview = async ({ request, next, env, siteConfig }: PreviewArgs): Promise
   setConfig(siteConfig)
 
   await setConfigFilter(env)
+
+  siteConfig.env.dir = getPathDepth(functionPath)
 
   setFilters(siteConfig.filters)
   setActions(siteConfig.actions)

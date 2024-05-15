@@ -9,11 +9,13 @@ import type { Config } from '../../config/configTypes'
 /**
  * @typedef {object} AjaxArgs
  * @prop {Request} request
+ * @prop {string} functionPath
  * @prop {import('../../global/globalTypes').GenericStrings} env
  * @prop {import(../../config/configTypes').Config} siteConfig
  */
 export interface AjaxArgs {
   request: Request
+  functionPath: string
   env: GenericStrings
   siteConfig: Config
 }

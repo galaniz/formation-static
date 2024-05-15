@@ -10,12 +10,14 @@ import type { Generic, GenericStrings } from '../../global/globalTypes'
 /**
  * @typedef {object} ReloadArgs
  * @prop {Request} request
+ * @prop {string} functionPath
  * @prop {function} next
  * @prop {import('../../global/globalTypes').GenericStrings} env
  * @prop {import('../../config/configTypes').Config} siteConfig
  */
 export interface ReloadArgs {
   request: Request
+  functionPath: string
   next: Function
   env: GenericStrings
   siteConfig: Config

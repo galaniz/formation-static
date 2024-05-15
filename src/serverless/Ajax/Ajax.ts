@@ -13,6 +13,7 @@ import { applyFilters, setFilters } from '../../utils/filters/filters'
 import { isObjectStrict } from '../../utils/isObject/isObject'
 import { isStringStrict } from '../../utils/isString/isString'
 import { isNumber } from '../../utils/isNumber/isNumber'
+import { getPathDepth } from '../../utils/getPathDepth/getPathDepth'
 import { SendForm } from '../SendForm/SendForm'
 
 /**
@@ -62,13 +63,15 @@ class _CustomError extends Error {
  * @param {import('./AjaxTypes').AjaxArgs} args
  * @return {Promise<Response>} Response
  */
-const Ajax = async ({ request, env, siteConfig }: AjaxArgs): Promise<Response> => {
+const Ajax = async ({ request, functionPath, env, siteConfig }: AjaxArgs): Promise<Response> => {
   try {
     /* Config */
 
     setConfig(siteConfig)
 
     await setConfigFilter(env)
+
+    siteConfig.env.dir = getPathDepth(functionPath)
 
     setFilters(siteConfig.filters)
     setActions(siteConfig.actions)
@@ -146,7 +149,7 @@ const Ajax = async ({ request, env, siteConfig }: AjaxArgs): Promise<Response> =
       throw new Error('No result')
     }
 
-    if (isStringStrict(res.error)) {
+    if (res.error !== undefined) {
       throw new _CustomError(res.error)
     }
 

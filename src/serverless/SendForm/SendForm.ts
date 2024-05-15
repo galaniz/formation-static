@@ -15,7 +15,6 @@ import { isObject, isObjectStrict } from '../../utils/isObject/isObject'
 import { getPermalink } from '../../utils/getPermalink/getPermalink'
 import { getObjectKeys } from '../../utils/getObjectKeys/getObjectKeys'
 import { getJsonFile } from '../../utils/getJson/getJson'
-import { getPath } from '../../utils/getPath/getPath'
 
 /**
  * Function - recurse through data to output plain and html email body
@@ -108,7 +107,7 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
 
   /* Meta information - to email and subject */
 
-  const formMetaData: ConfigFormMeta | undefined = await getJsonFile(getPath('formMeta', 'store'))
+  const formMetaData: ConfigFormMeta | undefined = await getJsonFile('formMeta')
 
   if (formMetaData === undefined) {
     return {
@@ -167,7 +166,10 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
   const header = `${config.title} contact form submission`
   const footer = `This email was sent from a contact form on ${config.title} (${getPermalink()})`
   const outputData: SendFormOutputData = {}
-  const output = { html: '', plain: '' }
+  const output = {
+    html: '',
+    plain: ''
+  }
 
   getObjectKeys(inputs).forEach((name) => {
     const input = inputs[name]
@@ -229,17 +231,20 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
     if (hasLegend) {
       const legendData = outputData[legend]
 
-      if (isObjectStrict(legendData)) {
-        const inputData = legendData[inputLabel]
-
-        if (isArray(inputData)) {
-          inputData.push(outputValue)
-        } else {
-          legendData[inputLabel] = []
-        }
-      } else {
+      if (legendData === undefined) {
         outputData[legend] = {}
       }
+
+      // @ts-expect-error
+      const inputData = outputData[legend][inputLabel]
+
+      if (inputData === undefined) {
+        // @ts-expect-error
+        outputData[legend][inputLabel] = []
+      }
+
+      // @ts-expect-error
+      outputData[legend][inputLabel].push(outputValue)
     }
 
     /* Label */
@@ -247,11 +252,12 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
     if (!hasLegend) {
       const inputData = outputData[inputLabel]
 
-      if (isArray(inputData)) {
-        inputData.push(outputValue)
-      } else {
+      if (inputData === undefined) {
         outputData[inputLabel] = []
       }
+
+      // @ts-expect-error
+      outputData[inputLabel].push(outputValue)
     }
   })
 

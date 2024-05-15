@@ -5,6 +5,8 @@
 /* Imports */
 
 import { isObject } from '../isObject/isObject'
+import { getPath } from '../getPath/getPath'
+import { applyFilters } from '../filters/filters'
 
 /**
  * Function - check and return valid JSON or fallback
@@ -30,20 +32,27 @@ const getJson = <T>(value: string): object & T | undefined => {
  * Function - import json file and return contents if object
  *
  * @param {string} path
+ * @param {boolean} store
  * @return {Promise<object|undefined>}
  */
-const getJsonFile = async <T>(path: string): Promise<object & T | undefined> => {
+const getJsonFile = async <T>(path: string, store: boolean = true): Promise<object & T | undefined> => {
   try {
-    const { default: obj } = await import(path) // Removed assert json as not all exports are esnext
+    const newPath = store ? getPath(path, 'store') : path
+
+    const { default: obj } = await import(newPath) // Removed assert json as not all exports are esnext
 
     if (isObject(obj)) {
       return obj
     }
-  } catch {
-    return undefined
-  }
 
-  return undefined
+    throw new Error('No object in json file')
+  } catch {
+    if (!store) {
+      return undefined
+    }
+
+    return await applyFilters('storeData', undefined, path)
+  }
 }
 
 /* Exports */

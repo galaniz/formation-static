@@ -61,7 +61,7 @@ const getPath = (file: string = '', type: string = ''): string => {
     }
   }
 
-  return `${root}/${append}`
+  return `${root}${root.endsWith('/') ? '' : '/'}${append}`
 }
 
 /* Exports */

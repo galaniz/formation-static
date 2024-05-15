@@ -44,9 +44,17 @@ export interface CacheDataFilterArgs {
 /**
  * @typedef {function} CacheDataFilter
  * @param {CacheData} data
- * @return {CacheData|undefined}
+ * @return {Promise<CacheData|undefined>}
  */
 export type CacheDataFilter = (data: CacheData, args: CacheDataFilterArgs) => Promise<CacheData | undefined>
+
+/**
+ * @typedef {function} StoreDataFilter
+ * @param {object|undefined} data
+ * @param {string} type
+ * @return {Promise<object|undefined>}
+ */
+export type StoreDataFilter = (data: object | undefined, type: string) => Promise<object | undefined>
 
 /**
  * @typedef Filters
@@ -66,6 +74,7 @@ export type CacheDataFilter = (data: CacheData, args: CacheDataFilterArgs) => Pr
  * @prop {import('../../render/RenderTypes').RenderContentFilter} renderContentEnd
  * @prop {import('../../serverless/Ajax/AjaxTypes').AjaxResFilter} ajaxRes
  * @prop {CacheDataFilter} cacheData
+ * @prop {StoreDataFilter} storeData
  */
 export interface Filters extends GenericFunctions {
   columnProps: ColumnPropsFilter
@@ -83,6 +92,7 @@ export interface Filters extends GenericFunctions {
   renderContentEnd: RenderContentFilter
   ajaxRes: AjaxResFilter
   cacheData: CacheDataFilter
+  storeData: StoreDataFilter
 }
 
 /**
@@ -103,6 +113,7 @@ export interface Filters extends GenericFunctions {
  * @prop {import('../../render/RenderTypes').RenderContentFilter[]} renderContentEnd
  * @prop {import('../../serverless/Ajax/AjaxTypes').AjaxResFilter[]} ajaxRes
  * @prop {CacheDataFilter[]} cacheData
+ * @prop {StoreDataFilter[]} storeData
  */
 export interface FiltersFunctions {
   columnProps: ColumnPropsFilter[]
@@ -120,5 +131,6 @@ export interface FiltersFunctions {
   renderContentEnd: RenderContentFilter[]
   ajaxRes: AjaxResFilter[]
   cacheData: CacheDataFilter[]
+  storeData: StoreDataFilter[]
   [key: string]: Function[]
 }

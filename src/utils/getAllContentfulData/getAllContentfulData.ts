@@ -13,7 +13,6 @@ import { isObjectStrict } from '../isObject/isObject'
 import { isStringStrict } from '../isString/isString'
 import { isFunction } from '../isFunction/isFunction'
 import { getJsonFile } from '../getJson/getJson'
-import { getPath } from '../getPath/getPath'
 
 /**
  * Function - fetch data from all content types or single entry if serverless
@@ -50,7 +49,7 @@ const getAllContentfulData = async (args: AllContentfulDataArgs = {}): Promise<R
       let id = ''
 
       if (serverlessData !== undefined) {
-        const slugsData: RenderSlugs | undefined = await getJsonFile(getPath('slugs', 'store'))
+        const slugsData: RenderSlugs | undefined = await getJsonFile('slugs')
         const path = serverlessData.path
 
         if (slugsData !== undefined) {

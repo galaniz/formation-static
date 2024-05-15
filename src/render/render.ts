@@ -37,7 +37,6 @@ import { doActions } from '../utils/actions/actions'
 import { applyFilters } from '../utils/filters/filters'
 import { getSlug } from '../utils/getSlug/getSlug'
 import { getPermalink } from '../utils/getPermalink/getPermalink'
-import { getPath } from '../utils/getPath/getPath'
 import { getJsonFile } from '../utils/getJson/getJson'
 import { isString, isStringStrict } from '../utils/isString/isString'
 import { isArray, isArrayStrict } from '../utils/isArray/isArray'
@@ -922,11 +921,11 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
       })
     }
   } else {
-    const parentsData: ConfigParents | undefined = await getJsonFile(getPath('parents', 'store'))
-    const archiveMetaData: ConfigArchiveMeta | undefined = await getJsonFile(getPath('archiveMeta', 'store'))
-    const formMetaData: ConfigFormMeta | undefined = await getJsonFile(getPath('formMeta', 'store'))
-    const navigationsData: Navigation[] | undefined = await getJsonFile(getPath('navigations', 'store'))
-    const navigationItemsData: NavigationItem[] | undefined = await getJsonFile(getPath('navigationItems', 'store'))
+    const parentsData: ConfigParents | undefined = await getJsonFile('parents')
+    const archiveMetaData: ConfigArchiveMeta | undefined = await getJsonFile('archiveMeta')
+    const formMetaData: ConfigFormMeta | undefined = await getJsonFile('formMeta')
+    const navigationsData: Navigation[] | undefined = await getJsonFile('navigations')
+    const navigationItemsData: NavigationItem[] | undefined = await getJsonFile('navigationItems')
 
     if (parentsData !== undefined) {
       Object.keys(parentsData).forEach((s) => {
@@ -989,7 +988,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
     }
   }
 
-  /* Files data */
+  /* Store files data */
 
   if (serverlessData === undefined && previewData === undefined) {
     config.store.files.slugs.data = JSON.stringify(_slugs)

@@ -60,7 +60,7 @@ let config: Config = {
     }
   },
   store: {
-    dir: 'src/json',
+    dir: 'store',
     files: {
       slugs: {
         data: '',

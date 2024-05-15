@@ -40,7 +40,7 @@ const writeServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> =
     /* Ajax file */
 
     if (isStringStrict(config.serverless.files.ajax)) {
-      const content = `import { ${configName} } from '${getPathDepth(`${config.serverless.dir}/${config.serverless.files.ajax}`)}${configFile}'\nimport { Ajax } from '${formationPackage}Ajax/Ajax'\nconst render = async ({ request, env }) => { return await Ajax({ request, env, siteConfig: ${configName} }) }\nexport const onRequestPost = [render]\n`
+      const content = `import { ${configName} } from '${getPathDepth(`${config.serverless.dir}/${config.serverless.files.ajax}`)}${configFile}'\nimport { Ajax } from '${formationPackage}Ajax/Ajax'\nconst render = async ({ request, functionPath, env }) => { return await Ajax({ request, functionPath, env, siteConfig: ${configName} }) }\nexport const onRequestPost = [render]\n`
 
       const path = resolve(config.serverless.dir, config.serverless.files.ajax)
       const dir = dirname(path)
@@ -54,7 +54,7 @@ const writeServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> =
     /* Preview file */
 
     if (config.env.dev && isStringStrict(config.serverless.files.preview)) {
-      const content = `import { ${configName} } from '${getPathDepth(`${config.serverless.dir}/${config.serverless.files.preview}`)}${configFile}'\nimport { Preview } from '${formationPackage}Preview/Preview'\nconst render = async ({ request, next, env }) => { return await Preview({ request, next, env, siteConfig: ${configName} }) }\nexport const onRequestGet = [render]\n`
+      const content = `import { ${configName} } from '${getPathDepth(`${config.serverless.dir}/${config.serverless.files.preview}`)}${configFile}'\nimport { Preview } from '${formationPackage}Preview/Preview'\nconst render = async ({ request, functionPath, next, env }) => { return await Preview({ request, functionPath, next, env, siteConfig: ${configName} }) }\nexport const onRequestGet = [render]\n`
 
       const path = resolve(config.serverless.dir, config.serverless.files.preview)
       const dir = dirname(path)
@@ -82,7 +82,7 @@ const writeServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> =
           if (type === 'reload' && isStringStrict(reloadFile) && isStringStrict(path)) {
             path = `${path}/${reloadFile}`
 
-            content = `import { ${configName} } from '${getPathDepth(`${config.serverless.dir}/${path}`)}${configFile}'\nimport { Reload } from '${formationPackage}Reload/Reload'\nconst render = async ({ request, next, env }) => { return await Reload({ request, next, env, siteConfig: ${configName} }) }\nexport const onRequestGet = [render]\n`
+            content = `import { ${configName} } from '${getPathDepth(`${config.serverless.dir}/${path}`)}${configFile}'\nimport { Reload } from '${formationPackage}Reload/Reload'\nconst render = async ({ request, functionPath, next, env }) => { return await Reload({ request, functionPath, next, env, siteConfig: ${configName} }) }\nexport const onRequestGet = [render]\n`
           }
 
           if (isStringStrict(path) && isStringStrict(content)) {

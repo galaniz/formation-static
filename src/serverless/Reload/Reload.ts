@@ -15,6 +15,7 @@ import { isFunction } from '../../utils/isFunction/isFunction'
 import { setFilters } from '../../utils/filters/filters'
 import { setActions } from '../../utils/actions/actions'
 import { setShortcodes } from '../../utils/shortcodes/shortcodes'
+import { getPathDepth } from '../../utils/getPathDepth/getPathDepth'
 import { render } from '../../render/render'
 
 /**
@@ -23,7 +24,7 @@ import { render } from '../../render/render'
  * @param {import('./ReloadTypes').ReloadArgs} args
  * @return {Promise<Response>} Response
  */
-const Reload = async ({ request, next, env, siteConfig }: ReloadArgs): Promise<Response> => {
+const Reload = async ({ request, functionPath, next, env, siteConfig }: ReloadArgs): Promise<Response> => {
   try {
     /* Query */
 
@@ -59,6 +60,8 @@ const Reload = async ({ request, next, env, siteConfig }: ReloadArgs): Promise<R
     setConfig(siteConfig)
 
     await setConfigFilter(env)
+
+    siteConfig.env.dir = getPathDepth(functionPath)
 
     setFilters(siteConfig.filters)
     setActions(siteConfig.actions)
