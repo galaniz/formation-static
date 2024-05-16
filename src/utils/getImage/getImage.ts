@@ -98,7 +98,7 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
   const sizes = `(min-width: ${w / 16}rem) ${w / 16}rem, ${viewportWidth}vw`
   const srcsetFallback: string[] = []
 
-  let srcset: string[] | number[] = config.image.sizes
+  let srcset: string[] | number[] = [...config.image.sizes]
 
   if (!srcset.includes(w)) {
     srcset.push(w)
