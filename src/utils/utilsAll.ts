@@ -17,7 +17,7 @@ export { getContentTypeLabels } from './getContentTypeLabels/getContentTypeLabel
 export { getContentfulData } from './getContentfulData/getContentfulData'
 export { getDuration } from './getDuration/getDuration'
 export { getFileData } from './getFileData/getFileData'
-export { getImage } from './getImage/getImage'
+export { getImage, getImageClosestSize, getImageMaxWidth } from './getImage/getImage'
 export { getLink } from './getLink/getLink'
 export { getPathDepth } from './getPathDepth/getPathDepth'
 export { getPath } from './getPath/getPath'

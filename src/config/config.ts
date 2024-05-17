@@ -60,7 +60,7 @@ let config: Config = {
     }
   },
   store: {
-    dir: 'store',
+    dir: 'src/store',
     files: {
       slugs: {
         data: '',
@@ -116,7 +116,7 @@ let config: Config = {
     image: {
       inputDir: 'src/assets/img',
       outputDir: 'site/assets/img',
-      dataFile: 'src/json/image-data.json'
+      dataFile: 'src/store/image-data.json'
     }
   },
   styles: {

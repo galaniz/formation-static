@@ -4,9 +4,10 @@
 
 /* Imports */
 
-import type { ImageArgs, ImageReturn } from './getImageTypes'
+import type { ImageArgs, ImageReturn, ImageMaxWidthArgs } from './getImageTypes'
 import { config } from '../../config/config'
 import { isString, isStringStrict } from '../isString/isString'
+import { isArrayStrict } from '../isArray/isArray'
 import { isNumber } from '../isNumber/isNumber'
 import { isObjectStrict } from '../isObject/isObject'
 import { dataSource } from '../dataSource/dataSource'
@@ -160,6 +161,106 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
   return output
 }
 
+/**
+ * Function - get closest value in config sizes
+ *
+ * @param {number} size
+ * @return {number}
+ */
+const getImageClosestSize = (size: number): number => {
+  return [...config.image.sizes].reduce((prev, curr) => {
+    return Math.abs(curr - size) <= Math.abs(prev - size) ? curr : prev
+  })
+}
+
+/**
+ * Function - calculate max width from column and container parents
+ *
+ * @param {import('./getImageTypes').ImageMaxWidthArgs} args
+ * @return {number}
+ */
+const getImageMaxWidth = ({
+  parents,
+  widths,
+  maxWidths,
+  breakpoints,
+  source = config.source
+}: ImageMaxWidthArgs): number => {
+  if (!isArrayStrict(parents)) {
+    return 0
+  }
+
+  /* Widths as floats */
+
+  const w = [1, 1, 1, 1]
+
+  /* Store max width */
+
+  let m = 0
+
+  /* Width strings to numbers */
+
+  parents.forEach((parent) => {
+    const { renderType, args } = parent
+
+    if (!isObjectStrict(args)) {
+      return
+    }
+
+    if (renderType === 'column') {
+      const {
+        width = 'None',
+        widthSmall = 'None',
+        widthMedium = 'None',
+        widthLarge = 'None'
+      } = args
+
+      w[0] = isNumber(widths[width]) && widths[width] > 0 ? widths[width] : 1
+      w[1] = isNumber(widths[widthSmall]) && widths[widthSmall] > 0 ? widths[widthSmall] : w[0]
+      w[2] = isNumber(widths[widthMedium]) && widths[widthMedium] > 0 ? widths[widthMedium] : w[1]
+      w[3] = isNumber(widths[widthLarge]) && widths[widthLarge] > 0 ? widths[widthLarge] : w[2]
+    }
+
+    if (renderType === 'container') {
+      const { maxWidth = 'None' } = args
+
+      m = isNumber(maxWidths[maxWidth]) ? maxWidths[maxWidth] : 0
+    }
+  })
+
+  /* Convert to fixed widths */
+
+  const bk = [...breakpoints]
+  const calc = []
+
+  let lastW = 1
+
+  bk.forEach((b, i) => {
+    lastW = w[i]
+
+    if (m > 0 && b > m) {
+      calc.push(w[i] * m)
+      return
+    }
+
+    calc.push(w[i] * b)
+  })
+
+  if (m > 0) {
+    calc.push(lastW * m)
+  }
+
+  /* Output */
+
+  const res = Math.max(...calc) * 2
+
+  if (source === 'static') {
+    return getImageClosestSize(res)
+  }
+
+  return res
+}
+
 /* Exports */
 
-export { getImage }
+export { getImage, getImageClosestSize, getImageMaxWidth }
