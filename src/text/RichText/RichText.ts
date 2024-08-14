@@ -10,17 +10,17 @@ import type {
   RichTextContentProps,
   RichTextContentFilterArgs,
   RichTextContentOutputFilterArgs
-} from './RichTextTypes'
-import { getLink } from '../../utils/getLink/getLink'
-import { getExcerpt } from '../../utils/getExcerpt/getExcerpt'
-import { applyFilters } from '../../utils/filters/filters'
-import { isString, isStringStrict } from '../../utils/isString/isString'
-import { isArray, isArrayStrict } from '../../utils/isArray/isArray'
-import { isObjectStrict } from '../../utils/isObject/isObject'
-import { isHeading } from '../../utils/isHeading/isHeading'
+} from './RichTextTypes.js'
+import { getLink } from '../../utils/link/link.js'
+import { getExcerpt } from '../../utils/excerpt/excerpt.js'
+import { applyFilters } from '../../utils/filters/filters.js'
+import { isString, isStringStrict } from '../../utils/string/string.js'
+import { isArray, isArrayStrict } from '../../utils/array/array.js'
+import { isObjectStrict } from '../../utils/object/object.js'
+import { isHeading } from '../../utils/heading/heading.js'
 
 /**
- * Function - check if string contains shortcode
+ * Check if string contains shortcode
  *
  * @private
  * @param {string} tag
@@ -36,7 +36,7 @@ const _containsShortcode = (tag: string = '', content: string = ''): boolean => 
 }
 
 /**
- * Function - check if data rich attribute should be added
+ * Check if data rich attribute should be added
  *
  * @private
  * @param {boolean|string[]} dataAttr
@@ -52,10 +52,10 @@ const _addDataAttr = (dataAttr: boolean | string[] = true, tag: string = ''): bo
 }
 
 /**
- * Function - recursively output content
+ * Recursively output content
  *
  * @private
- * @param {import('./RichTextTypes').RichTextContentProps} args
+ * @param {RichTextContentProps} args
  * @return {Promise<string>}
  */
 const _getContent = async (args: RichTextContentProps): Promise<string> => {
@@ -69,9 +69,7 @@ const _getContent = async (args: RichTextContentProps): Promise<string> => {
     _output = ''
   } = args
 
-  for (let i = 0; i < content.length; i += 1) {
-    let item = content[i]
-
+  for (let item of content) {
     item = await applyFilters('richTextContentItem', item, props)
 
     const {
@@ -180,9 +178,9 @@ const _getContent = async (args: RichTextContentProps): Promise<string> => {
 }
 
 /**
- * Function - output rich text
+ * Output rich text
  *
- * @param {import('./RichTextTypes').RichTextProps} props
+ * @param {RichTextProps} props
  * @return {Promise<string>}
  */
 const RichText = async (props: RichTextProps): Promise<string> => {

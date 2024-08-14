@@ -4,24 +4,23 @@
 
 /* Imports */
 
-import type { ReloadArgs, ReloadQuery } from './ReloadTypes'
-import type { CustomErrorObject } from '../serverlessTypes'
-import { config, setConfig, setConfigFilter } from '../../config/config'
-import { getAllContentfulData } from '../../utils/getAllContentfulData/getAllContentfulData'
-import { isObjectStrict } from '../../utils/isObject/isObject'
-import { isStringStrict } from '../../utils/isString/isString'
-import { isNumber } from '../../utils/isNumber/isNumber'
-import { isFunction } from '../../utils/isFunction/isFunction'
-import { setFilters } from '../../utils/filters/filters'
-import { setActions } from '../../utils/actions/actions'
-import { setShortcodes } from '../../utils/shortcodes/shortcodes'
-import { getPathDepth } from '../../utils/getPathDepth/getPathDepth'
-import { render } from '../../render/render'
+import type { ReloadArgs, ReloadQuery } from './ReloadTypes.js'
+import { config, setConfig, setConfigFilter } from '../../config/config.js'
+import { getAllContentfulData } from '../../utils/contentful/contentfulData.js'
+import { isObjectStrict } from '../../utils/object/object.js'
+import { isStringStrict } from '../../utils/string/string.js'
+import { isFunction } from '../../utils/function/function.js'
+import { setFilters } from '../../utils/filters/filters.js'
+import { setActions } from '../../utils/actions/actions.js'
+import { setShortcodes } from '../../utils/shortcodes/shortcodes.js'
+import { getPathDepth } from '../../utils/path/path.js'
+import { print } from '../../utils/print/print.js'
+import { render } from '../../render/render.js'
 
 /**
- * Function - output paginated and/or filtered page on browser reload
+ * Output paginated and/or filtered page on browser reload
  *
- * @param {import('./ReloadTypes').ReloadArgs} args
+ * @param {ReloadArgs} args
  * @return {Promise<Response>} Response
  */
 const Reload = async ({ request, functionPath, next, env, siteConfig }: ReloadArgs): Promise<Response> => {
@@ -93,22 +92,14 @@ const Reload = async ({ request, functionPath, next, env, siteConfig }: ReloadAr
       }
     })
   } catch (error) {
-    console.error(config.console.red, '[SSF] Error with reload function: ', error)
+    print('[SSF] Error with reload function', error)
 
-    let statusCode = 500
-
-    if (isObjectStrict(error)) {
-      const err: CustomErrorObject = error
-
-      if (isNumber(err.httpStatusCode)) {
-        statusCode = err.httpStatusCode
-      }
-    }
+    const statusCode = 500
 
     let html = ''
 
     if (isFunction(config.renderFunctions.httpError)) {
-      html = await config.renderFunctions.httpError(statusCode)
+      html = await config.renderFunctions.httpError({ code: statusCode })
     }
 
     return new Response(html, {

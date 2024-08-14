@@ -2,6 +2,5 @@ node_modules/
 package-lock.json
 lib/
 cjs/
-iop/
 jsdocs/
 .DS_Store

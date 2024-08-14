@@ -4,16 +4,16 @@
 
 /* Imports */
 
-import type { Actions, ActionsFunctions } from './actionsTypes'
-import { isStringStrict } from '../isString/isString'
-import { isArrayStrict } from '../isArray/isArray'
-import { isObjectStrict } from '../isObject/isObject'
-import { isFunction } from '../isFunction/isFunction'
+import type { Actions, ActionsFunctions } from './actionsTypes.js'
+import { isStringStrict } from '../string/string.js'
+import { isArrayStrict } from '../array/array.js'
+import { isObjectStrict } from '../object/object.js'
+import { isFunction } from '../function/function.js'
 
 /**
  * Store action callbacks by name
  *
- * @type {import('./actionsTypes').ActionsFunctions}
+ * @type {ActionsFunctions}
  */
 let actions: ActionsFunctions = {
   renderStart: [],
@@ -23,7 +23,7 @@ let actions: ActionsFunctions = {
 }
 
 /**
- * Function - add action to action object
+ * Add action to action object
  *
  * @param {string} name
  * @param {function} action
@@ -44,7 +44,7 @@ const addAction = <T extends keyof Actions>(name: T, action: Actions[T]): boolea
 }
 
 /**
- * Function - remove action from actions object
+ * Remove action from actions object
  *
  * @param {string} name
  * @param {function} action
@@ -61,7 +61,7 @@ const removeAction = <T extends keyof Actions>(name: T, action: Actions[T]): boo
     const index = callbacks.indexOf(action)
 
     if (index > -1) {
-      actions[name].splice(index, 1)
+      callbacks.splice(index, 1)
 
       return true
     }
@@ -71,7 +71,7 @@ const removeAction = <T extends keyof Actions>(name: T, action: Actions[T]): boo
 }
 
 /**
- * Function - run callback functions from actions object
+ * Run callback functions from actions object
  *
  * @param {string} name
  * @param {*} [args]
@@ -81,9 +81,7 @@ const doActions = async <T>(name: string, args?: T): Promise<void> => {
   const callbacks = actions[name]
 
   if (isArrayStrict(callbacks)) {
-    for (let i = 0; i < callbacks.length; i += 1) {
-      const callback = callbacks[i]
-
+    for (const callback of callbacks) {
       if (isFunction(callback)) {
         await callback(args)
       }
@@ -92,7 +90,7 @@ const doActions = async <T>(name: string, args?: T): Promise<void> => {
 }
 
 /**
- * Function - empty actions object
+ * Empty actions object
  *
  * @return {void}
  */
@@ -106,9 +104,9 @@ const resetActions = (): void => {
 }
 
 /**
- * Function - fill actions object
+ * Fill actions object
  *
- * @param {import('./actionsTypes').Actions} args
+ * @param {Actions} args
  * @return {boolean}
  */
 const setActions = (args: Partial<Actions>): boolean => {
@@ -116,20 +114,20 @@ const setActions = (args: Partial<Actions>): boolean => {
     return false
   }
 
-  if (Object.keys(args).length === 0) {
+  const newActions = Object.entries(args)
+
+  if (newActions.length === 0) {
     return false
   }
 
   resetActions()
 
-  Object.keys(args).forEach((a) => {
-    const arg = args[a]
-
-    if (arg === undefined) {
+  newActions.forEach(([name, action]) => {
+    if (action === undefined) {
       return
     }
 
-    addAction(a, arg)
+    addAction(name, action)
   })
 
   return true

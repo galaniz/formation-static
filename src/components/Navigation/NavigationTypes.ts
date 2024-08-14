@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { InternalLink, Generic, HtmlString } from '../../global/globalTypes'
+import type { InternalLink, Generic, HtmlString } from '../../global/globalTypes.js'
 
 /**
  * @typedef {object} NavigationProps
@@ -22,7 +22,7 @@ export interface NavigationProps {
 
 /**
  * @typedef Navigation
- * @type {import('../../global/globalTypes').Generic}
+ * @type {Generic}
  * @prop {string} [title]
  * @prop {string} location
  * @prop {NavigationItem[]} items
@@ -52,11 +52,11 @@ export interface NavigationByLocation {
 
 /**
  * @typedef NavigationItem
- * @type {import('../../global/globalTypes').Generic}
+ * @type {Generic}
  * @prop {string} [id]
  * @prop {string} [title]
  * @prop {string} [link]
- * @prop {import('../../global/globalTypes').InternalLink} [internalLink]
+ * @prop {InternalLink} [internalLink]
  * @prop {string} [externalLink]
  * @prop {NavigationItem[]} [children]
  * @prop {boolean} [current]
@@ -118,7 +118,7 @@ export interface NavigationOutputBaseArgs {
 /**
  * @typedef {object} NavigationOutputListFilterArgs
  * @prop {NavigationOutputArgs} args
- * @prop {import('../../global/globalTypes').HtmlString} output
+ * @prop {HtmlString} output
  * @prop {NavigationItem[]} items
  * @prop {number} depth
  */
@@ -133,7 +133,7 @@ export interface NavigationOutputListFilterArgs {
  * @typedef {object} NavigationOutputFilterArgs
  * @prop {NavigationOutputArgs} args
  * @prop {NavigationItem} item
- * @prop {import('../../global/globalTypes').HtmlString} output
+ * @prop {HtmlString} output
  * @prop {number} index
  * @prop {NavigationItem[]} items
  * @prop {number} depth
@@ -186,7 +186,7 @@ export interface NavigationOutputArgs extends NavigationOutputBaseArgs {
 
 /**
  * @typedef {object} NavigationBreadcrumbOutputFilterArgs
- * @prop {import('../../global/globalTypes').HtmlString} output
+ * @prop {HtmlString} output
  * @prop {boolean} isLastLevel
  */
 export interface NavigationBreadcrumbOutputFilterArgs {

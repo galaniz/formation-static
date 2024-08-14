@@ -17,7 +17,7 @@ export interface SendFormOutputData {
  * @prop {string} subject
  * @prop {string} text_body
  * @prop {string} html_body
- * @prop {import('../../global/globalTypes')Generic[]} custom_headers
+ * @prop {Generic[]} custom_headers
  */
 export interface SendFormRequestBody {
   api_key: string

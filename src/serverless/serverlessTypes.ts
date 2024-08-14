@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { GenericStrings } from '../global/globalTypes'
+import type { GenericStrings } from '../global/globalTypes.js'
 
 /**
  * @typedef {object} AjaxActionInput
@@ -25,10 +25,12 @@ export interface AjaxActionInput {
 /**
  * @typedef {object} AjaxActionData
  * @prop {string} id
+ * @prop {string} action
  * @prop {Object.<string, AjaxActionInput>} inputs
  */
 export interface AjaxActionData {
   id: string
+  action: string
   inputs: {
     [key: string]: AjaxActionInput
   }
@@ -37,7 +39,7 @@ export interface AjaxActionData {
 /**
  * @typedef AjaxActionArgs
  * @type {AjaxActionData}
- * @prop {import('../global/globalTypes').GenericStrings} env
+ * @prop {GenericStrings} env
  * @prop {Request} request
  */
 export interface AjaxActionArgs extends AjaxActionData {
@@ -49,28 +51,18 @@ export interface AjaxActionArgs extends AjaxActionData {
  * @typedef {object} AjaxActionReturn
  * @prop {object} [error]
  * @prop {string} error.message
- * @prop {number} error.code
+ * @prop {Response} error.resp
  * @prop {object} [success]
  * @prop {string} success.message
- * @prop {import('../global/globalTypes').GenericStrings} [headers]
+ * @prop {GenericStrings} [headers]
  */
 export interface AjaxActionReturn {
   error?: {
     message: string
-    code?: number
+    resp?: Response
   }
   success?: {
     message: string
     headers?: GenericStrings
   }
-}
-
-/**
- * @typedef {object} CustomErrorObject
- * @prop {number} [httpStatusCode]
- * @prop {string} [message]
- */
-export interface CustomErrorObject {
-  httpStatusCode?: number
-  message?: string
 }

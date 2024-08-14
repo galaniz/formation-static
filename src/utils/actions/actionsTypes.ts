@@ -4,21 +4,21 @@
 
 /* Imports */
 
-import type { GenericFunctions } from '../../global/globalTypes'
+import type { GenericFunctions } from '../../global/globalTypes.js'
 import type {
   RenderStartAction,
   RenderEndAction,
   RenderItemStartAction,
   RenderItemEndAction
-} from '../../render/renderTypes'
+} from '../../render/renderTypes.js'
 
 /**
  * @typedef Actions
- * @type {import('../../global/globalTypes').GenericFunctions}
- * @prop {import('../../render/RenderTypes').RenderStartAction} renderStart
- * @prop {import('../../render/RenderTypes').RenderEndAction} renderEnd
- * @prop {import('../../render/RenderTypes').RenderItemStartAction} renderItemStart
- * @prop {import('../../render/RenderTypes').RenderItemEndAction} renderItemEnd
+ * @type {GenericFunctions}
+ * @prop {RenderStartAction} renderStart
+ * @prop {RenderEndAction} renderEnd
+ * @prop {RenderItemStartAction} renderItemStart
+ * @prop {RenderItemEndAction} renderItemEnd
  */
 export interface Actions extends GenericFunctions {
   renderStart: RenderStartAction
@@ -30,10 +30,10 @@ export interface Actions extends GenericFunctions {
 /**
  * @typedef ActionsFunctions
  * @type {Object.<string, function[]>}
- * @prop {import('../../render/RenderTypes').RenderStartAction[]} renderStart
- * @prop {import('../../render/RenderTypes').RenderEndAction[]} renderEnd
- * @prop {import('../../render/RenderTypes').RenderItemStartAction[]} renderItemStart
- * @prop {import('../../render/RenderTypes').RenderItemEndAction[]} renderItemEnd
+ * @prop {RenderStartAction[]} renderStart
+ * @prop {RenderEndAction[]} renderEnd
+ * @prop {RenderItemStartAction[]} renderItemStart
+ * @prop {RenderItemEndAction[]} renderItemEnd
  */
 export interface ActionsFunctions {
   renderStart: RenderStartAction[]

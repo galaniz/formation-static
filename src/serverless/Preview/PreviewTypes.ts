@@ -4,16 +4,16 @@
 
 /* Imports */
 
-import type { GenericStrings } from '../../global/globalTypes'
-import type { Config } from '../../config/configTypes'
+import type { GenericStrings } from '../../global/globalTypes.js'
+import type { Config } from '../../config/configTypes.js'
 
 /**
  * @typedef {object} PreviewArgs
  * @prop {Request} request
  * @prop {string} functionPath
  * @prop {function} next
- * @prop {import('../../global/globalTypes').GenericStrings} env
- * @prop {import('../../config/configTypes').Config} siteConfig
+ * @prop {GenericStrings} env
+ * @prop {Config} siteConfig
  */
 export interface PreviewArgs {
   request: Request

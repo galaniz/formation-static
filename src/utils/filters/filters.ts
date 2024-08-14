@@ -4,16 +4,16 @@
 
 /* Imports */
 
-import type { Filters, FiltersFunctions } from './filtersTypes'
-import { isArrayStrict } from '../isArray/isArray'
-import { isStringStrict } from '../isString/isString'
-import { isObjectStrict } from '../isObject/isObject'
-import { isFunction } from '../isFunction/isFunction'
+import type { Filters, FiltersFunctions } from './filtersTypes.js'
+import { isArrayStrict } from '../array/array.js'
+import { isStringStrict } from '../string/string.js'
+import { isObjectStrict } from '../object/object.js'
+import { isFunction } from '../function/function.js'
 
 /**
  * Store filter callbacks by name
  *
- * @type {import('./filtersTypes').FiltersFunctions}
+ * @type {FiltersFunctions}
  */
 let filters: FiltersFunctions = {
   columnProps: [],
@@ -35,7 +35,7 @@ let filters: FiltersFunctions = {
 }
 
 /**
- * Function - add filter to filters object
+ * Add filter to filters object
  *
  * @param {string} name
  * @param {function} filter
@@ -56,7 +56,7 @@ const addFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boolea
 }
 
 /**
- * Function - remove filter from filters object
+ * Remove filter from filters object
  *
  * @param {string} name
  * @param {function} filter
@@ -73,7 +73,7 @@ const removeFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boo
     const index = callbacks.indexOf(filter)
 
     if (index > -1) {
-      filters[name].splice(index, 1)
+      callbacks.splice(index, 1)
 
       return true
     }
@@ -83,7 +83,7 @@ const removeFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boo
 }
 
 /**
- * Function - update value from callback return values
+ * Update value from callback return values
  *
  * @param {string} name
  * @param {*} value
@@ -94,9 +94,7 @@ const applyFilters = async <T, U>(name: string, value: T, args?: U): Promise<T> 
   const callbacks = filters[name]
 
   if (isArrayStrict(callbacks)) {
-    for (let i = 0; i < callbacks.length; i += 1) {
-      const callback = callbacks[i]
-
+    for (const callback of callbacks) {
       if (isFunction(callback)) {
         value = await callback(value, args)
       }
@@ -107,7 +105,7 @@ const applyFilters = async <T, U>(name: string, value: T, args?: U): Promise<T> 
 }
 
 /**
- * Function - empty filters object
+ * Empty filters object
  *
  * @return {void}
  */
@@ -133,9 +131,9 @@ const resetFilters = (): void => {
 }
 
 /**
- * Function - fill filters object
+ * Fill filters object
  *
- * @param {import('./filtersTypes').Filters} args
+ * @param {Filters} args
  * @return {boolean}
  */
 const setFilters = (args: Partial<Filters>): boolean => {
@@ -143,20 +141,20 @@ const setFilters = (args: Partial<Filters>): boolean => {
     return false
   }
 
-  if (Object.keys(args).length === 0) {
+  const newFilters = Object.entries(args)
+
+  if (newFilters.length === 0) {
     return false
   }
 
   resetFilters()
 
-  Object.keys(args).forEach((a) => {
-    const arg = args[a]
-
-    if (arg === undefined) {
+  newFilters.forEach(([name, filter]) => {
+    if (filter === undefined) {
       return
     }
 
-    addFilter(a, arg)
+    addFilter(name, filter)
   })
 
   return true

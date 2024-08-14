@@ -19,53 +19,57 @@ import type {
   RenderItemActionArgs,
   RenderLayoutArgs,
   RenderArgs,
-  RenderReturn
-} from './renderTypes'
+  RenderReturn,
+  RenderFunctions
+} from './renderTypes.js'
 import type {
   ConfigParents,
   ConfigFormMeta,
   ConfigParent,
   ConfigArchiveMeta
-} from '../config/configTypes'
-import type { GenericFunctions, GenericStrings, ParentArgs, HtmlString } from '../global/globalTypes'
-import type { SlugArgs } from '../utils/getSlug/getSlugTypes'
-import type { PaginationData } from '../components/Pagination/PaginationTypes'
-import type { RichTextHeading } from '../text/RichText/RichTextTypes'
-import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes'
-import { normalizeContentType } from '../utils/normalizeContentType/normalizeContentType'
-import { doActions } from '../utils/actions/actions'
-import { applyFilters } from '../utils/filters/filters'
-import { getSlug } from '../utils/getSlug/getSlug'
-import { getPermalink } from '../utils/getPermalink/getPermalink'
-import { getJsonFile } from '../utils/getJson/getJson'
-import { isString, isStringStrict } from '../utils/isString/isString'
-import { isArray, isArrayStrict } from '../utils/isArray/isArray'
-import { isObject, isObjectStrict } from '../utils/isObject/isObject'
-import { isNumber } from '../utils/isNumber/isNumber'
-import { isFunction } from '../utils/isFunction/isFunction'
-import { doShortcodes } from '../utils/shortcodes/shortcodes'
-import { tagExists } from '../utils/tag/tag'
-import { config } from '../config/config'
-import { Container } from '../layouts/Container/Container'
-import { Column } from '../layouts/Column/Column'
-import { Form } from '../objects/Form/Form'
-import { Field } from '../objects/Field/Field'
-import { RichText } from '../text/RichText/RichText'
+} from '../config/configTypes.js'
+import type {
+  GenericStrings,
+  ParentArgs,
+  HtmlString
+} from '../global/globalTypes.js'
+import type { LinkSlugArgs } from '../utils/link/linkTypes.js'
+import type { PaginationData } from '../components/Pagination/PaginationTypes.js'
+import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
+import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes.js'
+import { normalizeContentType } from '../utils/contentType/contentType.js'
+import { doActions } from '../utils/actions/actions.js'
+import { applyFilters } from '../utils/filters/filters.js'
+import { getSlug, getPermalink } from '../utils/link/link.js'
+import { getJsonFile } from '../utils/json/json.js'
+import { isString, isStringStrict } from '../utils/string/string.js'
+import { isArray, isArrayStrict } from '../utils/array/array.js'
+import { isObject, isObjectStrict } from '../utils/object/object.js'
+import { isNumber } from '../utils/number/number.js'
+import { isFunction } from '../utils/function/function.js'
+import { doShortcodes } from '../utils/shortcodes/shortcodes.js'
+import { tagExists } from '../utils/tag/tag.js'
+import { config } from '../config/config.js'
+import { Container } from '../layouts/Container/Container.js'
+import { Column } from '../layouts/Column/Column.js'
+import { Form } from '../objects/Form/Form.js'
+import { Field } from '../objects/Field/Field.js'
+import { RichText } from '../text/RichText/RichText.js'
 
 /**
  * Store slug data
  *
  * @private
- * @type {import('./RenderTypes').RenderSlugs}
+ * @type {RenderSlugs}
  */
 const _slugs: RenderSlugs = {}
 
 /**
- * Function - normalize meta properties into one object
+ * Normalize meta properties into one object
  *
  * @private
- * @param {import('./RenderTypes').RenderMetaArgs} args
- * @return {import('./RenderTypes').RenderMetaReturn}
+ * @param {RenderMetaArgs} args
+ * @return {RenderMetaReturn}
  */
 const _getMeta = (args: RenderMetaArgs): RenderMetaReturn => {
   const meta = {
@@ -104,13 +108,17 @@ const _getMeta = (args: RenderMetaArgs): RenderMetaReturn => {
 }
 
 /**
- * Function - add pagination data to meta object
+ * Add pagination data to meta object
  *
  * @private
- * @param {import('../components/Pagination/PaginationTypes').PaginationData} args
+ * @param {PaginationData} args
  * @return {void}
  */
-const _setPaginationMeta = (args: PaginationData, slugArgs: SlugArgs, meta: RenderMetaReturn): void => {
+const _setPaginationMeta = (
+  args: PaginationData,
+  slugArgs: LinkSlugArgs,
+  meta: RenderMetaReturn
+): void => {
   const {
     current = 0,
     currentFilters,
@@ -152,12 +160,12 @@ const _setPaginationMeta = (args: PaginationData, slugArgs: SlugArgs, meta: Rend
 }
 
 /**
- * Function - get content and templates in expected format to map
+ * Get content and templates in expected format to map
  *
  * @private
- * @param {import('./RenderTypes').RenderItem[]} content
- * @param {import('./RenderTypes').RenderItem[]} [_templates]
- * @return {import('./RenderTypes').RenderContentTemplate}
+ * @param {RenderItem[]} content
+ * @param {RenderItem[]} [_templates]
+ * @return {RenderContentTemplate}
  */
 const _getContentTemplate = (content: RenderItem[], _templates: RenderItem[] = []): RenderContentTemplate => {
   /* Content must be array */
@@ -205,12 +213,12 @@ const _getContentTemplate = (content: RenderItem[], _templates: RenderItem[] = [
 }
 
 /**
- * Function - map out content slots to templates for contentTemplate
+ * Map out content slots to templates for contentTemplate
  *
  * @private
- * @param {import('./RenderTypes').RenderItem[]} templates
- * @param {import('./RenderTypes').RenderItem[]} [content]
- * @return {import('./RenderTypes').RenderItem[]}
+ * @param {RenderItem[]} templates
+ * @param {RenderItem[]} [content]
+ * @return {RenderItem[]}
  */
 const _mapContentTemplate = (templates: RenderItem[], content: RenderItem[] = []): RenderItem[] => {
   /* Templates must be arrays */
@@ -226,7 +234,7 @@ const _mapContentTemplate = (templates: RenderItem[], content: RenderItem[] = []
   templates.forEach((t, i) => {
     /* Remove template break */
 
-    if (tagExists(content[0], 'templateBreak') && content.length >= 1) {
+    if (content[0] !== undefined && tagExists(content[0], 'templateBreak') && content.length >= 1) {
       content.shift()
     }
 
@@ -292,7 +300,7 @@ const _mapContentTemplate = (templates: RenderItem[], content: RenderItem[] = []
 
     /* Recurse children */
 
-    if (isArray(children)) {
+    if (isArray(children) && templates[i] !== undefined) {
       templates[i].content = _mapContentTemplate(children, content)
     }
   })
@@ -303,11 +311,11 @@ const _mapContentTemplate = (templates: RenderItem[], content: RenderItem[] = []
 }
 
 /**
- * Function - get config and formation render functions
+ * Get config and formation render functions
  *
- * @return {import('../global/globalTypes').GenericFunctions}
+ * @return {RenderFunctions}
  */
-const getRenderFunctions = (): GenericFunctions => {
+const getRenderFunctions = (): RenderFunctions => {
   const renderFunctions = { ...config.renderFunctions }
 
   if (renderFunctions.container === undefined) {
@@ -334,10 +342,10 @@ const getRenderFunctions = (): GenericFunctions => {
 }
 
 /**
- * Function - recurse and output nested content
+ * Recurse and output nested content
  *
- * @param {import('./RenderTypes').RenderContentArgs} args
- * @param {import('../global/globalTypes').HtmlString} [_output]
+ * @param {RenderContentArgs} args
+ * @param {HtmlString} [_output]
  * @return {Promise<string>}
  */
 const renderContent = async (
@@ -372,8 +380,8 @@ const renderContent = async (
 
   /* Loop */
 
-  for (let i = 0; i < content.length; i += 1) {
-    const item = content[i]
+  for (const item of content) {
+    /* Item must be object */
 
     if (!isObjectStrict(item)) {
       continue
@@ -419,7 +427,7 @@ const renderContent = async (
     const renderFunction = renderFunctions[renderType]
 
     if (isFunction(renderFunction)) {
-      const renderArgs: RenderFunctionArgs = {
+      const renderArgs: RenderFunctionArgs<any> = {
         args: props,
         parents,
         pageData,
@@ -520,10 +528,10 @@ const renderContent = async (
 }
 
 /**
- * Function - output single post or page
+ * Output single post or page
  *
- * @param {import('./RenderTypes').RenderItemArgs} args
- * @return {import('./RenderTypes').RenderItemReturn}
+ * @param {RenderItemArgs} args
+ * @return {RenderItemReturn}
  */
 const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
   if (!isObjectStrict(args)) {
@@ -590,8 +598,10 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   /* Reset script and style files */
 
-  config.scripts.item = {}
-  config.styles.item = {}
+  config.scripts.deps.clear()
+  config.scripts.build.clear()
+  config.styles.deps.clear()
+  config.styles.build.clear()
 
   /* Meta */
 
@@ -664,7 +674,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
       currentType = isStringStrict(taxonomy.contentType) ? taxonomy.contentType : contentType
     }
 
-    navigations = renderFunctions.navigations({
+    navigations = await renderFunctions.navigations({
       navigations: config.navigation,
       items: config.navigationItem,
       currentLink: permalink,
@@ -789,10 +799,10 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 }
 
 /**
- * Function - loop through all content types to output pages and posts
+ * Loop through all content types to output pages and posts
  *
- * @param {import('./RenderTypes').RenderArgs} args
- * @return {Promise<import('./RenderTypes').RenderReturn[]|import('./RenderTypes').RenderReturn>}
+ * @param {RenderArgs} args
+ * @return {Promise<RenderReturn[]|RenderReturn>}
  */
 const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> => {
   /* Fallback output */
@@ -814,14 +824,21 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
     previewData
   } = args
 
+  /* Serverless */
+
+  const isServerless = serverlessData !== undefined
+  const isPreview = previewData !== undefined
+
   /* Start action */
 
   await doActions('renderStart', args)
 
   /* Reset script and style directories */
 
-  config.scripts.build = {}
-  config.styles.build = {}
+  config.scripts.deps.clear()
+  config.scripts.build.clear()
+  config.styles.deps.clear()
+  config.styles.build.clear()
 
   /* Data */
 
@@ -856,12 +873,17 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
 
   /* Loop through pages first to set meta info */
 
-  if (serverlessData === undefined) {
-    for (let i = 0; i < content.page.length; i += 1) {
-      const item = content.page[i]
-      const itemObj = isObjectStrict(item) ? item : {}
+  if (!isServerless) {
+    for (const item of content.page) {
+      /* Item must be object */
 
-      const { parent, archive } = itemObj
+      if (!isObjectStrict(item)) {
+        continue
+      }
+
+      /* Parent and archive */
+
+      const { parent, archive } = item
 
       /* Id */
 
@@ -928,8 +950,8 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
     const navigationItemsData: NavigationItem[] | undefined = await getJsonFile('navigationItems')
 
     if (parentsData !== undefined) {
-      Object.keys(parentsData).forEach((s) => {
-        config.parents[s] = parentsData[s]
+      Object.entries(parentsData).forEach(([key, value]) => {
+        config.parents[key] = value
       })
     }
 
@@ -958,14 +980,14 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
 
   /* Loop through all content types */
 
-  const contentTypes = Object.keys(content)
+  for (const [contentType, contentItems] of Object.entries(content)) {
+    if (!isArrayStrict(contentItems)) {
+      continue
+    }
 
-  for (let c = 0; c < contentTypes.length; c += 1) {
-    const contentType = contentTypes[c]
-
-    for (let i = 0; i < content[contentType].length; i += 1) {
+    for (const contentItem of contentItems) {
       const item = await renderItem({
-        item: content[contentType][i],
+        item: contentItem,
         contentType,
         serverlessData,
         renderFunctions
@@ -976,32 +998,41 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
         data: itemData
       } = item
 
-      if (itemData !== undefined) {
-        data.push(itemData)
+      if (itemData === undefined) {
+        continue
+      }
 
-        if (serverlessRender && serverlessData === undefined) {
-          config.serverless.routes.reload.push({
-            path: itemData.slug.replace(/^\/|\/$/gm, '')
-          })
-        }
+      data.push(itemData)
+
+      if (serverlessRender && !isServerless) {
+        config.serverless.routes.reload.push({
+          path: itemData.slug.replace(/^\/|\/$/gm, '')
+        })
       }
     }
   }
 
   /* Store files data */
 
-  if (serverlessData === undefined && previewData === undefined) {
+  if (!isServerless && !isPreview) {
     config.store.files.slugs.data = JSON.stringify(_slugs)
     config.store.files.parents.data = JSON.stringify(config.parents)
-    config.store.files.archiveMeta.data = JSON.stringify(config.archiveMeta)
-    config.store.files.formMeta.data = JSON.stringify(config.formMeta)
     config.store.files.navigations.data = JSON.stringify(config.navigation)
     config.store.files.navigationItems.data = JSON.stringify(config.navigationItem)
+
+    if (config.store.files?.archiveMeta?.data !== undefined) {
+      config.store.files.archiveMeta.data = JSON.stringify(config.archiveMeta)
+    }
+
+    if (config.store.files?.formMeta?.data !== undefined) {
+      config.store.files.formMeta.data = JSON.stringify(config.formMeta)
+    }
   }
 
   /* Output */
 
-  const output = serverlessData !== undefined || previewData !== undefined ? data[0] : data
+  const [outputItem] = data
+  const output = (isServerless || isPreview !== undefined) && outputItem !== undefined ? outputItem : data
 
   await doActions('renderEnd', { ...args, data: output })
 

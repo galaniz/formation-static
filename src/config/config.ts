@@ -4,13 +4,13 @@
 
 /* Imports */
 
-import type { Config, ConfigSet, ConfigSetFilter } from './configTypes'
-import { addFilter, applyFilters } from '../utils/filters/filters'
+import type { Config, ConfigSet, ConfigSetFilter } from './configTypes.js'
+import { addFilter, applyFilters } from '../utils/filters/filters.js'
 
 /**
  * Default options
  *
- * @type {import('./configTypes').Config}
+ * @type {Config}
  */
 let config: Config = {
   namespace: 'ssf',
@@ -60,7 +60,7 @@ let config: Config = {
     }
   },
   store: {
-    dir: 'src/store',
+    dir: 'lib/store',
     files: {
       slugs: {
         data: '',
@@ -106,40 +106,42 @@ let config: Config = {
   cms: {
     name: '',
     space: '',
-    previewAccessToken: '',
-    previewHost: '',
-    deliveryAccessToken: '',
-    deliveryHost: ''
+    prodUser: '',
+    prodCredential: '',
+    prodHost: '',
+    devUser: '',
+    devCredential: '',
+    devHost: ''
   },
   static: {
     dir: 'json',
     image: {
       inputDir: 'src/assets/img',
       outputDir: 'site/assets/img',
-      dataFile: 'src/store/image-data.json'
+      dataFile: 'lib/store/image-data.json'
     }
   },
   styles: {
-    item: {},
-    build: {}
+    inputDir: 'src',
+    outputDir: 'css',
+    deps: new Map(),
+    build: new Map()
   },
   scripts: {
-    item: {},
-    build: {}
+    inputDir: 'lib',
+    outputDir: 'js',
+    deps: new Map(),
+    build: new Map()
   },
   apiKeys: {
     smtp2go: ''
-  },
-  console: {
-    green: '\x1b[32m%s\x1b[0m',
-    red: '\x1b[31m%s\x1b[0m'
   }
 }
 
 /**
- * Function - update default config with user options
+ * Update default config with user options
  *
- * @type {import('./configTypes').ConfigSet}
+ * @type {ConfigSet}
  */
 const setConfig: ConfigSet = (args) => {
   config = Object.assign(config, args)
@@ -152,9 +154,9 @@ const setConfig: ConfigSet = (args) => {
 }
 
 /**
- * Function - update config based on env variables
+ * Update config based on env variables
  *
- * @type {import('./configTypes').ConfigSetFilter}
+ * @type {ConfigSetFilter}
  */
 const setConfigFilter: ConfigSetFilter = async (env) => {
   config = await applyFilters('config', config, env)

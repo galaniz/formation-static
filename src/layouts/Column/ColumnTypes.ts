@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { ParentArgs } from '../../global/globalTypes'
+import type { ParentArgs } from '../../global/globalTypes.js'
 
 /**
  * @typedef {object} ColumnProps
@@ -26,7 +26,7 @@ import type { ParentArgs } from '../../global/globalTypes'
  * @prop {string} [args.classes] - Back end option
  * @prop {string} [args.style] - Back end option
  * @prop {string} [args.attr] - Back end option
- * @prop {import('../../global/globalTypes').ParentArgs} [parents]
+ * @prop {ParentArgs} [parents]
  */
 export interface ColumnProps {
   args: {

@@ -1,18 +1,26 @@
 {
   "name": "@alanizcreative/static-site-formation",
   "version": "1.3.0-beta.11",
-  "description": "Base and helpers for static sites built with json files or Contentful",
+  "description": "Base and helpers for static sites built with json files, Contentful or WordPress",
   "main": "./lib/config/config.js",
+  "type": "module",
   "files": [
     "./lib",
-    "./cjs",
-    "./iop"
+    "./cjs"
   ],
+  "exports": {
+    "./*": {
+      "import": "./lib/*",
+      "require": "./cjs/*"
+    }
+  },
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "build": "npx tsc --module commonjs --outDir cjs/ && npx tsc --module esnext --outDir lib/ && npx tsc --module commonjs --esModuleInterop --outDir iop/",
+    "build:lib": "tsc",
+    "build:cjs": "tsc --moduleResolution node --module commonjs --esModuleInterop --outDir cjs/",
+    "build": "npm run build:lib && npm run build:cjs && node build/packageFile.js",
     "lint": "npx ts-standard",
     "release": "release-it --preRelease=beta",
     "jsdoc": "jsdoc -c jsdoc.json"
@@ -29,16 +37,18 @@
   "license": "MIT",
   "devDependencies": {
     "@types/contentful-resolve-response": "^0.1.33",
-    "@types/node": "^20.11.25",
-    "@types/uuid": "^9.0.8",
-    "release-it": "^17.1.1",
+    "@types/node": "^22.2.0",
+    "@types/uuid": "^10.0.0",
+    "@types/wordpress__block-serialization-spec-parser": "^3.1.3",
+    "release-it": "^17.6.0",
     "ts-standard": "^12.0.2",
-    "typescript": "^5.4.2"
+    "typescript": "^5.5.4"
   },
   "dependencies": {
-    "contentful-resolve-response": "^1.8.1",
-    "sharp": "^0.33.2",
-    "uuid": "^9.0.1"
+    "@wordpress/block-serialization-spec-parser": "^5.5.0",
+    "contentful-resolve-response": "^1.9.0",
+    "sharp": "^0.33.4",
+    "uuid": "^10.0.0"
   },
   "release-it": {
     "git": {

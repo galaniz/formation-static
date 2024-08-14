@@ -4,15 +4,15 @@
 
 /* Imports */
 
-import type { TagGet, TagExists, TagGetReturn } from './tagTypes'
-import { isObjectStrict } from '../isObject/isObject'
-import { isStringStrict } from '../isString/isString'
-import { isArrayStrict } from '../isArray/isArray'
+import type { TagGet, TagExists, TagGetReturn } from './tagTypes.js'
+import { isObjectStrict } from '../object/object.js'
+import { isStringStrict } from '../string/string.js'
+import { isArrayStrict } from '../array/array.js'
 
 /**
- * Function - get data from metadata object
+ * Get data from metadata object
  *
- * @type {import('./tagTypes').TagGet}
+ * @type {TagGet}
  */
 const getTag: TagGet = (obj, id) => {
   if (!isObjectStrict(obj) || !isStringStrict(id)) {
@@ -50,9 +50,9 @@ const getTag: TagGet = (obj, id) => {
 }
 
 /**
- * Function - check if tag exists in metadata object
+ * Check if tag exists in metadata object
  *
- * @type {import('./tagTypes').TagExists}
+ * @type {TagExists}
  */
 const tagExists: TagExists = (obj, id) => {
   const res = getTag(obj, id)
@@ -62,4 +62,7 @@ const tagExists: TagExists = (obj, id) => {
 
 /* Exports */
 
-export { getTag, tagExists }
+export {
+  getTag,
+  tagExists
+}

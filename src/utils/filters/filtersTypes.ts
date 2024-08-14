@@ -4,28 +4,25 @@
 
 /* Imports */
 
-import type { GenericFunctions } from '../../global/globalTypes'
-import type { ColumnPropsFilter } from '../../layouts/Column/ColumnTypes'
-import type { ContainerPropsFilter } from '../../layouts/Container/ContainerTypes'
-import type { FieldPropsFilter } from '../../objects/Field/FieldTypes'
-import type { FormPropsFilter } from '../../objects/Form/FormTypes'
+import type { GenericFunctions } from '../../global/globalTypes.js'
+import type { ColumnPropsFilter } from '../../layouts/Column/ColumnTypes.js'
+import type { ContainerPropsFilter } from '../../layouts/Container/ContainerTypes.js'
+import type { FieldPropsFilter } from '../../objects/Field/FieldTypes.js'
+import type { FormPropsFilter } from '../../objects/Form/FormTypes.js'
 import type {
   RichTextPropsFilter,
   RichTextOutputFilter,
   RichTextContentItemFilter,
   RichTextContentFilter,
   RichTextContentOutputFilter
-} from '../../text/RichText/RichTextTypes'
-import type { ContentfulDataReturn } from '../getContentfulData/getContentfulDataTypes'
-import type { FileDataReturn } from '../getFileData/getFileDataTypes'
-import type { AjaxResFilter } from '../../serverless/Ajax/AjaxTypes'
-import type { RenderItemFilter, RenderContentFilter } from '../../render/renderTypes'
+} from '../../text/RichText/RichTextTypes.js'
+import type { ContentfulDataReturn } from '../contentful/contentfulDataTypes.js'
+import type { FileDataReturn } from '../fileData/fileDataTypes.js'
+import type { AjaxResFilter } from '../../serverless/Ajax/AjaxTypes.js'
+import type { RenderItemFilter, RenderContentFilter } from '../../render/renderTypes.js'
 
 /**
- * @typedef {
- * import('../getContentfulData/getContentfulDataTypes').ContentfulDataReturn|
- * import('../getFileData/getFileDataTypes').FileDataReturn
- * } CacheData
+ * @typedef {ContentfulDataReturn|FileDataReturn} CacheData
  */
 type CacheData = ContentfulDataReturn | FileDataReturn
 
@@ -58,21 +55,21 @@ export type StoreDataFilter = (data: object | undefined, type: string) => Promis
 
 /**
  * @typedef Filters
- * @type {import('../../global/globalTypes').GenericFunctions}
- * @prop {import('../../layouts/Column/ColumnTypes').ColumnPropsFilter} columnProps
- * @prop {import('../../layouts/Container/ContainerTypes').ContainerPropsFilter} containerProps
- * @prop {import('../../objects/Field/FieldTypes').FieldPropsFilter} fieldProps
- * @prop {import('../../objects/Form/FormTypes').FormPropsFilter} formProps
- * @prop {import('../../text/RichText/RichTextTypes').RichTextPropsFilter} richTextProps
- * @prop {import('../../text/RichText/RichTextTypes').RichTextOutputFilter} richTextOutput
- * @prop {import('../../text/RichText/RichTextTypes').RichTextContentFilter} richTextContent
- * @prop {import('../../text/RichText/RichTextTypes').RichTextContentItemFilter} richTextContentItem
- * @prop {import('../../text/RichText/RichTextTypes').RichTextContentOutputFilter} richTextContentOutput
- * @prop {import('../../render/RenderTypes').RenderItemFilter} renderItem
- * @prop {import('../../render/RenderTypes').RenderContentFilter} renderContent
- * @prop {import('../../render/RenderTypes').RenderContentFilter} renderContentStart
- * @prop {import('../../render/RenderTypes').RenderContentFilter} renderContentEnd
- * @prop {import('../../serverless/Ajax/AjaxTypes').AjaxResFilter} ajaxRes
+ * @type {GenericFunctions}
+ * @prop {ColumnPropsFilter} columnProps
+ * @prop {ContainerPropsFilter} containerProps
+ * @prop {FieldPropsFilter} fieldProps
+ * @prop {FormPropsFilter} formProps
+ * @prop {RichTextPropsFilter} richTextProps
+ * @prop {RichTextOutputFilter} richTextOutput
+ * @prop {RichTextContentFilter} richTextContent
+ * @prop {RichTextContentItemFilter} richTextContentItem
+ * @prop {RichTextContentOutputFilter} richTextContentOutput
+ * @prop {RenderItemFilter} renderItem
+ * @prop {RenderContentFilter} renderContent
+ * @prop {RenderContentFilter} renderContentStart
+ * @prop {RenderContentFilter} renderContentEnd
+ * @prop {AjaxResFilter} ajaxRes
  * @prop {CacheDataFilter} cacheData
  * @prop {StoreDataFilter} storeData
  */
@@ -98,20 +95,20 @@ export interface Filters extends GenericFunctions {
 /**
  * @typedef FiltersFunctions
  * @type {Object.<string, function[]>}
- * @prop {import('../../layouts/Column/ColumnTypes').ColumnPropsFilter[]} columnProps
- * @prop {import('../../layouts/Container/ContainerTypes').ContainerPropsFilter[]} containerProps
- * @prop {import('../../objects/Field/FieldTypes').FieldPropsFilter[]} fieldProps
- * @prop {import('../../objects/Form/FormTypes').FormPropsFilter[]} formProps
- * @prop {import('../../text/RichText/RichTextTypes').RichTextPropsFilter[]} richTextProps
- * @prop {import('../../text/RichText/RichTextTypes').RichTextOutputFilter[]} richTextOutput
- * @prop {import('../../text/RichText/RichTextTypes').RichTextContentItemFilter[]} richTextContentItem
- * @prop {import('../../text/RichText/RichTextTypes').RichTextContentFilter[]} richTextContent
- * @prop {import('../../text/RichText/RichTextTypes').RichTextContentOutputFilter[]} richTextContentOutput
- * @prop {import('../../render/RenderTypes').RenderItemFilter[]} renderItem
- * @prop {import('../../render/RenderTypes').RenderContentFilter[]} renderContent
- * @prop {import('../../render/RenderTypes').RenderContentFilter[]} renderContentStart
- * @prop {import('../../render/RenderTypes').RenderContentFilter[]} renderContentEnd
- * @prop {import('../../serverless/Ajax/AjaxTypes').AjaxResFilter[]} ajaxRes
+ * @prop {ColumnPropsFilter[]} columnProps
+ * @prop {ContainerPropsFilter[]} containerProps
+ * @prop {FieldPropsFilter[]} fieldProps
+ * @prop {FormPropsFilter[]} formProps
+ * @prop {RichTextPropsFilter[]} richTextProps
+ * @prop {RichTextOutputFilter[]} richTextOutput
+ * @prop {RichTextContentItemFilter[]} richTextContentItem
+ * @prop {RichTextContentFilter[]} richTextContent
+ * @prop {RichTextContentOutputFilter[]} richTextContentOutput
+ * @prop {RenderItemFilter[]} renderItem
+ * @prop {RenderContentFilter[]} renderContent
+ * @prop {RenderContentFilter[]} renderContentStart
+ * @prop {RenderContentFilter[]} renderContentEnd
+ * @prop {AjaxResFilter[]} ajaxRes
  * @prop {CacheDataFilter[]} cacheData
  * @prop {StoreDataFilter[]} storeData
  */

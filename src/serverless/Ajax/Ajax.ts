@@ -4,63 +4,28 @@
 
 /* Imports */
 
-import type { AjaxArgs, AjaxCustomErrorArgs, AjaxResOptions } from './AjaxTypes'
-import type { AjaxActionReturn, AjaxActionArgs, CustomErrorObject } from '../serverlessTypes'
-import { setConfig, setConfigFilter } from '../../config/config'
-import { setActions } from '../../utils/actions/actions'
-import { setShortcodes } from '../../utils/shortcodes/shortcodes'
-import { applyFilters, setFilters } from '../../utils/filters/filters'
-import { isObjectStrict } from '../../utils/isObject/isObject'
-import { isStringStrict } from '../../utils/isString/isString'
-import { isNumber } from '../../utils/isNumber/isNumber'
-import { getPathDepth } from '../../utils/getPathDepth/getPathDepth'
-import { SendForm } from '../SendForm/SendForm'
+import type { AjaxArgs, AjaxResOptions } from './AjaxTypes.js'
+import type {
+  AjaxActionData,
+  AjaxActionReturn,
+  AjaxActionArgs
+} from '../serverlessTypes.js'
+import { setConfig, setConfigFilter } from '../../config/config.js'
+import { setActions } from '../../utils/actions/actions.js'
+import { setShortcodes } from '../../utils/shortcodes/shortcodes.js'
+import { applyFilters, setFilters } from '../../utils/filters/filters.js'
+import { isObjectStrict } from '../../utils/object/object.js'
+import { isStringStrict } from '../../utils/string/string.js'
+import { isNumber } from '../../utils/number/number.js'
+import { print } from '../../utils/print/print.js'
+import { getPathDepth } from '../../utils/path/path.js'
+import { ResponseError } from '../../utils/ResponseError/ResponseError.js'
+import { SendForm } from '../SendForm/SendForm.js'
 
 /**
- * Class - custom exception to include status code
+ * Set env variables, normalize request body, check for required props and call actions
  *
- * @private
- */
-class _CustomError extends Error {
-  /**
-   * Store message
-   *
-   * @type {string}
-   */
-  message: string
-
-  /**
-   * Store status code
-   *
-   * @type {number}
-   */
-  httpStatusCode: number
-
-  /**
-   * Set properties
-   *
-   * @param {import('./AjaxTypes').AjaxCustomErrorArgs} args
-   */
-  constructor (args: AjaxCustomErrorArgs) {
-    if (!isObjectStrict(args)) {
-      args = {}
-    }
-
-    const {
-      message = '',
-      code = 500
-    } = args
-
-    super(message)
-    this.message = message
-    this.httpStatusCode = code
-  }
-}
-
-/**
- * Function - set env variables, normalize request body, check for required props and call actions
- *
- * @param {import('./AjaxTypes').AjaxArgs} args
+ * @param {AjaxArgs} args
  * @return {Promise<Response>} Response
  */
 const Ajax = async ({ request, functionPath, env, siteConfig }: AjaxArgs): Promise<Response> => {
@@ -79,7 +44,13 @@ const Ajax = async ({ request, functionPath, env, siteConfig }: AjaxArgs): Promi
 
     /* Get form data */
 
-    const data = await request.json()
+    const data = await request.json() as AjaxActionData | undefined
+
+    /* Data must be object */
+
+    if (!isObjectStrict(data)) {
+      throw new Error('Data not an object')
+    }
 
     /* Inputs required */
 
@@ -135,8 +106,8 @@ const Ajax = async ({ request, functionPath, env, siteConfig }: AjaxArgs): Promi
     }
 
     const ajaxResFilterArgs: AjaxActionArgs = {
-      action,
       ...data,
+      action,
       env,
       request
     }
@@ -150,7 +121,7 @@ const Ajax = async ({ request, functionPath, env, siteConfig }: AjaxArgs): Promi
     }
 
     if (res.error !== undefined) {
-      throw new _CustomError(res.error)
+      throw new ResponseError(res.error.message, res.error.resp)
     }
 
     /* Result success */
@@ -181,20 +152,18 @@ const Ajax = async ({ request, functionPath, env, siteConfig }: AjaxArgs): Promi
 
     return new Response(JSON.stringify({ success: message }), options)
   } catch (error) {
-    console.error(siteConfig.console.red, '[SSF] Error with ajax function: ', error)
+    print('[SSF] Error with ajax function', error)
 
     let statusCode = 500
     let message = ''
 
-    if (isObjectStrict(error)) {
-      const err: CustomErrorObject = error
-
-      if (isNumber(err.httpStatusCode)) {
-        statusCode = err.httpStatusCode
+    if (error instanceof ResponseError) {
+      if (isNumber(error.response?.status)) {
+        statusCode = error.response.status
       }
 
-      if (isStringStrict(err.message)) {
-        message = err.message
+      if (isStringStrict(error.message)) {
+        message = error.message
       }
     }
 

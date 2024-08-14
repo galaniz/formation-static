@@ -4,16 +4,16 @@
 
 /* Imports */
 
-import type { Config } from '../../config/configTypes'
-import type { Generic, GenericStrings } from '../../global/globalTypes'
+import type { Config } from '../../config/configTypes.js'
+import type { Generic, GenericStrings } from '../../global/globalTypes.js'
 
 /**
  * @typedef {object} ReloadArgs
  * @prop {Request} request
  * @prop {string} functionPath
  * @prop {function} next
- * @prop {import('../../global/globalTypes').GenericStrings} env
- * @prop {import('../../config/configTypes').Config} siteConfig
+ * @prop {GenericStrings} env
+ * @prop {Config} siteConfig
  */
 export interface ReloadArgs {
   request: Request
@@ -25,7 +25,7 @@ export interface ReloadArgs {
 
 /**
  * @typedef ReloadQuery
- * @type {import('../../config/configTypes').Generic}
+ * @type {Generic}
  * @prop {string} [page]
  * @prop {string} [filters]
  */

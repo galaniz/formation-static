@@ -4,13 +4,13 @@
 
 /* Imports */
 
-import type { Generic, GenericFunctions, GenericStrings, GenericNumbers } from '../global/globalTypes'
-import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes'
-import type { RenderItem } from '../render/renderTypes'
-import type { Filters } from '../utils/filters/filtersTypes'
-import type { Actions } from '../utils/actions/actionsTypes'
-import type { Shortcodes } from '../utils/shortcodes/shortcodesTypes'
-import type { FormMessages, FormMeta } from '../objects/Form/FormTypes'
+import type { Generic, GenericFunctions, GenericStrings } from '../global/globalTypes.js'
+import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes.js'
+import type { RenderFunctions, RenderItem } from '../render/renderTypes.js'
+import type { Filters } from '../utils/filters/filtersTypes.js'
+import type { Actions } from '../utils/actions/actionsTypes.js'
+import type { Shortcodes } from '../utils/shortcodes/shortcodesTypes.js'
+import type { FormMessages, FormMeta } from '../objects/Form/FormTypes.js'
 
 /**
  * @typedef {object} ConfigMeta
@@ -92,7 +92,7 @@ export interface ConfigFormMeta {
 }
 
 /**
- * @typedef {Object.<string, import('../render/RenderTypes').RenderItem>} ConfigStaticPosts
+ * @typedef {Object.<string, RenderItem>} ConfigStaticPosts
  */
 export interface ConfigStaticPosts {
   [key: string]: RenderItem
@@ -130,9 +130,9 @@ export interface ConfigEnv {
 
 /**
  * @typedef ConfigScriptMeta
- * @type {import('../global/globalTypes').Generic}
+ * @type {Generic}
  * @prop {string} [sendUrl]
- * @prop {Object.<string, import('../objects/Form/FormTypes').FormMessages>} [forms]
+ * @prop {Object.<string, FormMessages>} [forms]
  */
 export interface ConfigScriptMeta extends Generic {
   sendUrl?: string
@@ -223,18 +223,22 @@ export interface ConfigRedirects {
  * @typedef {object} ConfigCms
  * @prop {string} name
  * @prop {string} space
- * @prop {string} previewAccessToken
- * @prop {string} previewHost
- * @prop {string} deliveryAccessToken
- * @prop {string} deliveryHost
+ * @prop {string} prodUser
+ * @prop {string} prodCredential
+ * @prop {string} prodHost
+ * @prop {string} devUser
+ * @prop {string} devCredential
+ * @prop {string} devHost
  */
 export interface ConfigCms {
   name: string
   space: string
-  previewAccessToken: string
-  previewHost: string
-  deliveryAccessToken: string
-  deliveryHost: string
+  prodUser: string
+  prodCredential: string
+  prodHost: string
+  devUser: string
+  devCredential: string
+  devHost: string
 }
 
 /**
@@ -256,12 +260,16 @@ export interface ConfigStatic {
 
 /**
  * @typedef {object} ConfigScriptsStyles
- * @prop {import('../global/globalTypes').GenericNumbers} item
- * @prop {import('../global/globalTypes').GenericStrings} build
+ * @prop {string} inputDir
+ * @prop {string} outputDir
+ * @prop {Map.<string, Set<string>>} deps
+ * @prop {Map<string, string>} build
  */
 export interface ConfigScriptsStyles {
-  item: GenericNumbers
-  build: GenericStrings
+  inputDir: string
+  outputDir: string
+  deps: Map<string, Set<string>>
+  build: Map<string, string>
 }
 
 /**
@@ -273,17 +281,7 @@ export interface ConfigApiKeys {
 }
 
 /**
- * @typedef {object} ConfigConsole
- * @prop {string} green
- * @prop {string} red
- */
-export interface ConfigConsole {
-  green: string
-  red: string
-}
-
-/**
- * @typedef {import('../global/globalTypes').GenericStrings|NodeJS.Process['env']} ConfigEnvArg
+ * @typedef {GenericStrings|NodeJS.Process['env']} ConfigEnvArg
  */
 export type ConfigEnvArg = GenericStrings | NodeJS.Process['env']
 
@@ -303,8 +301,8 @@ export type ConfigFilter = (config: Config, env: ConfigEnvArg) => Promise<Config
  * @prop {ConfigMeta} meta
  * @prop {string[]} partialTypes
  * @prop {string[]} wholeTypes
- * @prop {import('../global/globalTypes').GenericStrings} renderTypes
- * @prop {import('../global/globalTypes').GenericFunctions} renderFunctions
+ * @prop {GenericStrings} renderTypes
+ * @prop {RenderFunctions} renderFunctions
  */
 export interface ConfigBase {
   namespace: string
@@ -314,22 +312,22 @@ export interface ConfigBase {
   partialTypes: string[]
   wholeTypes: string[]
   renderTypes: GenericStrings
-  renderFunctions: GenericFunctions
+  renderFunctions: RenderFunctions
 }
 
 /**
  * @typedef Config
  * @type {ConfigBase}
- * @prop {import('../global/globalTypes').GenericStrings} normalTypes
+ * @prop {GenericStrings} normalTypes
  * @prop {ConfigArchiveMeta} archiveMeta
- * @prop {import('../global/globalTypes').GenericFunctions} ajaxFunctions
- * @prop {import('../utils/actions/actionsTypes').Actions} actions
- * @prop {import('../utils/filters/filtersTypes').Filters} filters
- * @prop {import('../utils/shortcodes/shortcodesTypes').Shortcodes} shortcodes
+ * @prop {GenericFunctions} ajaxFunctions
+ * @prop {Actions} actions
+ * @prop {Filters} filters
+ * @prop {Shortcodes} shortcodes
  * @prop {ConfigImage} image
  * @prop {ConfigParents} parents
- * @prop {import('../components/Navigation/NavigationTypes').Navigation[]} navigation
- * @prop {import('../components/Navigation/NavigationTypes').NavigationItem[]} navigationItem
+ * @prop {Navigation[]} navigation
+ * @prop {NavigationItem[]} navigationItem
  * @prop {ConfigScriptMeta} scriptMeta
  * @prop {ConfigFormMeta} formMeta
  * @prop {ConfigEnv} env
@@ -341,7 +339,6 @@ export interface ConfigBase {
  * @prop {ConfigScriptsStyles} styles
  * @prop {ConfigScriptsStyles} scripts
  * @prop {ConfigApiKeys} apiKeys
- * @prop {ConfigConsole} console
  */
 export interface Config extends ConfigBase {
   normalTypes: GenericStrings
@@ -366,20 +363,19 @@ export interface Config extends ConfigBase {
   styles: ConfigScriptsStyles
   scripts: ConfigScriptsStyles
   apiKeys: ConfigApiKeys
-  console: ConfigConsole
 }
 
 /**
  * @typedef ConfigArgs
  * @type {ConfigBase}
  * @prop {ConfigArchiveMeta} [archiveMeta]
- * @prop {import('../global/globalTypes').GenericFunctions} [ajaxFunctions]
- * @prop {import('../utils/actions/actionsTypes').Actions} [actions]
- * @prop {import('../utils/filters/filtersTypes').Filters} [filters]
- * @prop {import('../utils/shortcodes/shortcodesTypes').Shortcodes} [shortcodes]
+ * @prop {GenericFunctions} [ajaxFunctions]
+ * @prop {Actions} [actions]
+ * @prop {Filters} [filters]
+ * @prop {Shortcodes} [shortcodes]
  * @prop {ConfigImage} [image]
- * @prop {import('../global/globalTypes').Generic} [scriptMeta]
- * @prop {import('../global/globalTypes').Generic} [formMeta]
+ * @prop {Generic} [scriptMeta]
+ * @prop {Generic} [formMeta]
  * @prop {ConfigEnv} [env]
  * @prop {ConfigStore} [store]
  * @prop {ConfigServerless} [serverless]
@@ -394,8 +390,8 @@ export type ConfigArgs = Partial<Config>
 
 /**
  * @typedef {function} ConfigSet
- * @param {import('./configTypes').ConfigArgs} args
- * @return {import('./configTypes').Config}
+ * @param {ConfigArgs} args
+ * @return {Config}
  */
 export type ConfigSet = (args: ConfigArgs) => Config
 

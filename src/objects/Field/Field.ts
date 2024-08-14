@@ -4,18 +4,18 @@
 
 /* Imports */
 
-import type { FieldProps, FieldOption, FieldCheckboxRadioArgs } from './FieldTypes'
+import type { FieldProps, FieldOption, FieldCheckboxRadioArgs } from './FieldTypes.js'
 import { v4 as uuid } from 'uuid'
-import { applyFilters } from '../../utils/filters/filters'
-import { isStringStrict } from '../../utils/isString/isString'
-import { isObjectStrict } from '../../utils/isObject/isObject'
-import { isArrayStrict } from '../../utils/isArray/isArray'
+import { applyFilters } from '../../utils/filters/filters.js'
+import { isStringStrict } from '../../utils/string/string.js'
+import { isObjectStrict } from '../../utils/object/object.js'
+import { isArrayStrict } from '../../utils/array/array.js'
 
 /**
- * Function - output checkbox and radio inputs from options
+ * Output checkbox and radio inputs from options
  *
  * @private
- * @param {import('./FieldTypes').FieldCheckboxRadioArgs} args
+ * @param {FieldCheckboxRadioArgs} args
  * @return {string[]}
  */
 const _getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
@@ -61,9 +61,9 @@ const _getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
 }
 
 /**
- * Function - output form field
+ * Output form field
  *
- * @param {import('./FieldTypes').FieldProps} props
+ * @param {FieldProps} props
  * @return {Promise<string>} HTML - div
  */
 const Field = async (props: FieldProps): Promise<string> => {
@@ -171,15 +171,17 @@ const Field = async (props: FieldProps): Promise<string> => {
 
   if (isArrayStrict(options)) {
     options.forEach((option) => {
-      const data = option.split(' : ')
+      const [optText, optValue, optSelected] = option.split(' : ')
 
-      if (data.length >= 2) {
-        opts.push({
-          text: data[0],
-          value: data[1],
-          selected: data.length === 3
-        })
+      if (optText === undefined || optValue === undefined) {
+        return
       }
+
+      opts.push({
+        text: optText,
+        value: optText,
+        selected: optSelected !== undefined
+      })
     })
   }
 
@@ -246,7 +248,7 @@ const Field = async (props: FieldProps): Promise<string> => {
   if (checkboxRadio) {
     if (fieldset) {
       labelBefore = `
-        <legend${labelRequired}>
+        <legend id="${uuid()}"${labelRequired}>
           <span data-legend-text>${label}${required ? `<span${isStringStrict(visuallyHiddenClass) ? ` class="${visuallyHiddenClass}"` : ''}> required</span>` : ''}
             ${labelRequiredIcon}
           </span>

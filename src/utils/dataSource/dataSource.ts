@@ -4,18 +4,21 @@
 
 /* Imports */
 
-import type { DataSource } from './dataSourceTypes'
-import { isStringStrict } from '../isString/isString'
-import { config } from '../../config/config'
+import type { DataSource } from './dataSourceTypes.js'
+import { isStringStrict } from '../string/string.js'
+import { config } from '../../config/config.js'
 
 /**
  * Check and get data source
  *
- * @type {import('./dataSourceTypes').DataSource}
+ * @type {DataSource}
  */
 const dataSource: DataSource = {
   isContentful (source = config.source) {
     return config.cms.name === 'contentful' && source === 'cms'
+  },
+  isWordPress (source = config.source) {
+    return config.cms.name === 'wordpress' && source === 'cms'
   },
   isStatic (source = config.source) {
     return source === 'static'

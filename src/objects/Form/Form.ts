@@ -4,18 +4,18 @@
 
 /* Imports */
 
-import type { FormProps, FormReturn, FormMeta, FormMessages } from './FormTypes'
+import type { FormProps, FormReturn, FormMeta, FormMessages } from './FormTypes.js'
 import { v4 as uuid } from 'uuid'
-import { applyFilters } from '../../utils/filters/filters'
-import { isStringStrict } from '../../utils/isString/isString'
-import { isObjectStrict } from '../../utils/isObject/isObject'
-import { config } from '../../config/config'
+import { applyFilters } from '../../utils/filters/filters.js'
+import { isStringStrict } from '../../utils/string/string.js'
+import { isObjectStrict } from '../../utils/object/object.js'
+import { config } from '../../config/config.js'
 
 /**
- * Function - output form wrapper
+ * Output form wrapper
  *
- * @param {import('./FormTypes').FormProps} props
- * @return {Promise<import('./FormTypes').FormReturn>}
+ * @param {FormProps} props
+ * @return {Promise<FormReturn>}
  */
 const Form = async (props: FormProps): Promise<FormReturn> => {
   /* Fallback output */

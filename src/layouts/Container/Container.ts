@@ -4,16 +4,16 @@
 
 /* Imports */
 
-import type { ContainerProps, ContainerReturn } from './ContainerTypes'
-import { applyFilters } from '../../utils/filters/filters'
-import { isObjectStrict } from '../../utils/isObject/isObject'
-import { isStringStrict } from '../../utils/isString/isString'
+import type { ContainerProps, ContainerReturn } from './ContainerTypes.js'
+import { applyFilters } from '../../utils/filters/filters.js'
+import { isObjectStrict } from '../../utils/object/object.js'
+import { isStringStrict } from '../../utils/string/string.js'
 
 /**
- * Function - output container wrapper
+ * Output container wrapper
  *
- * @param {import('./ContainerTypes').ContainerProps} props
- * @return {Promise<import('./ContainerTypes').ContainerReturn>}
+ * @param {ContainerProps} props
+ * @return {Promise<ContainerReturn>}
  */
 const Container = async (props: ContainerProps): Promise<ContainerReturn> => {
   /* Fallback output */

@@ -4,16 +4,16 @@
 
 /* Imports */
 
-import type { ColumnProps, ColumnReturn } from './ColumnTypes'
-import { applyFilters } from '../../utils/filters/filters'
-import { isStringStrict } from '../../utils/isString/isString'
-import { isObjectStrict } from '../../utils/isObject/isObject'
+import type { ColumnProps, ColumnReturn } from './ColumnTypes.js'
+import { applyFilters } from '../../utils/filters/filters.js'
+import { isStringStrict } from '../../utils/string/string.js'
+import { isObjectStrict } from '../../utils/object/object.js'
 
 /**
- * Function - output column wrapper
+ * Output column wrapper
  *
- * @param {import('./ColumnTypes').ColumnProps} props
- * @return {Promise<import('./ColumnTypes').ColumnReturn>}
+ * @param {ColumnProps} props
+ * @return {Promise<ColumnReturn>}
  */
 const Column = async (props: ColumnProps): Promise<ColumnReturn> => {
   /* Fallback output */

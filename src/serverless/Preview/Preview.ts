@@ -4,21 +4,21 @@
 
 /* Imports */
 
-import type { PreviewArgs } from './PreviewTypes'
-import { setConfig, setConfigFilter } from '../../config/config'
-import { getAllContentfulData } from '../../utils/getAllContentfulData/getAllContentfulData'
-import { isObjectStrict } from '../../utils/isObject/isObject'
-import { isStringStrict } from '../../utils/isString/isString'
-import { setFilters } from '../../utils/filters/filters'
-import { setActions } from '../../utils/actions/actions'
-import { setShortcodes } from '../../utils/shortcodes/shortcodes'
-import { getPathDepth } from '../../utils/getPathDepth/getPathDepth'
-import { render } from '../../render/render'
+import type { PreviewArgs } from './PreviewTypes.js'
+import { setConfig, setConfigFilter } from '../../config/config.js'
+import { getAllContentfulData } from '../../utils/contentful/contentfulData.js'
+import { isObjectStrict } from '../../utils/object/object.js'
+import { isStringStrict } from '../../utils/string/string.js'
+import { setFilters } from '../../utils/filters/filters.js'
+import { setActions } from '../../utils/actions/actions.js'
+import { setShortcodes } from '../../utils/shortcodes/shortcodes.js'
+import { getPathDepth } from '../../utils/path/path.js'
+import { render } from '../../render/render.js'
 
 /**
- * Function - output preview from contentful
+ * Output preview from contentful
  *
- * @param {import('./PreviewTypes').PreviewArgs} args
+ * @param {PreviewArgs} args
  * @return {Promise<Response>} Response
  */
 const Preview = async ({ request, functionPath, next, env, siteConfig }: PreviewArgs): Promise<Response> => {

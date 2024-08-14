@@ -4,14 +4,14 @@
 
 /* Imports */
 
-import type { PaginationProps, PaginationData, PaginationReturn } from './PaginationTypes'
-import { isObjectStrict } from '../../utils/isObject/isObject'
-import { isStringStrict } from '../../utils/isString/isString'
+import type { PaginationProps, PaginationData, PaginationReturn } from './PaginationTypes.js'
+import { isObjectStrict } from '../../utils/object/object.js'
+import { isStringStrict } from '../../utils/string/string.js'
 
 /**
- * Function - output pagination navigation
+ * Output pagination navigation
  *
- * @param {import('./PaginationTypes').PaginationProps} props
+ * @param {PaginationProps} props
  * @return {string} HTML - ol
  */
 const Pagination = (props: PaginationProps): PaginationReturn => {

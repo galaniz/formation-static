@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { RenderItem } from '../../render/renderTypes'
+import type { RenderItem } from '../../render/renderTypes.js'
 
 /**
  * @typedef {function} TagGetMethod

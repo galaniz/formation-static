@@ -4,18 +4,24 @@
 
 /* Imports */
 
-import type { ShortcodeAttrs, ShortcodeAttrValue, ShortcodeData, Shortcode, Shortcodes } from './shortcodesTypes'
-import { isObjectStrict } from '../isObject/isObject'
-import { isArrayStrict } from '../isArray/isArray'
-import { isStringStrict } from '../isString/isString'
-import { isFunction } from '../isFunction/isFunction'
-import { isNumber } from '../isNumber/isNumber'
-import { escape } from '../escape/escape'
+import type {
+  ShortcodeAttrs,
+  ShortcodeAttrValue,
+  ShortcodeData,
+  Shortcode,
+  Shortcodes
+} from './shortcodesTypes.js'
+import { isObjectStrict } from '../object/object.js'
+import { isArrayStrict } from '../array/array.js'
+import { isStringStrict } from '../string/string.js'
+import { isFunction } from '../function/function.js'
+import { isNumber } from '../number/number.js'
+import { escape } from '../escape/escape.js'
 
 /**
  * Store shortcode callbacks by name
  *
- * @type {import('./shortcodesTypes').Shortcodes}
+ * @type {Shortcodes}
  */
 let shortcodes: Shortcodes = {}
 
@@ -28,13 +34,13 @@ let shortcodes: Shortcodes = {}
 const _attrReg: RegExp = /[\w-]+=".*?"/g
 
 /**
- * Function - extract attributes and inner content from tagged strings
+ * Extract attributes and inner content from tagged strings
  *
  * @private
  * @param {string} content
  * @param {string} tagNames
- * @param {import('./shortcodesTypes').Shortcode} [props]
- * @return {import('./shortcodesTypes').ShortcodeData[]}
+ * @param {Shortcode} [props]
+ * @return {ShortcodeData[]}
  */
 const _getShortcodeData = (content: string, tagNames: string, props?: Partial<Shortcode>): ShortcodeData[] => {
   /* Content and tag names required */
@@ -103,30 +109,29 @@ const _getShortcodeData = (content: string, tagNames: string, props?: Partial<Sh
 
     if (isArrayStrict(attr)) {
       attr.forEach((a) => {
-        const keyValue = a.split('=')
+        const [key, value] = a.split('=')
 
-        if (isArrayStrict(keyValue) && keyValue.length === 2) {
-          const key = keyValue[0]
-          const value = keyValue[1]
+        if (key === undefined || value === undefined) {
+          return
+        }
 
-          let val: ShortcodeAttrValue = escape(value.replace(/"/g, ''))
+        let val: ShortcodeAttrValue = escape(value.replace(/"/g, ''))
 
-          if (attributeTypes !== undefined && isStringStrict(attributeTypes[key])) {
-            const type = attributeTypes[key]
+        if (isStringStrict(attributeTypes[key])) {
+          const type = attributeTypes[key]
 
-            if (type === 'number') {
-              const num = parseInt(val, 10)
+          if (type === 'number') {
+            const num = parseInt(val, 10)
 
-              val = isNaN(num) ? 0 : num
-            }
-
-            if (type === 'boolean') {
-              val = val === 'true'
-            }
+            val = isNaN(num) ? 0 : num
           }
 
-          attributes[key] = val
+          if (type === 'boolean') {
+            val = val === 'true'
+          }
         }
+
+        attributes[key] = val
       })
     }
 
@@ -136,7 +141,7 @@ const _getShortcodeData = (content: string, tagNames: string, props?: Partial<Sh
     let innerContent = ''
 
     const startIndex = opening.index
-    const endIndex = closing.index
+    const endIndex = closing?.index
 
     if (isNumber(startIndex) && isNumber(endIndex)) {
       replaceContent = content.slice(startIndex, endIndex + closingTag.length)
@@ -170,10 +175,10 @@ const _getShortcodeData = (content: string, tagNames: string, props?: Partial<Sh
 }
 
 /**
- * Function - add shortcode to shortcodes object
+ * Add shortcode to shortcodes object
  *
  * @param {string} name
- * @param {import('./shortcodesTypes').Shortcode} shortcode
+ * @param {Shortcode} shortcode
  * @return {boolean}
  */
 const addShortcode = <T extends Shortcode>(name: string, shortcode: T): boolean => {
@@ -187,7 +192,7 @@ const addShortcode = <T extends Shortcode>(name: string, shortcode: T): boolean 
 }
 
 /**
- * Function - remove shortcode from shortcodes object
+ * Remove shortcode from shortcodes object
  *
  * @param {string} name
  * @return {boolean}
@@ -208,7 +213,7 @@ const removeShortcode = (name: string): boolean => {
 }
 
 /**
- * Function - transform content string with shortcode callbacks
+ * Transform content string with shortcode callbacks
  *
  * @param {string} content
  * @return {Promise<string>}
@@ -234,9 +239,7 @@ const doShortcodes = async (content: string): Promise<string> => {
 
   let newContent = content
 
-  for (let i = 0; i < data.length; i += 1) {
-    const d = data[i]
-
+  for (const d of data) {
     const { name, replaceContent } = d
     const callback = shortcodes?.[name]?.callback
 
@@ -253,7 +256,7 @@ const doShortcodes = async (content: string): Promise<string> => {
 }
 
 /**
- * Function - empty shortcodes object
+ * Empty shortcodes object
  *
  * @return {void}
  */
@@ -262,9 +265,9 @@ const resetShortcodes = (): void => {
 }
 
 /**
- * Function - fill shortcodes object
+ * Fill shortcodes object
  *
- * @param {import('./shortcodesTypes').Shortcodes} args
+ * @param {Shortcodes} args
  * @return {boolean}
  */
 const setShortcodes = <T extends Shortcodes>(args: T): boolean => {
@@ -272,21 +275,29 @@ const setShortcodes = <T extends Shortcodes>(args: T): boolean => {
     return false
   }
 
-  if (Object.keys(args).length === 0) {
+  const names = Object.keys(args)
+
+  if (names.length === 0) {
     return false
   }
 
   resetShortcodes()
 
-  Object.keys(args).forEach((a) => {
-    addShortcode(a, args[a])
+  names.forEach((n) => {
+    const shortcode = args[n]
+
+    if (shortcode === undefined) {
+      return
+    }
+
+    addShortcode(n, shortcode)
   })
 
   return true
 }
 
 /**
- * Function - remove shortcodes from string
+ * Remove shortcodes from string
  *
  * @param {string} content
  * @return {string}

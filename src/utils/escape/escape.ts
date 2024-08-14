@@ -3,7 +3,7 @@
  */
 
 /**
- * Function - check if valid string
+ * Check if valid string
  *
  * @private
  * @see {@link https://github.com/validatorjs/validator.js/blob/master/src/lib/util/assertString.js|GitHub}
@@ -27,7 +27,7 @@ const _assertString = (input: any): void => {
 }
 
 /**
- * Function - check string validity and escape special characters
+ * Check string validity and escape special characters
  *
  * @see {@link https://github.com/validatorjs/validator.js/blob/master/src/lib/escape.js|GitHub}
  * @param {string} str

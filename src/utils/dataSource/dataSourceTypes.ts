@@ -23,6 +23,7 @@ export type DataSourceGet = () => string
  */
 export interface DataSource {
   isContentful: DataSourceCheck
+  isWordPress: DataSourceCheck
   isStatic: DataSourceCheck
   get: DataSourceGet
 }

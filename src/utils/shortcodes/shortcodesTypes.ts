@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { GenericStrings } from '../../global/globalTypes'
+import type { GenericStrings } from '../../global/globalTypes.js'
 
 /**
  * @typedef {string|number|boolean} ShortcodeAttrValue
@@ -45,8 +45,8 @@ export type ShortcodeCallback = (args: ShortcodeData) => Promise<string>
  * @typedef {object} Shortcode
  * @prop {string} [child]
  * @prop {string} child.name
- * @prop {import('../../global/globalTypes').GenericStrings} [child.attributeTypes]
- * @prop {import('../../global/globalTypes').GenericStrings} [attributeTypes]
+ * @prop {GenericStrings} [child.attributeTypes]
+ * @prop {GenericStrings} [attributeTypes]
  * @prop {ShortcodeCallback} callback
  */
 export interface Shortcode {

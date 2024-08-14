@@ -4,20 +4,24 @@
 
 /* Imports */
 
-import type { SendFormOutputData, SendFormRequestBody, SendFormRequestRes } from './SendFormTypes'
-import type { AjaxActionArgs, AjaxActionReturn } from '../serverlessTypes'
-import type { ConfigFormMeta } from '../../config/configTypes'
-import { config } from '../../config/config'
-import { escape } from '../../utils/escape/escape'
-import { isArray } from '../../utils/isArray/isArray'
-import { isString, isStringStrict } from '../../utils/isString/isString'
-import { isObject, isObjectStrict } from '../../utils/isObject/isObject'
-import { getPermalink } from '../../utils/getPermalink/getPermalink'
-import { getObjectKeys } from '../../utils/getObjectKeys/getObjectKeys'
-import { getJsonFile } from '../../utils/getJson/getJson'
+import type {
+  SendFormOutputData,
+  SendFormRequestBody,
+  SendFormRequestRes
+} from './SendFormTypes.js'
+import type { AjaxActionArgs, AjaxActionReturn } from '../serverlessTypes.js'
+import type { ConfigFormMeta } from '../../config/configTypes.js'
+import { config } from '../../config/config.js'
+import { escape } from '../../utils/escape/escape.js'
+import { isArray } from '../../utils/array/array.js'
+import { isString, isStringStrict } from '../../utils/string/string.js'
+import { isObject, isObjectStrict } from '../../utils/object/object.js'
+import { getObjectKeys } from '../../utils/object/objectKeys.js'
+import { getPermalink } from '../../utils/link/link.js'
+import { getJsonFile } from '../../utils/json/json.js'
 
 /**
- * Function - recurse through data to output plain and html email body
+ * Recurse through data to output plain and html email body
  *
  * @private
  * @param {object} data
@@ -89,10 +93,10 @@ const _recurseEmailHtml = <T>(
 }
 
 /**
- * Function - generate email from form fields and send with Smtp2go
+ * Generate email from form fields and send with Smtp2go
  *
- * @param {import('../serverlessTypes').AjaxActionArgs} args
- * @return {Promise<import('../serverlessTypes').AjaxActionReturn>}
+ * @param {AjaxActionArgs} args
+ * @return {Promise<AjaxActionReturn>}
  */
 const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionReturn> => {
   /* Id required */
@@ -171,15 +175,13 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
     plain: ''
   }
 
-  getObjectKeys(inputs).forEach((name) => {
-    const input = inputs[name]
-
+  for (const [name, input] of Object.entries(inputs)) {
     /* Skip if exclude true */
 
     const exclude = input.exclude !== undefined ? input.exclude : false
 
     if (exclude) {
-      return
+      continue
     }
 
     /* Variables */
@@ -202,9 +204,9 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
 
     /* Subject */
 
-    if (name === 'subject' && inputValueStr !== '') {
-      subject = `${isStringStrict(subject) ? `${subject} - ` : ''}${inputValueStr}`
-      return
+    if (name === 'subject') {
+      subject = inputValueStr !== '' ? `${isStringStrict(subject) ? `${subject} - ` : ''}${inputValueStr}` : subject
+      continue
     }
 
     /* Reply to email */
@@ -259,7 +261,7 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
       // @ts-expect-error
       outputData[inputLabel].push(outputValue)
     }
-  })
+  }
 
   _recurseEmailHtml(outputData, output)
 
@@ -338,7 +340,7 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
     }
   )
 
-  const resJson: SendFormRequestRes = await res.json()
+  const resJson = await res.json() as SendFormRequestRes | undefined
 
   /* Success */
 
@@ -351,7 +353,8 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
   } else {
     return {
       error: {
-        message: 'Error sending email'
+        message: 'Error sending email',
+        resp: res
       }
     }
   }

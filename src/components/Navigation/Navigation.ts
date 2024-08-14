@@ -13,33 +13,31 @@ import type {
   NavigationBreadcrumbItem,
   NavigationOutputArgs,
   NavigationBreadcrumbOutputArgs
-} from './NavigationTypes'
-import type { HtmlString } from '../../global/globalTypes'
-import { getSlug } from '../../utils/getSlug/getSlug'
-import { getPermalink } from '../../utils/getPermalink/getPermalink'
-import { getLink } from '../../utils/getLink/getLink'
-import { isArrayStrict } from '../../utils/isArray/isArray'
-import { isObjectStrict } from '../../utils/isObject/isObject'
-import { isStringStrict, isString } from '../../utils/isString/isString'
-import { isFunction } from '../../utils/isFunction/isFunction'
-import { normalizeContentType } from '../../utils/normalizeContentType/normalizeContentType'
-import { config } from '../../config/config'
+} from './NavigationTypes.js'
+import type { HtmlString } from '../../global/globalTypes.js'
+import { getSlug, getPermalink, getLink } from '../../utils/link/link.js'
+import { isArrayStrict } from '../../utils/array/array.js'
+import { isObjectStrict } from '../../utils/object/object.js'
+import { isStringStrict, isString } from '../../utils/string/string.js'
+import { isFunction } from '../../utils/function/function.js'
+import { normalizeContentType } from '../../utils/contentType/contentType.js'
+import { config } from '../../config/config.js'
 
 /**
- * Class - recursively generate navigation output
+ * Recursively generate navigation output
  */
 class Navigation {
   /**
    * Store all navigations
    *
-   * @type {import('./NavigationTypes').Navigations[]}
+   * @type {Navigations[]}
    */
   navigations: Navigations[] = []
 
   /**
    * Store all navigation items
    *
-   * @type {import('./NavigationTypes').NavigationItem[]}
+   * @type {NavigationItem[]}
    */
   items: NavigationItem[] = []
 
@@ -68,7 +66,7 @@ class Navigation {
    * Store navigation items by id
    *
    * @private
-   * @type {import('./NavigationTypes').NavigationItemsById}
+   * @type {NavigationItemsById}
    */
   #itemsById: NavigationItemsById = {}
 
@@ -76,14 +74,14 @@ class Navigation {
    * Store navigations by location
    *
    * @private
-   * @type {import('./NavigationTypes').NavigationByLocation}
+   * @type {NavigationByLocation}
    */
   #navigationsByLocation: NavigationByLocation = {}
 
   /**
    * Set properties and initialize
    *
-   * @param {import('./NavigationTypes').NavigationProps} props
+   * @param {NavigationProps} props
    */
   constructor (props: NavigationProps) {
     this.init = this.#initialize(props)
@@ -93,7 +91,7 @@ class Navigation {
    * Initialize - check required props and set props
    *
    * @private
-   * @param {import('./NavigationTypes').NavigationProps} props
+   * @param {NavigationProps} props
    * @return {boolean}
    */
   #initialize (props: NavigationProps): boolean {
@@ -165,8 +163,8 @@ class Navigation {
    * Normalize navigation item props
    *
    * @private
-   * @param {import('./NavigationTypes').NavigationItem} item
-   * @return {import('./NavigationTypes').NavigationItem|undefined}
+   * @param {NavigationItem} item
+   * @return {NavigationItem|undefined}
    */
   #getItemInfo (item: NavigationItem): NavigationItem | undefined {
     if (!isObjectStrict(item)) {
@@ -222,11 +220,11 @@ class Navigation {
       props.descendentCurrent = descendentCurrent
     }
 
-    Object.keys(item).forEach((p) => {
-      if (props[p] === undefined) {
-        props[p] = item[p]
+    for (const [key, value] of Object.entries(item)) {
+      if (props[key] === undefined) {
+        props[key] = value
       }
-    })
+    }
 
     return props
   }
@@ -235,8 +233,8 @@ class Navigation {
    * Loop through items to check and set children
    *
    * @private
-   * @param {import('./NavigationTypes').NavigationItem[]} children
-   * @param {import('./NavigationTypes').NavigationItem[]} store
+   * @param {NavigationItem[]} children
+   * @param {NavigationItem[]} store
    * @return {boolean}
    */
   #recurseItemChildren (
@@ -268,8 +266,8 @@ class Navigation {
    * Return navigation items by id
    *
    * @private
-   * @param {import('./NavigationTypes').NavigationItem[]} items
-   * @return {import('./NavigationTypes').NavigationItem[]}
+   * @param {NavigationItem[]} items
+   * @return {NavigationItem[]}
    */
   #getItems (items: NavigationItem[] = []): NavigationItem[] {
     if (items.length === 0) {
@@ -317,9 +315,9 @@ class Navigation {
    * Loop through items to create html
    *
    * @private
-   * @param {import('./NavigationTypes').NavigationItem[]} items
-   * @param {import('../../global/globalTypes').HtmlString} output
-   * @param {import('./NavigationTypes').NavigationOutputArgs} args
+   * @param {NavigationItem[]} items
+   * @param {HtmlString} output
+   * @param {NavigationOutputArgs} args
    * @param {number} depth
    * @param {number} maxDepth
    * @return {void}
@@ -474,7 +472,7 @@ class Navigation {
    * Return navigation html output
    *
    * @param {string} location
-   * @param {import('./NavigationTypes').NavigationOutputArgs} args
+   * @param {NavigationOutputArgs} args
    * @param {number} maxDepth
    * @return {string} HTML - ul
    */
@@ -487,7 +485,7 @@ class Navigation {
       return ''
     }
 
-    const items = this.#navigationsByLocation[location].items
+    const items = this.#navigationsByLocation[location]?.items
     const normalizedItems = this.#getItems(items)
 
     args = Object.assign({
@@ -518,8 +516,8 @@ class Navigation {
   /**
    * Return breadcrumbs html output
    *
-   * @param {import('./NavigationTypes').NavigationBreadcrumbItem[]} items
-   * @param {import('./NavigationTypes').NavigationBreadcrumbOutputArgs} args
+   * @param {NavigationBreadcrumbItem[]} items
+   * @param {NavigationBreadcrumbOutputArgs} args
    * @param {string} current
    * @return {string} HTML - ol
    */

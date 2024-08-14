@@ -4,15 +4,15 @@
 
 /* Imports */
 
-import type { RenderItem, RenderInlineItemArgs } from './renderTypes'
-import { renderContent, renderItem, getRenderFunctions } from './render'
-import { isObjectStrict } from '../utils/isObject/isObject'
-import { isString } from '../utils/isString/isString'
+import type { RenderItem, RenderInlineItemArgs } from './renderTypes.js'
+import { renderContent, renderItem, getRenderFunctions } from './render.js'
+import { isObjectStrict } from '../utils/object/object.js'
+import { isString } from '../utils/string/string.js'
 
 /**
- * Function - convenience wrapper for render content
+ * Convenience wrapper for render content
  *
- * @param {import('./renderTypes').RenderItem[]} items
+ * @param {RenderItem[]} items
  * @return {Promise<string>}
  */
 const renderInlineContent = async (items: RenderItem[]): Promise<string> => {
@@ -28,9 +28,9 @@ const renderInlineContent = async (items: RenderItem[]): Promise<string> => {
 }
 
 /**
- * Function - convenience wrapper for render item
+ * Convenience wrapper for render item
  *
- * @param {import('./renderTypes').RenderInlineItemArgs} args
+ * @param {RenderInlineItemArgs} args
  * @return {Promise<string>}
  */
 const renderInlineItem = async (args: RenderInlineItemArgs): Promise<string> => {

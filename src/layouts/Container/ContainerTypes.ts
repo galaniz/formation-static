@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { ParentArgs } from '../../global/globalTypes'
+import type { ParentArgs } from '../../global/globalTypes.js'
 
 /**
  * @typedef {object} ContainerProps
@@ -25,7 +25,7 @@ import type { ParentArgs } from '../../global/globalTypes'
  * @prop {string} [args.style] - Back end option
  * @prop {string} [args.attr] - Back end option
  * @prop {boolean} [args.nest] - Back end option
- * @prop {import('../../global/globalTypes').ParentArgs} [parents]
+ * @prop {ParentArgs} [parents]
  */
 export interface ContainerProps {
   args: {

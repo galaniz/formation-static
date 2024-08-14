@@ -4,8 +4,8 @@
 
 /* Imports */
 
-import type { InternalLink, ParentArgs } from '../../global/globalTypes'
-import type { RenderRichText } from '../../render/renderTypes'
+import type { RenderRichText } from '../../render/renderTypes.js'
+import type { InternalLink, ParentArgs } from '../../global/globalTypes.js'
 
 /**
  * @typedef {object} RichTextHeading
@@ -35,18 +35,18 @@ export interface RichTextElement {
  * @typedef {object} RichTextProps
  * @prop {object} args
  * @prop {string} [args.tag]
- * @prop {import('../../render/renderTypes').RenderRichText[]|string} [args.content]
+ * @prop {RenderRichText[]|string} [args.content]
  * @prop {string} [args.classes]
  * @prop {string} [args.textStyle]
  * @prop {string} [args.headingStyle]
  * @prop {string} [args.caption]
  * @prop {string} [args.align]
  * @prop {string} [args.link]
- * @prop {import('../../global/globalTypes').InternalLink} [args.internalLink]
+ * @prop {InternalLink} [args.internalLink]
  * @prop {string} [args.style]
  * @prop {string} [args.attr]
  * @prop {boolean|string[]} [args.dataAttr=true]
- * @prop {import('../../global/globalTypes').ParentArgs} [parents]
+ * @prop {ParentArgs} [parents]
  * @prop {RichTextHeading[]} [headings]
  */
 export interface RichTextProps {
@@ -71,7 +71,7 @@ export interface RichTextProps {
 
 /**
  * @typedef {object} RichTextContentProps
- * @prop {import('../../render/renderTypes').RenderRichText[]} content
+ * @prop {RenderRichText[]} content
  * @prop {RichTextProps} props
  * @prop {boolean|string[]} dataAttr
  * @prop {string} [_output]
@@ -85,7 +85,7 @@ export interface RichTextContentProps {
 
 /**
  * @typedef {object} RichTextContentFilterArgs
- * @prop {import('../../render/renderTypes').RenderRichText} args
+ * @prop {RenderRichText} args
  * @prop {RichTextProps} props
  */
 export interface RichTextContentFilterArgs {
@@ -131,9 +131,9 @@ export type RichTextOutputFilter = (output: string, args: RichTextContentOutputF
 
 /**
  * @typedef {function} RichTextContentItemFilter
- * @param {import('../../render/renderTypes').RenderRichText} item
+ * @param {RenderRichText} item
  * @param {RichTextProps} args
- * @return {Promise<import('../../render/renderTypes').RenderRichText>}
+ * @return {Promise<RenderRichText>}
  */
 export type RichTextContentItemFilter = (item: RenderRichText, args: RichTextProps) => Promise<RenderRichText>
 
