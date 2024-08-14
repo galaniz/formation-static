@@ -206,31 +206,45 @@ export interface RenderNavigationsArgs extends NavigationProps {
 }
 
 /**
+ * @typedef {function} RenderNavigations
+ * @param {RenderNavigationsArgs} args
+ * @return {Promise<GenericStrings>}
+ */
+export type RenderNavigations = (args: RenderNavigationsArgs) => Promise<GenericStrings>
+
+/**
  * @typedef {object} RenderHttpErrorArgs
  * @type {Generic}
  * @prop {number} code
  */
 export interface RenderHttpErrorArgs extends Generic {
-  code: number | 404 | 500
+  code: number
 }
+
+/**
+ * @typedef {function} RenderHttpError
+ * @param {RenderHttpErrorArgs} args
+ * @return {Promise<string>}
+ */
+export type RenderHttpError = (args: RenderHttpErrorArgs) => Promise<string>
 
 /**
  * @typedef {object} RenderFunctionArgs
  * @prop {object} args
- * @prop {ParentArgs[]} parents
- * @prop {RenderItem} pageData
- * @prop {string[]} pageContains
- * @prop {GenericStrings} navigations
+ * @prop {ParentArgs[]} [parents]
+ * @prop {RenderItem} [pageData]
+ * @prop {string[]} [pageContains]
+ * @prop {GenericStrings} [navigations]
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RichTextHeading[]} [headings]
  * @prop {RenderItem[]} [children]
  */
 export interface RenderFunctionArgs<T = any> {
   args: 0 extends (1 & T) ? {} : T
-  parents: ParentArgs[]
-  pageData: RenderItem
-  pageContains: string[]
-  navigations: GenericStrings
+  parents?: ParentArgs[]
+  pageData?: RenderItem
+  pageContains?: string[]
+  navigations?: GenericStrings
   serverlessData?: RenderServerlessData
   headings?: RichTextHeading[]
   children?: RenderItem[]
@@ -256,11 +270,7 @@ export type RenderFunction<T = any> = (props: RenderFunctionArgs<T>) => Promise<
 /**
  * @typedef {Object<string, RenderFunction>} RenderFunctions
  */
-export type RenderFunctions<T = any> = Record<string, RenderFunction<T>> & {
-  navigations?: (args: RenderNavigationsArgs) => Promise<GenericStrings>
-  layout?: (args: RenderLayoutArgs) => Promise<string>
-  httpError?: (args: RenderHttpErrorArgs) => Promise<string>
-}
+export type RenderFunctions<T = any> = Record<string, RenderFunction<T>>
 
 /**
  * @typedef RenderContentArgs
@@ -415,6 +425,13 @@ export interface RenderLayoutArgs {
   pageContains?: string[]
   serverlessData?: RenderServerlessData
 }
+
+/**
+ * @typedef {function} RenderLayout
+ * @param {RenderLayoutArgs} args
+ * @return {Promise<string>}
+ */
+export type RenderLayout = (args: RenderLayoutArgs) => Promise<string>
 
 /**
  * @typedef RenderAllData

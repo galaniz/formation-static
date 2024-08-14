@@ -98,8 +98,8 @@ const Reload = async ({ request, functionPath, next, env, siteConfig }: ReloadAr
 
     let html = ''
 
-    if (isFunction(config.renderFunctions.httpError)) {
-      html = await config.renderFunctions.httpError({ code: statusCode })
+    if (isFunction(config.renderHttpError)) {
+      html = await config.renderHttpError({ code: statusCode })
     }
 
     return new Response(html, {

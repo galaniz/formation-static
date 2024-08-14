@@ -6,7 +6,13 @@
 
 import type { Generic, GenericFunctions, GenericStrings } from '../global/globalTypes.js'
 import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes.js'
-import type { RenderFunctions, RenderItem } from '../render/renderTypes.js'
+import type {
+  RenderFunctions,
+  RenderHttpError,
+  RenderItem,
+  RenderLayout,
+  RenderNavigations
+} from '../render/renderTypes.js'
 import type { Filters } from '../utils/filters/filtersTypes.js'
 import type { Actions } from '../utils/actions/actionsTypes.js'
 import type { Shortcodes } from '../utils/shortcodes/shortcodesTypes.js'
@@ -303,6 +309,9 @@ export type ConfigFilter = (config: Config, env: ConfigEnvArg) => Promise<Config
  * @prop {string[]} wholeTypes
  * @prop {GenericStrings} renderTypes
  * @prop {RenderFunctions} renderFunctions
+ * @prop {RenderLayout} renderLayout
+ * @prop {RenderNavigations} [renderNavigations]
+ * @prop {RenderHttpError} [renderHttpError]
  */
 export interface ConfigBase {
   namespace: string
@@ -313,6 +322,9 @@ export interface ConfigBase {
   wholeTypes: string[]
   renderTypes: GenericStrings
   renderFunctions: RenderFunctions
+  renderLayout: RenderLayout
+  renderNavigations?: RenderNavigations
+  renderHttpError?: RenderHttpError
 }
 
 /**

@@ -31,10 +31,11 @@ const _addScriptStyle = (
   /* Input and output dir */
 
   const scripts = config[type]
+  const ext = type === 'scripts' ? 'js' : 'scss'
 
   const { inputDir, outputDir } = scripts
 
-  const input = `${inputDir}/${path}`
+  const input = `${inputDir}/${path}.${ext}`
   const output = `${outputDir}/${path}`
 
   /* Add to build */
@@ -45,7 +46,7 @@ const _addScriptStyle = (
 
   if (isArrayStrict(deps)) {
     deps.forEach((dep) => {
-      const depInput = `${inputDir}/${dep}`
+      const depInput = `${inputDir}/${dep}.${ext}`
       const depOutput = `${outputDir}/${dep}`
 
       if (!scripts.deps.has(output)) {

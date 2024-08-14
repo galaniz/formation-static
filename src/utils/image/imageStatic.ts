@@ -31,6 +31,7 @@ const setStaticImages = async (): Promise<Array<PromiseSettledResult<sharp.Outpu
     }
 
     await mkdir(resolve(outputDir), { recursive: true })
+    await mkdir(resolve(dirname(dataFile)), { recursive: true })
 
     const sharpImages: ImagesSharp[] = []
 

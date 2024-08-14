@@ -667,14 +667,14 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   let navigations: GenericStrings = {}
 
-  if (isFunction(renderFunctions.navigations)) {
+  if (isFunction(config.renderNavigations)) {
     let currentType = contentType
 
     if (isObjectStrict(taxonomy)) {
       currentType = isStringStrict(taxonomy.contentType) ? taxonomy.contentType : contentType
     }
 
-    navigations = await renderFunctions.navigations({
+    navigations = await config.renderNavigations({
       navigations: config.navigation,
       items: config.navigationItem,
       currentLink: permalink,
@@ -741,7 +741,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   let layoutOutput = ''
 
-  if (isFunction(renderFunctions.layout)) {
+  if (isFunction(config.renderLayout)) {
     const layoutArgs: RenderLayoutArgs = {
       id,
       meta,
@@ -755,7 +755,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
       serverlessData
     }
 
-    layoutOutput = await renderFunctions.layout(layoutArgs)
+    layoutOutput = await config.renderLayout(layoutArgs)
   }
 
   const renderItemFilterArgs: RenderItemActionArgs = {
@@ -1032,7 +1032,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
   /* Output */
 
   const [outputItem] = data
-  const output = (isServerless || isPreview !== undefined) && outputItem !== undefined ? outputItem : data
+  const output = (isServerless || isPreview) && outputItem !== undefined ? outputItem : data
 
   await doActions('renderEnd', { ...args, data: output })
 
