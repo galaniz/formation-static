@@ -41,91 +41,35 @@ const Column = async (props: ColumnProps): Promise<ColumnReturn> => {
 
   const {
     tag = 'div',
-    width = '',
-    widthSmall = '',
-    widthMedium = '',
-    widthLarge = '',
-    widthCustom = null,
-    justify = '',
-    align = '',
     classes = '',
     style = '',
     attr = ''
   } = isObjectStrict(args) ? args : {}
 
-  /* Classes */
+  /* Tag required */
 
-  const classesArr: string[] = []
-
-  if (isStringStrict(classes)) {
-    classesArr.push(classes)
-  }
-
-  /* Width */
-
-  if (isStringStrict(width)) {
-    classesArr.push(width)
-  }
-
-  if (isStringStrict(widthSmall) && widthSmall !== width) {
-    classesArr.push(widthSmall)
-  }
-
-  if (isStringStrict(widthMedium) && widthMedium !== widthSmall) {
-    classesArr.push(widthMedium)
-  }
-
-  if (isStringStrict(widthLarge) && widthLarge !== widthMedium) {
-    classesArr.push(widthLarge)
-  }
-
-  /* Justify */
-
-  if (isStringStrict(justify)) {
-    classesArr.push(justify)
-  }
-
-  /* Align */
-
-  if (isStringStrict(align)) {
-    classesArr.push(align)
+  if (!isStringStrict(tag)) {
+    return fallback
   }
 
   /* Style */
 
-  const stylesArr: string[] = []
+  let styles = ''
 
   if (isStringStrict(style)) {
-    stylesArr.push(style)
+    styles = ` style="${style}"`
   }
-
-  if (isObjectStrict(widthCustom)) {
-    if (isStringStrict(widthCustom.class)) {
-      classesArr.push(widthCustom.class)
-    }
-
-    const styleArr = [
-      `--width:${isStringStrict(widthCustom.default) ? widthCustom.default : '100%'}`,
-      `--width-small:${isStringStrict(widthCustom.small) ? widthCustom.small : '100%'}`,
-      `--width-medium:${isStringStrict(widthCustom.medium) ? widthCustom.medium : '100%'}`,
-      `--width-large:${isStringStrict(widthCustom.large) ? widthCustom.large : '100%'}`
-    ]
-
-    stylesArr.push(styleArr.join(';'))
-  }
-
-  const styles = (stylesArr.length > 0) ? ` style="${stylesArr.join(';')}"` : ''
 
   /* Attributes */
 
   let attrs = ''
 
-  if (isStringStrict(attr)) {
-    attrs = ` ${attr}`
+  if (isStringStrict(classes)) {
+    attrs += ` class="${classes}"`
   }
 
-  if (classesArr.length > 0) {
-    attrs += ` class="${classesArr.join(' ')}"`
+  if (isStringStrict(attr)) {
+    attrs += ` ${attr}`
   }
 
   /* Output */

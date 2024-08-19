@@ -14,7 +14,6 @@ import type { RenderItem } from '../../render/renderTypes.js'
  * @prop {number} [page]
  * @prop {string} [contentType]
  * @prop {RenderItem} [pageData]
- * @prop {boolean} [returnParents]
  */
 export interface LinkSlugArgs {
   id?: string
@@ -22,7 +21,6 @@ export interface LinkSlugArgs {
   page?: number
   contentType?: string
   pageData?: RenderItem
-  returnParents?: boolean
 }
 
 /**
@@ -34,6 +32,11 @@ export interface LinkSlugReturn {
   slug: string
   parents: ConfigParent[]
 }
+
+/**
+ * @typedef {string|LinkSlugReturn} LinkSlugReturnType
+ */
+export type LinkSlugReturnType<T extends boolean> = T extends true ? LinkSlugReturn : string
 
 /**
  * @typedef {object} LinkShare

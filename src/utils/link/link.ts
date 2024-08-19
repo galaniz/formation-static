@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { LinkSlugArgs, LinkSlugReturn } from './linkTypes.js'
+import type { LinkSlugArgs, LinkSlugReturnType } from './linkTypes.js'
 import type { ConfigParent } from '../../config/configTypes.js'
 import type { InternalLink } from '../../global/globalTypes.js'
 import { config } from '../../config/config.js'
@@ -32,22 +32,21 @@ const _getParentSlug = (id: string = '', parents: ConfigParent[] = []): void => 
  * Get slug with archive/taxonomy base and parents
  *
  * @param {LinkSlugArgs} args
- * @return {string|LinkSlugReturn}
+ * @return {LinkSlugReturnType}
  */
-const getSlug = (args: LinkSlugArgs): string | LinkSlugReturn => {
+const getSlug = <T extends boolean>(args: LinkSlugArgs, returnParents = false as T): LinkSlugReturnType<T> => {
   const {
     id = '',
     slug = '',
     page = 0,
     contentType = 'page',
-    pageData = undefined,
-    returnParents = false
+    pageData = undefined
   } = isObjectStrict(args) ? args : {}
 
   /* Index */
 
-  if (slug === 'index') {
-    return ''
+  if (slug === 'index' && returnParents === false) {
+    return '' as LinkSlugReturnType<T>
   }
 
   /* Parts */
@@ -135,20 +134,22 @@ const getSlug = (args: LinkSlugArgs): string | LinkSlugReturn => {
 
   /* Parents and slug return */
 
-  if (returnParents) {
+  if (returnParents === true) {
     if (archiveParent !== undefined) {
       parents.unshift(archiveParent)
     }
 
-    return {
+    const res = {
       slug: s,
       parents
     }
+
+    return res as LinkSlugReturnType<T>
   }
 
   /* Slug return */
 
-  return s
+  return s as LinkSlugReturnType<T>
 }
 
 /**
@@ -163,6 +164,10 @@ const getPermalink = (slug: string = '', trailingSlash: boolean = true): string 
 
   if (config.env.prod) {
     url = config.env.urls.prod
+  }
+
+  if (slug === '/') {
+    return url
   }
 
   return `${url}${slug}${slug !== '' && trailingSlash ? '/' : ''}`
@@ -184,13 +189,9 @@ const getLink = (internalLink?: InternalLink, externalLink?: string): string => 
       contentType: internalLink.contentType,
       pageData: internalLink,
       slug: isString(slug) ? slug : ''
-    })
+    }, false)
 
-    if (isString(res)) {
-      return getPermalink(res)
-    }
-
-    return ''
+    return getPermalink(res)
   }
 
   return isStringStrict(externalLink) ? externalLink : ''

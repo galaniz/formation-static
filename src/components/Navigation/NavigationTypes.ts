@@ -23,12 +23,12 @@ export interface NavigationProps {
 /**
  * @typedef Navigation
  * @type {Generic}
- * @prop {string} [title]
+ * @prop {string} title
  * @prop {string} location
  * @prop {NavigationItem[]} items
  */
 export interface Navigation extends Generic {
-  title?: string
+  title: string
   location: string
   items: NavigationItem[]
 }

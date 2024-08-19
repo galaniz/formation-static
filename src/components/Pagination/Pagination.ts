@@ -49,7 +49,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     linkClass = '',
     linkAttr = '',
     currentClass = '',
-    a11yClass = 'a-visually-hidden',
+    a11yClass = 'a-hide-vis',
     prevSpanClass = '',
     prevLinkClass = '',
     nextSpanClass = '',

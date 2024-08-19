@@ -240,7 +240,7 @@ export type RenderHttpError = (args: RenderHttpErrorArgs) => Promise<string>
  * @prop {RenderItem[]} [children]
  */
 export interface RenderFunctionArgs<T = any> {
-  args: 0 extends (1 & T) ? {} : T
+  args: 0 extends (1 & T) ? any : T
   parents?: ParentArgs[]
   pageData?: RenderItem
   pageContains?: string[]

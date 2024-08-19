@@ -52,9 +52,7 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
     format = 'jpg'
   } = data
 
-  let {
-    url = ''
-  } = data
+  let { url = '' } = data
 
   /* Static url */
 

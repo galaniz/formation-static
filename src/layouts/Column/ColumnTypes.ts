@@ -10,19 +10,10 @@ import type { ParentArgs } from '../../global/globalTypes.js'
  * @typedef {object} ColumnProps
  * @prop {object} args
  * @prop {string} [args.tag]
- * @prop {string} [args.width]
- * @prop {string} [args.widthSmall]
- * @prop {string} [args.widthMedium]
- * @prop {string} [args.widthLarge]
- * @prop {object} [args.widthCustom]
- * @prop {string} [args.widthCustom.class]
- * @prop {string} args.widthCustom.default
- * @prop {string} args.widthCustom.small
- * @prop {string} args.widthCustom.medium
- * @prop {string} args.widthCustom.large
- * @prop {string} [args.justify]
- * @prop {string} [args.align]
- * @prop {boolean} [args.grow]
+ * @prop {string} [args.width] - Used in getImageMaxWidth()
+ * @prop {string} [args.widthSmall] - Used in getImageMaxWidth()
+ * @prop {string} [args.widthMedium] - Used in getImageMaxWidth()
+ * @prop {string} [args.widthLarge] - Used in getImageMaxWidth()
  * @prop {string} [args.classes] - Back end option
  * @prop {string} [args.style] - Back end option
  * @prop {string} [args.attr] - Back end option
@@ -35,16 +26,6 @@ export interface ColumnProps {
     widthSmall?: string
     widthMedium?: string
     widthLarge?: string
-    widthCustom?: {
-      class?: string
-      default: string
-      small: string
-      medium: string
-      large: string
-    }
-    justify?: string
-    align?: string
-    grow?: boolean
     classes?: string
     style?: string
     attr?: string
@@ -70,4 +51,9 @@ export interface ColumnReturn {
  * @param {string} args.renderType
  * @return {Promise<ColumnProps>}
  */
-export type ColumnPropsFilter = (props: ColumnProps, args: { renderType: string }) => Promise<ColumnProps>
+export type ColumnPropsFilter = (
+  props: ColumnProps,
+  args: {
+    renderType: string
+  }
+) => Promise<ColumnProps>

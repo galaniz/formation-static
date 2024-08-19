@@ -10,17 +10,8 @@ import type { ParentArgs } from '../../global/globalTypes.js'
  * @typedef {object} ContainerProps
  * @prop {object} args
  * @prop {string} [args.tag]
- * @prop {string} [args.layout]
- * @prop {string} [args.background]
- * @prop {string} [args.maxWidth]
- * @prop {string} [args.paddingTop]
- * @prop {string} [args.paddingTopLarge]
- * @prop {string} [args.paddingBottom]
- * @prop {string} [args.paddingBottomLarge]
- * @prop {string} [args.gap]
- * @prop {string} [args.gapLarge]
- * @prop {string} [args.justify]
- * @prop {string} [args.align]
+ * @prop {string} [args.maxWidth] - Used in getImageMaxWidth()
+ * @prop {string} [args.layoutClasses] - Back end option
  * @prop {string} [args.classes] - Back end option
  * @prop {string} [args.style] - Back end option
  * @prop {string} [args.attr] - Back end option
@@ -30,17 +21,8 @@ import type { ParentArgs } from '../../global/globalTypes.js'
 export interface ContainerProps {
   args: {
     tag?: string
-    layout?: string
-    background?: string
     maxWidth?: string
-    paddingTop?: string
-    paddingTopLarge?: string
-    paddingBottom?: string
-    paddingBottomLarge?: string
-    gap?: string
-    gapLarge?: string
-    justify?: string
-    align?: string
+    layoutClasses?: string
     classes?: string
     style?: string
     attr?: string
@@ -67,4 +49,9 @@ export interface ContainerReturn {
  * @param {string} args.renderType
  * @return {Promise<ContainerProps>}
  */
-export type ContainerPropsFilter = (props: ContainerProps, args: { renderType: string }) => Promise<ContainerProps>
+export type ContainerPropsFilter = (
+  props: ContainerProps,
+  args: {
+    renderType: string
+  }
+) => Promise<ContainerProps>

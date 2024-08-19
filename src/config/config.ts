@@ -128,12 +128,14 @@ let config: Config = {
     inputDir: 'src',
     outputDir: 'css',
     deps: new Map(),
+    item: new Map(),
     build: new Map()
   },
   scripts: {
     inputDir: 'lib',
     outputDir: 'js',
     deps: new Map(),
+    item: new Map(),
     build: new Map()
   },
   apiKeys: {

@@ -123,7 +123,7 @@ const getArchiveLink = (contentType: string = '', pageData?: RenderItem): Archiv
       slug: '',
       contentType,
       pageData
-    })
+    }, false)
 
     title = taxonomyTitle
   }
@@ -153,7 +153,7 @@ const getArchiveLink = (contentType: string = '', pageData?: RenderItem): Archiv
       id: archiveId,
       slug: archiveSlug,
       contentType: 'page'
-    })
+    }, false)
 
     const plural = config?.archiveMeta?.[contentType]?.plural
 

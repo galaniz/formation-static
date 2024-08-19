@@ -43,21 +43,18 @@ const Container = async (props: ContainerProps): Promise<ContainerReturn> => {
 
   const {
     tag = 'div',
-    layout = 'column',
-    maxWidth = '',
-    paddingTop = '',
-    paddingTopLarge = '',
-    paddingBottom = '',
-    paddingBottomLarge = '',
-    gap = '',
-    gapLarge = '',
-    justify = '',
-    align = '',
+    layoutClasses = '',
     classes = '',
     style = '',
     attr = '',
     nest = false
   } = args
+
+  /* Tag required */
+
+  if (!isStringStrict(tag)) {
+    return fallback
+  }
 
   /* Semantically specific */
 
@@ -65,81 +62,39 @@ const Container = async (props: ContainerProps): Promise<ContainerReturn> => {
 
   /* Classes */
 
-  const classesArr: string[] = []
-  const layoutClassesArr: string[] = []
+  const hasLayoutClasses = isStringStrict(layoutClasses)
+  const hasClasses = isStringStrict(classes)
 
   /* Attributes */
 
   const attrs: string[] = []
   const innerAttrs: string[] = []
 
-  /* Max width */
-
-  if (isStringStrict(maxWidth)) {
-    classesArr.push(maxWidth)
-  }
-
-  /* Layout */
-
-  if (isStringStrict(layout)) {
-    layoutClassesArr.push(layout)
-  }
-
-  /* Gap */
-
-  if (isStringStrict(gap)) {
-    layoutClassesArr.push(gap)
-  }
-
-  if (isStringStrict(gapLarge) && gapLarge !== gap) {
-    layoutClassesArr.push(gapLarge)
-  }
-
-  /* Justify */
-
-  if (isStringStrict(justify)) {
-    layoutClassesArr.push(justify)
-  }
-
-  /* Align */
-
-  if (isStringStrict(align)) {
-    layoutClassesArr.push(align)
-  }
-
-  /* Padding */
-
-  if (isStringStrict(paddingTop)) {
-    classesArr.push(paddingTop)
-  }
-
-  if (isStringStrict(paddingTopLarge) && paddingTopLarge !== paddingTop) {
-    classesArr.push(paddingTopLarge)
-  }
-
-  if (isStringStrict(paddingBottom)) {
-    classesArr.push(paddingBottom)
-  }
-
-  if (isStringStrict(paddingBottomLarge) && paddingBottomLarge !== paddingBottom) {
-    classesArr.push(paddingBottomLarge)
-  }
-
   /* Nest check */
 
-  const isNested = nest && layoutClassesArr.length > 0
+  const isNested = nest && hasLayoutClasses
   const isNestedSemanticParent = isSemanticParent && isNested
 
   /* Classes */
 
-  const hasClasses = isStringStrict(classes)
-  const innerClassesArr = isNested ? layoutClassesArr : []
-  const outerClassesArr = isNested ? classesArr : classesArr.concat(layoutClassesArr)
+  const innerClassesArr = []
 
-  if (hasClasses) {
-    const arr = isNestedSemanticParent ? innerClassesArr : outerClassesArr
+  if (isNested && hasLayoutClasses) {
+    innerClassesArr.push(layoutClasses)
+  }
 
-    arr.push(classes)
+  const outerClassesArr = []
+
+  if (isNested && hasClasses) {
+    outerClassesArr.push(classes)
+  }
+
+  if (!isNested && hasClasses) {
+    outerClassesArr.push(classes)
+  }
+
+  if (!isNested && hasLayoutClasses) {
+    outerClassesArr.push(layoutClasses)
   }
 
   if (outerClassesArr.length > 0) {
@@ -154,12 +109,12 @@ const Container = async (props: ContainerProps): Promise<ContainerReturn> => {
 
   const att = isNestedSemanticParent ? innerAttrs : attrs
 
-  if (isStringStrict(style)) {
-    att.push(`style="${style}"`)
-  }
-
   if (isStringStrict(attr)) {
     att.push(attr)
+  }
+
+  if (isStringStrict(style)) {
+    att.push(`style="${style}"`)
   }
 
   /* Output */

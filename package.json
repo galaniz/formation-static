@@ -21,6 +21,7 @@
     "build:lib": "tsc",
     "build:cjs": "tsc --moduleResolution node --module commonjs --esModuleInterop --outDir cjs/",
     "build": "npm run build:lib && npm run build:cjs && node build/packageFile.js",
+    "test": "vitest --run --reporter verbose --coverage",
     "lint": "npx ts-standard",
     "release": "release-it --preRelease=beta",
     "jsdoc": "jsdoc -c jsdoc.json"
@@ -40,9 +41,11 @@
     "@types/node": "^22.2.0",
     "@types/uuid": "^10.0.0",
     "@types/wordpress__block-serialization-spec-parser": "^3.1.3",
+    "@vitest/coverage-v8": "^2.0.5",
     "release-it": "^17.6.0",
     "ts-standard": "^12.0.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
   },
   "dependencies": {
     "@wordpress/block-serialization-spec-parser": "^5.5.0",

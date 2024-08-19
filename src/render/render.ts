@@ -25,7 +25,6 @@ import type {
 import type {
   ConfigParents,
   ConfigFormMeta,
-  ConfigParent,
   ConfigArchiveMeta
 } from '../config/configTypes.js'
 import type {
@@ -44,7 +43,7 @@ import { getSlug, getPermalink } from '../utils/link/link.js'
 import { getJsonFile } from '../utils/json/json.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
 import { isArray, isArrayStrict } from '../utils/array/array.js'
-import { isObject, isObjectStrict } from '../utils/object/object.js'
+import { isObjectStrict } from '../utils/object/object.js'
 import { isNumber } from '../utils/number/number.js'
 import { isFunction } from '../utils/function/function.js'
 import { doShortcodes } from '../utils/shortcodes/shortcodes.js'
@@ -128,11 +127,9 @@ const _setPaginationMeta = (
 
   slugArgs.page = current > 1 ? current : 0
 
-  const s = getSlug(slugArgs)
+  const s = getSlug(slugArgs, true)
 
-  if (isObject(s)) {
-    meta.canonical = `${getPermalink(s.slug, current === 1)}${isString(currentFilters) ? currentFilters : ''}`
-  }
+  meta.canonical = `${getPermalink(s.slug, current === 1)}${isString(currentFilters) ? currentFilters : ''}`
 
   if (isStringStrict(args.title)) {
     meta.paginationTitle = args.title
@@ -141,21 +138,17 @@ const _setPaginationMeta = (
   if (isNumber(args.prev)) {
     slugArgs.page = args.prev > 1 ? args.prev : 0
 
-    const p = getSlug(slugArgs)
+    const p = getSlug(slugArgs, true)
 
-    if (isObject(p)) {
-      meta.prev = `${getPermalink(p.slug, args.prev === 1)}${isString(prevFilters) ? prevFilters : ''}`
-    }
+    meta.prev = `${getPermalink(p.slug, args.prev === 1)}${isString(prevFilters) ? prevFilters : ''}`
   }
 
   if (isNumber(args.next) && args.next > 1) {
     slugArgs.page = args.next
 
-    const n = getSlug(slugArgs)
+    const n = getSlug(slugArgs, true)
 
-    if (isObject(n)) {
-      meta.next = `${getPermalink(n.slug, false)}${isString(nextFilters) ? nextFilters : ''}`
-    }
+    meta.next = `${getPermalink(n.slug, false)}${isString(nextFilters) ? nextFilters : ''}`
   }
 }
 
@@ -599,9 +592,9 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
   /* Reset script and style files */
 
   config.scripts.deps.clear()
-  config.scripts.build.clear()
+  config.scripts.item.clear()
   config.styles.deps.clear()
-  config.styles.build.clear()
+  config.styles.item.clear()
 
   /* Meta */
 
@@ -627,20 +620,12 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
     page: 0
   }
 
-  const s = getSlug(slugArgs)
+  const s = getSlug(slugArgs, true)
+  const slug = s.slug
+  const permalink = getPermalink(slug)
+  const parents = s.parents
 
-  let slug = ''
-  let permalink = ''
-  let parents: ConfigParent[] = []
-
-  if (!isString(s)) {
-    slug = s.slug
-    parents = s.parents
-    permalink = getPermalink(slug)
-
-    item.basePermalink = getPermalink(slug)
-  }
-
+  item.basePermalink = getPermalink(slug)
   meta.url = permalink
   meta.canonical = permalink
 
@@ -836,9 +821,9 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
   /* Reset script and style directories */
 
   config.scripts.deps.clear()
-  config.scripts.build.clear()
+  config.scripts.item.clear()
   config.styles.deps.clear()
-  config.styles.build.clear()
+  config.styles.item.clear()
 
   /* Data */
 

@@ -9,7 +9,7 @@ import { isArrayStrict } from '../array/array.js'
 import { isStringStrict } from '../string/string.js'
 
 /**
- * Add style or script path and dependencies to build map
+ * Add style or script path and dependencies to item and build maps
  *
  * @private
  * @param {string} type - styles | scripts
@@ -38,8 +38,9 @@ const _addScriptStyle = (
   const input = `${inputDir}/${path}.${ext}`
   const output = `${outputDir}/${path}`
 
-  /* Add to build */
+  /* Add to item and build */
 
+  scripts.item.set(output, input)
   scripts.build.set(output, input)
 
   /* Add deps */
@@ -54,6 +55,7 @@ const _addScriptStyle = (
       }
 
       scripts.deps.get(output)?.add(depOutput)
+      scripts.item.set(depOutput, depInput)
       scripts.build.set(depOutput, depInput)
     })
   }
@@ -64,7 +66,7 @@ const _addScriptStyle = (
 }
 
 /**
- * Add script path and dependencies to build map
+ * Add script path and dependencies to item and build maps
  *
  * @param {string} path
  * @param {string[]} [deps]
@@ -75,7 +77,7 @@ const addScript = (path: string, deps: string[] = []): boolean => {
 }
 
 /**
- * Add style path and dependencies to build map
+ * Add style path and dependencies to item and build maps
  *
  * @param {string} path
  * @param {string[]} [deps]
@@ -103,29 +105,29 @@ const _outputScriptsStyles = (type: 'styles' | 'scripts', link: string): string 
   /* Vars */
 
   const {
-    build,
+    item,
     deps
   } = config[type]
 
   /* Check if scripts exist */
 
-  if (build.size === 0) {
+  if (item.size === 0) {
     return ''
   }
 
   /* Sort by dependencies */
 
-  const buildOut = Array.from(build.keys())
+  const itemOut = Array.from(item.keys())
 
-  buildOut.sort((a, b) => {
-    const bIsDep = deps.get(a)?.has(b)
+  itemOut.sort((a, b) => {
     const aIsDep = deps.get(b)?.has(a)
+    const bIsDep = deps.get(a)?.has(b)
 
-    if (bIsDep === true) {
+    if (aIsDep === true) {
       return -1
     }
 
-    if (aIsDep === true) {
+    if (bIsDep === true) {
       return 1
     }
 
@@ -136,7 +138,7 @@ const _outputScriptsStyles = (type: 'styles' | 'scripts', link: string): string 
 
   let output = ''
 
-  buildOut.forEach((out) => {
+  itemOut.forEach((out) => {
     if (type === 'scripts') {
       output += `<script type="module" src="${link}${out}.js"></script>`
     }

@@ -230,7 +230,7 @@ class Navigation {
   }
 
   /**
-   * Loop through items to check and set children
+   * Check if any children match current link
    *
    * @private
    * @param {NavigationItem[]} children
@@ -250,9 +250,12 @@ class Navigation {
         return
       }
 
-      const { current = false } = info
+      const {
+        current = false,
+        archiveCurrent = false
+      } = info
 
-      if (current) {
+      if (current || archiveCurrent) {
         childCurrent = true
       }
 
@@ -270,10 +273,6 @@ class Navigation {
    * @return {NavigationItem[]}
    */
   #getItems (items: NavigationItem[] = []): NavigationItem[] {
-    if (items.length === 0) {
-      return []
-    }
-
     const resItems: NavigationItem[] = []
 
     items.forEach(item => {
@@ -478,7 +477,7 @@ class Navigation {
    */
   getOutput (
     location: string = '',
-    args: NavigationOutputArgs,
+    args?: NavigationOutputArgs,
     maxDepth?: number
   ): string {
     if (this.#navigationsByLocation[location] === undefined) {
@@ -487,6 +486,10 @@ class Navigation {
 
     const items = this.#navigationsByLocation[location]?.items
     const normalizedItems = this.#getItems(items)
+
+    if (normalizedItems.length === 0) {
+      return ''
+    }
 
     args = Object.assign({
       listClass: '',
@@ -504,7 +507,7 @@ class Navigation {
       filterAfterLink: () => {},
       filterBeforeLinkText: () => {},
       filterAfterLinkText: () => {}
-    }, args)
+    }, isObjectStrict(args) ? args : {})
 
     const output = { html: '' }
 
@@ -517,14 +520,14 @@ class Navigation {
    * Return breadcrumbs html output
    *
    * @param {NavigationBreadcrumbItem[]} items
-   * @param {NavigationBreadcrumbOutputArgs} args
    * @param {string} current
+   * @param {NavigationBreadcrumbOutputArgs} [args]
    * @return {string} HTML - ol
    */
   getBreadcrumbs (
-    items: NavigationBreadcrumbItem[] = [],
-    args: NavigationBreadcrumbOutputArgs,
-    current: string = ''
+    items: NavigationBreadcrumbItem[],
+    current: string = '',
+    args?: NavigationBreadcrumbOutputArgs
   ): string {
     /* Items required */
 
@@ -543,45 +546,49 @@ class Navigation {
       internalLinkClass: '',
       linkAttr: '',
       currentClass: '',
-      a11yClass: 'a-visually-hidden',
+      a11yClass: 'a-hide-vis',
       filterBeforeLink: () => {},
       filterAfterLink: () => {}
-    }, args)
+    }, isObjectStrict(args) ? args : {})
 
     /* List attributes */
 
     const listClasses = isStringStrict(args.listClass) ? ` class="${args.listClass}"` : ''
     const listAttrs = isStringStrict(args.listAttr) ? ` ${args.listAttr}` : ''
 
-    /* Loop through items */
+    /* Remove items that do not have title or slug */
 
-    const itemClasses = isStringStrict(args.itemClass) ? ` class="${args.itemClass}"` : ''
-    const itemAttrs = isStringStrict(args.itemAttr) ? ` ${args.itemAttr}` : ''
-    const lastItemIndex = items.length - 1
-
-    const itemsArr = items.map((item, index) => {
-      const { title } = item
-
-      /* Title required */
-
-      if (!isStringStrict(title)) {
-        return ''
+    const filteredItems = items.filter((item) => {
+      if (!isStringStrict(item.title)) {
+        return false
       }
 
-      /* Permalink required */
+      if (!isString(item.slug)) {
+        return false
+      }
 
-      const slug = getSlug({
+      item.slug = getSlug({
         id: item.id,
         slug: item.slug,
         contentType: item.contentType,
         pageData: item.internalLink
-      })
+      }, false)
 
-      const permalink = isString(slug) ? getPermalink(slug) : ''
+      return true
+    })
 
-      if (permalink === '') {
-        return ''
-      }
+    /* Loop through items */
+
+    const itemClasses = isStringStrict(args.itemClass) ? ` class="${args.itemClass}"` : ''
+    const itemAttrs = isStringStrict(args.itemAttr) ? ` ${args.itemAttr}` : ''
+    const lastItemIndex = filteredItems.length - 1
+
+    const itemsArr = filteredItems.map((item, index) => {
+      const { title, slug } = item
+
+      /* Link */
+
+      const link = getPermalink(slug)
 
       /* Output store */
 
@@ -618,7 +625,7 @@ class Navigation {
       const linkClasses = (linkClassesArr.length > 0) ? ` class="${linkClassesArr.join(' ')}"` : ''
       const linkAttrs = isStringStrict(args.linkAttr) ? ` ${args.linkAttr}` : ''
 
-      output.html += `<a${linkClasses} href="${permalink}"${linkAttrs}>${title}</a>`
+      output.html += `<a${linkClasses} href="${link}"${linkAttrs}>${title}</a>`
 
       if (isFunction(args.filterAfterLink)) {
         args.filterAfterLink(filterArgs)
@@ -644,6 +651,24 @@ class Navigation {
         </li>
       </ol>
     `
+  }
+
+  /**
+   * Return object of items stored by id
+   *
+   * @return {NavigationItemsById}
+   */
+  getItemsById (): NavigationItemsById {
+    return this.#itemsById
+  }
+
+  /**
+   * Return object of navigations stored by location
+   *
+   * @return {NavigationByLocation}
+   */
+  getNavigationsByLocation (): NavigationByLocation {
+    return this.#navigationsByLocation
   }
 }
 

@@ -269,12 +269,14 @@ export interface ConfigStatic {
  * @prop {string} inputDir
  * @prop {string} outputDir
  * @prop {Map.<string, Set<string>>} deps
+ * @prop {Map<string, string>} item - Current render item scripts or styles
  * @prop {Map<string, string>} build
  */
 export interface ConfigScriptsStyles {
   inputDir: string
   outputDir: string
   deps: Map<string, Set<string>>
+  item: Map<string, string>
   build: Map<string, string>
 }
 
