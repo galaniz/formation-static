@@ -25,8 +25,8 @@ const getPath = (file: string = '', type: string = ''): string => {
   let append = file
 
   if (type === 'store') {
-    const dir = config.store.dir
-    const name = config.store.files[file]?.name
+    const dir = config.storeDir
+    const name = config.storeFiles[file]?.name
 
     if (isStringStrict(dir) && isStringStrict(name)) {
       append = `${dir}/${name}`
@@ -35,7 +35,7 @@ const getPath = (file: string = '', type: string = ''): string => {
 
   if (file === 'image') {
     if (type === 'data') {
-      const dataFile = config.static.image.dataFile
+      const dataFile = config.image.dataFile
 
       if (isStringStrict(dataFile)) {
         append = dataFile
@@ -44,7 +44,7 @@ const getPath = (file: string = '', type: string = ''): string => {
 
     if (type === 'input' || type === 'output') {
       const dirName = type === 'input' ? 'inputDir' : 'outputDir'
-      const dir = config.static.image[dirName]
+      const dir = config.image[dirName]
 
       if (isStringStrict(dir)) {
         append = `${dir}/${file}`
@@ -53,8 +53,8 @@ const getPath = (file: string = '', type: string = ''): string => {
   }
 
   if (type === 'serverless') {
-    const dir = config.serverless.dir
-    const name = config.serverless.files[file as keyof ConfigServerlessFiles]
+    const dir = config.serverlessDir
+    const name = config.serverlessFiles[file as keyof ConfigServerlessFiles]
 
     if (isStringStrict(dir) && isStringStrict(name)) {
       append = `${dir}/${name}`

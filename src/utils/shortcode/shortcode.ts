@@ -1,5 +1,5 @@
 /**
- * Utils - Shortcodes
+ * Utils - Shortcode
  */
 
 /* Imports */
@@ -10,7 +10,7 @@ import type {
   ShortcodeData,
   Shortcode,
   Shortcodes
-} from './shortcodesTypes.js'
+} from './shortcodeTypes.js'
 import { isObjectStrict } from '../object/object.js'
 import { isArrayStrict } from '../array/array.js'
 import { isStringStrict } from '../string/string.js'

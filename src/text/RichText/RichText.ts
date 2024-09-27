@@ -13,7 +13,7 @@ import type {
 } from './RichTextTypes.js'
 import { getLink } from '../../utils/link/link.js'
 import { getExcerpt } from '../../utils/excerpt/excerpt.js'
-import { applyFilters } from '../../utils/filters/filters.js'
+import { applyFilters } from '../../utils/filter/filter.js'
 import { isString, isStringStrict } from '../../utils/string/string.js'
 import { isArray, isArrayStrict } from '../../utils/array/array.js'
 import { isObjectStrict } from '../../utils/object/object.js'
@@ -82,6 +82,10 @@ const _getContent = async (args: RichTextContentProps): Promise<string> => {
     let {
       tag = ''
     } = item
+
+    if (tag === '#text') { // TEMP
+      tag = ''
+    }
 
     let cc = c
 
@@ -218,6 +222,10 @@ const RichText = async (props: RichTextProps): Promise<string> => {
   let {
     tag = ''
   } = args
+
+  if (tag === '#text') { // TEMP
+    tag = ''
+  }
 
   /* Hr */
 

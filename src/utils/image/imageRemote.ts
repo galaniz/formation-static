@@ -41,7 +41,7 @@ const _createFile = async (path: string, buffer: Buffer): Promise<void> => {
  */
 const getRemoteImages = async (images: Images[]): Promise<Array<PromiseSettledResult<void>>> => {
   try {
-    const inputDir = config.static.image.inputDir
+    const inputDir = config.image.inputDir
 
     /* Input directory required */
 

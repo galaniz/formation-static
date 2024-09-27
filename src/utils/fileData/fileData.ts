@@ -14,7 +14,7 @@ import type { Generic } from '../../global/globalTypes.js'
 import type { ImagesStore } from '../image/imageTypes.js'
 import { readdir, readFile } from 'node:fs/promises'
 import { extname, basename, resolve } from 'node:path'
-import { applyFilters } from '../filters/filters.js'
+import { applyFilters } from '../filter/filter.js'
 import { isObject, isObjectStrict } from '../object/object.js'
 import { isStringStrict } from '../string/string.js'
 import { getJson } from '../json/json.js'
@@ -70,7 +70,7 @@ const getFileData = async (
     /* Single file */
 
     if (isStringStrict(id) && !all) {
-      const file = await readFile(resolve(config.static.dir, `${id}.json`), { encoding: 'utf8' })
+      const file = await readFile(resolve(config.staticDir, `${id}.json`), { encoding: 'utf8' })
       const fileJson: RenderItem | undefined = getJson(file)
 
       if (fileJson !== undefined) {
@@ -81,14 +81,14 @@ const getFileData = async (
     /* All files */
 
     if (!isStringStrict(id) && all) {
-      const files = await readdir(resolve(config.static.dir))
+      const files = await readdir(resolve(config.staticDir))
 
       for (const file of files) {
         const fileExt = extname(file)
         const fileName = basename(file, fileExt)
 
         if (fileExt === '.json') {
-          const fileContents = await readFile(resolve(config.static.dir, file), { encoding: 'utf8' })
+          const fileContents = await readFile(resolve(config.staticDir, file), { encoding: 'utf8' })
           const fileJson: RenderItem | undefined = getJson(fileContents)
 
           if (fileJson !== undefined) {
@@ -185,8 +185,8 @@ const getAllFileData = async (args: AllFileDataArgs): Promise<RenderAllData | un
 
     let imageData = {}
 
-    if (isStringStrict(config.static.image.dataFile)) {
-      const imageDataContents = await readFile(resolve(config.static.image.dataFile), { encoding: 'utf8' })
+    if (isStringStrict(config.image.dataFile)) {
+      const imageDataContents = await readFile(resolve(config.image.dataFile), { encoding: 'utf8' })
       const imageDataJson: ImagesStore | undefined = getJson(imageDataContents)
 
       if (imageDataJson !== undefined) {

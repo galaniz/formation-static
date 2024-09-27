@@ -6,7 +6,7 @@
 
 import type { ContainerPropsFilter } from '../ContainerTypes.js'
 import { it, expect, describe } from 'vitest'
-import { addFilter, removeFilter } from '../../../utils/filters/filters.js'
+import { addFilter, removeFilter } from '../../../utils/filter/filter.js'
 import { Container } from '../Container.js'
 
 /* Tests */

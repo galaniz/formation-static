@@ -6,7 +6,7 @@
 
 import type { FieldProps, FieldOption, FieldCheckboxRadioArgs } from './FieldTypes.js'
 import { v4 as uuid } from 'uuid'
-import { applyFilters } from '../../utils/filters/filters.js'
+import { applyFilters } from '../../utils/filter/filter.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isArrayStrict } from '../../utils/array/array.js'
@@ -64,7 +64,7 @@ const _getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
  * Output form field
  *
  * @param {FieldProps} props
- * @return {Promise<string>} HTML - div
+ * @return {Promise<string>} HTMLDivElement
  */
 const Field = async (props: FieldProps): Promise<string> => {
   /* Props must be object */

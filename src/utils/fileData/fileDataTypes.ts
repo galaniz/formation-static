@@ -20,9 +20,7 @@ export interface FileDataParams {
 /**
  * @typedef {Object.<string, RenderItem>} FileDataReturn
  */
-export interface FileDataReturn {
-  [key: string]: RenderItem
-}
+export type FileDataReturn = Record<string, RenderItem>
 
 /**
  * @typedef {object} AllFileDataArgs

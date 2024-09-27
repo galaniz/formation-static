@@ -23,7 +23,7 @@ const isObjectStrict = <T>(value: T): value is object & Exclude<T, string | numb
     return false
   }
 
-  return typeof value === 'object' && value !== null && value !== undefined
+  return isObject(value)
 }
 
 /* Exports */

@@ -6,7 +6,7 @@
 
 import { isObject } from '../object/object.js'
 import { getPath } from '../path/path.js'
-import { applyFilters } from '../filters/filters.js'
+import { applyFilters } from '../filter/filter.js'
 
 /**
  * Check and return valid JSON or fallback
@@ -57,4 +57,7 @@ const getJsonFile = async <T>(path: string, store: boolean = true): Promise<obje
 
 /* Exports */
 
-export { getJson, getJsonFile }
+export {
+  getJson,
+  getJsonFile
+}

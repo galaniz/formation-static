@@ -22,9 +22,9 @@ const setStaticImages = async (): Promise<Array<PromiseSettledResult<sharp.Outpu
   const store: ImagesStore = {}
 
   try {
-    const inputDir = config.static.image.inputDir
-    const outputDir = config.static.image.outputDir
-    const dataFile = config.static.image.dataFile
+    const inputDir = config.image.inputDir
+    const outputDir = config.image.outputDir
+    const dataFile = config.image.dataFile
 
     if (!isStringStrict(inputDir) || !isStringStrict(outputDir)) {
       throw new Error('No input or output directories')

@@ -13,9 +13,9 @@ import type {
   RenderLayout,
   RenderNavigations
 } from '../render/renderTypes.js'
-import type { Filters } from '../utils/filters/filtersTypes.js'
-import type { Actions } from '../utils/actions/actionsTypes.js'
-import type { Shortcodes } from '../utils/shortcodes/shortcodesTypes.js'
+import type { Filters } from '../utils/filter/filterTypes.js'
+import type { Actions } from '../utils/action/actionTypes.js'
+import type { Shortcodes } from '../utils/shortcode/shortcodeTypes.js'
 import type { FormMessages, FormMeta } from '../objects/Form/FormTypes.js'
 
 /**
@@ -45,9 +45,7 @@ export interface ConfigParent {
 /**
  * @typedef {Object.<string, ConfigParent>} ConfigParents
  */
-export interface ConfigParents {
-  [key: string]: ConfigParent
-}
+export type ConfigParents = Record<string, ConfigParent>
 
 /**
  * @typedef {object} ConfigArchiveMetaItem
@@ -74,17 +72,21 @@ export interface ConfigArchiveMetaItem {
 /**
  * @typedef {Object.<string, ConfigArchiveMetaItem>} ConfigArchiveMeta
  */
-export interface ConfigArchiveMeta {
-  [key: string]: ConfigArchiveMetaItem
-}
+export type ConfigArchiveMeta = Record<string, ConfigArchiveMetaItem>
 
 /**
  * @typedef {object} ConfigImage
+ * @prop {string} inputDir
+ * @prop {string} outputDir
+ * @prop {string} dataFile
  * @prop {string} url
  * @prop {number[]} sizes
  * @prop {number} quality
  */
 export interface ConfigImage {
+  inputDir: string
+  outputDir: string
+  dataFile: string
   url: string
   sizes: number[]
   quality: number
@@ -93,23 +95,17 @@ export interface ConfigImage {
 /**
  * @typedef {Object.<string, FormMeta>} ConfigFormMeta
  */
-export interface ConfigFormMeta {
-  [key: string]: FormMeta
-}
+export type ConfigFormMeta = Record<string, FormMeta>
 
 /**
  * @typedef {Object.<string, RenderItem>} ConfigStaticPosts
  */
-export interface ConfigStaticPosts {
-  [key: string]: RenderItem
-}
+export type ConfigStaticPosts = Record<string, RenderItem>
 
 /**
  * @typedef {Object.<string, string[]>} ConfigStaticPostsIndex
  */
-export interface ConfigStaticPostsIndex {
-  [key: string]: string[]
-}
+export type ConfigStaticPostsIndex = Record<string, string[]>
 
 /**
  * @typedef {object} ConfigEnv
@@ -118,9 +114,8 @@ export interface ConfigStaticPostsIndex {
  * @prop {boolean} build
  * @prop {boolean} cache
  * @prop {string} dir
- * @prop {Object<string, string>} urls
- * @prop {string} urls.dev
- * @prop {string} urls.prod
+ * @prop {string} devUrl
+ * @prop {string} prodUrl
  */
 export interface ConfigEnv {
   dev: boolean
@@ -128,10 +123,8 @@ export interface ConfigEnv {
   build: boolean
   cache: boolean
   dir: string
-  urls: {
-    dev: string
-    prod: string
-  }
+  devUrl: string
+  prodUrl: string
 }
 
 /**
@@ -142,9 +135,7 @@ export interface ConfigEnv {
  */
 export interface ConfigScriptMeta extends Generic {
   sendUrl?: string
-  forms?: {
-    [key: string]: FormMessages
-  }
+  forms?: Record<string, FormMessages>
 }
 
 /**
@@ -158,23 +149,18 @@ export interface ConfigStoreFile {
 }
 
 /**
- * @typedef {object} ConfigStore
- * @prop {string} dir
- * @prop {Object.<string, ConfigStoreFile>} files
- * @prop {ConfigStoreFile} files.slugs
- * @prop {ConfigStoreFile} files.parents
- * @prop {ConfigStoreFile} files.navigations
- * @prop {ConfigStoreFile} files.navigationItems
+ * @typedef {Object.<string, ConfigStoreFile>} ConfigStoreFiles
+ * @prop {ConfigStoreFile} slugs
+ * @prop {ConfigStoreFile} parents
+ * @prop {ConfigStoreFile} navigations
+ * @prop {ConfigStoreFile} navigationItems
  */
-export interface ConfigStore {
-  dir: string
-  files: {
-    slugs: ConfigStoreFile
-    parents: ConfigStoreFile
-    navigations: ConfigStoreFile
-    navigationItems: ConfigStoreFile
-    [key: string]: ConfigStoreFile
-  }
+export interface ConfigStoreFiles {
+  slugs: ConfigStoreFile
+  parents: ConfigStoreFile
+  navigations: ConfigStoreFile
+  navigationItems: ConfigStoreFile
+  [key: string]: ConfigStoreFile
 }
 
 /**
@@ -188,6 +174,15 @@ export interface ConfigServerlessRoute {
 }
 
 /**
+ * @typedef {Object.<string, ConfigServerlessRoute[]>} ConfigServerlessRoutes
+ * @prop {ConfigServerlessRoute[]} reload
+ */
+export interface ConfigServerlessRoutes {
+  reload: ConfigServerlessRoute[]
+  [key: string]: ConfigServerlessRoute[]
+}
+
+/**
  * @typedef {object} ConfigServerlessFiles
  * @prop {string} ajax
  * @prop {string} preview
@@ -197,22 +192,6 @@ export interface ConfigServerlessFiles {
   ajax: string
   preview: string
   reload: string
-}
-
-/**
- * @typedef {object} ConfigServerless
- * @prop {string} dir
- * @prop {ConfigServerlessFiles} files
- * @prop {Object.<string, ConfigServerlessRoute[]>} routes
- * @prop {ConfigServerlessRoute[]} routes.reload
- */
-export interface ConfigServerless {
-  dir: string
-  files: ConfigServerlessFiles
-  routes: {
-    reload: ConfigServerlessRoute[]
-    [key: string]: ConfigServerlessRoute[]
-  }
 }
 
 /**
@@ -245,23 +224,6 @@ export interface ConfigCms {
   devUser: string
   devCredential: string
   devHost: string
-}
-
-/**
- * @typedef {object} ConfigStatic
- * @prop {string} dir
- * @prop {Object.<string, string>} image
- * @prop {string} image.inputDir
- * @prop {string} image.outputDir
- * @prop {string} image.dataFile
- */
-export interface ConfigStatic {
-  dir: string
-  image: {
-    inputDir: string
-    outputDir: string
-    dataFile: string
-  }
 }
 
 /**
@@ -333,6 +295,9 @@ export interface ConfigBase {
  * @typedef Config
  * @type {ConfigBase}
  * @prop {GenericStrings} normalTypes
+ * @prop {string[]} hierarchicalTypes
+ * @prop {string[]} typesInSlug
+ * @prop {string[]} localesInSlug
  * @prop {ConfigArchiveMeta} archiveMeta
  * @prop {GenericFunctions} ajaxFunctions
  * @prop {Actions} actions
@@ -345,17 +310,23 @@ export interface ConfigBase {
  * @prop {ConfigScriptMeta} scriptMeta
  * @prop {ConfigFormMeta} formMeta
  * @prop {ConfigEnv} env
- * @prop {ConfigStore} store
- * @prop {ConfigServerless} serverless
+ * @prop {string} storeDir
+ * @prop {ConfigStoreFiles} storeFiles
+ * @prop {string} serverlessDir
+ * @prop {ConfigServerlessFiles} serverlessFiles
+ * @prop {ConfigServerlessRoutes} serverlessRoutes
  * @prop {ConfigRedirects} redirects
  * @prop {ConfigCms} cms
- * @prop {ConfigStatic} static
+ * @prop {string} staticDir
  * @prop {ConfigScriptsStyles} styles
  * @prop {ConfigScriptsStyles} scripts
  * @prop {ConfigApiKeys} apiKeys
  */
 export interface Config extends ConfigBase {
   normalTypes: GenericStrings
+  hierarchicalTypes: string[]
+  typesInSlug: string[]
+  localesInSlug: string[]
   archiveMeta: ConfigArchiveMeta
   ajaxFunctions: GenericFunctions
   actions: Partial<Actions>
@@ -369,11 +340,14 @@ export interface Config extends ConfigBase {
   scriptMeta: ConfigScriptMeta
   formMeta: ConfigFormMeta
   env: ConfigEnv
-  store: ConfigStore
-  serverless: ConfigServerless
+  storeDir: string
+  storeFiles: ConfigStoreFiles
+  serverlessDir: string
+  serverlessFiles: ConfigServerlessFiles
+  serverlessRoutes: ConfigServerlessRoutes
   redirects: ConfigRedirects
   cms: ConfigCms
-  static: ConfigStatic
+  staticDir: string
   styles: ConfigScriptsStyles
   scripts: ConfigScriptsStyles
   apiKeys: ConfigApiKeys
@@ -382,20 +356,30 @@ export interface Config extends ConfigBase {
 /**
  * @typedef ConfigArgs
  * @type {ConfigBase}
+ * @prop {GenericStrings} [normalTypes]
+ * @prop {string[]} [hierarchicalTypes]
+ * @prop {string[]} [typesInSlug]
+ * @prop {string[]} [localesInSlug]
  * @prop {ConfigArchiveMeta} [archiveMeta]
  * @prop {GenericFunctions} [ajaxFunctions]
  * @prop {Actions} [actions]
  * @prop {Filters} [filters]
  * @prop {Shortcodes} [shortcodes]
  * @prop {ConfigImage} [image]
- * @prop {Generic} [scriptMeta]
- * @prop {Generic} [formMeta]
+ * @prop {ConfigParents} [parents]
+ * @prop {Navigation[]} [navigation]
+ * @prop {NavigationItem[]} [navigationItem]
+ * @prop {ConfigScriptMeta} [scriptMeta]
+ * @prop {ConfigFormMeta} [formMeta]
  * @prop {ConfigEnv} [env]
- * @prop {ConfigStore} [store]
- * @prop {ConfigServerless} [serverless]
+ * @prop {string} [storeDir]
+ * @prop {ConfigStoreFiles} [storeFiles]
+ * @prop {string} [serverlessDir]
+ * @prop {ConfigServerlessFiles} [serverlessFiles]
+ * @prop {ConfigServerlessRoutes} [serverlessRoutes]
  * @prop {ConfigRedirects} [redirects]
  * @prop {ConfigCms} [cms]
- * @prop {ConfigStatic} [static]
+ * @prop {string} [staticDir]
  * @prop {ConfigScriptsStyles} [styles]
  * @prop {ConfigScriptsStyles} [scripts]
  * @prop {ConfigApiKeys} [apiKeys]

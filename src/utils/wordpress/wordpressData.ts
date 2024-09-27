@@ -10,7 +10,7 @@ import type {
   WordPressDataParams,
   WordPressDataReturn
 } from './wordpressDataTypes.js'
-import { applyFilters } from '../filters/filters.js'
+import { applyFilters } from '../filter/filter.js'
 import { isObject } from '../object/object.js'
 import { isArrayStrict } from '../array/array.js'
 import { isStringStrict } from '../string/string.js'
@@ -90,7 +90,7 @@ const getWordPressData = async (
 
     /* Params */
 
-    let url = `https://${host}/wp-json/wp/v2/${route}?status=${status}`
+    let url = `https://${host}/wp-json/wp/v2/${route}?_embed&status=${status}`
 
     for (const [key, value] of Object.entries(params)) {
       url += `&${key}=${value.toString()}`

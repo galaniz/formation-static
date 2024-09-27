@@ -4,32 +4,38 @@
 
 /* Imports */
 
-import type { ParentArgs } from '../../global/globalTypes.js'
+import type { Generic } from '../../global/globalTypes.js'
+import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js'
 
 /**
- * @typedef {object} ContainerProps
- * @prop {object} args
- * @prop {string} [args.tag]
- * @prop {string} [args.maxWidth] - Used in getImageMaxWidth()
- * @prop {string} [args.layoutClasses] - Back end option
- * @prop {string} [args.classes] - Back end option
- * @prop {string} [args.style] - Back end option
- * @prop {string} [args.attr] - Back end option
- * @prop {boolean} [args.nest] - Back end option
+ * @typedef ContainerArgs
+ * @type {Generic}
+ * @prop {string} [tag]
+ * @prop {string} [maxWidth] - Used in getImageMaxWidth()
+ * @prop {string} [layoutClasses] - Back end option
+ * @prop {string} [classes] - Back end option
+ * @prop {string} [style] - Back end option
+ * @prop {string} [attr] - Back end option
+ * @prop {boolean} [nest] - Back end option
+ */
+export interface ContainerArgs extends Generic {
+  tag?: string
+  maxWidth?: string
+  layoutClasses?: string
+  classes?: string
+  style?: string
+  attr?: string
+  nest?: boolean
+}
+
+/**
+ * @typedef ContainerProps
+ * @type {RenderFunctionArgs}
+ * @prop {ContainerArgs} args
  * @prop {ParentArgs} [parents]
  */
-export interface ContainerProps {
-  args: {
-    tag?: string
-    maxWidth?: string
-    layoutClasses?: string
-    classes?: string
-    style?: string
-    attr?: string
-    nest?: boolean
-    [key: string]: unknown
-  }
-  parents?: ParentArgs[]
+export interface ContainerProps<T = ContainerArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {
+  args: ContainerArgs & T
 }
 
 /**
@@ -49,9 +55,9 @@ export interface ContainerReturn {
  * @param {string} args.renderType
  * @return {Promise<ContainerProps>}
  */
-export type ContainerPropsFilter = (
-  props: ContainerProps,
+export type ContainerPropsFilter<T = ContainerArgs, R = RenderItem> = (
+  props: ContainerProps<T, R>,
   args: {
     renderType: string
   }
-) => Promise<ContainerProps>
+) => Promise<ContainerProps<T, R>>

@@ -19,9 +19,12 @@ const isString = (value: unknown): value is string => {
  * @return {boolean}
  */
 const isStringStrict = (value: unknown): value is string => {
-  return typeof value === 'string' && value !== ''
+  return isString(value) && value !== ''
 }
 
 /* Exports */
 
-export { isString, isStringStrict }
+export {
+  isString,
+  isStringStrict
+}

@@ -1,5 +1,5 @@
 /**
- * Utils - Actions Types
+ * Utils - Action Types
  */
 
 /* Imports */

@@ -54,9 +54,15 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
 
   let { url = '' } = data
 
+  /* Source */
+
+  const isStatic = source === 'static'
+  const isContentful = dataSource.isContentful(source)
+  const isWordpress = dataSource.isWordPress(source)
+
   /* Static url */
 
-  if (source === 'static' && isStringStrict(path)) {
+  if (isStatic && isStringStrict(path)) {
     url = `${config.image.url}${path}`
   }
 
@@ -91,7 +97,9 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
   if (dataSource.isStatic(source)) {
     src = `${url}.webp`
     srcFallback = `${url}.${format}`
-  } else {
+  }
+
+  if (isContentful) {
     const common = `&q=${quality}&w=${w}&h=${h}`
 
     src = `${url}?fm=webp${common}`
@@ -101,7 +109,7 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
   const sizes = `(min-width: ${w / 16}rem) ${w / 16}rem, ${viewportWidth}vw`
   const srcsetFallback: string[] = []
 
-  let srcset: string[] | number[] = [...config.image.sizes]
+  let srcset: number[] = [...config.image.sizes]
 
   if (!srcset.includes(w)) {
     srcset.push(w)
@@ -111,19 +119,29 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
 
   srcset.sort((a, b) => a - b)
 
-  srcset = srcset.map(s => {
-    if (source === 'static') {
+  const srcsetStr: string[] = []
+
+  srcset.forEach(s => {
+    if (isStatic) {
       const common = `${url}${s !== naturalWidth ? `@${s}` : ''}`
 
       srcsetFallback.push(`${common}.${format} ${s}w`)
+      srcsetStr.push(`${common}.webp ${s}w`)
+    }
 
-      return `${common}.webp ${s}w`
-    } else {
+    if (isContentful) {
       const common = `&q=${quality}&w=${s}&h=${Math.round(s * aspectRatio)} ${s}w`
 
       srcsetFallback.push(`${url}?fm=${format}${common}`)
+      srcsetStr.push(`${url}?fm=webp${common}`)
+    }
 
-      return `${url}?fm=webp${common}`
+    if (isWordpress) {
+      const sizeUrl = data?.sizes?.[s]
+
+      if (isStringStrict(sizeUrl)) {
+        srcsetStr.push(`${sizeUrl} ${s}w`)
+      }
     }
   })
 
@@ -132,19 +150,36 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
   let sourceOutput = ''
 
   if (picture) {
-    sourceOutput = `<source srcset="${srcset.join(', ')}" sizes="${sizes}" type="image/webp">`
+    sourceOutput = `<source srcset="${srcsetStr.join(', ')}" sizes="${sizes}" type="image/webp">`
   }
 
   let eagerHackOutput = ''
 
   if (!lazy) {
-    eagerHackOutput = `<img alt="" role="presentation" aria-hidden="true" src="data:image/svg+xml;charset=utf-8,%3Csvg height='${h}' width='${w}' xmlns='http://www.w3.org/2000/svg' version='1.1'%3E%3C/svg%3E" style="pointerEvents: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%">`
+    eagerHackOutput = `
+      <img
+        alt=""
+        role="presentation"
+        aria-hidden="true"
+        src="data:image/svg+xml;charset=utf-8,%3Csvg height='${h}' width='${w}' xmlns='http://www.w3.org/2000/svg' version='1.1'%3E%3C/svg%3E" style="pointerEvents: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%"
+      >
+    `
   }
 
   const output = `
     ${eagerHackOutput}
     ${sourceOutput}
-    <img${classes !== '' ? ` class="${classes}"` : ''} alt="${alt}" src="${picture ? srcFallback : src}" srcset="${picture ? srcsetFallback.join(', ') : srcset.join(', ')}" sizes="${sizes}" width="${w}" height="${h}"${attr !== '' ? ` ${attr}` : ''}${lazy ? ' loading="lazy" decoding="async"' : ' loading="eager"'}>
+    <img
+      ${classes !== '' ? ` class="${classes}"` : ''}
+      alt="${alt}"
+      src="${picture ? srcFallback : src}"
+      srcset="${picture ? srcsetFallback.join(', ') : srcsetStr.join(', ')}"
+      sizes="${sizes}"
+      width="${w}"
+      height="${h}"
+      ${attr !== '' ? ` ${attr}` : ''}
+      ${lazy ? ' loading="lazy" decoding="async"' : ' loading="eager"'}
+    >
   `
 
   if (returnDetails) {
@@ -155,7 +190,7 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
       naturalHeight,
       src,
       srcFallback,
-      srcset,
+      srcset: srcsetStr,
       sizes
     }
   }

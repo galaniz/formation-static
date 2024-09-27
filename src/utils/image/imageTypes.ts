@@ -119,9 +119,7 @@ export interface ImagesProps {
 /**
  * @typedef {Object.<string, ImagesProps>} ImagesStore
  */
-export interface ImagesStore {
-  [key: string]: ImagesProps
-}
+export type ImagesStore = Record<string, ImagesProps>
 
 /**
  * @typedef {object} Images

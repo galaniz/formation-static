@@ -14,7 +14,7 @@ import type { GenericStrings, InternalLink } from '../../global/globalTypes.js'
 import { isArrayStrict } from '../array/array.js'
 import { isObjectStrict } from '../object/object.js'
 import { isString, isStringStrict } from '../string/string.js'
-import { getObjectKeys } from '../object/objectKeys.js'
+import { getObjectKeys } from '../object/objectUtils.js'
 import { isNumber } from '../number/number.js'
 import { config } from '../../config/config.js'
 

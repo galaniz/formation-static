@@ -422,7 +422,7 @@ class Navigation {
         linkAttrsArr.push('data-archive-current="true"')
       }
 
-      const linkAttrs = (linkAttrsArr.length > 0) ? ` ${linkAttrsArr.join(' ')}` : ''
+      const linkAttrs = ` ${linkAttrsArr.join(' ')}`
       const linkTag = link !== '' ? 'a' : 'button'
 
       output.html += `<${linkTag} data-depth="${depth}"${linkClasses}${linkAttrs}>`
@@ -473,7 +473,7 @@ class Navigation {
    * @param {string} location
    * @param {NavigationOutputArgs} args
    * @param {number} maxDepth
-   * @return {string} HTML - ul
+   * @return {string} HTMLUListElement
    */
   getOutput (
     location: string = '',
@@ -522,7 +522,7 @@ class Navigation {
    * @param {NavigationBreadcrumbItem[]} items
    * @param {string} current
    * @param {NavigationBreadcrumbOutputArgs} [args]
-   * @return {string} HTML - ol
+   * @return {string} HTMLOListElement
    */
   getBreadcrumbs (
     items: NavigationBreadcrumbItem[],

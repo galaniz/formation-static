@@ -65,27 +65,19 @@ export interface HtmlString {
 /**
  * @typedef {Object.<string, *>} Generic
  */
-export interface Generic {
-  [key: string]: unknown
-}
+export type Generic = Record<string, unknown>
 
 /**
  * @typedef {Object.<string, function>} GenericFunctions
  */
-export interface GenericFunctions {
-  [key: string]: Function
-}
+export type GenericFunctions = Record<string, Function>
 
 /**
  * @typedef {Object.<string, string>} GenericStrings
  */
-export interface GenericStrings {
-  [key: string]: string
-}
+export type GenericStrings = Record<string, string>
 
 /**
  * @typedef {Object.<string, number>} GenericNumbers
  */
-export interface GenericNumbers {
-  [key: string]: number
-}
+export type GenericNumbers = Record<string, number>

@@ -13,7 +13,7 @@ import type {
 import type { RenderAllData, RenderSlugs } from '../../render/renderTypes.js'
 import resolveResponse from 'contentful-resolve-response'
 import { normalizeContentfulData } from './contentfulDataNormal.js'
-import { applyFilters } from '../filters/filters.js'
+import { applyFilters } from '../filter/filter.js'
 import { isObject, isObjectStrict } from '../object/object.js'
 import { isStringStrict } from '../string/string.js'
 import { isFunction } from '../function/function.js'

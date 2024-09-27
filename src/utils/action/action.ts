@@ -1,10 +1,10 @@
 /**
- * Utils - Actions
+ * Utils - Action
  */
 
 /* Imports */
 
-import type { Actions, ActionsFunctions } from './actionsTypes.js'
+import type { Actions, ActionsFunctions } from './actionTypes.js'
 import { isStringStrict } from '../string/string.js'
 import { isArrayStrict } from '../array/array.js'
 import { isObjectStrict } from '../object/object.js'

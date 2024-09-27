@@ -1,5 +1,5 @@
 /**
- * Utils - Shortcodes Types
+ * Utils - Shortcode Types
  */
 
 /* Imports */
@@ -14,9 +14,7 @@ export type ShortcodeAttrValue = string | number | boolean | undefined
 /**
  * @typedef {Object.<string, ShortcodeAttrValue>} ShortcodeAttrs
  */
-export interface ShortcodeAttrs {
-  [key: string]: ShortcodeAttrValue
-}
+export type ShortcodeAttrs = Record<string, ShortcodeAttrValue>
 
 /**
  * @typedef {object} ShortcodeData
@@ -61,6 +59,4 @@ export interface Shortcode {
 /**
  * @typedef {Object.<string, Shortcode>} Shortcodes
  */
-export interface Shortcodes {
-  [key: string]: Shortcode
-}
+export type Shortcodes = Record<string, Shortcode>

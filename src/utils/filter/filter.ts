@@ -1,10 +1,10 @@
 /**
- * Utils - Filters
+ * Utils - Filter
  */
 
 /* Imports */
 
-import type { Filters, FiltersFunctions } from './filtersTypes.js'
+import type { Filters, FiltersFunctions } from './filterTypes.js'
 import { isArrayStrict } from '../array/array.js'
 import { isStringStrict } from '../string/string.js'
 import { isObjectStrict } from '../object/object.js'
@@ -90,14 +90,32 @@ const removeFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boo
  * @param {*} [args]
  * @return {Promise<*>}
  */
-const applyFilters = async <T, U>(name: string, value: T, args?: U): Promise<T> => {
+const applyFilters = async<T, U>(name: string, value: T, args?: U): Promise<T> => {
   const callbacks = filters[name]
 
   if (isArrayStrict(callbacks)) {
     for (const callback of callbacks) {
-      if (isFunction(callback)) {
-        value = await callback(value, args)
-      }
+      value = await callback(value, args)
+    }
+  }
+
+  return value
+}
+
+/**
+ * Synchronously update value from callback return values
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {*} [args]
+ * @return {*}
+ */
+const applyFiltersSync = <T, U>(name: string, value: T, args?: U): T => {
+  const callbacks = filters[name]
+
+  if (isArrayStrict(callbacks)) {
+    for (const callback of callbacks) {
+      value = callback(value, args)
     }
   }
 
@@ -167,6 +185,7 @@ export {
   addFilter,
   removeFilter,
   applyFilters,
+  applyFiltersSync,
   resetFilters,
   setFilters
 }

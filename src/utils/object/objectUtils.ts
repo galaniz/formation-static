@@ -1,5 +1,5 @@
 /**
- * Utils - Object Keys
+ * Utils - Object Utils
  */
 
 /**
@@ -15,6 +15,19 @@ const getObjectKeys = <T>(obj: T): Array<keyof T> => {
   return Object.keys(obj as object) as Array<keyof T>
 }
 
+/**
+ * Preserve type in object entries
+ *
+ * @param {object} obj
+ * @return {Array.<Array.<string, *>>}
+ */
+const getObjectEntries = <T extends object> (obj: T): Array<[keyof T, T[keyof T]]> => {
+  return Object.entries(obj) as Array<[keyof T, T[keyof T]]>
+}
+
 /* Exports */
 
-export { getObjectKeys }
+export {
+  getObjectKeys,
+  getObjectEntries
+}

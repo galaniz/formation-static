@@ -12,7 +12,7 @@ import { isStringStrict } from '../../utils/string/string.js'
  * Output pagination navigation
  *
  * @param {PaginationProps} props
- * @return {string} HTML - ol
+ * @return {PaginationReturn}
  */
 const Pagination = (props: PaginationProps): PaginationReturn => {
   /* Fallback output */
@@ -108,6 +108,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
   /* Determine number of items to display */
 
   const max = display - 1
+  const halff = Math.ceil(display / 2)
   const half = max / 2
   const center = total > max
   const limit = center ? max : total - 1
@@ -151,7 +152,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
   if (itemMaxWidth) {
     let totalListItems = totalPagesItems + 2 // 2 for prev and next buttons
 
-    if (center && hasEllipsis && current >= limit) {
+    if (center && hasEllipsis && current >= limit && current > halff) {
       totalListItems += 1
     }
 
@@ -193,7 +194,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     ellipsisOutput = `<li${itemAttrs} aria-hidden="true" data-ellipsis>${ellipsis}</li>`
   }
 
-  if (center && current >= limit) {
+  if (center && current >= limit && current > halff) {
     output += ellipsisOutput
   }
 

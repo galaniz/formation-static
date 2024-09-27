@@ -5,7 +5,7 @@
 /* Imports */
 
 import type { ContainerProps, ContainerReturn } from './ContainerTypes.js'
-import { applyFilters } from '../../utils/filters/filters.js'
+import { applyFilters } from '../../utils/filter/filter.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isStringStrict } from '../../utils/string/string.js'
 

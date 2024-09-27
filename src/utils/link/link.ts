@@ -10,6 +10,7 @@ import type { InternalLink } from '../../global/globalTypes.js'
 import { config } from '../../config/config.js'
 import { isObjectStrict } from '../object/object.js'
 import { isString, isStringStrict } from '../string/string.js'
+import { applyFiltersSync } from '../filter/filter.js'
 import { getArchiveInfo, getTaxonomyInfo } from '../archive/archive.js'
 
 /**
@@ -114,6 +115,12 @@ const getSlug = <T extends boolean>(args: LinkSlugArgs, returnParents = false as
     }
   }
 
+  /* Content type */
+
+  if (config.typesInSlug.includes(contentType)) {
+    parts = [contentType]
+  }
+
   /* Page parents */
 
   const parents: ConfigParent[] = []
@@ -123,6 +130,18 @@ const getSlug = <T extends boolean>(args: LinkSlugArgs, returnParents = false as
   if (parents.length > 0) {
     parts.push(`${parents.map(({ slug }) => slug).join('/')}`)
   }
+
+  /* Locale */
+
+  const locale = pageData?.locale
+
+  if (isStringStrict(locale) && config.localesInSlug.includes(locale)) {
+    parts.unshift(locale)
+  }
+
+  /* Filter parts */
+
+  parts = applyFiltersSync('slugParts', parts, args)
 
   /* Slug */
 
@@ -163,7 +182,7 @@ const getPermalink = (slug: string = '', trailingSlash: boolean = true): string 
   let url = '/'
 
   if (config.env.prod) {
-    url = config.env.urls.prod
+    url = config.env.prodUrl
   }
 
   if (slug === '/') {

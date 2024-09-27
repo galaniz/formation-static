@@ -5,7 +5,7 @@
 /* Imports */
 
 import type { ColumnProps, ColumnReturn } from './ColumnTypes.js'
-import { applyFilters } from '../../utils/filters/filters.js'
+import { applyFilters } from '../../utils/filter/filter.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 

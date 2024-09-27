@@ -243,7 +243,7 @@ describe('Navigation', () => {
       const result = testMinify(res)
       const expectedResult = testMinify(expected)
 
-      expect(result).toContain(expectedResult)
+      expect(result).toBe(expectedResult)
     })
 
     it('should return list markup string one level deep', () => {
@@ -265,7 +265,7 @@ describe('Navigation', () => {
       const result = testMinify(res)
       const expectedResult = testMinify(expected)
 
-      expect(result).toContain(expectedResult)
+      expect(result).toBe(expectedResult)
     })
 
     it('should return list markup string with home as current and classes and attributes from args', () => {
@@ -301,7 +301,132 @@ describe('Navigation', () => {
       const result = testMinify(res)
       const expectedResult = testMinify(expected)
 
-      expect(result).toContain(expectedResult)
+      expect(result).toBe(expectedResult)
+    })
+
+    it('should return list markup string with classes and attributes from filter args', () => {
+      const res = home.getOutput('header', {
+        listClass: 'x',
+        listAttr: 'data-x',
+        itemClass: 'y',
+        itemAttr: 'data-y',
+        linkClass: 'z',
+        internalLinkClass: 'in',
+        linkAttr: 'data-z',
+        filterBeforeList ({ args, output, items, depth }) {
+          args.listClass = `x-${depth}-${items.length}`
+          args.listAttr = `data-x-${depth}`
+          output.html += '<!-- Before List -->'
+
+          if (depth > 0) {
+            items.forEach((item) => {
+              item.link = ''
+            })
+          }
+        },
+        filterBeforeItem ({ args, item, output, index, items, depth }) {
+          args.itemClass = `y-${depth}-${index}-${items.length}`
+          args.itemAttr = `data-y="${item.title}"`
+          output.html += '<!-- Before Item -->'
+        },
+        filterBeforeLink ({ args, item, output, index, items, depth }) {
+          args.linkClass = `z-${depth}-${index}-${items.length}`
+          args.linkAttr = `data-z="${item.title}"`
+          output.html += '<!-- Before Link -->'
+        },
+        filterBeforeLinkText ({ args, item, output, index, items, depth }) {
+          const linkClass = String(args.linkClass)
+          output.html +=
+            `<!-- Before Link Text: ${linkClass}-${item.title}-${index}-${items.length}-${depth} -->`
+        },
+        filterAfterLinkText ({ args, item, output, index, items, depth }) {
+          const linkClass = String(args.linkClass)
+          output.html +=
+            `<!-- After Link Text: ${linkClass}-${item.title}-${index}-${items.length}-${depth} -->`
+        },
+        filterAfterLink ({ args, item, output, index, items, depth }) {
+          const linkClass = String(args.linkClass)
+          output.html +=
+            `<!-- After Link: ${linkClass}-${item.title}-${index}-${items.length}-${depth} -->`
+        },
+        filterAfterItem ({ args, item, output, index, items, depth }) {
+          const itemClass = String(args.itemClass)
+          output.html +=
+            `<!-- After Item: ${itemClass}-${item.title}-${index}-${items.length}-${depth} -->`
+        },
+        filterAfterList ({ args, output, depth }) {
+          const listClass = String(args.listClass)
+          output.html +=
+            `<!-- After List: ${listClass}-${depth} -->`
+        }
+      })
+
+      const expected = `
+        <!-- Before List -->
+        <ul data-depth="0" class="x-0-3" data-x-0>
+          <!-- Before Item -->
+          <li data-depth="0" class="y-0-0-3" data-y="Home" data-current="true">
+            <!-- Before Link -->
+            <a
+              data-depth="0"
+              class="z-0-0-3 in"
+              href="/"
+              data-z="Home"
+              data-current="true"
+              aria-current="page"
+            >
+              <!-- Before Link Text: z-0-0-3-Home-0-3-0 -->
+              Home
+              <!-- After Link Text: z-0-0-3-Home-0-3-0 -->
+            </a>
+            <!-- After Link: z-0-0-3-Home-0-3-0 -->
+          </li>
+          <!-- After Item: y-0-0-3-Home-0-3-0 -->
+          <!-- Before Item -->
+          <li data-depth="0" class="y-0-1-3" data-y="About">
+            <!-- Before Link -->
+            <a data-depth="0" class="z-0-1-3 in" href="/about/" data-z="About">
+              <!-- Before Link Text: z-0-1-3-About-1-3-0 -->
+              About
+              <!-- After Link Text: z-0-1-3-About-1-3-0 -->
+            </a>
+            <!-- After Link: z-0-1-3-About-1-3-0 -->
+            <!-- Before List -->
+            <ul data-depth="1" class="x-1-1" data-x-1>
+              <!-- Before Item -->
+              <li data-depth="1" class="y-1-0-1" data-y="Blog">
+                <!-- Before Link -->
+                <button data-depth="1" class="z-1-0-1 in" type="button" data-z="Blog">
+                  <!-- Before Link Text: z-1-0-1-Blog-0-1-1 -->
+                  Blog
+                  <!-- After Link Text: z-1-0-1-Blog-0-1-1 -->
+                </button>
+                <!-- After Link: z-1-0-1-Blog-0-1-1 -->
+              </li>
+              <!-- After Item: y-1-0-1-Blog-0-1-1 -->
+            </ul>
+            <!-- After List: x-1-1-1 -->
+          </li>
+          <!-- After Item: y-1-0-1-About-1-3-0 -->
+          <!-- Before Item -->
+          <li data-depth="0" class="y-0-2-3" data-y="External">
+            <!-- Before Link -->
+            <a data-depth="0" class="z-0-2-3" href="https://external.com/" data-z="External">
+              <!-- Before Link Text: z-0-2-3-External-2-3-0 -->
+              External
+              <!-- After Link Text: z-0-2-3-External-2-3-0 -->
+            </a>
+            <!-- After Link: z-0-2-3-External-2-3-0 -->
+          </li>
+          <!-- After Item: y-0-2-3-External-2-3-0 -->
+        </ul>
+        <!-- After List: x-1-1-0 -->
+      `
+
+      const result = testMinify(res)
+      const expectedResult = testMinify(expected)
+
+      expect(result).toBe(expectedResult)
     })
 
     it('should return list markup string with about as current', () => {
@@ -328,7 +453,7 @@ describe('Navigation', () => {
       const result = testMinify(res)
       const expectedResult = testMinify(expected)
 
-      expect(result).toContain(expectedResult)
+      expect(result).toBe(expectedResult)
     })
 
     it('should return list markup string with blog as current', () => {
@@ -355,7 +480,7 @@ describe('Navigation', () => {
       const result = testMinify(res)
       const expectedResult = testMinify(expected)
 
-      expect(result).toContain(expectedResult)
+      expect(result).toBe(expectedResult)
     })
 
     it('should return list markup string with blog as archive current', () => {
@@ -382,7 +507,7 @@ describe('Navigation', () => {
       const result = testMinify(res)
       const expectedResult = testMinify(expected)
 
-      expect(result).toContain(expectedResult)
+      expect(result).toBe(expectedResult)
     })
   })
 
@@ -453,7 +578,7 @@ describe('Navigation', () => {
       const result = testMinify(res)
       const expectedResult = testMinify(expected)
 
-      expect(result).toContain(expectedResult)
+      expect(result).toBe(expectedResult)
     })
 
     it('should return ordered list markup with classes and attributes from args', () => {
@@ -489,7 +614,53 @@ describe('Navigation', () => {
       const result = testMinify(res)
       const expectedResult = testMinify(expected)
 
-      expect(result).toContain(expectedResult)
+      expect(result).toBe(expectedResult)
+    })
+
+    it('should return ordered list markup with classes and attributes and filtered output', () => {
+      const res = home.getBreadcrumbs(breadcrumbItems, 'Current Page', {
+        listClass: 'x',
+        listAttr: 'data-x',
+        itemClass: 'y',
+        itemAttr: 'data-y',
+        linkClass: 'z',
+        internalLinkClass: 'in',
+        linkAttr: 'data-z',
+        currentClass: 'c',
+        a11yClass: '',
+        filterBeforeLink ({ output, isLastLevel }) {
+          output.html += `<!-- Before Link: ${isLastLevel.toString()} -->`
+        },
+        filterAfterLink ({ output, isLastLevel }) {
+          output.html += `<!-- After Link: ${isLastLevel.toString()} -->`
+        }
+      })
+
+      const expected = `
+        <ol class="x" data-x>
+          <li class="y" data-y data-last-level="false">
+            <!-- Before Link: false -->
+            <a class="z in" href="/" data-z>Home</a>
+            <!-- After Link: false -->
+          </li>
+          <li class="y" data-y data-last-level="true">
+            <!-- Before Link: true -->
+            <a class="z in" href="/about/" data-z>About</a>
+            <!-- After Link: true -->
+          </li>
+          <li class="y" data-y data-current="true">
+            <span class="c">
+              Current Page
+              <span> (current page)</span>
+            </span>
+          </li>
+        </ol>
+      `
+
+      const result = testMinify(res)
+      const expectedResult = testMinify(expected)
+
+      expect(result).toBe(expectedResult)
     })
   })
 })

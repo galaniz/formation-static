@@ -16,7 +16,7 @@ import { escape } from '../../utils/escape/escape.js'
 import { isArray } from '../../utils/array/array.js'
 import { isString, isStringStrict } from '../../utils/string/string.js'
 import { isObject, isObjectStrict } from '../../utils/object/object.js'
-import { getObjectKeys } from '../../utils/object/objectKeys.js'
+import { getObjectKeys } from '../../utils/object/objectUtils.js'
 import { getPermalink } from '../../utils/link/link.js'
 import { getJsonFile } from '../../utils/json/json.js'
 

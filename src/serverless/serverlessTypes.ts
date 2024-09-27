@@ -31,9 +31,7 @@ export interface AjaxActionInput {
 export interface AjaxActionData {
   id: string
   action: string
-  inputs: {
-    [key: string]: AjaxActionInput
-  }
+  inputs: Record<string, AjaxActionInput>
 }
 
 /**

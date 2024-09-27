@@ -6,7 +6,7 @@
 
 import type { ColumnPropsFilter } from '../ColumnTypes.js'
 import { it, expect, describe } from 'vitest'
-import { addFilter, removeFilter } from '../../../utils/filters/filters.js'
+import { addFilter, removeFilter } from '../../../utils/filter/filter.js'
 import { Column } from '../Column.js'
 
 /* Tests */

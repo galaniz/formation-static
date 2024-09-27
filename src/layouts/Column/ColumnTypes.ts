@@ -4,34 +4,39 @@
 
 /* Imports */
 
-import type { ParentArgs } from '../../global/globalTypes.js'
+import type { Generic } from '../../global/globalTypes.js'
+import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js'
 
 /**
- * @typedef {object} ColumnProps
- * @prop {object} args
- * @prop {string} [args.tag]
- * @prop {string} [args.width] - Used in getImageMaxWidth()
- * @prop {string} [args.widthSmall] - Used in getImageMaxWidth()
- * @prop {string} [args.widthMedium] - Used in getImageMaxWidth()
- * @prop {string} [args.widthLarge] - Used in getImageMaxWidth()
- * @prop {string} [args.classes] - Back end option
- * @prop {string} [args.style] - Back end option
- * @prop {string} [args.attr] - Back end option
- * @prop {ParentArgs} [parents]
+ * @typedef ColumnArgs
+ * @type {Generic}
+ * @prop {string} [tag]
+ * @prop {string} [width] - Used in getImageMaxWidth()
+ * @prop {string} [widthSmall] - Used in getImageMaxWidth()
+ * @prop {string} [widthMedium] - Used in getImageMaxWidth()
+ * @prop {string} [widthLarge] - Used in getImageMaxWidth()
+ * @prop {string} [classes] - Back end option
+ * @prop {string} [style] - Back end option
+ * @prop {string} [attr] - Back end option
  */
-export interface ColumnProps {
-  args: {
-    tag?: string
-    width?: string
-    widthSmall?: string
-    widthMedium?: string
-    widthLarge?: string
-    classes?: string
-    style?: string
-    attr?: string
-    [key: string]: unknown
-  }
-  parents?: ParentArgs[]
+export interface ColumnArgs extends Generic {
+  tag?: string
+  width?: string
+  widthSmall?: string
+  widthMedium?: string
+  widthLarge?: string
+  classes?: string
+  style?: string
+  attr?: string
+}
+
+/**
+ * @typedef ColumnProps
+ * @type {RenderFunctionArgs}
+ * @prop {ColumnArgs} args
+ */
+export interface ColumnProps<T = ColumnArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {
+  args: ColumnArgs & T
 }
 
 /**
@@ -51,9 +56,9 @@ export interface ColumnReturn {
  * @param {string} args.renderType
  * @return {Promise<ColumnProps>}
  */
-export type ColumnPropsFilter = (
-  props: ColumnProps,
+export type ColumnPropsFilter<T = ColumnArgs, R = RenderItem> = (
+  props: ColumnProps<T, R>,
   args: {
     renderType: string
   }
-) => Promise<ColumnProps>
+) => Promise<ColumnProps<T, R>>

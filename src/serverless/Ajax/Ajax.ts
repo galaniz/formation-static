@@ -11,9 +11,9 @@ import type {
   AjaxActionArgs
 } from '../serverlessTypes.js'
 import { setConfig, setConfigFilter } from '../../config/config.js'
-import { setActions } from '../../utils/actions/actions.js'
-import { setShortcodes } from '../../utils/shortcodes/shortcodes.js'
-import { applyFilters, setFilters } from '../../utils/filters/filters.js'
+import { setActions } from '../../utils/action/action.js'
+import { setShortcodes } from '../../utils/shortcode/shortcode.js'
+import { applyFilters, setFilters } from '../../utils/filter/filter.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { isNumber } from '../../utils/number/number.js'

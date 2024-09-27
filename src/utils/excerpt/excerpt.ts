@@ -7,8 +7,8 @@
 import type { ExcerptContentWordArgs, ExcerptArgs } from './excerptTypes.js'
 import { isObject, isObjectStrict } from '../object/object.js'
 import { isStringStrict } from '../string/string.js'
-import { getObjectKeys } from '../object/objectKeys.js'
-import { stripShortcodes } from '../shortcodes/shortcodes.js'
+import { getObjectKeys } from '../object/objectUtils.js'
+import { stripShortcodes } from '../shortcode/shortcode.js'
 
 /**
  * Get words from object or array of content

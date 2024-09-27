@@ -7,7 +7,7 @@
 import { isArray } from '../array/array.js'
 import { isString } from '../string/string.js'
 import { isObject } from '../object/object.js'
-import { getObjectKeys } from '../object/objectKeys.js'
+import { getObjectKeys } from '../object/objectUtils.js'
 import { isFunction } from '../function/function.js'
 
 /**

@@ -32,9 +32,7 @@ export interface RenderSlug {
 /**
  * @typedef {Object.<string, RenderSlug>} RenderSlugs
  */
-export interface RenderSlugs {
-  [key: string]: RenderSlug
-}
+export type RenderSlugs = Record<string, RenderSlug>
 
 /**
  * @typedef RenderMetaArgs
@@ -122,9 +120,7 @@ export interface RenderRedirectItem {
 /**
  * @typedef {Object.<string, RenderRedirectItem>} RenderRedirect
  */
-export interface RenderRedirect {
-  [key: string]: RenderRedirectItem
-}
+export type RenderRedirect = Record<string, RenderRedirectItem>
 
 /**
  * @typedef {object} RenderTag
@@ -155,6 +151,7 @@ export interface RenderMetaTags {
  * @prop {number} [size]
  * @prop {string} [format]
  * @prop {string} [type]
+ * @prop {Object<number, string>} [sizes]
  */
 export interface RenderFile {
   path?: string
@@ -166,6 +163,7 @@ export interface RenderFile {
   size?: number
   format?: string
   type?: string
+  sizes?: Record<number, string>
 }
 
 /**
@@ -239,15 +237,15 @@ export type RenderHttpError = (args: RenderHttpErrorArgs) => Promise<string>
  * @prop {RichTextHeading[]} [headings]
  * @prop {RenderItem[]} [children]
  */
-export interface RenderFunctionArgs<T = any> {
+export interface RenderFunctionArgs<T = any, R = RenderItem> {
   args: 0 extends (1 & T) ? any : T
   parents?: ParentArgs[]
-  pageData?: RenderItem
+  pageData?: R
   pageContains?: string[]
   navigations?: GenericStrings
   serverlessData?: RenderServerlessData
   headings?: RichTextHeading[]
-  children?: RenderItem[]
+  children?: R[]
 }
 
 /**
@@ -265,12 +263,12 @@ export interface RenderFunctionReturn {
  * @param {RenderFunctionArgs} props
  * @return {Promise<string|RenderFunctionReturn>}
  */
-export type RenderFunction<T = any> = (props: RenderFunctionArgs<T>) => Promise<string | RenderFunctionReturn>
+export type RenderFunction<T = any, R = RenderItem> = (props: RenderFunctionArgs<T, R>) => Promise<string | RenderFunctionReturn>
 
 /**
  * @typedef {Object<string, RenderFunction>} RenderFunctions
  */
-export type RenderFunctions<T = any> = Record<string, RenderFunction<T>>
+export type RenderFunctions<T = any, R = RenderItem> = Record<string, RenderFunction<T, R>>
 
 /**
  * @typedef RenderContentArgs

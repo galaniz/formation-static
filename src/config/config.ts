@@ -5,7 +5,7 @@
 /* Imports */
 
 import type { Config, ConfigSet, ConfigSetFilter } from './configTypes.js'
-import { addFilter, applyFilters } from '../utils/filters/filters.js'
+import { addFilter, applyFilters } from '../utils/filter/filter.js'
 
 /**
  * Default options
@@ -28,6 +28,11 @@ let config: Config = {
   wholeTypes: [
     'page'
   ],
+  hierarchicalTypes: [
+    'page'
+  ],
+  typesInSlug: [],
+  localesInSlug: [],
   archiveMeta: {},
   normalTypes: {},
   renderTypes: {},
@@ -39,13 +44,6 @@ let config: Config = {
   actions: {},
   filters: {},
   shortcodes: {},
-  image: {
-    url: '/assets/img/',
-    quality: 75,
-    sizes: [
-      200, 400, 600, 800, 1000, 1200, 1600, 2000
-    ]
-  },
   parents: {},
   navigation: [],
   navigationItem: [],
@@ -57,50 +55,44 @@ let config: Config = {
     build: false,
     cache: false,
     dir: '',
-    urls: {
-      dev: '/',
-      prod: ''
-    }
+    devUrl: '/',
+    prodUrl: ''
   },
-  store: {
-    dir: 'lib/store',
-    files: {
-      slugs: {
-        data: '',
-        name: 'slugs.json'
-      },
-      parents: {
-        data: '',
-        name: 'parents.json'
-      },
-      navigations: {
-        data: '',
-        name: 'navigations.json'
-      },
-      navigationItems: {
-        data: '',
-        name: 'navigation-items.json'
-      },
-      archiveMeta: {
-        data: '',
-        name: 'archive-meta.json'
-      },
-      formMeta: {
-        data: '',
-        name: 'form-meta.json'
-      }
-    }
-  },
-  serverless: {
-    dir: 'functions',
-    files: {
-      ajax: 'ajax/index.js',
-      preview: '',
-      reload: ''
+  storeDir: 'lib/store',
+  storeFiles: {
+    slugs: {
+      data: '',
+      name: 'slugs.json'
     },
-    routes: {
-      reload: []
+    parents: {
+      data: '',
+      name: 'parents.json'
+    },
+    navigations: {
+      data: '',
+      name: 'navigations.json'
+    },
+    navigationItems: {
+      data: '',
+      name: 'navigation-items.json'
+    },
+    archiveMeta: {
+      data: '',
+      name: 'archive-meta.json'
+    },
+    formMeta: {
+      data: '',
+      name: 'form-meta.json'
     }
+  },
+  serverlessDir: 'functions',
+  serverlessFiles: {
+    ajax: 'ajax/index.js',
+    preview: '',
+    reload: ''
+  },
+  serverlessRoutes: {
+    reload: []
   },
   redirects: {
     file: 'site/_redirects',
@@ -116,13 +108,16 @@ let config: Config = {
     devCredential: '',
     devHost: ''
   },
-  static: {
-    dir: 'json',
-    image: {
-      inputDir: 'src/assets/img',
-      outputDir: 'site/assets/img',
-      dataFile: 'lib/store/image-data.json'
-    }
+  staticDir: 'json',
+  image: {
+    inputDir: 'src/assets/img',
+    outputDir: 'site/assets/img',
+    dataFile: 'lib/store/image-data.json',
+    url: '/assets/img/',
+    quality: 75,
+    sizes: [
+      200, 400, 600, 800, 1000, 1200, 1600, 2000
+    ]
   },
   styles: {
     inputDir: 'src',
@@ -169,4 +164,8 @@ const setConfigFilter: ConfigSetFilter = async (env) => {
 
 /* Exports */
 
-export { config, setConfig, setConfigFilter }
+export {
+  config,
+  setConfig,
+  setConfigFilter
+}

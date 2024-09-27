@@ -1,5 +1,5 @@
 /**
- * Utils - Filters Types
+ * Utils - Filter Types
  */
 
 /* Imports */

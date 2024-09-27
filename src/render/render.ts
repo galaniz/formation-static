@@ -37,8 +37,8 @@ import type { PaginationData } from '../components/Pagination/PaginationTypes.js
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
 import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes.js'
 import { normalizeContentType } from '../utils/contentType/contentType.js'
-import { doActions } from '../utils/actions/actions.js'
-import { applyFilters } from '../utils/filters/filters.js'
+import { doActions } from '../utils/action/action.js'
+import { applyFilters } from '../utils/filter/filter.js'
 import { getSlug, getPermalink } from '../utils/link/link.js'
 import { getJsonFile } from '../utils/json/json.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
@@ -46,7 +46,7 @@ import { isArray, isArrayStrict } from '../utils/array/array.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isNumber } from '../utils/number/number.js'
 import { isFunction } from '../utils/function/function.js'
-import { doShortcodes } from '../utils/shortcodes/shortcodes.js'
+import { doShortcodes } from '../utils/shortcode/shortcode.js'
 import { tagExists } from '../utils/tag/tag.js'
 import { config } from '../config/config.js'
 import { Container } from '../layouts/Container/Container.js'
@@ -384,7 +384,7 @@ const renderContent = async (
 
     const props = structuredClone(item)
     const renderType = isString(props.renderType) ? props.renderType : ''
-    const contentType = isString(props.contentType) ? props.contentType : ''
+    const contentType = isString(props.contentType) ? props.contentType : '' // NORMALIZEEE???
 
     /* Check for nested content */
 
@@ -392,7 +392,7 @@ const renderContent = async (
 
     /* Map out content to template */
 
-    if (contentType === 'contentTemplate') {
+    if (normalizeContentType(contentType) === 'contentTemplate') {
       const contentTemplate = _getContentTemplate(isArray(props.content) ? props.content : [])
       const templates = _mapContentTemplate(contentTemplate.templates, contentTemplate.content)
 
@@ -959,8 +959,8 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
 
   /* Empty serverless reload */
 
-  Object.keys(config.serverless.routes).forEach((r) => {
-    config.serverless.routes[r] = []
+  Object.keys(config.serverlessRoutes).forEach((r) => {
+    config.serverlessRoutes[r] = []
   })
 
   /* Loop through all content types */
@@ -990,7 +990,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
       data.push(itemData)
 
       if (serverlessRender && !isServerless) {
-        config.serverless.routes.reload.push({
+        config.serverlessRoutes.reload.push({
           path: itemData.slug.replace(/^\/|\/$/gm, '')
         })
       }
@@ -1000,17 +1000,17 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
   /* Store files data */
 
   if (!isServerless && !isPreview) {
-    config.store.files.slugs.data = JSON.stringify(_slugs)
-    config.store.files.parents.data = JSON.stringify(config.parents)
-    config.store.files.navigations.data = JSON.stringify(config.navigation)
-    config.store.files.navigationItems.data = JSON.stringify(config.navigationItem)
+    config.storeFiles.slugs.data = JSON.stringify(_slugs)
+    config.storeFiles.parents.data = JSON.stringify(config.parents)
+    config.storeFiles.navigations.data = JSON.stringify(config.navigation)
+    config.storeFiles.navigationItems.data = JSON.stringify(config.navigationItem)
 
-    if (config.store.files?.archiveMeta?.data !== undefined) {
-      config.store.files.archiveMeta.data = JSON.stringify(config.archiveMeta)
+    if (config.storeFiles?.archiveMeta?.data !== undefined) {
+      config.storeFiles.archiveMeta.data = JSON.stringify(config.archiveMeta)
     }
 
-    if (config.store.files?.formMeta?.data !== undefined) {
-      config.store.files.formMeta.data = JSON.stringify(config.formMeta)
+    if (config.storeFiles?.formMeta?.data !== undefined) {
+      config.storeFiles.formMeta.data = JSON.stringify(config.formMeta)
     }
   }
 
