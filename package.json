@@ -1,6 +1,6 @@
 {
   "name": "@alanizcreative/static-site-formation",
-  "version": "1.3.0-beta.14",
+  "version": "1.3.0-beta.15",
   "description": "Base and helpers for static sites built with json files, Contentful or WordPress",
   "main": "./lib/config/config.js",
   "type": "module",
