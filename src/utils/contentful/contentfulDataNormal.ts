@@ -25,7 +25,7 @@ import { config } from '../../config/config.js'
  * @param {string} type
  * @return {string}
  */
-const _getTag = (type: string = 'text'): string => {
+const getTag = (type: string = 'text'): string => {
   const tag: GenericStrings = {
     br: 'br',
     hr: 'hr',
@@ -66,7 +66,7 @@ const _getTag = (type: string = 'text'): string => {
  * @param {ContentfulDataItem[]} items
  * @return {RenderItem[]}
  */
-const _normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
+const normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
   const newItems: RenderItem[] = []
 
   /* Recurse */
@@ -86,7 +86,7 @@ const _normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
 
     /* Tag */
 
-    const tag = _getTag(nodeType)
+    const tag = getTag(nodeType)
 
     /* Content */
 
@@ -98,7 +98,7 @@ const _normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
 
       if (isArrayStrict(marks)) {
         const markTags = marks.map((m) => {
-          return _getTag(m.type)
+          return getTag(m.type)
         })
 
         const markStart = markTags.map(m => `<${m}>`).join('')
@@ -113,7 +113,7 @@ const _normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
     }
 
     if (isArrayStrict(content)) {
-      const contentArr = _normalizeRichText(content)
+      const contentArr = normalizeRichText(content)
 
       if (contentArr.length > 0) {
         contentValue = contentArr
@@ -162,7 +162,7 @@ const _normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
     }
 
     if (isObjectStrict(internalLink)) {
-      newItem.internalLink = _normalizeItem(internalLink, [], true) as InternalLink
+      newItem.internalLink = normalizeItem(internalLink, [], true) as InternalLink
     }
 
     return newItems.push(newItem)
@@ -181,7 +181,7 @@ const _normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
  * @param {ContentfulDataFields} fields
  * @return {RenderFile}
  */
-const _normalizeFile = (file: ContentfulDataFile, fields: ContentfulDataFields): RenderFile => {
+const normalizeFile = (file: ContentfulDataFile, fields: ContentfulDataFields): RenderFile => {
   const type = isString(file.contentType) ? file.contentType : ''
   const format = type !== '' ? type.split('/')[1] : ''
 
@@ -206,7 +206,7 @@ const _normalizeFile = (file: ContentfulDataFile, fields: ContentfulDataFields):
  * @param {boolean} [isInternalLink]
  * @return {RenderItem}
  */
-const _normalizeItem = (
+const normalizeItem = (
   item: ContentfulDataItem,
   data: RenderItem[],
   isInternalLink: boolean = false
@@ -263,7 +263,7 @@ const _normalizeItem = (
     const file = fields.file
 
     if (isObjectStrict(file)) {
-      return Object.assign(_normalizeFile(file, fields), newItem)
+      return Object.assign(normalizeFile(file, fields), newItem)
     }
 
     getObjectKeys(fields).forEach((prop) => {
@@ -279,15 +279,15 @@ const _normalizeItem = (
 
           if (isArrayStrict(content)) {
             newItem[prop] = content.map((c) => {
-              return isObjectStrict(c) ? _normalizeItem(c, data, isInternalLink) : c
+              return isObjectStrict(c) ? normalizeItem(c, data, isInternalLink) : c
             })
           }
         } else {
-          newItem[prop] = _normalizeItem(field, data, prop === 'internalLink')
+          newItem[prop] = normalizeItem(field, data, prop === 'internalLink')
         }
       } else if (isArrayStrict(field)) {
         newItem[prop] = field.map((f) => {
-          return isObjectStrict(f) ? _normalizeItem(f, data, isInternalLink) : f
+          return isObjectStrict(f) ? normalizeItem(f, data, isInternalLink) : f
         })
       } else {
         newItem[prop] = field
@@ -303,17 +303,17 @@ const _normalizeItem = (
     if (nodeType === 'embedded-entry-block' || nodeType === 'embedded-asset-block') {
       const content = isObjectStrict(itemCopy?.data?.target) ? itemCopy.data.target : item
 
-      newItem = _normalizeItem(content, data, isInternalLink)
+      newItem = normalizeItem(content, data, isInternalLink)
     } else {
       newItem.renderType = 'richText'
-      newItem.tag = _getTag(itemCopy.nodeType)
+      newItem.tag = getTag(itemCopy.nodeType)
 
       if (isString(itemCopy.content)) {
         newItem.content = itemCopy.content
       }
 
       if (isArrayStrict(itemCopy.content)) {
-        newItem.content = _normalizeRichText(itemCopy.content)
+        newItem.content = normalizeRichText(itemCopy.content)
       }
     }
   }
@@ -345,7 +345,7 @@ const normalizeContentfulData = (
       return
     }
 
-    _newData.push(_normalizeItem(item, _newData))
+    _newData.push(normalizeItem(item, _newData))
   })
 
   /* Output */

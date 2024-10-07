@@ -13,7 +13,7 @@ import { isArrayStrict } from '../array/array.js'
  *
  * @type {LinkShare}
  */
-const _shareLinks: LinkShare = {
+const shareLinks: LinkShare = {
   Facebook: 'https://www.facebook.com/sharer.php?u=',
   X: 'https://twitter.com/intent/tweet?url=',
   LinkedIn: 'https://www.linkedin.com/shareArticle?url=',
@@ -39,7 +39,7 @@ const getShareLinks = (
   }
 
   return platforms.map((platform) => {
-    const platformLink = _shareLinks[platform]
+    const platformLink = shareLinks[platform]
 
     let link = platformLink !== undefined ? `${platformLink}${url}` : ''
 

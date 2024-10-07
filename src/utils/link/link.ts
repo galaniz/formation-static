@@ -21,11 +21,11 @@ import { getArchiveInfo, getTaxonomyInfo } from '../archive/archive.js'
  * @param {ConfigParent[]} parents
  * @return {void}
  */
-const _getParentSlug = (id: string = '', parents: ConfigParent[] = []): void => {
+const getParentSlug = (id: string = '', parents: ConfigParent[] = []): void => {
   if (config.parents[id] !== undefined && id !== '') {
     parents.unshift(config.parents[id])
 
-    _getParentSlug(config.parents[id].id, parents)
+    getParentSlug(config.parents[id].id, parents)
   }
 }
 
@@ -46,7 +46,9 @@ const getSlug = <T extends boolean>(args: LinkSlugArgs, returnParents = false as
 
   /* Index */
 
-  if (slug === 'index' && returnParents === false) {
+  const isIndex = slug === 'index'
+
+  if (isIndex && returnParents === false) {
     return '' as LinkSlugReturnType<T>
   }
 
@@ -125,7 +127,7 @@ const getSlug = <T extends boolean>(args: LinkSlugArgs, returnParents = false as
 
   const parents: ConfigParent[] = []
 
-  _getParentSlug(contentType === 'page' ? id : archiveId, parents)
+  getParentSlug(contentType === 'page' ? id : archiveId, parents)
 
   if (parents.length > 0) {
     parts.push(`${parents.map(({ slug }) => slug).join('/')}`)
@@ -145,7 +147,7 @@ const getSlug = <T extends boolean>(args: LinkSlugArgs, returnParents = false as
 
   /* Slug */
 
-  if (isStringStrict(slug)) {
+  if (isStringStrict(slug) && !isIndex) {
     parts.push(slug)
   }
 

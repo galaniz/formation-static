@@ -27,7 +27,7 @@ import { isHeading } from '../../utils/heading/heading.js'
  * @param {string} content
  * @return {boolean}
  */
-const _containsShortcode = (tag: string = '', content: string = ''): boolean => {
+const containsShortcode = (tag: string = '', content: string = ''): boolean => {
   if (tag === 'p' && content.charAt(0) === '[' && content.charAt(content.length - 1) === ']') {
     return true
   }
@@ -43,7 +43,7 @@ const _containsShortcode = (tag: string = '', content: string = ''): boolean => 
  * @param {string} tag
  * @return {boolean}
  */
-const _addDataAttr = (dataAttr: boolean | string[] = true, tag: string = ''): boolean => {
+const addDataAttr = (dataAttr: boolean | string[] = true, tag: string = ''): boolean => {
   if (isArrayStrict(dataAttr)) {
     return dataAttr.includes(tag)
   }
@@ -58,7 +58,7 @@ const _addDataAttr = (dataAttr: boolean | string[] = true, tag: string = ''): bo
  * @param {RichTextContentProps} args
  * @return {Promise<string>}
  */
-const _getContent = async (args: RichTextContentProps): Promise<string> => {
+const getContent = async (args: RichTextContentProps): Promise<string> => {
   const {
     content = [],
     props,
@@ -83,16 +83,12 @@ const _getContent = async (args: RichTextContentProps): Promise<string> => {
       tag = ''
     } = item
 
-    if (tag === '#text') { // TEMP
-      tag = ''
-    }
-
     let cc = c
 
     /* Nested content */
 
     if (isArrayStrict(c)) {
-      cc = await _getContent({
+      cc = await getContent({
         content: c,
         props,
         dataAttr
@@ -103,7 +99,7 @@ const _getContent = async (args: RichTextContentProps): Promise<string> => {
 
     const attrs: string[] = []
 
-    if (_addDataAttr(dataAttr, tag)) {
+    if (addDataAttr(dataAttr, tag)) {
       attrs.push(`data-rich="${tag}"`)
     }
 
@@ -144,7 +140,7 @@ const _getContent = async (args: RichTextContentProps): Promise<string> => {
       outputStr += cc
     }
 
-    if (_containsShortcode(tag, outputStr)) {
+    if (containsShortcode(tag, outputStr)) {
       tag = ''
     }
 
@@ -223,10 +219,6 @@ const RichText = async (props: RichTextProps): Promise<string> => {
     tag = ''
   } = args
 
-  if (tag === '#text') { // TEMP
-    tag = ''
-  }
-
   /* Hr */
 
   if (tag === 'hr') {
@@ -279,7 +271,7 @@ const RichText = async (props: RichTextProps): Promise<string> => {
   if (isArrayStrict(content)) {
     headingObj = content
 
-    output = await _getContent({
+    output = await getContent({
       content,
       props: filterProps,
       dataAttr
@@ -290,7 +282,7 @@ const RichText = async (props: RichTextProps): Promise<string> => {
 
   const attrs: string[] = []
 
-  if (_addDataAttr(dataAttr, tag)) {
+  if (addDataAttr(dataAttr, tag)) {
     attrs.push(`data-rich="${tag}"`)
   }
 
@@ -350,7 +342,7 @@ const RichText = async (props: RichTextProps): Promise<string> => {
 
   /* Output */
 
-  if (_containsShortcode(tag, output)) {
+  if (containsShortcode(tag, output)) {
     tag = ''
   }
 

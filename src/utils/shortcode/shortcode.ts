@@ -31,7 +31,7 @@ let shortcodes: Shortcodes = {}
  * @private
  * @type {RegExp}
  */
-const _attrReg: RegExp = /[\w-]+=".*?"/g
+const attrReg: RegExp = /[\w-]+=".*?"/g
 
 /**
  * Extract attributes and inner content from tagged strings
@@ -42,7 +42,7 @@ const _attrReg: RegExp = /[\w-]+=".*?"/g
  * @param {Shortcode} [props]
  * @return {ShortcodeData[]}
  */
-const _getShortcodeData = (content: string, tagNames: string, props?: Partial<Shortcode>): ShortcodeData[] => {
+const getShortcodeData = (content: string, tagNames: string, props?: Partial<Shortcode>): ShortcodeData[] => {
   /* Content and tag names required */
 
   if (!isStringStrict(content) || !isStringStrict(tagNames)) {
@@ -105,7 +105,7 @@ const _getShortcodeData = (content: string, tagNames: string, props?: Partial<Sh
 
     const attributes: ShortcodeAttrs = {}
     const attributeTypes = isObjectStrict(info.attributeTypes) ? info.attributeTypes : {}
-    const attr = tag.match(_attrReg)
+    const attr = tag.match(attrReg)
 
     if (isArrayStrict(attr)) {
       attr.forEach((a) => {
@@ -155,7 +155,7 @@ const _getShortcodeData = (content: string, tagNames: string, props?: Partial<Sh
     const child = info.child
 
     if (isObjectStrict(child)) {
-      children = _getShortcodeData(innerContent, child.name, child)
+      children = getShortcodeData(innerContent, child.name, child)
     }
 
     /* Add data */
@@ -229,7 +229,7 @@ const doShortcodes = async (content: string): Promise<string> => {
 
   /* Get data */
 
-  const data = _getShortcodeData(content, names.join('|'))
+  const data = getShortcodeData(content, names.join('|'))
 
   if (data.length === 0) {
     return content

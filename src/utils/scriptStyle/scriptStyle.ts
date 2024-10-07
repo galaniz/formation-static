@@ -17,7 +17,7 @@ import { isStringStrict } from '../string/string.js'
  * @param {string[]} [deps]
  * @return {boolean}
  */
-const _addScriptStyle = (
+const addScriptStyle = (
   type: 'styles' | 'scripts',
   path: string,
   deps: string[] = []
@@ -73,7 +73,7 @@ const _addScriptStyle = (
  * @return {boolean}
  */
 const addScript = (path: string, deps: string[] = []): boolean => {
-  return _addScriptStyle('scripts', path, deps)
+  return addScriptStyle('scripts', path, deps)
 }
 
 /**
@@ -84,7 +84,7 @@ const addScript = (path: string, deps: string[] = []): boolean => {
  * @return {boolean}
  */
 const addStyle = (path: string, deps: string[] = []): boolean => {
-  return _addScriptStyle('styles', path, deps)
+  return addScriptStyle('styles', path, deps)
 }
 
 /**
@@ -95,7 +95,7 @@ const addStyle = (path: string, deps: string[] = []): boolean => {
  * @param {string} link
  * @return {string}
  */
-const _outputScriptsStyles = (type: 'styles' | 'scripts', link: string): string => {
+const outputScriptsStyles = (type: 'styles' | 'scripts', link: string): string => {
   /* Link is required */
 
   if (!isStringStrict(link)) {
@@ -158,7 +158,7 @@ const _outputScriptsStyles = (type: 'styles' | 'scripts', link: string): string 
  * @return {string}
  */
 const outputScripts = (link: string): string => {
-  return _outputScriptsStyles('scripts', link)
+  return outputScriptsStyles('scripts', link)
 }
 
 /**
@@ -168,7 +168,7 @@ const outputScripts = (link: string): string => {
  * @return {string}
  */
 const outputStyles = (link: string): string => {
-  return _outputScriptsStyles('styles', link)
+  return outputScriptsStyles('styles', link)
 }
 
 /* Exports */

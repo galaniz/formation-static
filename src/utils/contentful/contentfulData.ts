@@ -198,7 +198,7 @@ const getAllContentfulData = async (args: AllContentfulDataArgs = {}): Promise<R
       }
 
       if (id !== '') {
-        const key = `serverless_${id}`
+        const key = `serverless_${id}_${contentType}`
         const params = {
           'sys.id': id,
           include: 10

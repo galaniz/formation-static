@@ -21,7 +21,7 @@ import { print } from '../print/print.js'
  * @param {Buffer} buffer
  * @return {Promise<void>}
  */
-const _createFile = async (path: string, buffer: Buffer): Promise<void> => {
+const createFile = async (path: string, buffer: Buffer): Promise<void> => {
   return await new Promise((resolve, reject) => {
     createWriteStream(path).write(buffer, (error) => {
       if (error !== null && error !== undefined) {
@@ -76,7 +76,7 @@ const getRemoteImages = async (images: Images[]): Promise<Array<PromiseSettledRe
 
           await mkdir(resolve(folders.join('/')), { recursive: true })
 
-          return await _createFile(
+          return await createFile(
             resolve(fullPath),
             Buffer.from(buffer)
           )

@@ -18,7 +18,7 @@ import { isArrayStrict } from '../../utils/array/array.js'
  * @param {FieldCheckboxRadioArgs} args
  * @return {string[]}
  */
-const _getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
+const getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
   const {
     opts = [],
     name = '',
@@ -293,7 +293,7 @@ const Field = async (props: FieldProps): Promise<string> => {
       input = `<input type="${type}" name="${name}" id="${id}"${attrs}>`
 
       if (checkboxRadioOpts) {
-        input = _getCheckboxRadioOpts({
+        input = getCheckboxRadioOpts({
           opts,
           name,
           classes,

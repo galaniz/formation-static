@@ -13,6 +13,20 @@ import { isArrayStrict } from '../array/array.js'
 import { isStringStrict } from '../string/string.js'
 import { print } from '../print/print.js'
 import { config } from '../../config/config.js'
+import { dataSource } from '../dataSource/dataSource.js'
+
+/**
+ * Minify template strings
+ *
+ * @param {string} str
+ * @return {string}
+ */
+const minify = (str: string): string => {
+  return str
+    .replace(/\s+/g, ' ')
+    .replace(/;\s*}/g, ';}')
+    .trim()
+}
 
 /**
  * Create files for serverless functions
@@ -24,45 +38,85 @@ const createServerlessFiles = async (args?: FileServerlessArgs): Promise<void> =
     /* Args */
 
     const {
-      packageDir = 'lib',
-      configName = 'config',
-      configFile = 'lib/config/config.js'
+      configExport = 'config',
+      configFile = 'lib/config/config.js',
+      dataExport = dataSource.isContentful() ? 'getAllContentfulData' : 'getAllWordPressData',
+      dataFile = 'lib/serverless/serverlessData.js',
+      previewExport = 'Preview',
+      previewFile = 'lib/serverless/serverlessPreview.js',
+      reloadExport = 'Reload',
+      reloadFile = 'lib/serverless/serverlessReload.js',
+      ajaxExport = 'Ajax',
+      ajaxFile = 'lib/serverless/serverlessAjax.js'
     } = isObjectStrict(args) ? args : {}
-
-    /* Package */
-
-    const formationPackage = `@alanizcreative/static-site-formation/${packageDir}/serverless/`
 
     /* Serverless folder */
 
-    if (isStringStrict(config.serverlessDir)) {
-      await mkdir(resolve(config.serverlessDir), { recursive: true })
+    const serverlessDir = config.serverlessDir
+
+    if (!isStringStrict(serverlessDir)) {
+      throw new Error('No serverlessDir in config')
     }
+
+    await mkdir(resolve(serverlessDir), { recursive: true })
 
     /* Ajax file */
 
-    if (isStringStrict(config.serverlessFiles.ajax)) {
-      const content = `import { ${configName} } from '${getPathDepth(`${config.serverlessDir}/${config.serverlessFiles.ajax}`)}${configFile}'\nimport { Ajax } from '${formationPackage}Ajax/Ajax'\nconst render = async ({ request, functionPath, env }) => { return await Ajax({ request, functionPath, env, siteConfig: ${configName} }) }\nexport const onRequestPost = [render]\n`
+    const ajaxServerlessFile = config.serverlessFiles.ajax
 
-      const path = resolve(config.serverlessDir, config.serverlessFiles.ajax)
+    if (isStringStrict(ajaxServerlessFile)) {
+      const pathDepth = getPathDepth(`${serverlessDir}/${ajaxServerlessFile}`)
+      const content = `
+        import { ${configExport} } from '${pathDepth}${configFile}';
+        import { ${ajaxExport} } from '${pathDepth}${ajaxFile}';
+        const render = async ({ request, functionPath, env }) => {
+          return await Ajax({
+            request,
+            functionPath,
+            env,
+            siteConfig: ${configExport}
+          })
+        };
+        export const onRequestPost = [render];
+      `
+
+      const path = resolve(serverlessDir, ajaxServerlessFile)
       const dir = dirname(path)
 
-      await mkdir(resolve(config.serverlessDir, dir), { recursive: true })
-      await writeFile(path, content)
+      await mkdir(resolve(serverlessDir, dir), { recursive: true })
+      await writeFile(path, minify(content))
 
       print('[SSF] Successfully wrote', path, 'success')
     }
 
     /* Preview file */
 
-    if (config.env.dev && isStringStrict(config.serverlessFiles.preview)) {
-      const content = `import { ${configName} } from '${getPathDepth(`${config.serverlessDir}/${config.serverlessFiles.preview}`)}${configFile}'\nimport { Preview } from '${formationPackage}Preview/Preview'\nconst render = async ({ request, functionPath, next, env }) => { return await Preview({ request, functionPath, next, env, siteConfig: ${configName} }) }\nexport const onRequestGet = [render]\n`
+    const previewServerlessFile = config.serverlessFiles.preview
 
-      const path = resolve(config.serverlessDir, config.serverlessFiles.preview)
+    if (config.env.dev && isStringStrict(previewServerlessFile)) {
+      const pathDepth = getPathDepth(`${serverlessDir}/${previewServerlessFile}`)
+      const content = `
+        import { ${configExport} } from '${pathDepth}${configFile}';
+        import { ${dataExport} } from '${pathDepth}${dataFile}';
+        import { ${previewExport} } from '${pathDepth}${previewFile}';
+        const render = async ({ request, functionPath, next, env }) => {
+          return await ${previewExport}({
+            request,
+            functionPath,
+            next,
+            env,
+            siteConfig: ${configExport},
+            getData: ${dataExport}
+          })
+        };
+        export const onRequestGet = [render];
+      `
+
+      const path = resolve(serverlessDir, previewServerlessFile)
       const dir = dirname(path)
 
-      await mkdir(resolve(config.serverlessDir, dir), { recursive: true })
-      await writeFile(path, content)
+      await mkdir(resolve(serverlessDir, dir), { recursive: true })
+      await writeFile(path, minify(content))
 
       print('[SSF] Successfully wrote', path, 'success')
     }
@@ -72,7 +126,7 @@ const createServerlessFiles = async (args?: FileServerlessArgs): Promise<void> =
     const routes = Object.keys(config.serverlessRoutes)
 
     if (routes.length > 0) {
-      const reloadFile = config.serverlessFiles.reload
+      const reloadServerlessFile = config.serverlessFiles.reload
 
       for (const type of routes) {
         const routesArr = config.serverlessRoutes[type]
@@ -87,18 +141,35 @@ const createServerlessFiles = async (args?: FileServerlessArgs): Promise<void> =
             content = ''
           } = route
 
-          if (type === 'reload' && isStringStrict(reloadFile) && isStringStrict(path)) {
-            path = `${path}/${reloadFile}`
+          if (type === 'reload' && isStringStrict(reloadServerlessFile) && isStringStrict(path)) {
+            path = `${path}/${reloadServerlessFile}`
 
-            content = `import { ${configName} } from '${getPathDepth(`${config.serverlessDir}/${path}`)}${configFile}'\nimport { Reload } from '${formationPackage}Reload/Reload'\nconst render = async ({ request, functionPath, next, env }) => { return await Reload({ request, functionPath, next, env, siteConfig: ${configName} }) }\nexport const onRequestGet = [render]\n`
+            const pathDepth = getPathDepth(`${serverlessDir}/${path}`)
+
+            content = `
+              import { ${configExport} } from '${pathDepth}${configFile}';
+              import { ${dataExport} } from '${pathDepth}${dataFile}';
+              import { ${reloadExport} } from '${pathDepth}${reloadFile}';
+              const render = async ({ request, functionPath, next, env }) => {
+                return await ${reloadExport}({
+                  request,
+                  functionPath,
+                  next,
+                  env,
+                  siteConfig: ${configExport},
+                  getData: ${dataExport}
+                })
+              };
+              export const onRequestGet = [render];
+            `
           }
 
           if (isStringStrict(path) && isStringStrict(content)) {
-            path = resolve(config.serverlessDir, path)
+            path = resolve(serverlessDir, path)
 
             const dir = dirname(path)
 
-            await mkdir(resolve(config.serverlessDir, dir), { recursive: true })
+            await mkdir(resolve(serverlessDir, dir), { recursive: true })
             await writeFile(path, content)
 
             print('[SSF] Successfully wrote', path, 'success')

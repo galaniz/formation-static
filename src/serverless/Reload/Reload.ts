@@ -6,7 +6,6 @@
 
 import type { ReloadArgs, ReloadQuery } from './ReloadTypes.js'
 import { config, setConfig, setConfigFilter } from '../../config/config.js'
-import { getAllContentfulData } from '../../utils/contentful/contentfulData.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { isFunction } from '../../utils/function/function.js'
@@ -23,7 +22,14 @@ import { render } from '../../render/render.js'
  * @param {ReloadArgs} args
  * @return {Promise<Response>} Response
  */
-const Reload = async ({ request, functionPath, next, env, siteConfig }: ReloadArgs): Promise<Response> => {
+const Reload = async ({
+  request,
+  functionPath,
+  next,
+  env,
+  siteConfig,
+  getData
+}: ReloadArgs): Promise<Response> => {
   try {
     /* Query */
 
@@ -74,7 +80,7 @@ const Reload = async ({ request, functionPath, next, env, siteConfig }: ReloadAr
 
     const data = await render({
       serverlessData,
-      allData: await getAllContentfulData({
+      allData: await getData({
         serverlessData
       })
     })

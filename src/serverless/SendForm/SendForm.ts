@@ -31,7 +31,7 @@ import { getJsonFile } from '../../utils/json/json.js'
  * @param {number} depth
  * @return {void}
  */
-const _recurseEmailHtml = <T>(
+const recurseEmailHtml = <T>(
   data: T,
   output: {
     html: string
@@ -68,7 +68,7 @@ const _recurseEmailHtml = <T>(
     }
 
     if (isObject(value)) {
-      _recurseEmailHtml(value, output, depth + 1)
+      recurseEmailHtml(value, output, depth + 1)
     }
 
     if (isString(value)) {
@@ -263,7 +263,7 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
     }
   }
 
-  _recurseEmailHtml(outputData, output)
+  recurseEmailHtml(outputData, output)
 
   const outputHtml = `
     <table width="100%" cellpadding="0" cellspacing="0" border="0">

@@ -61,7 +61,7 @@ import { RichText } from '../text/RichText/RichText.js'
  * @private
  * @type {RenderSlugs}
  */
-const _slugs: RenderSlugs = {}
+const slugs: RenderSlugs = {}
 
 /**
  * Normalize meta properties into one object
@@ -70,7 +70,7 @@ const _slugs: RenderSlugs = {}
  * @param {RenderMetaArgs} args
  * @return {RenderMetaReturn}
  */
-const _getMeta = (args: RenderMetaArgs): RenderMetaReturn => {
+const getMeta = (args: RenderMetaArgs): RenderMetaReturn => {
   const meta = {
     title: '',
     description: '',
@@ -113,7 +113,7 @@ const _getMeta = (args: RenderMetaArgs): RenderMetaReturn => {
  * @param {PaginationData} args
  * @return {void}
  */
-const _setPaginationMeta = (
+const setPaginationMeta = (
   args: PaginationData,
   slugArgs: LinkSlugArgs,
   meta: RenderMetaReturn
@@ -160,7 +160,7 @@ const _setPaginationMeta = (
  * @param {RenderItem[]} [_templates]
  * @return {RenderContentTemplate}
  */
-const _getContentTemplate = (content: RenderItem[], _templates: RenderItem[] = []): RenderContentTemplate => {
+const getContentTemplate = (content: RenderItem[], _templates: RenderItem[] = []): RenderContentTemplate => {
   /* Content must be array */
 
   if (!isArrayStrict(content)) {
@@ -213,7 +213,7 @@ const _getContentTemplate = (content: RenderItem[], _templates: RenderItem[] = [
  * @param {RenderItem[]} [content]
  * @return {RenderItem[]}
  */
-const _mapContentTemplate = (templates: RenderItem[], content: RenderItem[] = []): RenderItem[] => {
+const mapContentTemplate = (templates: RenderItem[], content: RenderItem[] = []): RenderItem[] => {
   /* Templates must be arrays */
 
   if (!isArrayStrict(templates)) {
@@ -294,7 +294,7 @@ const _mapContentTemplate = (templates: RenderItem[], content: RenderItem[] = []
     /* Recurse children */
 
     if (isArray(children) && templates[i] !== undefined) {
-      templates[i].content = _mapContentTemplate(children, content)
+      templates[i].content = mapContentTemplate(children, content)
     }
   })
 
@@ -393,8 +393,8 @@ const renderContent = async (
     /* Map out content to template */
 
     if (normalizeContentType(contentType) === 'contentTemplate') {
-      const contentTemplate = _getContentTemplate(isArray(props.content) ? props.content : [])
-      const templates = _mapContentTemplate(contentTemplate.templates, contentTemplate.content)
+      const contentTemplate = getContentTemplate(isArray(props.content) ? props.content : [])
+      const templates = mapContentTemplate(contentTemplate.templates, contentTemplate.content)
 
       children = templates
     }
@@ -599,7 +599,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
   /* Meta */
 
   const title = item.title
-  const meta = _getMeta(item)
+  const meta = getMeta(item)
 
   if (!isStringStrict(meta.title)) {
     meta.title = title
@@ -637,7 +637,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
     formattedSlug = slug
   }
 
-  _slugs[formattedSlug] = {
+  slugs[formattedSlug] = {
     contentType,
     id
   }
@@ -717,7 +717,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
   /* Pagination variables for meta object */
 
   if (isObjectStrict(pageData.pagination)) {
-    _setPaginationMeta(pageData.pagination, slugArgs, meta)
+    setPaginationMeta(pageData.pagination, slugArgs, meta)
 
     serverlessRender = true
   }
@@ -1000,7 +1000,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
   /* Store files data */
 
   if (!isServerless && !isPreview) {
-    config.storeFiles.slugs.data = JSON.stringify(_slugs)
+    config.storeFiles.slugs.data = JSON.stringify(slugs)
     config.storeFiles.parents.data = JSON.stringify(config.parents)
     config.storeFiles.navigations.data = JSON.stringify(config.navigation)
     config.storeFiles.navigationItems.data = JSON.stringify(config.navigationItem)

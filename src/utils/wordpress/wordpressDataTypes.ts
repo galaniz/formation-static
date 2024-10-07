@@ -5,7 +5,12 @@
 /* Imports */
 
 import type { Generic, GenericStrings } from '../../global/globalTypes.js'
-import type { RenderItem } from '../../render/renderTypes.js'
+import type {
+  RenderServerlessData,
+  RenderPreviewData,
+  RenderAllData,
+  RenderItem
+} from '../../render/renderTypes.js'
 
 /**
  * @typedef {Object.<string, (string|number|boolean)>} WordPressDataParams
@@ -58,33 +63,81 @@ export interface WordPressDataRenderedProtected {
 }
 
 /**
+ * @typedef WordPressDataRichText
+ * @type {RenderItem}
+ * @prop {Object.<string, string>} [attrs]
+ */
+export type WordPressDataRichText = RenderItem & { attrs?: Record<string, string> }
+
+/**
  * @typedef {object} WordPressDataAuthor
+ * @prop {number} id
+ * @prop {string} name
+ * @prop {string} url
+ * @prop {string} description
+ * @prop {string} link
+ * @prop {string} slug
  */
 export interface WordPressDataAuthor {
   id: number
   name: string
-  avatar_urls: {
-    [key: string]: string
-  }
+  url: string
+  description: string
+  link: string
+  slug: string
 }
 
+/**
+ * @typedef {object} WordPressDataFeaturedMedia
+ * @prop {number} id
+ * @prop {string} source_url
+ * @prop {string} alt_text
+ * @prop {WordPressDataRendered} caption
+ * @prop {string} media_type
+ * @prop {string} mime_type
+ * @prop {object} media_details
+ * @prop {number} media_details.width
+ * @prop {number} media_details.height
+ * @prop {number} media_details.filesize
+ * @prop {string} media_details.file
+ * @prop {Object.<string, WordPressDataMediaSize>} media_details.sizes
+ */
 export interface WordPressDataFeaturedMedia {
   id: number
   source_url: string
   alt_text: string
+  caption: WordPressDataRendered
+  media_type: string
+  mime_type: string
   media_details: {
-    sizes: {
-      [key: string]: WordPressDataMediaSize
-    }
+    width: number
+    height: number
+    filesize: number
+    file: string
+    sizes: Record<string, WordPressDataMediaSize>
   }
 }
 
+/**
+ * @typedef {object} WordPressDataMediaSize
+ * @prop {string} source_url
+ * @prop {number} width
+ * @prop {number} height
+ */
 export interface WordPressDataMediaSize {
   source_url: string
   width: number
   height: number
 }
 
+/**
+ * @typedef {object} WordPressDataTerm
+ * @prop {number} id
+ * @prop {string} link
+ * @prop {string} name
+ * @prop {string} slug
+ * @prop {string} taxonomy
+ */
 export interface WordPressDataTerm {
   id: number
   link: string
@@ -93,12 +146,18 @@ export interface WordPressDataTerm {
   taxonomy: string
 }
 
+/**
+ * @typedef {object} WordPressDataAttachment
+ * @prop {number} id
+ * @prop {string} source_url
+ * @prop {WordPressDataRendered} title
+ * @prop {string} media_type
+ * @prop {string} mime_type
+ */
 export interface WordPressDataAttachment {
   id: number
   source_url: string
-  title: {
-    rendered: string
-  }
+  title: WordPressDataRendered
   media_type: string
   mime_type: string
 }
@@ -107,34 +166,48 @@ export interface WordPressDataAttachment {
  * @typedef {object} WordPressDataParent
  * @prop {number} id
  * @prop {WordPressDataRendered} title
+ * @prop {WordPressDataRendered} excerpt
+ * @prop {string} slug
+ * @prop {string} type
  * @prop {string} link
+ * @prop {number} author
+ * @prop {number} featured_media
  */
 export interface WordPressDataParent {
   id: number
-  title: {
-    rendered: string
-  }
+  title: WordPressDataRendered
+  excerpt: WordPressDataRendered
+  slug: string
+  type: string
   link: string
+  author: number
+  featured_media: number
 }
 
 /**
  * @typedef {object} WordPressDataEmbedded
  * @prop {WordPressDataAuthor[]} [author]
+ * @prop {WordPressDataParent[]} [up]
  * @prop {WordPressDataFeaturedMedia[]} ['wp:featuredmedia']
- * @prop {WordPressDataTerm[][]} ['wp:term']
  * @prop {WordPressDataAttachment[]} ['wp:attachment']
- * @prop {WordPressDataParent[]} ['wp:parent']
+ * @prop {WordPressDataTerm[][]} ['wp:term']
  */
 export interface WordPressDataEmbedded {
   author?: WordPressDataAuthor[]
+  up?: WordPressDataParent[]
   'wp:featuredmedia'?: WordPressDataFeaturedMedia[]
-  'wp:term'?: WordPressDataTerm[][]
   'wp:attachment'?: WordPressDataAttachment[]
-  'wp:parent'?: WordPressDataParent[]
+  'wp:term'?: WordPressDataTerm[][]
 }
 
 /**
- *
+ * @typedef {object} WordPressDataLink
+ * @prop {string} href
+ * @prop {string} [name]
+ * @prop {boolean} [templated]
+ * @prop {number} [count]
+ * @prop {string} [taxonomy]
+ * @prop {boolean} [embeddable]
  */
 export interface WordPressDataLink {
   href: string
@@ -146,7 +219,14 @@ export interface WordPressDataLink {
 }
 
 /**
- *
+ * @typedef {object} WordPressDataLinks
+ * @prop {WordPressDataLink[]} self
+ * @prop {WordPressDataLink[]} collection
+ * @prop {WordPressDataLink[]} about
+ * @prop {WordPressDataLink[]} 'version-history'
+ * @prop {WordPressDataLink[]} 'wp:attachment'
+ * @prop {WordPressDataLink[]} 'wp:term'
+ * @prop {WordPressDataLink[]} curies
  */
 export interface WordPressDataLinks {
   self: WordPressDataLink[]
@@ -163,18 +243,55 @@ export interface WordPressDataLinks {
  * @prop {number} [height]
  * @prop {number} [width]
  * @prop {string} [url]
+ * @prop {string} [source_url]
  * @prop {string} [orientation]
  */
 export interface WordPressDataFileSize {
   height?: number
   width?: number
   url?: string
+  source_url?: string
   orientation?: string
 }
 
 /**
  * @typedef {object} WordPressDataFile
  * @prop {string} [contentType]
+ * @prop {number} [id]
+ * @prop {string} [title]
+ * @prop {string} [filename]
+ * @prop {string} [url]
+ * @prop {string} [link]
+ * @prop {string} [alt]
+ * @prop {string} [author]
+ * @prop {string} [description]
+ * @prop {string} [caption]
+ * @prop {string} [name]
+ * @prop {string} [status]
+ * @prop {number} [uploadedTo]
+ * @prop {string} [date]
+ * @prop {string} [modified]
+ * @prop {number} [menuOrder]
+ * @prop {string} [mime]
+ * @prop {string} [type]
+ * @prop {string} [subtype]
+ * @prop {string} [icon]
+ * @prop {string} [dateFormatted]
+ * @prop {object} [nonces]
+ * @prop {string} nonces.update
+ * @prop {string} nonces.delete
+ * @prop {string} nonces.edit
+ * @prop {string} [editLink]
+ * @prop {boolean} [meta]
+ * @prop {string} [authorName]
+ * @prop {string} [authorLink]
+ * @prop {number} [filesizeInBytes]
+ * @prop {string} [filesizeHumanReadable]
+ * @prop {string} [context]
+ * @prop {number} [height]
+ * @prop {number} [width]
+ * @prop {string} [orientation]
+ * @prop {Object.<string, WordPressDataFileSize>} [sizes]
  */
 export interface WordPressDataFile {
   contentType?: string
@@ -282,9 +399,23 @@ export interface WordPressDataItem extends Generic {
 }
 
 /**
- * @typedef {object} WordPressDataReturn
- * @prop {RenderItem[]} [items]
+ * @typedef {object} AllWordPressDataArgs
+ * @prop {RenderServerlessData} [serverlessData]
+ * @prop {RenderPreviewData} [previewData]
+ * @prop {function} [filterData]
+ * @prop {function} [filterAllData]
  */
-export interface WordPressDataReturn {
-  items?: RenderItem[]
+export interface AllWordPressDataArgs {
+  serverlessData?: RenderServerlessData
+  previewData?: RenderPreviewData
+  filterData?: (
+    data: RenderItem[],
+    serverlessData?: RenderServerlessData,
+    previewData?: RenderPreviewData
+  ) => RenderItem[]
+  filterAllData?: (
+    allData: RenderAllData,
+    serverlessData?: RenderServerlessData,
+    previewData?: RenderPreviewData
+  ) => RenderAllData
 }

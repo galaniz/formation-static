@@ -9,7 +9,11 @@ import type {
   WordPressDataFile,
   WordPressDataItem,
   WordPressDataRendered,
-  WordPressDataEmbedded
+  WordPressDataEmbedded,
+  WordPressDataAuthor,
+  WordPressDataFeaturedMedia,
+  WordPressDataParent,
+  WordPressDataRichText
 } from './wordpressDataTypes.js'
 import type { RenderItem, RenderFile } from '../../render/renderTypes.js'
 import { parse } from '@wordpress/block-serialization-spec-parser'
@@ -21,13 +25,70 @@ import { isNumber } from '../number/number.js'
 import { config } from '../../config/config.js'
 
 /**
+ * Camel case version of prop names
+ *
+ * @type {Object.<string, string>}
+ */
+const camelCaseKeys: Record<string, string> = {
+  date_gmt: 'dataGmt',
+  modified_gmt: 'modifiedGmt',
+  featured_media: 'featuredMedia',
+  menu_order: 'menuOrder',
+  comment_status: 'commentStatus',
+  ping_status: 'pingStatus',
+  class_list: 'classList'
+}
+
+/**
+ * Remove #text tags and set attr
+ *
+ * @param {WordPressDataRichText} item
+ * @return {RenderItem}
+ */
+const normalizeRichText = (item: WordPressDataRichText): RenderItem => {
+  const { tag, content, attrs } = item
+
+  if (tag === '#text') {
+    item.tag = ''
+  }
+
+  if (isObjectStrict(attrs)) {
+    const attr: string[] = []
+
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === 'href') {
+        item.link = v
+        continue
+      }
+
+      attr.push(`${k}="${v}"`)
+    }
+
+    if (attr.length > 0) {
+      item.attr = attr.join(' ')
+      item.attrs = undefined
+    }
+  }
+
+  if (isArrayStrict(content)) {
+    const newContent = content.map((c) => {
+      return normalizeRichText(c)
+    })
+
+    item.content = newContent
+  }
+
+  return item
+}
+
+/**
  * Reduce file props
  *
  * @private
  * @param {WordPressDataFile} file
  * @return {RenderFile}
  */
-const _normalizeFile = (file: WordPressDataFile): RenderFile => {
+const normalizeFile = (file: WordPressDataFile): RenderFile => {
   const {
     url,
     filename,
@@ -46,7 +107,15 @@ const _normalizeFile = (file: WordPressDataFile): RenderFile => {
     s = {}
 
     for (const [, value] of Object.entries(sizes)) {
-      const { width, url } = value
+      let {
+        width,
+        url,
+        source_url: src
+      } = value
+
+      if (isStringStrict(src)) {
+        url = src
+      }
 
       if (!isNumber(width) || !isStringStrict(url)) {
         continue
@@ -70,13 +139,202 @@ const _normalizeFile = (file: WordPressDataFile): RenderFile => {
 }
 
 /**
+ * Link embeds to item parent, author, featured media or term
+ *
+ * @param {WordPressDataEmbedded} value
+ * @param {WordPressDataItem} item
+ * @param {RenderItem} newItem
+ * @return {void}
+ */
+const normalizeEmbedded = (
+  value: WordPressDataEmbedded,
+  item: WordPressDataItem,
+  newItem: RenderItem
+): void => {
+  getObjectKeys(value).forEach((k) => {
+    const embeds = value[k]
+
+    /* Must be array */
+
+    if (!isArrayStrict(embeds)) {
+      return
+    }
+
+    /* Author */
+
+    if (k === 'author') {
+      embeds.forEach((embed) => {
+        if (!isObjectStrict(embed)) {
+          return
+        }
+
+        const {
+          id,
+          name,
+          url,
+          description,
+          link,
+          slug
+        } = embed as WordPressDataAuthor
+
+        if (item.author !== id) {
+          return
+        }
+
+        newItem.author = {
+          id: id.toString(),
+          name,
+          url,
+          description,
+          link,
+          slug
+        }
+      })
+    }
+
+    /* Parent */
+
+    if (k === 'up') {
+      embeds.forEach((embed) => {
+        if (!isObjectStrict(embed)) {
+          return
+        }
+
+        const {
+          id,
+          link,
+          title,
+          excerpt,
+          type,
+          slug
+        } = embed as WordPressDataParent
+
+        if (item.parent !== id) {
+          return
+        }
+
+        newItem.parent = {
+          id: id.toString(),
+          contentType: type,
+          title: isString(title.rendered) ? title.rendered : '',
+          excerpt: isString(excerpt.rendered) ? excerpt.rendered : '',
+          slug,
+          link
+        }
+      })
+    }
+
+    /* Featured media */
+
+    if (k === 'wp:featuredmedia') {
+      embeds.forEach((embed) => {
+        if (!isObjectStrict(embed)) {
+          return
+        }
+
+        const {
+          id,
+          source_url: url,
+          media_details: details,
+          mime_type: mimeType,
+          media_type: type,
+          alt_text: alt
+        } = embed as WordPressDataFeaturedMedia
+
+        if (!isObjectStrict(details)) {
+          return
+        }
+
+        const {
+          file,
+          filesize,
+          width,
+          height,
+          sizes
+        } = details
+
+        if (item.featured_media !== id) {
+          return
+        }
+
+        newItem.featuredMedia = normalizeFile({
+          url,
+          filename: file.split('/').pop(),
+          alt,
+          width,
+          height,
+          filesizeInBytes: filesize,
+          subtype: mimeType.split('/').pop(),
+          type,
+          sizes
+        })
+      })
+    }
+
+    /* Term */
+
+    if (k === 'wp:term') {
+      embeds.forEach((embed) => {
+        if (!isArrayStrict(embed)) {
+          return
+        }
+
+        embed.forEach((e) => {
+          if (!isObjectStrict(e)) {
+            return
+          }
+
+          const {
+            id,
+            link,
+            name,
+            slug,
+            taxonomy
+          } = e
+
+          let taxonomyLookup = taxonomy
+
+          if (taxonomy === 'category') {
+            taxonomyLookup = 'categories'
+          }
+
+          if (taxonomy === 'tag') {
+            taxonomyLookup = 'tags'
+          }
+
+          const itemTaxonomy = item[taxonomyLookup]
+
+          if (!isArrayStrict(itemTaxonomy)) {
+            return
+          }
+
+          newItem[taxonomyLookup] = itemTaxonomy.map((taxonomyId) => {
+            if (taxonomyId !== id) {
+              return taxonomyId
+            }
+
+            return {
+              id: id.toString(),
+              link,
+              name,
+              slug,
+              taxonomy
+            }
+          })
+        })
+      })
+    }
+  })
+}
+
+/**
  * Convert blocks to flatter props
  *
  * @private
  * @param {Block[]} blocks
  * @return {RenderItem[]}
  */
-const _normalizeBlocks = (blocks?: readonly Block[]): RenderItem[] => {
+const normalizeBlocks = (blocks?: readonly Block[]): RenderItem[] => {
   const newItems: RenderItem[] = []
 
   /* Blocks must be array */
@@ -106,29 +364,52 @@ const _normalizeBlocks = (blocks?: readonly Block[]): RenderItem[] => {
 
     const attributes = isObjectStrict(attrs) ? attrs : {}
 
+    const {
+      contentIsAttribute,
+      attributeIsItem
+    } = attributes
+
+    const attrItemArr = (isStringStrict(attributeIsItem) ? attributeIsItem : '').split(',')
+    const attrItemExists = attrItemArr.length > 0
+
     for (const [key, value] of Object.entries(attributes)) {
       if (!isObjectStrict(value)) {
         continue
       }
 
+      if (attrItemExists && attrItemArr.includes(key)) {
+        const itemValue = normalizeItem(value)
+        itemValue.content = undefined
+
+        attributes[key] = itemValue
+      }
+
       const attrContentType = value.contentType
 
       if (attrContentType === 'file') {
-        attributes[key] = _normalizeFile(value)
+        attributes[key] = normalizeFile(value)
       }
     }
 
-    const newItem: RenderItem = {
+    let newItem: RenderItem = {
       contentType,
       ...attributes
     }
 
-    if (isString(config.renderTypes[contentType])) {
-      newItem.renderType = config.renderTypes[contentType]
+    const renderType = config.renderTypes[contentType]
+
+    if (isString(renderType)) {
+      newItem.renderType = renderType
+    }
+
+    if (renderType === 'richText') {
+      newItem = normalizeRichText(newItem)
     }
 
     if (isArrayStrict(innerBlocks)) {
-      newItem.content = _normalizeBlocks(innerBlocks)
+      const contentAttr = isStringStrict(contentIsAttribute) ? contentIsAttribute : 'content'
+
+      newItem[contentAttr] = normalizeBlocks(innerBlocks)
     }
 
     return newItems.push(newItem)
@@ -146,7 +427,7 @@ const _normalizeBlocks = (blocks?: readonly Block[]): RenderItem[] => {
  * @param {WordPressDataItem} item
  * @return {RenderItem}
  */
-const _normalizeItem = (item: WordPressDataItem): RenderItem => {
+const normalizeItem = (item: WordPressDataItem): RenderItem => {
   const newItem: RenderItem = {}
 
   /* Loop item */
@@ -155,6 +436,10 @@ const _normalizeItem = (item: WordPressDataItem): RenderItem => {
     /* Value */
 
     let val = value
+
+    /* Key */
+
+    const k = camelCaseKeys[key] !== undefined ? camelCaseKeys[key] : key
 
     /* Check types */
 
@@ -197,58 +482,25 @@ const _normalizeItem = (item: WordPressDataItem): RenderItem => {
     /* Content */
 
     if (key === 'content' && isString(val)) {
-      val = _normalizeBlocks(parse(val))
+      val = normalizeBlocks(parse(val))
+    }
+
+    /* Links */
+
+    if (key === '_links') {
+      continue
     }
 
     /* Embeded */
 
     if (key === '_embedded' && isObj) {
-      const v = value as WordPressDataEmbedded
-
-      getObjectKeys(v).forEach((k) => {
-        const embedVal = v[k]
-
-        if (k === 'wp:term' && isArrayStrict(embedVal)) {
-          embedVal.forEach((e) => {
-            if (isArrayStrict(e)) {
-              e.forEach((ee) => {
-                if (isObjectStrict(ee)) {
-                  const {
-                    id,
-                    link,
-                    name,
-                    slug,
-                    taxonomy
-                  } = ee
-
-                  const itemTaxonomy = item[taxonomy]
-
-                  if (isArrayStrict(itemTaxonomy)) {
-                    newItem[taxonomy] = itemTaxonomy.map((taxonomyId) => {
-                      if (taxonomyId === id) {
-                        return {
-                          id,
-                          link,
-                          name,
-                          slug,
-                          taxonomy
-                        }
-                      }
-
-                      return taxonomyId
-                    })
-                  }
-                }
-              })
-            }
-          })
-        }
-      })
+      normalizeEmbedded(value, item, newItem)
+      continue
     }
 
     /* Set value */
 
-    newItem[key as keyof RenderItem] = val
+    newItem[k as keyof RenderItem] = val
   }
 
   /* Output */
@@ -275,7 +527,7 @@ const normalizeWordPressData = (data: WordPressDataItem[], _newData: RenderItem[
       return
     }
 
-    _newData.push(_normalizeItem(item))
+    _newData.push(normalizeItem(item))
   })
 
   /* Output */

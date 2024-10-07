@@ -87,7 +87,7 @@ let config: Config = {
   },
   serverlessDir: 'functions',
   serverlessFiles: {
-    ajax: 'ajax/index.js',
+    ajax: '',
     preview: '',
     reload: ''
   },

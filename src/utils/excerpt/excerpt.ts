@@ -17,7 +17,7 @@ import { stripShortcodes } from '../shortcode/shortcode.js'
  * @param {ExcerptContentWordArgs} args
  * @return {string[]}
  */
-const _getContentWords = <T>(args: ExcerptContentWordArgs<T>): string[] => {
+const getContentWords = <T>(args: ExcerptContentWordArgs<T>): string[] => {
   const {
     content,
     prop,
@@ -54,7 +54,7 @@ const _getContentWords = <T>(args: ExcerptContentWordArgs<T>): string[] => {
       }
 
       if (isObject(value)) {
-        _words = _getContentWords({
+        _words = getContentWords({
           content: value,
           prop,
           limit,
@@ -100,7 +100,7 @@ const getExcerpt = <T extends object>(args: ExcerptArgs<T>): string => {
       }
     }
   } else {
-    const words = _getContentWords({
+    const words = getContentWords({
       content,
       prop,
       limit

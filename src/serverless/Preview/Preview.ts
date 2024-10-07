@@ -6,7 +6,6 @@
 
 import type { PreviewArgs } from './PreviewTypes.js'
 import { setConfig, setConfigFilter } from '../../config/config.js'
-import { getAllContentfulData } from '../../utils/contentful/contentfulData.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { setFilters } from '../../utils/filter/filter.js'
@@ -21,7 +20,14 @@ import { render } from '../../render/render.js'
  * @param {PreviewArgs} args
  * @return {Promise<Response>} Response
  */
-const Preview = async ({ request, functionPath, next, env, siteConfig }: PreviewArgs): Promise<Response> => {
+const Preview = async ({
+  request,
+  functionPath,
+  next,
+  env,
+  siteConfig,
+  getData
+}: PreviewArgs): Promise<Response> => {
   /* Params */
 
   const { searchParams } = new URL(request.url)
@@ -54,7 +60,7 @@ const Preview = async ({ request, functionPath, next, env, siteConfig }: Preview
 
   const data = await render({
     previewData,
-    allData: await getAllContentfulData({
+    allData: await getData({
       previewData
     })
   })

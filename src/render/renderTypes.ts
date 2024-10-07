@@ -151,7 +151,7 @@ export interface RenderMetaTags {
  * @prop {number} [size]
  * @prop {string} [format]
  * @prop {string} [type]
- * @prop {Object<number, string>} [sizes]
+ * @prop {Object.<number, string>} [sizes]
  */
 export interface RenderFile {
   path?: string
@@ -266,7 +266,7 @@ export interface RenderFunctionReturn {
 export type RenderFunction<T = any, R = RenderItem> = (props: RenderFunctionArgs<T, R>) => Promise<string | RenderFunctionReturn>
 
 /**
- * @typedef {Object<string, RenderFunction>} RenderFunctions
+ * @typedef {Object.<string, RenderFunction>} RenderFunctions
  */
 export type RenderFunctions<T = any, R = RenderItem> = Record<string, RenderFunction<T, R>>
 

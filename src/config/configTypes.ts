@@ -208,6 +208,7 @@ export interface ConfigRedirects {
  * @typedef {object} ConfigCms
  * @prop {string} name
  * @prop {string} space
+ * @prop {boolean} [ssl]
  * @prop {string} prodUser
  * @prop {string} prodCredential
  * @prop {string} prodHost
@@ -218,6 +219,7 @@ export interface ConfigRedirects {
 export interface ConfigCms {
   name: string
   space: string
+  ssl?: boolean
   prodUser: string
   prodCredential: string
   prodHost: string
