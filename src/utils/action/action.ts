@@ -4,26 +4,26 @@
 
 /* Imports */
 
-import type { Actions, ActionsFunctions } from './actionTypes.js'
+import type { Actions, ActionMap, ActionReturnType } from './actionTypes.js'
+import { isSet, isSetStrict } from '../set/set.js'
 import { isStringStrict } from '../string/string.js'
-import { isArrayStrict } from '../array/array.js'
 import { isObjectStrict } from '../object/object.js'
 import { isFunction } from '../function/function.js'
 
 /**
- * Store action callbacks by name
+ * Action callbacks by name
  *
- * @type {ActionsFunctions}
+ * @type {ActionMap}
  */
-let actions: ActionsFunctions = {
-  renderStart: [],
-  renderEnd: [],
-  renderItemStart: [],
-  renderItemEnd: []
-}
+let actions: ActionMap = new Map([
+  ['renderStart', new Set()],
+  ['renderEnd', new Set()],
+  ['renderItemStart', new Set()],
+  ['renderItemEnd', new Set()]
+])
 
 /**
- * Add action to action object
+ * Add action to action map
  *
  * @param {string} name
  * @param {function} action
@@ -34,17 +34,21 @@ const addAction = <T extends keyof Actions>(name: T, action: Actions[T]): boolea
     return false
   }
 
-  if (actions[name] === undefined) {
-    actions[name] = []
+  if (!isSet(actions.get(name))) {
+    actions.set(name, new Set())
   }
 
-  actions[name].push(action)
+  const actionSet = actions.get(name)
+
+  if (isSet(actionSet)) {
+    actionSet.add(action)
+  }
 
   return true
 }
 
 /**
- * Remove action from actions object
+ * Remove action from actions map
  *
  * @param {string} name
  * @param {function} action
@@ -55,56 +59,83 @@ const removeAction = <T extends keyof Actions>(name: T, action: Actions[T]): boo
     return false
   }
 
-  const callbacks = actions[name]
+  const actionSet = actions.get(name)
 
-  if (isArrayStrict(callbacks)) {
-    const index = callbacks.indexOf(action)
-
-    if (index > -1) {
-      callbacks.splice(index, 1)
-
-      return true
-    }
+  if (!isSet(actionSet)) {
+    return false
   }
 
-  return false
+  return actionSet.delete(action)
 }
 
 /**
- * Run callback functions from actions object
+ * Call asynchronous functions sequentially
+ *
+ * @private
+ * @param {function[]} callbacks
+ * @param {*} [args]
+ * @return {void}
+ */
+const doSequentially = async <T>(callbacks: Function[], args: T): Promise<void> => {
+  for (const callback of callbacks) {
+    await callback(args)
+  }
+}
+
+/**
+ * Run callback functions from actions map
  *
  * @param {string} name
  * @param {*} [args]
- * @return {Promise<void>}
+ * @param {boolean} [isAwait]
+ * @return {*}
  */
-const doActions = async <T>(name: string, args?: T): Promise<void> => {
-  const callbacks = actions[name]
+const doActions = <T, V extends boolean = false>(
+  name: string,
+  args?: T,
+  isAwait: V = false as V
+): ActionReturnType<V> => {
+  const actionSet = actions.get(name)
 
-  if (isArrayStrict(callbacks)) {
-    for (const callback of callbacks) {
-      if (isFunction(callback)) {
-        await callback(args)
-      }
+  if (!isSetStrict(actionSet)) {
+    return undefined as ActionReturnType<V>
+  }
+
+  const callbacks: Function[] = []
+
+  for (const callback of actionSet.values()) {
+    if (isAwait) {
+      callbacks.push(callback)
+    } else {
+      callback(args)
     }
   }
+
+  if (isAwait) {
+    doSequentially(callbacks, args)
+      .then(result => result)
+      .catch(() => false)
+  }
+
+  return undefined as ActionReturnType<V>
 }
 
 /**
- * Empty actions object
+ * Empty actions map
  *
  * @return {void}
  */
 const resetActions = (): void => {
-  actions = {
-    renderStart: [],
-    renderEnd: [],
-    renderItemStart: [],
-    renderItemEnd: []
-  }
+  actions = new Map([
+    ['renderStart', new Set()],
+    ['renderEnd', new Set()],
+    ['renderItemStart', new Set()],
+    ['renderItemEnd', new Set()]
+  ])
 }
 
 /**
- * Fill actions object
+ * Fill actions map
  *
  * @param {Actions} args
  * @return {boolean}
@@ -123,7 +154,7 @@ const setActions = (args: Partial<Actions>): boolean => {
   resetActions()
 
   newActions.forEach(([name, action]) => {
-    if (action === undefined) {
+    if (action == null) {
       return
     }
 
@@ -136,6 +167,7 @@ const setActions = (args: Partial<Actions>): boolean => {
 /* Exports */
 
 export {
+  actions,
   addAction,
   removeAction,
   doActions,

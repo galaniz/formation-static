@@ -5,7 +5,6 @@
 /* Imports */
 
 import type { Config, ConfigSet, ConfigSetFilter } from './configTypes.js'
-import { addFilter, applyFilters } from '../utils/filter/filter.js'
 
 /**
  * Default options
@@ -14,8 +13,8 @@ import { addFilter, applyFilters } from '../utils/filter/filter.js'
  */
 let config: Config = {
   namespace: 'ssf',
-  source: 'static',
-  title: 'Static Site',
+  source: 'cms',
+  title: '',
   meta: {
     description: '',
     image: ''
@@ -31,24 +30,10 @@ let config: Config = {
   hierarchicalTypes: [
     'page'
   ],
-  typesInSlug: [],
   localesInSlug: [],
-  archiveMeta: {},
+  typesInSlug: {},
   normalTypes: {},
   renderTypes: {},
-  renderFunctions: {},
-  renderLayout: async () => { return '' },
-  renderHttpError: undefined,
-  renderNavigations: undefined,
-  ajaxFunctions: {},
-  actions: {},
-  filters: {},
-  shortcodes: {},
-  parents: {},
-  navigation: [],
-  navigationItem: [],
-  scriptMeta: {},
-  formMeta: {},
   env: {
     dev: true,
     prod: false,
@@ -57,46 +42,6 @@ let config: Config = {
     dir: '',
     devUrl: '/',
     prodUrl: ''
-  },
-  storeDir: 'lib/store',
-  storeFiles: {
-    slugs: {
-      data: '',
-      name: 'slugs.json'
-    },
-    parents: {
-      data: '',
-      name: 'parents.json'
-    },
-    navigations: {
-      data: '',
-      name: 'navigations.json'
-    },
-    navigationItems: {
-      data: '',
-      name: 'navigation-items.json'
-    },
-    archiveMeta: {
-      data: '',
-      name: 'archive-meta.json'
-    },
-    formMeta: {
-      data: '',
-      name: 'form-meta.json'
-    }
-  },
-  serverlessDir: 'functions',
-  serverlessFiles: {
-    ajax: '',
-    preview: '',
-    reload: ''
-  },
-  serverlessRoutes: {
-    reload: []
-  },
-  redirects: {
-    file: 'site/_redirects',
-    data: []
   },
   cms: {
     name: '',
@@ -108,34 +53,28 @@ let config: Config = {
     devCredential: '',
     devHost: ''
   },
-  staticDir: 'json',
+  local: {
+    dir: 'json'
+  },
+  scripts: {
+    inputDir: 'lib',
+    outputDir: 'js'
+  },
+  styles: {
+    inputDir: 'src',
+    outputDir: 'css'
+  },
   image: {
     inputDir: 'src/assets/img',
     outputDir: 'site/assets/img',
-    dataFile: 'lib/store/image-data.json',
-    url: '/assets/img/',
+    localUrl: '/assets/img/',
+    cmsUrl: '',
     quality: 75,
     sizes: [
       200, 400, 600, 800, 1000, 1200, 1600, 2000
     ]
   },
-  styles: {
-    inputDir: 'src',
-    outputDir: 'css',
-    deps: new Map(),
-    item: new Map(),
-    build: new Map()
-  },
-  scripts: {
-    inputDir: 'lib',
-    outputDir: 'js',
-    deps: new Map(),
-    item: new Map(),
-    build: new Map()
-  },
-  apiKeys: {
-    smtp2go: ''
-  }
+  filter: (config, _env) => config
 }
 
 /**
@@ -146,20 +85,18 @@ let config: Config = {
 const setConfig: ConfigSet = (args) => {
   config = Object.assign(config, args)
 
-  if (config.filter !== undefined) {
-    addFilter('config', config.filter)
-  }
-
   return config
 }
 
 /**
- * Update config based on env variables
+ * Filter config with environment variables
  *
  * @type {ConfigSetFilter}
  */
-const setConfigFilter: ConfigSetFilter = async (env) => {
-  config = await applyFilters('config', config, env)
+const setConfigFilter: ConfigSetFilter = (env) => {
+  config = config.filter(config, env)
+
+  return config
 }
 
 /* Exports */

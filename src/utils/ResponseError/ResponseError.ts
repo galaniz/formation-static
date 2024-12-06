@@ -7,7 +7,7 @@
  */
 class ResponseError extends Error {
   /**
-   * Store response data
+   * Response data
    *
    * @type {Response|undefined}
    */
@@ -17,14 +17,14 @@ class ResponseError extends Error {
    * Set properties
    *
    * @param {string} message
-   * @param {Response} [resp]
+   * @param {Response} [res]
    */
-  constructor (message: string, resp?: Response) {
+  constructor (message: string, res?: Response) {
     super(message)
     this.message = message
 
-    if (resp !== undefined) {
-      this.response = resp
+    if (res instanceof Response) {
+      this.response = res
     }
   }
 }

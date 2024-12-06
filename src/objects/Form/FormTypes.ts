@@ -2,72 +2,74 @@
  * Objects - Form Types
  */
 
+/* Imports */
+
+import type { Generic } from '../../global/globalTypes.js'
+import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js'
+
 /**
- * @typedef {object} FormProps
+ * @typedef FormArgs
+ * @type {Generic}
  * @prop {object} args
- * @prop {string} [args.id]
- * @prop {string} [args.action]
- * @prop {string} [args.subject]
- * @prop {string} [args.toEmail]
- * @prop {string} [args.senderEmail]
- * @prop {string} [args.submitLabel]
- * @prop {string} [args.successTitle]
- * @prop {string} [args.successText]
- * @prop {string} [args.successResult]
- * @prop {string} [args.errorTitle]
- * @prop {string} [args.errorText]
- * @prop {string} [args.errorSummary]
- * @prop {string} [args.errorResult]
- * @prop {string} [args.formClasses]
- * @prop {string} [args.formAttr]
- * @prop {string} [args.fieldsClasses]
- * @prop {string} [args.fieldsAttr]
- * @prop {string} [args.submitFieldClasses]
- * @prop {string} [args.submitClasses]
- * @prop {string} [args.submitAttr]
- * @prop {string} [args.submitLoader]
- * @prop {string} [args.honeypotFieldClasses]
- * @prop {string} [args.honeypotLabelClasses]
- * @prop {string} [args.honeypotClasses]
+ * @prop {string} [id]
+ * @prop {string} [action]
+ * @prop {string} [subject]
+ * @prop {string} [toEmail]
+ * @prop {string} [senderEmail]
+ * @prop {string} [submitLabel]
+ * @prop {string} [successTitle]
+ * @prop {string} [successText]
+ * @prop {string} [successResult]
+ * @prop {string} [errorTitle]
+ * @prop {string} [errorText]
+ * @prop {string} [errorSummary]
+ * @prop {string} [errorResult]
+ * @prop {string} [formClasses]
+ * @prop {string} [formAttr]
+ * @prop {string} [fieldsClasses]
+ * @prop {string} [fieldsAttr]
+ * @prop {string} [submitFieldClasses]
+ * @prop {string} [submitClasses]
+ * @prop {string} [submitAttr]
+ * @prop {string} [submitLoader]
+ * @prop {string} [honeypotFieldClasses]
+ * @prop {string} [honeypotLabelClasses]
+ * @prop {string} [honeypotClasses]
  */
-export interface FormProps {
-  args: {
-    id?: string
-    action?: string
-    subject?: string
-    toEmail?: string
-    senderEmail?: string
-    submitLabel?: string
-    successTitle?: string
-    successText?: string
-    successResult?: string
-    errorTitle?: string
-    errorText?: string
-    errorSummary?: string
-    errorResult?: string
-    formClasses?: string
-    formAttr?: string
-    fieldsClasses?: string
-    fieldsAttr?: string
-    submitFieldClasses?: string
-    submitClasses?: string
-    submitAttr?: string
-    submitLoader?: string
-    honeypotFieldClasses?: string
-    honeypotLabelClasses?: string
-    honeypotClasses?: string
-    [key: string]: unknown
-  }
+export interface FormArgs extends Generic {
+  id?: string
+  action?: string
+  subject?: string
+  toEmail?: string
+  senderEmail?: string
+  submitLabel?: string
+  successTitle?: string
+  successText?: string
+  successResult?: string
+  errorTitle?: string
+  errorText?: string
+  errorSummary?: string
+  errorResult?: string
+  formClasses?: string
+  formAttr?: string
+  fieldsClasses?: string
+  fieldsAttr?: string
+  submitFieldClasses?: string
+  submitClasses?: string
+  submitAttr?: string
+  submitLoader?: string
+  honeypotFieldClasses?: string
+  honeypotLabelClasses?: string
+  honeypotClasses?: string
 }
 
 /**
- * @typedef {object} FormReturn
- * @prop {string} start
- * @prop {string} end
+ * @typedef FormProps
+ * @type {RenderFunctionArgs}
+ * @prop {FormArgs} args
  */
-export interface FormReturn {
-  start: string
-  end: string
+export interface FormProps<T = FormArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {
+  args: FormArgs & T
 }
 
 /**
@@ -93,11 +95,13 @@ export interface FormMessage {
 }
 
 /**
- * @typedef {object} FormMessages
+ * @typedef {object} FormScriptMeta
+ * @prop {string} [url]
  * @prop {FormMessage} [successMessage]
  * @prop {FormMessage} [errorMessage]
  */
-export interface FormMessages {
+export interface FormScriptMeta {
+  url?: string
   successMessage?: FormMessage
   errorMessage?: FormMessage
 }
@@ -107,6 +111,11 @@ export interface FormMessages {
  * @param {FormProps} props
  * @param {object} args
  * @param {string} args.renderType
- * @return {Promise<FormProps>}
+ * @return {FormProps}
  */
-export type FormPropsFilter = (props: FormProps, args: { renderType: string }) => Promise<FormProps>
+export type FormPropsFilter<T = FormArgs, R = RenderItem> = (
+  props: FormProps<T, R>,
+  args: {
+    renderType: string
+  }
+) => FormProps<T, R>

@@ -32,20 +32,9 @@ export interface ContainerArgs extends Generic {
  * @typedef ContainerProps
  * @type {RenderFunctionArgs}
  * @prop {ContainerArgs} args
- * @prop {ParentArgs} [parents]
  */
 export interface ContainerProps<T = ContainerArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {
   args: ContainerArgs & T
-}
-
-/**
- * @typedef {object} ContainerReturn
- * @prop {string} start
- * @prop {string} end
- */
-export interface ContainerReturn {
-  start: string
-  end: string
 }
 
 /**
@@ -53,11 +42,11 @@ export interface ContainerReturn {
  * @param {ContainerProps} props
  * @param {object} args
  * @param {string} args.renderType
- * @return {Promise<ContainerProps>}
+ * @return {ContainerProps}
  */
 export type ContainerPropsFilter<T = ContainerArgs, R = RenderItem> = (
   props: ContainerProps<T, R>,
   args: {
     renderType: string
   }
-) => Promise<ContainerProps<T, R>>
+) => ContainerProps<T, R>

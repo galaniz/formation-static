@@ -6,9 +6,10 @@
 
 import type { ContentTypeLabels } from './contentTypeTypes.js'
 import type { Taxonomy } from '../../global/globalTypes.js'
-import { config } from '../../config/config.js'
 import { isObjectStrict } from '../object/object.js'
 import { isStringStrict } from '../string/string.js'
+import { getStoreItem } from '../../store/store.js'
+import { config } from '../../config/config.js'
 
 /**
  * Convert to normal content type if available
@@ -54,8 +55,9 @@ const getContentTypeLabels = (
   if (isStringStrict(type)) {
     type = normalizeContentType(type)
 
-    const s = config.archiveMeta[type]?.singular
-    const p = config.archiveMeta[type]?.plural
+    const archiveType = getStoreItem('archiveMeta')[type]
+    const s = archiveType?.singular
+    const p = archiveType?.plural
 
     singular = isStringStrict(s) ? s : ''
     plural = isStringStrict(p) ? p : ''

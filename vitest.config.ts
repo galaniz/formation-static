@@ -15,6 +15,10 @@ export default defineConfig({
     coverage: {
       include: [
         'src/**/*.ts'
+      ],
+      exclude: [
+        '**/*.test.ts',
+        'src/**/*Types.ts'
       ]
     }
   }

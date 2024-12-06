@@ -20,22 +20,23 @@ import { isArrayStrict } from '../../utils/array/array.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isStringStrict, isString } from '../../utils/string/string.js'
 import { isFunction } from '../../utils/function/function.js'
+import { isNumber } from '../../utils/number/number.js'
 import { normalizeContentType } from '../../utils/contentType/contentType.js'
-import { config } from '../../config/config.js'
+import { getStoreItem } from '../../store/store.js'
 
 /**
  * Recursively generate navigation output
  */
 class Navigation {
   /**
-   * Store all navigations
+   * All navigations
    *
    * @type {Navigations[]}
    */
   navigations: Navigations[] = []
 
   /**
-   * Store all navigation items
+   * All navigation items
    *
    * @type {NavigationItem[]}
    */
@@ -56,27 +57,27 @@ class Navigation {
   currentType: string = ''
 
   /**
-   * Store initialize success
+   * Initialize success
    *
    * @type {boolean}
    */
   init: boolean = false
 
   /**
-   * Store navigation items by id
+   * Navigation items by id
    *
    * @private
    * @type {NavigationItemsById}
    */
-  #itemsById: NavigationItemsById = {}
+  #itemsById: NavigationItemsById = new Map()
 
   /**
-   * Store navigations by location
+   * Navigations by location
    *
    * @private
    * @type {NavigationByLocation}
    */
-  #navigationsByLocation: NavigationByLocation = {}
+  #navigationsByLocation: NavigationByLocation = new Map()
 
   /**
    * Set properties and initialize
@@ -128,8 +129,8 @@ class Navigation {
     this.items.forEach(item => {
       const info = this.#getItemInfo(item)
 
-      if (info !== undefined && isStringStrict(info.id)) {
-        this.#itemsById[info.id] = info
+      if (info != null && isStringStrict(info.id)) {
+        this.#itemsById.set(info.id, info)
       }
     })
 
@@ -147,10 +148,10 @@ class Navigation {
       } = nav
 
       if (isStringStrict(title) && isStringStrict(location) && isArrayStrict(items)) {
-        this.#navigationsByLocation[location.toLowerCase().replace(/\s+/g, '')] = {
+        this.#navigationsByLocation.set(location.toLowerCase().replace(/\s+/g, ''), {
           title,
           items
-        }
+        })
       }
     })
 
@@ -202,7 +203,7 @@ class Navigation {
       props.current = props.link === this.currentLink
     }
 
-    if (id === config.archiveMeta?.[this.currentType]?.id) {
+    if (id === getStoreItem('archiveMeta')[this.currentType]?.id) {
       props.archiveCurrent = true
     }
 
@@ -220,13 +221,10 @@ class Navigation {
       props.descendentCurrent = descendentCurrent
     }
 
-    for (const [key, value] of Object.entries(item)) {
-      if (props[key] === undefined) {
-        props[key] = value
-      }
+    return {
+      ...item,
+      ...props
     }
-
-    return props
   }
 
   /**
@@ -246,7 +244,7 @@ class Navigation {
     children.forEach(child => {
       const info = this.#getItemInfo(child)
 
-      if (info === undefined) {
+      if (info == null) {
         return
       }
 
@@ -300,9 +298,9 @@ class Navigation {
         id = internalLink.id
       }
 
-      const storedItem = this.#itemsById[id]
+      const storedItem = this.#itemsById.get(id)
 
-      if (storedItem !== undefined) {
+      if (storedItem != null) {
         resItems.push(storedItem)
       }
     })
@@ -330,7 +328,7 @@ class Navigation {
   ): void => {
     depth += 1
 
-    if (maxDepth !== undefined && depth > maxDepth) {
+    if (isNumber(maxDepth) && depth > maxDepth) {
       return
     }
 
@@ -343,7 +341,7 @@ class Navigation {
     const listClasses = isStringStrict(args.listClass) ? ` class="${args.listClass}"` : ''
     const listAttrs = isStringStrict(args.listAttr) ? ` ${args.listAttr}` : ''
 
-    output.html += `<ul data-depth="${depth}"${listClasses}${listAttrs}>`
+    output.html += `<ul data-nav-depth="${depth}"${listClasses}${listAttrs}>`
 
     items.forEach((item, index) => {
       const {
@@ -370,18 +368,18 @@ class Navigation {
       let itemAttrs = isStringStrict(args.itemAttr) ? ` ${args.itemAttr}` : ''
 
       if (current) {
-        itemAttrs += ' data-current="true"'
+        itemAttrs += ' data-nav-current'
       }
 
       if (descendentCurrent) {
-        itemAttrs += ' data-descendent-current="true"'
+        itemAttrs += ' data-nav-descendent-current'
       }
 
       if (archiveCurrent) {
-        itemAttrs += ' data-archive-current="true"'
+        itemAttrs += ' data-nav-archive-current'
       }
 
-      output.html += `<li data-depth="${depth}"${itemClasses}${itemAttrs}>`
+      output.html += `<li data-nav-depth="${depth}"${itemClasses}${itemAttrs}>`
 
       /* Link start */
 
@@ -407,7 +405,7 @@ class Navigation {
       }
 
       if (current) {
-        linkAttrsArr.push('data-current="true"')
+        linkAttrsArr.push('data-nav-current')
 
         if (link !== '') {
           linkAttrsArr.push('aria-current="page"')
@@ -415,17 +413,17 @@ class Navigation {
       }
 
       if (descendentCurrent) {
-        linkAttrsArr.push('data-descendent-current="true"')
+        linkAttrsArr.push('data-nav-descendent-current')
       }
 
       if (archiveCurrent) {
-        linkAttrsArr.push('data-archive-current="true"')
+        linkAttrsArr.push('data-nav-archive-current')
       }
 
       const linkAttrs = ` ${linkAttrsArr.join(' ')}`
       const linkTag = link !== '' ? 'a' : 'button'
 
-      output.html += `<${linkTag} data-depth="${depth}"${linkClasses}${linkAttrs}>`
+      output.html += `<${linkTag} data-nav-depth="${depth}"${linkClasses}${linkAttrs}>`
 
       if (isFunction(args.filterBeforeLinkText)) {
         args.filterBeforeLinkText(filterArgs)
@@ -480,11 +478,13 @@ class Navigation {
     args?: NavigationOutputArgs,
     maxDepth?: number
   ): string {
-    if (this.#navigationsByLocation[location] === undefined) {
+    const nav = this.#navigationsByLocation.get(location)
+
+    if (nav == null) {
       return ''
     }
 
-    const items = this.#navigationsByLocation[location]?.items
+    const items = nav.items
     const normalizedItems = this.#getItems(items)
 
     if (normalizedItems.length === 0) {
@@ -572,7 +572,7 @@ class Navigation {
         slug: item.slug,
         contentType: item.contentType,
         pageData: item.internalLink
-      }, false)
+      })
 
       return true
     })
@@ -604,7 +604,7 @@ class Navigation {
 
       /* Item */
 
-      output.html += `<li${itemClasses}${itemAttrs} data-last-level="${isLastLevel.toString()}">`
+      output.html += `<li${itemClasses}${itemAttrs}${isLastLevel ? ' data-nav-last' : ''}>`
 
       /* Link */
 
@@ -646,7 +646,7 @@ class Navigation {
     return `
       <ol${listClasses}${listAttrs}>
         ${itemsArr.join('')}
-        <li${itemClasses}${itemAttrs} data-current="true">
+        <li${itemClasses}${itemAttrs} data-nav-current>
           <span${currentClasses}>${current}<span${a11yClasses}> (current page)</span></span>
         </li>
       </ol>

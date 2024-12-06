@@ -9,23 +9,24 @@ import type {
   SendFormRequestBody,
   SendFormRequestRes
 } from './SendFormTypes.js'
-import type { AjaxActionArgs, AjaxActionReturn } from '../serverlessTypes.js'
-import type { ConfigFormMeta } from '../../config/configTypes.js'
+import type { ServerlessAction } from '../serverlessTypes.js'
 import { config } from '../../config/config.js'
 import { escape } from '../../utils/escape/escape.js'
 import { isArray } from '../../utils/array/array.js'
 import { isString, isStringStrict } from '../../utils/string/string.js'
 import { isObject, isObjectStrict } from '../../utils/object/object.js'
+import { isBoolean } from '../../utils/boolean/boolean.js'
 import { getObjectKeys } from '../../utils/object/objectUtils.js'
 import { getPermalink } from '../../utils/link/link.js'
-import { getJsonFile } from '../../utils/json/json.js'
+import { fetchStoreItem } from '../../store/store.js'
+import { serverlessApiKeys } from '../serverless.js'
 
 /**
  * Recurse through data to output plain and html email body
  *
  * @private
  * @param {object} data
- * @param {Object.<string, string>} output
+ * @param {Object<string, string>} output
  * @param {string} output.html
  * @param {string} output.plain
  * @param {number} depth
@@ -95,10 +96,13 @@ const recurseEmailHtml = <T>(
 /**
  * Generate email from form fields and send with Smtp2go
  *
- * @param {AjaxActionArgs} args
- * @return {Promise<AjaxActionReturn>}
+ * @type {ServerlessAction}
  */
-const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionReturn> => {
+const SendForm: ServerlessAction = async (args) => {
+  /* Args */
+
+  const { id, inputs } = args
+
   /* Id required */
 
   if (!isStringStrict(id)) {
@@ -111,9 +115,9 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
 
   /* Meta information - to email and subject */
 
-  const formMetaData: ConfigFormMeta | undefined = await getJsonFile('formMeta')
+  const formMetaData = await fetchStoreItem('formMeta')
 
-  if (formMetaData === undefined) {
+  if (!isObjectStrict(formMetaData)) {
     return {
       error: {
         message: 'No meta information'
@@ -178,7 +182,8 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
   for (const [name, input] of Object.entries(inputs)) {
     /* Skip if exclude true */
 
-    const exclude = input.exclude !== undefined ? input.exclude : false
+    const inputExclude = input.exclude
+    const exclude = isBoolean(inputExclude) ? inputExclude : false
 
     if (exclude) {
       continue
@@ -233,14 +238,14 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
     if (hasLegend) {
       const legendData = outputData[legend]
 
-      if (legendData === undefined) {
+      if (legendData == null) {
         outputData[legend] = {}
       }
 
       // @ts-expect-error
       const inputData = outputData[legend][inputLabel]
 
-      if (inputData === undefined) {
+      if (inputData == null) {
         // @ts-expect-error
         outputData[legend][inputLabel] = []
       }
@@ -254,7 +259,7 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
     if (!hasLegend) {
       const inputData = outputData[inputLabel]
 
-      if (inputData === undefined) {
+      if (inputData == null) {
         outputData[inputLabel] = []
       }
 
@@ -312,7 +317,7 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
   /* Smtp2go request */
 
   const body: SendFormRequestBody = {
-    api_key: config.apiKeys.smtp2go,
+    api_key: serverlessApiKeys.smtp2go,
     to: toEmails,
     sender: senderEmail,
     subject,
@@ -344,7 +349,7 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
 
   /* Success */
 
-  if (resJson?.data?.succeeded !== undefined) {
+  if (resJson?.data?.succeeded != null) {
     return {
       success: {
         message: 'Form successully sent'
@@ -354,7 +359,7 @@ const SendForm = async ({ id, inputs }: AjaxActionArgs): Promise<AjaxActionRetur
     return {
       error: {
         message: 'Error sending email',
-        resp: res
+        response: res
       }
     }
   }

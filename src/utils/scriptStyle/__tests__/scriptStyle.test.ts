@@ -5,15 +5,14 @@
 /* Imports */
 
 import { it, expect, describe, afterEach } from 'vitest'
-import { addStyle, addScript, outputStyles, outputScripts } from '../scriptStyle.js'
-import { config } from '../../../config/config.js'
+import { scripts, styles, addStyle, addScript, outputStyles, outputScripts } from '../scriptStyle.js'
 
 /* Test addStyle */
 
 describe('addStyle()', () => {
   afterEach(() => {
-    config.styles.item.clear()
-    config.styles.build.clear()
+    styles.item.clear()
+    styles.build.clear()
   })
 
   it('should return false if path is null', () => {
@@ -39,8 +38,8 @@ describe('addStyle()', () => {
     expectedConfig.set('css/style', 'src/style.scss')
 
     expect(result).toBe(expectedResult)
-    expect(config.styles.item).toEqual(expectedConfig)
-    expect(config.styles.build).toEqual(expectedConfig)
+    expect(styles.item).toEqual(expectedConfig)
+    expect(styles.build).toEqual(expectedConfig)
   })
 
   it('should return true and add path and dependencies to config styles', () => {
@@ -52,8 +51,8 @@ describe('addStyle()', () => {
     expectedConfig.set('css/depOne', 'src/depOne.scss')
 
     expect(result).toBe(expectedResult)
-    expect(config.styles.item).toEqual(expectedConfig)
-    expect(config.styles.build).toEqual(expectedConfig)
+    expect(styles.item).toEqual(expectedConfig)
+    expect(styles.build).toEqual(expectedConfig)
   })
 })
 
@@ -61,8 +60,8 @@ describe('addStyle()', () => {
 
 describe('addScript()', () => {
   afterEach(() => {
-    config.scripts.item.clear()
-    config.scripts.build.clear()
+    scripts.item.clear()
+    scripts.build.clear()
   })
 
   it('should return false if path is null', () => {
@@ -88,8 +87,8 @@ describe('addScript()', () => {
     expectedConfig.set('js/script', 'lib/script.js')
 
     expect(result).toBe(expectedResult)
-    expect(config.scripts.item).toEqual(expectedConfig)
-    expect(config.scripts.build).toEqual(expectedConfig)
+    expect(scripts.item).toEqual(expectedConfig)
+    expect(scripts.build).toEqual(expectedConfig)
   })
 
   it('should return true and add path and dependencies to config scripts', () => {
@@ -101,8 +100,8 @@ describe('addScript()', () => {
     expectedConfig.set('js/depOne', 'lib/depOne.js')
 
     expect(result).toBe(expectedResult)
-    expect(config.scripts.item).toEqual(expectedConfig)
-    expect(config.scripts.build).toEqual(expectedConfig)
+    expect(scripts.item).toEqual(expectedConfig)
+    expect(scripts.build).toEqual(expectedConfig)
   })
 })
 
@@ -110,8 +109,8 @@ describe('addScript()', () => {
 
 describe('outputStyles()', () => {
   afterEach(() => {
-    config.styles.item.clear()
-    config.styles.build.clear()
+    styles.item.clear()
+    styles.build.clear()
   })
 
   it('should return empty string if link is empty string', () => {
@@ -144,8 +143,8 @@ describe('outputStyles()', () => {
 
 describe('outputScripts()', () => {
   afterEach(() => {
-    config.scripts.item.clear()
-    config.scripts.build.clear()
+    scripts.item.clear()
+    scripts.build.clear()
   })
 
   it('should return empty string if link is empty string', () => {

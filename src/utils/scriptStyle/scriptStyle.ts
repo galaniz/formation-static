@@ -4,9 +4,33 @@
 
 /* Imports */
 
-import { config } from '../../config/config.js'
+import type { Scripts, Styles } from './scriptStyleTypes.js'
 import { isArrayStrict } from '../array/array.js'
 import { isStringStrict } from '../string/string.js'
+import { config } from '../../config/config.js'
+
+/**
+ * Scripts data per render item
+ *
+ * @type {Scripts}
+ */
+const scripts: Scripts = {
+  deps: new Map(),
+  item: new Map(),
+  build: new Map(),
+  meta: {}
+}
+
+/**
+ * Styles data per render item
+ *
+ * @type {Styles}
+ */
+const styles: Styles = {
+  deps: new Map(),
+  item: new Map(),
+  build: new Map()
+}
 
 /**
  * Add style or script path and dependencies to item and build maps
@@ -30,18 +54,19 @@ const addScriptStyle = (
 
   /* Input and output dir */
 
-  const scripts = config[type]
-  const ext = type === 'scripts' ? 'js' : 'scss'
+  const isScripts = type === 'scripts'
+  const assets = isScripts ? scripts : styles
+  const ext = isScripts ? 'js' : 'scss'
 
-  const { inputDir, outputDir } = scripts
+  const { inputDir, outputDir } = config[type]
 
   const input = `${inputDir}/${path}.${ext}`
   const output = `${outputDir}/${path}`
 
   /* Add to item and build */
 
-  scripts.item.set(output, input)
-  scripts.build.set(output, input)
+  assets.item.set(output, input)
+  assets.build.set(output, input)
 
   /* Add deps */
 
@@ -50,13 +75,13 @@ const addScriptStyle = (
       const depInput = `${inputDir}/${dep}.${ext}`
       const depOutput = `${outputDir}/${dep}`
 
-      if (!scripts.deps.has(output)) {
-        scripts.deps.set(output, new Set())
+      if (!assets.deps.has(output)) {
+        assets.deps.set(output, new Set())
       }
 
-      scripts.deps.get(output)?.add(depOutput)
-      scripts.item.set(depOutput, depInput)
-      scripts.build.set(depOutput, depInput)
+      assets.deps.get(output)?.add(depOutput)
+      assets.item.set(depOutput, depInput)
+      assets.build.set(depOutput, depInput)
     })
   }
 
@@ -104,10 +129,7 @@ const outputScriptsStyles = (type: 'styles' | 'scripts', link: string): string =
 
   /* Vars */
 
-  const {
-    item,
-    deps
-  } = config[type]
+  const { item, deps } = type === 'scripts' ? scripts : styles
 
   /* Check if scripts exist */
 
@@ -174,6 +196,8 @@ const outputStyles = (link: string): string => {
 /* Exports */
 
 export {
+  scripts,
+  styles,
   addScript,
   addStyle,
   outputScripts,

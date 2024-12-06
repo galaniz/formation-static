@@ -12,7 +12,7 @@ import type { GenericStrings } from '../../global/globalTypes.js'
 export type ShortcodeAttrValue = string | number | boolean | undefined
 
 /**
- * @typedef {Object.<string, ShortcodeAttrValue>} ShortcodeAttrs
+ * @typedef {Object<string, ShortcodeAttrValue>} ShortcodeAttrs
  */
 export type ShortcodeAttrs = Record<string, ShortcodeAttrValue>
 
@@ -35,9 +35,9 @@ export interface ShortcodeData {
 /**
  * @typedef {function} ShortcodeCallback
  * @param {ShortcodeData} args
- * @return {Promise<string>}
+ * @return {string|Promise<string>}
  */
-export type ShortcodeCallback = (args: ShortcodeData) => Promise<string>
+export type ShortcodeCallback = (args: ShortcodeData) => string | Promise<string>
 
 /**
  * @typedef {object} Shortcode
@@ -57,6 +57,11 @@ export interface Shortcode {
 }
 
 /**
- * @typedef {Object.<string, Shortcode>} Shortcodes
+ * @typedef {Map<string, Shortcode>} Shortcodes
  */
-export type Shortcodes = Record<string, Shortcode>
+export type Shortcodes = Map<string, Shortcode>
+
+/**
+ * @typedef {Object<string, Shortcode>} ShortcodesSet
+ */
+export type ShortcodesSet = Record<string, Shortcode>

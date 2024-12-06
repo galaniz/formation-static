@@ -4,26 +4,25 @@
 
 /* Imports */
 
-import type { FormProps, FormReturn, FormMeta, FormMessages } from './FormTypes.js'
+import type { FormProps, FormMeta, FormScriptMeta } from './FormTypes.js'
 import { v4 as uuid } from 'uuid'
 import { applyFilters } from '../../utils/filter/filter.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
+import { setStoreItem } from '../../store/store.js'
+import { scripts } from '../../utils/scriptStyle/scriptStyle.js'
 import { config } from '../../config/config.js'
 
 /**
  * Output form wrapper
  *
  * @param {FormProps} props
- * @return {Promise<FormReturn>}
+ * @return {string[]} HTMLFormElement
  */
-const Form = async (props: FormProps): Promise<FormReturn> => {
+const Form = (props: FormProps): string[] => {
   /* Fallback output */
 
-  const fallback = {
-    start: '',
-    end: ''
-  }
+  const fallback: string[] = []
 
   /* Props must be object */
 
@@ -31,7 +30,7 @@ const Form = async (props: FormProps): Promise<FormReturn> => {
     return fallback
   }
 
-  props = await applyFilters('formProps', props, { renderType: 'form' })
+  props = applyFilters('formProps', props, { renderType: 'form' })
 
   /* Filtered props must be object */
 
@@ -90,44 +89,41 @@ const Form = async (props: FormProps): Promise<FormReturn> => {
     meta.senderEmail = senderEmail
   }
 
-  if (Object.keys(meta).length > 0) {
-    config.formMeta[id] = meta
-  }
+  setStoreItem('formMeta', meta, id)
 
   /* Add to script data */
 
-  const messages: FormMessages = {}
+  const scriptMeta: FormScriptMeta = {}
 
   if (isStringStrict(successTitle)) {
-    messages.successMessage = {
+    scriptMeta.successMessage = {
       primary: successTitle,
       secondary: successText
     }
   }
 
   if (isStringStrict(errorTitle)) {
-    messages.errorMessage = {
+    scriptMeta.errorMessage = {
       primary: errorTitle,
       secondary: errorText
     }
   }
 
-  if (Object.keys(messages).length > 0) {
-    if (config.scriptMeta.forms === undefined) {
-      config.scriptMeta.forms = {}
-    }
-
-    config.scriptMeta.forms[id] = messages
+  if (!isObjectStrict(scripts.meta.forms)) {
+    scripts.meta.forms = {}
   }
 
-  config.scriptMeta.sendUrl = '/ajax/'
+  scripts.meta.forms[id] = {
+    url: '/ajax/',
+    ...scriptMeta
+  }
 
   /* Honeypot */
 
   const honeypotId: string = uuid()
   const honeypotName = `${config.namespace}_asi`
   const honeypot = `
-    <div${isStringStrict(honeypotFieldClasses) ? ` class="${honeypotFieldClasses}"` : ''} data-asi>
+    <div${isStringStrict(honeypotFieldClasses) ? ` class="${honeypotFieldClasses}"` : ''} data-form-asi>
       <label${isStringStrict(honeypotLabelClasses) ? ` class="${honeypotLabelClasses}"` : ''} for="${honeypotId}">Website</label>
       <input${isStringStrict(honeypotClasses) ? ` class="${honeypotClasses}"` : ''} type="url" name="${honeypotName}" id="${honeypotId}" autocomplete="off">
     </div>
@@ -135,16 +131,13 @@ const Form = async (props: FormProps): Promise<FormReturn> => {
 
   /* Output */
 
-  const start = `
-    <form${isStringStrict(formClasses) ? ` class="${formClasses}"` : ''} id="${id}" data-action="${action}"${isStringStrict(formAttr) ? ` ${formAttr}` : ''} novalidate>
+  return [`
+    <form${isStringStrict(formClasses) ? ` class="${formClasses}"` : ''} id="${id}" data-form-action="${action}"${isStringStrict(formAttr) ? ` ${formAttr}` : ''} novalidate>
       <div${isStringStrict(fieldsClasses) ? ` class="${fieldsClasses}"` : ''}${isStringStrict(fieldsAttr) ? ` ${fieldsAttr}` : ''}>
-        ${errorSummary}
-  `
-
-  const end = `
-        ${honeypot}
+        ${errorSummary}`,
+        `${honeypot}
         ${errorResult}
-        <div${isStringStrict(submitFieldClasses) ? ` class="${submitFieldClasses}"` : ''} data-type="submit">
+        <div${isStringStrict(submitFieldClasses) ? ` class="${submitFieldClasses}"` : ''} data-form-submit>
           <button${isStringStrict(submitClasses) ? ` class="${submitClasses}"` : ''}${isStringStrict(submitAttr) ? ` ${submitAttr}` : ''} type="submit">
             ${submitLoader}
             <span>${submitLabel}</span>
@@ -153,12 +146,7 @@ const Form = async (props: FormProps): Promise<FormReturn> => {
         ${successResult}
       </div>
     </form>
-  `
-
-  return {
-    start,
-    end
-  }
+  `]
 }
 
 /* Exports */

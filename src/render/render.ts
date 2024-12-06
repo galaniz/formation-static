@@ -5,13 +5,10 @@
 /* Imports */
 
 import type {
-  RenderSlugs,
-  RenderMetaArgs,
-  RenderMetaReturn,
   RenderContentArgs,
   RenderFunctionArgs,
   RenderServerlessData,
-  RenderContentTemplate,
+  RenderTemplate,
   RenderItem,
   RenderItemArgs,
   RenderItemReturn,
@@ -20,27 +17,17 @@ import type {
   RenderLayoutArgs,
   RenderArgs,
   RenderReturn,
-  RenderFunctions
+  RenderFunctions,
+  RenderLayout,
+  RenderHttpError,
+  RenderNavigations
 } from './renderTypes.js'
-import type {
-  ConfigParents,
-  ConfigFormMeta,
-  ConfigArchiveMeta
-} from '../config/configTypes.js'
-import type {
-  GenericStrings,
-  ParentArgs,
-  HtmlString
-} from '../global/globalTypes.js'
-import type { LinkSlugArgs } from '../utils/link/linkTypes.js'
+import type { GenericStrings, ParentArgs, HtmlString } from '../global/globalTypes.js'
 import type { PaginationData } from '../components/Pagination/PaginationTypes.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
-import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes.js'
-import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { doActions } from '../utils/action/action.js'
 import { applyFilters } from '../utils/filter/filter.js'
 import { getSlug, getPermalink } from '../utils/link/link.js'
-import { getJsonFile } from '../utils/json/json.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
 import { isArray, isArrayStrict } from '../utils/array/array.js'
 import { isObjectStrict } from '../utils/object/object.js'
@@ -48,7 +35,10 @@ import { isNumber } from '../utils/number/number.js'
 import { isFunction } from '../utils/function/function.js'
 import { doShortcodes } from '../utils/shortcode/shortcode.js'
 import { tagExists } from '../utils/tag/tag.js'
-import { config } from '../config/config.js'
+import { setStoreData, setStoreItem, getStoreItem } from '../store/store.js'
+import { setRedirectsData } from '../redirects/redirects.js'
+import { serverlessRoutes } from '../serverless/serverless.js'
+import { scripts, styles } from '../utils/scriptStyle/scriptStyle.js'
 import { Container } from '../layouts/Container/Container.js'
 import { Column } from '../layouts/Column/Column.js'
 import { Form } from '../objects/Form/Form.js'
@@ -56,100 +46,57 @@ import { Field } from '../objects/Field/Field.js'
 import { RichText } from '../text/RichText/RichText.js'
 
 /**
- * Store slug data
+ * Output elements in render content
  *
- * @private
- * @type {RenderSlugs}
+ * @type {RenderFunctions}
  */
-const slugs: RenderSlugs = {}
-
-/**
- * Normalize meta properties into one object
- *
- * @private
- * @param {RenderMetaArgs} args
- * @return {RenderMetaReturn}
- */
-const getMeta = (args: RenderMetaArgs): RenderMetaReturn => {
-  const meta = {
-    title: '',
-    description: '',
-    url: '',
-    image: '',
-    canonical: '',
-    prev: '',
-    next: '',
-    noIndex: false,
-    isIndex: false
-  }
-
-  if (!isObjectStrict(args)) {
-    return meta
-  }
-
-  if (isObjectStrict(args.meta)) {
-    return Object.assign(meta, args.meta)
-  }
-
-  if (isStringStrict(args.metaTitle)) {
-    meta.title = args.metaTitle
-  }
-
-  if (isStringStrict(args.metaDescription)) {
-    meta.description = args.metaDescription
-  }
-
-  if (isStringStrict(args?.metaImage?.url)) {
-    meta.image = args.metaImage.url
-  }
-
-  return meta
+let renderFunctions: RenderFunctions = {
+  container: Container,
+  column: Column,
+  form: Form,
+  field: Field,
+  richText: RichText
 }
 
 /**
- * Add pagination data to meta object
+ * Output html element
  *
- * @private
- * @param {PaginationData} args
+ * @type {RenderLayout}
+ */
+let renderLayout: RenderLayout = () => ''
+
+/**
+ * Output http error page
+ *
+ * @type {RenderHttpError}
+ */
+let renderHttpError: RenderHttpError = () => ''
+
+/**
+ * Navigations output for use in render functions
+ *
+ * @type {RenderNavigations}
+ */
+let renderNavigations: RenderNavigations = () => ({})
+
+/**
+ * Set content, layout and navigation output functions
+ *
+ * @param {RenderFunctions} functions
+ * @param {RenderLayout} layout
+ * @param {RenderNavigations} navigations
  * @return {void}
  */
-const setPaginationMeta = (
-  args: PaginationData,
-  slugArgs: LinkSlugArgs,
-  meta: RenderMetaReturn
+const setRenderFunctions = (
+  functions: RenderFunctions,
+  layout: RenderLayout,
+  navigations: RenderNavigations,
+  httpError: RenderHttpError
 ): void => {
-  const {
-    current = 0,
-    currentFilters,
-    prevFilters,
-    nextFilters
-  } = args
-
-  slugArgs.page = current > 1 ? current : 0
-
-  const s = getSlug(slugArgs, true)
-
-  meta.canonical = `${getPermalink(s.slug, current === 1)}${isString(currentFilters) ? currentFilters : ''}`
-
-  if (isStringStrict(args.title)) {
-    meta.paginationTitle = args.title
-  }
-
-  if (isNumber(args.prev)) {
-    slugArgs.page = args.prev > 1 ? args.prev : 0
-
-    const p = getSlug(slugArgs, true)
-
-    meta.prev = `${getPermalink(p.slug, args.prev === 1)}${isString(prevFilters) ? prevFilters : ''}`
-  }
-
-  if (isNumber(args.next) && args.next > 1) {
-    slugArgs.page = args.next
-
-    const n = getSlug(slugArgs, true)
-
-    meta.next = `${getPermalink(n.slug, false)}${isString(nextFilters) ? nextFilters : ''}`
-  }
+  renderFunctions = Object.assign(renderFunctions, functions)
+  renderLayout = layout
+  renderNavigations = navigations
+  renderHttpError = httpError
 }
 
 /**
@@ -158,9 +105,12 @@ const setPaginationMeta = (
  * @private
  * @param {RenderItem[]} content
  * @param {RenderItem[]} [_templates]
- * @return {RenderContentTemplate}
+ * @return {RenderTemplate}
  */
-const getContentTemplate = (content: RenderItem[], _templates: RenderItem[] = []): RenderContentTemplate => {
+const getTemplate = (
+  content: RenderItem[],
+  _templates: RenderItem[] = []
+): RenderTemplate => {
   /* Content must be array */
 
   if (!isArrayStrict(content)) {
@@ -206,14 +156,17 @@ const getContentTemplate = (content: RenderItem[], _templates: RenderItem[] = []
 }
 
 /**
- * Map out content slots to templates for contentTemplate
+ * Map out content slots to templates
  *
  * @private
  * @param {RenderItem[]} templates
  * @param {RenderItem[]} [content]
  * @return {RenderItem[]}
  */
-const mapContentTemplate = (templates: RenderItem[], content: RenderItem[] = []): RenderItem[] => {
+const mapTemplate = (
+  templates: RenderItem[],
+  content: RenderItem[] = []
+): RenderItem[] => {
   /* Templates must be arrays */
 
   if (!isArrayStrict(templates)) {
@@ -227,7 +180,7 @@ const mapContentTemplate = (templates: RenderItem[], content: RenderItem[] = [])
   templates.forEach((t, i) => {
     /* Remove template break */
 
-    if (content[0] !== undefined && tagExists(content[0], 'templateBreak') && content.length >= 1) {
+    if (content[0] != null && tagExists(content[0], 'templateBreak') && content.length >= 1) {
       content.shift()
     }
 
@@ -262,7 +215,7 @@ const mapContentTemplate = (templates: RenderItem[], content: RenderItem[] = [])
         return isRepeat
       })
 
-      if (repeatIndex !== -1 && repeat !== undefined) {
+      if (repeatIndex !== -1 && repeat != null) {
         let breakIndex = content.findIndex((c) => {
           return tagExists(c, 'templateBreak')
         })
@@ -284,7 +237,7 @@ const mapContentTemplate = (templates: RenderItem[], content: RenderItem[] = [])
     if (isSlot && content.length >= 1) {
       const fill = content.shift()
 
-      if (fill !== undefined) {
+      if (fill != null) {
         templates[i] = fill
       }
 
@@ -293,45 +246,14 @@ const mapContentTemplate = (templates: RenderItem[], content: RenderItem[] = [])
 
     /* Recurse children */
 
-    if (isArray(children) && templates[i] !== undefined) {
-      templates[i].content = mapContentTemplate(children, content)
+    if (isArray(children) && templates[i] != null) {
+      templates[i].content = mapTemplate(children, content)
     }
   })
 
   /* Output */
 
   return templates
-}
-
-/**
- * Get config and formation render functions
- *
- * @return {RenderFunctions}
- */
-const getRenderFunctions = (): RenderFunctions => {
-  const renderFunctions = { ...config.renderFunctions }
-
-  if (renderFunctions.container === undefined) {
-    renderFunctions.container = Container
-  }
-
-  if (renderFunctions.column === undefined) {
-    renderFunctions.column = Column
-  }
-
-  if (renderFunctions.form === undefined) {
-    renderFunctions.form = Form
-  }
-
-  if (renderFunctions.field === undefined) {
-    renderFunctions.field = Field
-  }
-
-  if (renderFunctions.richText === undefined) {
-    renderFunctions.richText = RichText
-  }
-
-  return renderFunctions
 }
 
 /**
@@ -355,8 +277,7 @@ const renderContent = async (
     pageData,
     pageContains = [],
     pageHeadings = [],
-    navigations = {},
-    renderFunctions = {}
+    navigations = {}
   } = args
 
   let {
@@ -384,7 +305,6 @@ const renderContent = async (
 
     const props = structuredClone(item)
     const renderType = isString(props.renderType) ? props.renderType : ''
-    const contentType = isString(props.contentType) ? props.contentType : '' // NORMALIZEEE???
 
     /* Check for nested content */
 
@@ -392,9 +312,9 @@ const renderContent = async (
 
     /* Map out content to template */
 
-    if (normalizeContentType(contentType) === 'contentTemplate') {
-      const contentTemplate = getContentTemplate(isArray(props.content) ? props.content : [])
-      const templates = mapContentTemplate(contentTemplate.templates, contentTemplate.content)
+    if (renderType === 'template') {
+      const template = getTemplate(isArray(props.content) ? props.content : [])
+      const templates = mapTemplate(template.templates, template.content)
 
       children = templates
     }
@@ -409,11 +329,8 @@ const renderContent = async (
 
     /* Render output */
 
-    let renderObj = {
-      start: '',
-      end: ''
-    }
-
+    let renderStart = ''
+    let renderEnd = ''
     let filterType = ''
     let filterArgs = {}
 
@@ -429,7 +346,7 @@ const renderContent = async (
         serverlessData
       }
 
-      if (childrenArr !== undefined) {
+      if (childrenArr != null) {
         renderArgs.children = childrenArr
       }
 
@@ -437,12 +354,26 @@ const renderContent = async (
         renderArgs.headings = pageHeadings[headingsIndex]
       }
 
-      const renderOutput = await renderFunction(renderArgs)
+      let renderOutput = await renderFunction(renderArgs)
+
+      if (isArrayStrict(renderOutput)) {
+        if (renderOutput.length === 1) {
+          renderOutput = renderOutput[0]?.split('%content') ?? ['', '']
+        }
+
+        const [start, end] = renderOutput
+
+        if (isString(start)) {
+          renderStart = start
+        }
+
+        if (isString(end)) {
+          renderEnd = end
+        }
+      }
 
       if (isString(renderOutput)) {
-        renderObj.start = renderOutput
-      } else {
-        renderObj = renderOutput
+        renderStart = renderOutput
       }
 
       pageContains.push(renderType)
@@ -454,30 +385,31 @@ const renderContent = async (
       }
     }
 
-    let start = renderObj.start
-    let end = renderObj.end
-
-    /* Filter start and end output */
+    /* Filter content output */
 
     const renderContentFilterArgs: ParentArgs = {
       renderType: filterType,
       args: filterArgs
     }
 
-    if (start !== '' && end === '') {
-      start = await applyFilters('renderContent', start, renderContentFilterArgs)
-    } else {
-      start = await applyFilters('renderContentStart', start, renderContentFilterArgs)
-      end = await applyFilters('renderContentEnd', end, renderContentFilterArgs)
+    const [filterRenderStart, filterRenderEnd] =
+      await applyFilters('renderContent', [renderStart, renderEnd], renderContentFilterArgs, true)
+
+    if (isString(filterRenderStart)) {
+      renderStart = filterRenderStart
+    }
+
+    if (isString(filterRenderEnd)) {
+      renderEnd = filterRenderEnd
     }
 
     /* Add to output object */
 
-    _output.html += start
+    _output.html += renderStart
 
     /* Recurse through children */
 
-    if (childrenArr !== undefined) {
+    if (childrenArr != null) {
       const parentsCopy = [...parents]
 
       parentsCopy.unshift({
@@ -498,7 +430,6 @@ const renderContent = async (
           pageContains,
           pageHeadings,
           navigations,
-          renderFunctions,
           headingsIndex,
           depth: depth += 1
         },
@@ -506,7 +437,7 @@ const renderContent = async (
       )
     }
 
-    _output.html += end
+    _output.html += renderEnd
 
     /* Additional rich text areas */
 
@@ -524,7 +455,7 @@ const renderContent = async (
  * Output single post or page
  *
  * @param {RenderItemArgs} args
- * @return {RenderItemReturn}
+ * @return {Promise<RenderItemReturn>}
  */
 const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
   if (!isObjectStrict(args)) {
@@ -534,8 +465,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
   const {
     item,
     contentType = 'page',
-    serverlessData,
-    renderFunctions
+    serverlessData
   } = args
 
   /* Item must be object */
@@ -568,11 +498,11 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   let serverlessRender = false
 
-  /* Store components contained in page  */
+  /* Components contained in page  */
 
   const pageContains: string[] = []
 
-  /* Store rich text headings in page */
+  /* Rich text headings in page */
 
   const pageHeadings: RichTextHeading[][] = [[]]
 
@@ -587,21 +517,45 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
     serverlessData
   }
 
-  await doActions('renderItemStart', renderItemStartArgs)
+  await doActions('renderItemStart', renderItemStartArgs, true)
 
   /* Reset script and style files */
 
-  config.scripts.deps.clear()
-  config.scripts.item.clear()
-  config.styles.deps.clear()
-  config.styles.item.clear()
+  scripts.deps.clear()
+  scripts.item.clear()
+  scripts.meta = {}
+  styles.deps.clear()
+  styles.item.clear()
 
   /* Meta */
 
   const title = item.title
-  const meta = getMeta(item)
+  const meta = {
+    title: '',
+    description: '',
+    url: '',
+    image: '',
+    canonical: '',
+    prev: '',
+    next: '',
+    noIndex: false,
+    isIndex: false,
+    ...item.meta
+  }
 
-  if (!isStringStrict(meta.title)) {
+  if (isStringStrict(item.metaTitle)) {
+    meta.title = item.metaTitle
+  }
+
+  if (isStringStrict(item.metaDescription)) {
+    meta.description = item.metaDescription
+  }
+
+  if (isStringStrict((item.metaImage as any)?.url)) {
+    meta.image = (item.metaImage as any).url
+  }
+
+  if (!isStringStrict(meta.title) && isStringStrict(title)) {
     meta.title = title
   }
 
@@ -629,7 +583,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
   meta.url = permalink
   meta.canonical = permalink
 
-  /* Add to data by slugs store */
+  /* Format and add to slug store */
 
   let formattedSlug = slug !== 'index' && slug !== '' ? `/${slug}/` : '/'
 
@@ -637,10 +591,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
     formattedSlug = slug
   }
 
-  slugs[formattedSlug] = {
-    contentType,
-    id
-  }
+  setStoreItem('slugs', { contentType, id }, formattedSlug)
 
   /* Check if index */
 
@@ -652,16 +603,16 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   let navigations: GenericStrings = {}
 
-  if (isFunction(config.renderNavigations)) {
+  if (isFunction(renderNavigations)) {
     let currentType = contentType
 
     if (isObjectStrict(taxonomy)) {
       currentType = isStringStrict(taxonomy.contentType) ? taxonomy.contentType : contentType
     }
 
-    navigations = await config.renderNavigations({
-      navigations: config.navigation,
-      items: config.navigationItem,
+    navigations = await renderNavigations({
+      navigations: getStoreItem('navigations'),
+      items: getStoreItem('navigationItems'),
       currentLink: permalink,
       currentType,
       title,
@@ -674,15 +625,16 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
   let itemServerlessData: RenderServerlessData | undefined
 
   if (isObjectStrict(serverlessData)) {
-    const serverlessPath = serverlessData.path !== undefined ? serverlessData.path : ''
+    const serverlessPath = serverlessData.path
+    const isServerless = serverlessPath === formattedSlug && serverlessData.query != null
 
-    if (serverlessPath === formattedSlug && serverlessData.query !== undefined) {
-      itemServerlessData = serverlessData
-    } else { // Avoid re-rendering non dynamic pages
+    if (!isServerless) { // Avoid re-rendering non dynamic pages
       return {
         serverlessRender: false
       }
     }
+
+    itemServerlessData = serverlessData
   }
 
   /* Page data (props) for layout and actions */
@@ -707,8 +659,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
       pageData,
       pageContains,
       pageHeadings,
-      navigations,
-      renderFunctions
+      navigations
     })
   }
 
@@ -716,8 +667,38 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   /* Pagination variables for meta object */
 
-  if (isObjectStrict(pageData.pagination)) {
-    setPaginationMeta(pageData.pagination, slugArgs, meta)
+  const pag = pageData.pagination as PaginationData
+
+  if (isObjectStrict(pag)) {
+    const {
+      current = 0,
+      currentFilters,
+      prevFilters,
+      nextFilters
+    } = pag
+
+    slugArgs.page = current > 1 ? current : 0
+
+    const s = getSlug(slugArgs, true)
+    meta.canonical = `${getPermalink(s.slug, current === 1)}${isString(currentFilters) ? currentFilters : ''}`
+
+    if (isStringStrict(pag.title)) {
+      meta.paginationTitle = pag.title
+    }
+
+    if (isNumber(pag.prev)) {
+      slugArgs.page = pag.prev > 1 ? pag.prev : 0
+
+      const p = getSlug(slugArgs, true)
+      meta.prev = `${getPermalink(p.slug, pag.prev === 1)}${isString(prevFilters) ? prevFilters : ''}`
+    }
+
+    if (isNumber(pag.next) && pag.next > 1) {
+      slugArgs.page = pag.next
+
+      const n = getSlug(slugArgs, true)
+      meta.next = `${getPermalink(n.slug, false)}${isString(nextFilters) ? nextFilters : ''}`
+    }
 
     serverlessRender = true
   }
@@ -726,7 +707,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   let layoutOutput = ''
 
-  if (isFunction(config.renderLayout)) {
+  if (isFunction(renderLayout)) {
     const layoutArgs: RenderLayoutArgs = {
       id,
       meta,
@@ -740,7 +721,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
       serverlessData
     }
 
-    layoutOutput = await config.renderLayout(layoutArgs)
+    layoutOutput = await renderLayout(layoutArgs)
   }
 
   const renderItemFilterArgs: RenderItemActionArgs = {
@@ -754,7 +735,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
     serverlessData
   }
 
-  layoutOutput = await applyFilters('renderItem', layoutOutput, renderItemFilterArgs)
+  layoutOutput = await applyFilters('renderItem', layoutOutput, renderItemFilterArgs, true)
 
   /* End action */
 
@@ -769,7 +750,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
     serverlessData
   }
 
-  await doActions('renderItemEnd', renderItemEndArgs)
+  await doActions('renderItemEnd', renderItemEndArgs, true)
 
   /* Output */
 
@@ -811,19 +792,20 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
 
   /* Serverless */
 
-  const isServerless = serverlessData !== undefined
-  const isPreview = previewData !== undefined
+  const isServerless = serverlessData != null
+  const isPreview = previewData != null
 
   /* Start action */
 
-  await doActions('renderStart', args)
+  await doActions('renderStart', args, true)
 
   /* Reset script and style directories */
 
-  config.scripts.deps.clear()
-  config.scripts.item.clear()
-  config.styles.deps.clear()
-  config.styles.item.clear()
+  scripts.deps.clear()
+  scripts.item.clear()
+  scripts.meta = {}
+  styles.deps.clear()
+  styles.item.clear()
 
   /* Data */
 
@@ -838,130 +820,26 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
     content
   } = allData
 
-  /* Store navigations and items */
-
-  if (navigation !== undefined) {
-    config.navigation = navigation
-  }
-
-  if (navigationItem !== undefined) {
-    config.navigationItem = navigationItem
-  }
-
-  /* Add formation functions */
-
-  const renderFunctions = getRenderFunctions()
-
-  /* Store content data */
+  /* Content data */
 
   const data: RenderReturn[] = []
 
-  /* Loop through pages first to set meta info */
+  /* Store data */
 
-  if (!isServerless) {
-    for (const item of content.page) {
-      /* Item must be object */
+  await setStoreData({
+    navigation,
+    navigationItem,
+    content,
+    serverless: isServerless
+  })
 
-      if (!isObjectStrict(item)) {
-        continue
-      }
+  /* Redirects data */
 
-      /* Parent and archive */
-
-      const { parent, archive } = item
-
-      /* Id */
-
-      const id = isStringStrict(item.id) ? item.id : ''
-
-      /* Archive */
-
-      const archiveType = normalizeContentType(archive)
-
-      if (isStringStrict(archiveType) && id !== '') {
-        const archiveSlug = item.slug
-        const archiveTitle = item.title
-        const archiveObj =
-          isObjectStrict(config.archiveMeta[archiveType]) ? config.archiveMeta[archiveType] : {}
-
-        config.archiveMeta[archiveType] = {
-          id,
-          slug: archiveSlug,
-          title: archiveTitle,
-          ...archiveObj
-        }
-      }
-
-      /* Parent */
-
-      if (isObjectStrict(parent) && id !== '') {
-        const parentSlug = parent.slug
-        const parentTitle = parent.title
-        const parentId = parent.id
-
-        if (isStringStrict(parentSlug) && isStringStrict(parentTitle) && isStringStrict(parentId)) {
-          config.parents[id] = {
-            id: parentId,
-            slug: parentSlug,
-            title: parentTitle,
-            contentType: 'page'
-          }
-        }
-      }
-    }
-
-    /* Redirect */
-
-    if (isArrayStrict(redirect)) {
-      redirect.forEach((r) => {
-        if (!isObjectStrict(r)) {
-          return
-        }
-
-        const { redirect: rr = [] } = r
-
-        if (!isArrayStrict(rr)) {
-          return
-        }
-
-        config.redirects.data = config.redirects.data.concat(rr)
-      })
-    }
-  } else {
-    const parentsData: ConfigParents | undefined = await getJsonFile('parents')
-    const archiveMetaData: ConfigArchiveMeta | undefined = await getJsonFile('archiveMeta')
-    const formMetaData: ConfigFormMeta | undefined = await getJsonFile('formMeta')
-    const navigationsData: Navigation[] | undefined = await getJsonFile('navigations')
-    const navigationItemsData: NavigationItem[] | undefined = await getJsonFile('navigationItems')
-
-    if (parentsData !== undefined) {
-      Object.entries(parentsData).forEach(([key, value]) => {
-        config.parents[key] = value
-      })
-    }
-
-    if (archiveMetaData !== undefined) {
-      config.archiveMeta = archiveMetaData
-    }
-
-    if (formMetaData !== undefined) {
-      config.formMeta = formMetaData
-    }
-
-    if (navigationsData !== undefined) {
-      config.navigation = navigationsData
-    }
-
-    if (navigationItemsData !== undefined) {
-      config.navigationItem = navigationItemsData
-    }
-  }
+  setRedirectsData(redirect)
 
   /* Empty serverless reload */
 
-  Object.keys(config.serverlessRoutes).forEach((r) => {
-    config.serverlessRoutes[r] = []
-  })
+  serverlessRoutes.reload = []
 
   /* Loop through all content types */
 
@@ -974,8 +852,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
       const item = await renderItem({
         item: contentItem,
         contentType,
-        serverlessData,
-        renderFunctions
+        serverlessData
       })
 
       const {
@@ -983,43 +860,26 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
         data: itemData
       } = item
 
-      if (itemData === undefined) {
+      if (itemData == null) {
         continue
       }
 
       data.push(itemData)
 
       if (serverlessRender && !isServerless) {
-        config.serverlessRoutes.reload.push({
+        serverlessRoutes.reload.push({
           path: itemData.slug.replace(/^\/|\/$/gm, '')
         })
       }
     }
   }
 
-  /* Store files data */
-
-  if (!isServerless && !isPreview) {
-    config.storeFiles.slugs.data = JSON.stringify(slugs)
-    config.storeFiles.parents.data = JSON.stringify(config.parents)
-    config.storeFiles.navigations.data = JSON.stringify(config.navigation)
-    config.storeFiles.navigationItems.data = JSON.stringify(config.navigationItem)
-
-    if (config.storeFiles?.archiveMeta?.data !== undefined) {
-      config.storeFiles.archiveMeta.data = JSON.stringify(config.archiveMeta)
-    }
-
-    if (config.storeFiles?.formMeta?.data !== undefined) {
-      config.storeFiles.formMeta.data = JSON.stringify(config.formMeta)
-    }
-  }
-
   /* Output */
 
   const [outputItem] = data
-  const output = (isServerless || isPreview) && outputItem !== undefined ? outputItem : data
+  const output = (isServerless || isPreview) && outputItem != null ? outputItem : data
 
-  await doActions('renderEnd', { ...args, data: output })
+  await doActions('renderEnd', { ...args, data: output }, true)
 
   return output
 }
@@ -1030,5 +890,9 @@ export {
   render,
   renderItem,
   renderContent,
-  getRenderFunctions
+  renderFunctions,
+  renderLayout,
+  renderNavigations,
+  renderHttpError,
+  setRenderFunctions
 }

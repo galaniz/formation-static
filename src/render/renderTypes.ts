@@ -17,40 +17,10 @@ import type {
   NavigationProps
 } from '../components/Navigation/NavigationTypes.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
-import type { ConfigParent } from '../config/configTypes.js'
+import type { StoreParent } from '../store/storeTypes.js'
 
 /**
- * @typedef {object} RenderSlug
- * @prop {string} contentType
- * @prop {string} id
- */
-export interface RenderSlug {
-  contentType: string
-  id: string
-}
-
-/**
- * @typedef {Object.<string, RenderSlug>} RenderSlugs
- */
-export type RenderSlugs = Record<string, RenderSlug>
-
-/**
- * @typedef RenderMetaArgs
- * @type {Generic}
- * @prop {RenderMetaReturn} [meta]
- * @prop {string} [metaTitle]
- * @prop {string} [metaDescription]
- * @prop {Generic} [metaImage]
- */
-export interface RenderMetaArgs extends Generic {
-  meta?: RenderMetaReturn
-  metaTitle?: string
-  metaDescription?: string
-  metaImage?: Generic
-}
-
-/**
- * @typedef {object} RenderMetaReturn
+ * @typedef {object} RenderMeta
  * @prop {string} [title]
  * @prop {string} [paginationTitle]
  * @prop {string} [description]
@@ -62,7 +32,7 @@ export interface RenderMetaArgs extends Generic {
  * @prop {boolean} [noIndex]
  * @prop {boolean} [isIndex]
  */
-export interface RenderMetaReturn {
+export interface RenderMeta {
   title?: string
   paginationTitle?: string
   description?: string
@@ -110,17 +80,12 @@ export interface RenderPreviewData {
 }
 
 /**
- * @typedef {object} RenderRedirectItem
+ * @typedef {object} RenderRedirect
  * @prop {string[]} redirect
  */
-export interface RenderRedirectItem {
+export interface RenderRedirect {
   redirect: string[]
 }
-
-/**
- * @typedef {Object.<string, RenderRedirectItem>} RenderRedirect
- */
-export type RenderRedirect = Record<string, RenderRedirectItem>
 
 /**
  * @typedef {object} RenderTag
@@ -151,7 +116,7 @@ export interface RenderMetaTags {
  * @prop {number} [size]
  * @prop {string} [format]
  * @prop {string} [type]
- * @prop {Object.<number, string>} [sizes]
+ * @prop {Object<number, string>} [sizes]
  */
 export interface RenderFile {
   path?: string
@@ -183,11 +148,11 @@ export interface RenderRichText {
 }
 
 /**
- * @typedef {object} RenderContentTemplate
+ * @typedef {object} RenderTemplate
  * @prop {RenderItem[]} content
  * @prop {RenderItem[]} templates
  */
-export interface RenderContentTemplate {
+export interface RenderTemplate {
   content: RenderItem[]
   templates: RenderItem[]
 }
@@ -196,19 +161,19 @@ export interface RenderContentTemplate {
  * @typedef RenderNavigationsArgs
  * @type {NavigationProps}
  * @prop {string} [title]
- * @prop {ConfigParent[]} parents
+ * @prop {StoreParent[]} parents
  */
 export interface RenderNavigationsArgs extends NavigationProps {
   title?: string
-  parents: ConfigParent[]
+  parents: StoreParent[]
 }
 
 /**
  * @typedef {function} RenderNavigations
  * @param {RenderNavigationsArgs} args
- * @return {Promise<GenericStrings>}
+ * @return {GenericStrings|Promise<GenericStrings>}
  */
-export type RenderNavigations = (args: RenderNavigationsArgs) => Promise<GenericStrings>
+export type RenderNavigations = (args: RenderNavigationsArgs) => GenericStrings | Promise<GenericStrings>
 
 /**
  * @typedef {object} RenderHttpErrorArgs
@@ -222,9 +187,9 @@ export interface RenderHttpErrorArgs extends Generic {
 /**
  * @typedef {function} RenderHttpError
  * @param {RenderHttpErrorArgs} args
- * @return {Promise<string>}
+ * @return {string|Promise<string>}
  */
-export type RenderHttpError = (args: RenderHttpErrorArgs) => Promise<string>
+export type RenderHttpError = (args: RenderHttpErrorArgs) => string | Promise<string>
 
 /**
  * @typedef {object} RenderFunctionArgs
@@ -249,24 +214,16 @@ export interface RenderFunctionArgs<T = any, R = RenderItem> {
 }
 
 /**
- * @typedef {object} RenderFunctionReturn
- * @prop {string} start
- * @prop {string} end
- */
-export interface RenderFunctionReturn {
-  start: string
-  end: string
-}
-
-/**
  * @typedef {function} RenderFunction
  * @param {RenderFunctionArgs} props
- * @return {Promise<string|RenderFunctionReturn>}
+ * @return {string|string[]|Promise<string|string[]>}
  */
-export type RenderFunction<T = any, R = RenderItem> = (props: RenderFunctionArgs<T, R>) => Promise<string | RenderFunctionReturn>
+export type RenderFunction<T = any, R = RenderItem> = (
+  props: RenderFunctionArgs<T, R>
+) => string | string[] | Promise<string | string[]>
 
 /**
- * @typedef {Object.<string, RenderFunction>} RenderFunctions
+ * @typedef {Object<string, RenderFunction>} RenderFunctions
  */
 export type RenderFunctions<T = any, R = RenderItem> = Record<string, RenderFunction<T, R>>
 
@@ -276,7 +233,6 @@ export type RenderFunctions<T = any, R = RenderItem> = Record<string, RenderFunc
  * @prop {RenderItem[]} content
  * @prop {ParentArgs[]} parents
  * @prop {GenericStrings} navigations
- * @prop {RenderFunctions} renderFunctions
  * @prop {number} [headingsIndex]
  * @prop {number} [depth]
  */
@@ -284,7 +240,6 @@ export interface RenderContentArgs extends RenderCommon {
   content: RenderItem[]
   parents: ParentArgs[]
   navigations: GenericStrings
-  renderFunctions: RenderFunctions
   headingsIndex?: number
   depth?: number
 }
@@ -305,7 +260,7 @@ type RenderItemBase = Generic & Partial<Taxonomy>
  * @prop {string} [slug]
  * @prop {string} [title]
  * @prop {RenderItem|RenderItem[]} [content]
- * @prop {RenderMetaReturn} [meta]
+ * @prop {RenderMeta} [meta]
  * @prop {string} [basePermalink]
  * @prop {string} [archive]
  * @prop {RenderItem} [parent]
@@ -322,7 +277,7 @@ export interface RenderItem extends RenderItemBase {
   slug?: string
   title?: string
   content?: RenderItem[] | string
-  meta?: RenderMetaReturn
+  meta?: RenderMeta
   basePermalink?: string
   archive?: string
   parent?: RenderItem
@@ -335,13 +290,11 @@ export interface RenderItem extends RenderItemBase {
  * @prop {RenderItem} item
  * @prop {string} contentType
  * @prop {RenderServerlessData} [serverlessData]
- * @prop {RenderFunctions} renderFunctions
  */
 export interface RenderItemArgs {
   item: RenderItem
   contentType: string
   serverlessData?: RenderServerlessData
-  renderFunctions: RenderFunctions
 }
 
 /**
@@ -401,7 +354,7 @@ export interface RenderItemActionArgs extends RenderCommon {
 /**
  * @typedef {object} RenderLayoutArgs
  * @prop {string} id
- * @prop {RenderMetaReturn} meta
+ * @prop {RenderMeta} meta
  * @prop {GenericStrings} [navigations]
  * @prop {string} contentType
  * @prop {string} content
@@ -413,7 +366,7 @@ export interface RenderItemActionArgs extends RenderCommon {
  */
 export interface RenderLayoutArgs {
   id: string
-  meta: RenderMetaReturn
+  meta: RenderMeta
   navigations?: GenericStrings
   contentType: string
   content: string
@@ -427,9 +380,9 @@ export interface RenderLayoutArgs {
 /**
  * @typedef {function} RenderLayout
  * @param {RenderLayoutArgs} args
- * @return {Promise<string>}
+ * @return {string|Promise<string>}
  */
-export type RenderLayout = (args: RenderLayoutArgs) => Promise<string>
+export type RenderLayout = (args: RenderLayoutArgs) => string | Promise<string>
 
 /**
  * @typedef RenderAllData
@@ -437,7 +390,7 @@ export type RenderLayout = (args: RenderLayoutArgs) => Promise<string>
  * @prop {Navigation[]} [navigation]
  * @prop {NavigationItem[]} [navigationItem]
  * @prop {RenderRedirect[]} [redirect]
- * @prop {Object.<string, RenderItem[]>} content
+ * @prop {Object<string, RenderItem[]>} content
  * @prop {RenderItem[]} content.page
  */
 export interface RenderAllData extends Generic {
@@ -474,11 +427,11 @@ export interface RenderReturn {
 
 /**
  * @typedef {function} RenderContentFilter
- * @param {string} content
+ * @param {string[]} content
  * @param {ParentArgs}
  * @return {Promise<string>}
  */
-export type RenderContentFilter = (content: string, args: ParentArgs) => Promise<string>
+export type RenderContentFilter = (content: string[], args: ParentArgs) => Promise<string>
 
 /**
  * @typedef {function} RenderItemFilter

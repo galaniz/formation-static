@@ -4,32 +4,29 @@
 
 /* Imports */
 
-import type { PreviewArgs } from './PreviewTypes.js'
-import { setConfig, setConfigFilter } from '../../config/config.js'
+import type { ServerlessContext, ServerlessSetup } from '../serverlessTypes.js'
+import type { getAllContentfulData } from '../../contentful/contentfulData.js'
+import type { getAllWordPressData } from '../../wordpress/wordpressData.js'
+import { isString, isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
-import { isStringStrict } from '../../utils/string/string.js'
-import { setFilters } from '../../utils/filter/filter.js'
-import { setActions } from '../../utils/action/action.js'
-import { setShortcodes } from '../../utils/shortcode/shortcode.js'
-import { getPathDepth } from '../../utils/path/path.js'
 import { render } from '../../render/render.js'
 
 /**
- * Output preview from contentful
+ * Output preview from contentful or wordpress
  *
- * @param {PreviewArgs} args
+ * @param {ServerlessContext} context
+ * @param {ServerlessSetup} serverlessSetup
+ * @param {function} getData - getAllContentfulData | getAllWordPressData
  * @return {Promise<Response>} Response
  */
-const Preview = async ({
-  request,
-  functionPath,
-  next,
-  env,
-  siteConfig,
-  getData
-}: PreviewArgs): Promise<Response> => {
+const Preview = async (
+  context: ServerlessContext,
+  serverlessSetup: ServerlessSetup,
+  getData: typeof getAllContentfulData | typeof getAllWordPressData
+): Promise<Response> => {
   /* Params */
 
+  const { request, next } = context
   const { searchParams } = new URL(request.url)
   const contentType = searchParams.get('content_type')
   const id = searchParams.get('preview')
@@ -40,17 +37,9 @@ const Preview = async ({
     return next()
   }
 
-  /* Config */
+  /* Setup */
 
-  setConfig(siteConfig)
-
-  await setConfigFilter(env)
-
-  siteConfig.env.dir = getPathDepth(functionPath)
-
-  setFilters(siteConfig.filters)
-  setActions(siteConfig.actions)
-  setShortcodes(siteConfig.shortcodes)
+  serverlessSetup(context)
 
   /* Data params */
 
@@ -68,7 +57,9 @@ const Preview = async ({
   let html = ''
 
   if (isObjectStrict(data)) {
-    html = data.output !== undefined ? data.output : ''
+    const output = data.output
+
+    html = isString(output) ? output : ''
   }
 
   return new Response(html, {

@@ -4,47 +4,40 @@
 
 /* Imports */
 
-import type { AjaxArgs, AjaxResOptions } from './AjaxTypes.js'
+import type { AjaxResultOptions, AjaxResultFilterArgs } from './AjaxTypes.js'
 import type {
-  AjaxActionData,
-  AjaxActionReturn,
-  AjaxActionArgs
+  ServerlessContext,
+  ServerlessSetup,
+  ServerlessActionData,
+  ServerlessActionReturn
 } from '../serverlessTypes.js'
-import { setConfig, setConfigFilter } from '../../config/config.js'
-import { setActions } from '../../utils/action/action.js'
-import { setShortcodes } from '../../utils/shortcode/shortcode.js'
-import { applyFilters, setFilters } from '../../utils/filter/filter.js'
+import { ResponseError } from '../../utils/ResponseError/ResponseError.js'
+import { applyFilters } from '../../utils/filter/filter.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { isNumber } from '../../utils/number/number.js'
+import { isFunction } from '../../utils/function/function.js'
 import { print } from '../../utils/print/print.js'
-import { getPathDepth } from '../../utils/path/path.js'
-import { ResponseError } from '../../utils/ResponseError/ResponseError.js'
-import { SendForm } from '../SendForm/SendForm.js'
+import { config } from '../../config/config.js'
+import { serverlessActions } from '../serverless.js'
 
 /**
- * Set env variables, normalize request body, check for required props and call actions
+ * Handle ajax requests by processing data and calling serverless actions
  *
- * @param {AjaxArgs} args
+ * @param {ServerlessContext} context
+ * @param {ServerlessSetup} serverlessSetup
  * @return {Promise<Response>} Response
  */
-const Ajax = async ({ request, functionPath, env, siteConfig }: AjaxArgs): Promise<Response> => {
+const Ajax = async (context: ServerlessContext, serverlessSetup: ServerlessSetup): Promise<Response> => {
   try {
-    /* Config */
+    /* Setup */
 
-    setConfig(siteConfig)
-
-    await setConfigFilter(env)
-
-    siteConfig.env.dir = getPathDepth(functionPath)
-
-    setFilters(siteConfig.filters)
-    setActions(siteConfig.actions)
-    setShortcodes(siteConfig.shortcodes)
+    serverlessSetup(context)
 
     /* Get form data */
 
-    const data = await request.json() as AjaxActionData | undefined
+    const request = context.request
+    const data = await request.json() as ServerlessActionData | undefined
 
     /* Data must be object */
 
@@ -54,15 +47,15 @@ const Ajax = async ({ request, functionPath, env, siteConfig }: AjaxArgs): Promi
 
     /* Inputs required */
 
-    if (data.inputs === undefined) {
-      throw new Error('No inputs')
+    if (!isObjectStrict(data.inputs)) {
+      throw new Error('Inputs not an object')
     }
 
     /* Honeypot check */
 
-    const honeypotName = `${siteConfig.namespace}_asi`
+    const honeypotName = `${config.namespace}_asi`
 
-    if (data.inputs[honeypotName] !== undefined) {
+    if (isObjectStrict(data.inputs[honeypotName])) {
       const honeypotValue = data.inputs[honeypotName].value
 
       if (isStringStrict(honeypotValue)) {
@@ -87,7 +80,7 @@ const Ajax = async ({ request, functionPath, env, siteConfig }: AjaxArgs): Promi
 
     /* Action required */
 
-    const action = data.action !== undefined ? data.action : ''
+    const action = data.action
 
     if (!isStringStrict(action)) {
       throw new Error('No action')
@@ -95,38 +88,34 @@ const Ajax = async ({ request, functionPath, env, siteConfig }: AjaxArgs): Promi
 
     /* Call functions by action */
 
-    let res: AjaxActionReturn | null = null
+    let res: ServerlessActionReturn | null = null
 
-    if (action === 'sendForm') {
-      res = await SendForm({ ...data, env, request })
+    const ajaxFn = serverlessActions[action]
+
+    if (isFunction(ajaxFn)) {
+      res = await ajaxFn(data, context)
     }
 
-    if (siteConfig.ajaxFunctions[action] !== undefined) {
-      res = await siteConfig.ajaxFunctions[action]({ ...data, env, request })
+    const ajaxResultFilterArgs: AjaxResultFilterArgs = {
+      data,
+      context
     }
 
-    const ajaxResFilterArgs: AjaxActionArgs = {
-      ...data,
-      action,
-      env,
-      request
-    }
-
-    res = await applyFilters('ajaxRes', res, ajaxResFilterArgs)
+    res = await applyFilters('ajaxResult', res, ajaxResultFilterArgs, true)
 
     /* Result error */
 
-    if (res === null) {
+    if (res == null) {
       throw new Error('No result')
     }
 
-    if (res.error !== undefined) {
-      throw new ResponseError(res.error.message, res.error.resp)
+    if (res.error != null) {
+      throw new ResponseError(res.error.message, res.error.response)
     }
 
     /* Result success */
 
-    const options: AjaxResOptions = {
+    const options: AjaxResultOptions = {
       status: 200,
       headers: {
         'Content-Type': 'application/json'
@@ -135,17 +124,17 @@ const Ajax = async ({ request, functionPath, env, siteConfig }: AjaxArgs): Promi
 
     let message = ''
 
-    if (res.success !== undefined) {
+    if (res.success != null) {
       const {
         message: successMessage,
         headers
       } = res.success
 
-      if (successMessage !== undefined) {
+      if (isStringStrict(successMessage)) {
         message = successMessage
       }
 
-      if (headers !== undefined) {
+      if (isObjectStrict(headers)) {
         options.headers = { ...options.headers, ...headers }
       }
     }

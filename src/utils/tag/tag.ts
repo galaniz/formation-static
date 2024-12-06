@@ -57,7 +57,7 @@ const getTag: TagGet = (obj, id) => {
 const tagExists: TagExists = (obj, id) => {
   const res = getTag(obj, id)
 
-  return res !== undefined
+  return res != null
 }
 
 /* Exports */

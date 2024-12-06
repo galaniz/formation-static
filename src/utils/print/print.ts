@@ -5,7 +5,6 @@
 /* Imports */
 
 import { isArray } from '../array/array.js'
-import { isString } from '../string/string.js'
 
 /**
  * Output console message
@@ -16,7 +15,7 @@ import { isString } from '../string/string.js'
  * @return {void}
  */
 const print = (
-  pre: string,
+  pre: string = 'Log',
   message: string | string[] | unknown,
   type: 'error' | 'warning' | 'success' | 'info' = 'error'
 ): void => {
@@ -26,35 +25,24 @@ const print = (
   const blue = '\x1b[36m'
   const reset = '\x1b[0m'
   const bold = '\x1b[1m'
-
-  let msg = isArray(message) ? message : [message]
-
-  if (msg.length > 0) {
-    const lastIndex = msg.length - 1
-
-    msg = msg.map((m, i) => {
-      if (isString(m) && i < lastIndex) {
-        return `${m}\n`
-      }
-
-      return m
-    })
-  }
+  const messageArr = isArray(message) ? message : [message]
+  const messageStr = messageArr.join('\n').trim()
+  const output = `${bold}${pre}: ${reset}\n${messageStr}`
 
   if (type === 'error') {
-    console.error(`${bold}${red}${pre}: ${reset}\n`, ...msg)
+    console.error(`${red}${output}`)
   }
 
   if (type === 'warning') {
-    console.warn(`${bold}${yellow}${pre}: ${reset}\n`, ...msg)
+    console.warn(`${yellow}${output}`)
   }
 
   if (type === 'success') {
-    console.info(`${bold}${green}${pre}: ${reset}\n`, ...msg)
+    console.info(`${green}${output}`)
   }
 
   if (type === 'info') {
-    console.info(`${bold}${blue}${pre}: ${reset}\n`, ...msg)
+    console.info(`${blue}${output}`)
   }
 }
 

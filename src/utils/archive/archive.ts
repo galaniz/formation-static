@@ -7,7 +7,7 @@
 import type { ArchiveInfo, ArchiveLinkReturn } from './archiveTypes.js'
 import type { Taxonomy } from '../../global/globalTypes.js'
 import type { RenderItem } from '../../render/renderTypes.js'
-import { config } from '../../config/config.js'
+import { getStoreItem } from '../../store/store.js'
 import { isObjectStrict } from '../object/object.js'
 import { isStringStrict } from '../string/string.js'
 import { isBoolean } from '../boolean/boolean.js'
@@ -33,7 +33,7 @@ const getArchiveInfo = (contentType: string = ''): ArchiveInfo => {
     return value
   }
 
-  const info = config.archiveMeta[contentType]
+  const info = getStoreItem('archiveMeta')[contentType]
 
   if (!isObjectStrict(info)) {
     return value
@@ -123,7 +123,7 @@ const getArchiveLink = (contentType: string = '', pageData?: RenderItem): Archiv
       slug: '',
       contentType,
       pageData
-    }, false)
+    })
 
     title = taxonomyTitle
   }
@@ -153,9 +153,9 @@ const getArchiveLink = (contentType: string = '', pageData?: RenderItem): Archiv
       id: archiveId,
       slug: archiveSlug,
       contentType: 'page'
-    }, false)
+    })
 
-    const plural = config?.archiveMeta?.[contentType]?.plural
+    const plural = getStoreItem('archiveMeta')[contentType]?.plural
 
     title = isStringStrict(plural) ? plural : archiveTitle
   }

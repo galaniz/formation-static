@@ -1,5 +1,5 @@
 /**
- * Utils - File Paths
+ * Utils - Paths
  */
 
 /* Imports */

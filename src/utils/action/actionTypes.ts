@@ -28,17 +28,27 @@ export interface Actions extends GenericFunctions {
 }
 
 /**
- * @typedef ActionsFunctions
- * @type {Object.<string, function[]>}
- * @prop {RenderStartAction[]} renderStart
- * @prop {RenderEndAction[]} renderEnd
- * @prop {RenderItemStartAction[]} renderItemStart
- * @prop {RenderItemEndAction[]} renderItemEnd
+ * @typedef ActionMap
+ * @type {Map.<string, Set<Function>>}
+ * @prop {Set<RenderStartAction>} renderStart
+ * @prop {Set<RenderEndAction>} renderEnd
+ * @prop {Set<RenderItemStartAction>} renderItemStart
+ * @prop {Set<RenderItemEndAction>} renderItemEnd
  */
-export interface ActionsFunctions {
-  renderStart: RenderStartAction[]
-  renderEnd: RenderEndAction[]
-  renderItemStart: RenderItemStartAction[]
-  renderItemEnd: RenderItemEndAction[]
-  [key: string]: Function[]
-}
+export type ActionMap = Map<string, Set<Function>> & Map<
+'renderStart' |
+'renderEnd' |
+'renderItemStart' |
+'renderItemEnd',
+Set<
+RenderStartAction |
+RenderEndAction |
+RenderItemStartAction |
+RenderItemEndAction
+>
+>
+
+/**
+ * @typedef {void|Promise<void>} ActionReturnType
+ */
+export type ActionReturnType<V extends false | true> = V extends true ? Promise<void> : void

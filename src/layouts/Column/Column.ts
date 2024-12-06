@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { ColumnProps, ColumnReturn } from './ColumnTypes.js'
+import type { ColumnProps } from './ColumnTypes.js'
 import { applyFilters } from '../../utils/filter/filter.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
@@ -13,15 +13,12 @@ import { isObjectStrict } from '../../utils/object/object.js'
  * Output column wrapper
  *
  * @param {ColumnProps} props
- * @return {Promise<ColumnReturn>}
+ * @return {string[]}
  */
-const Column = async (props: ColumnProps): Promise<ColumnReturn> => {
+const Column = (props: ColumnProps): string[] => {
   /* Fallback output */
 
-  const fallback = {
-    start: '',
-    end: ''
-  }
+  const fallback: string[] = []
 
   /* Props must be object */
 
@@ -29,7 +26,7 @@ const Column = async (props: ColumnProps): Promise<ColumnReturn> => {
     return fallback
   }
 
-  props = await applyFilters('columnProps', props, { renderType: 'column' })
+  props = applyFilters('columnProps', props, { renderType: 'column' })
 
   /* Filtered props must be object */
 
@@ -74,10 +71,10 @@ const Column = async (props: ColumnProps): Promise<ColumnReturn> => {
 
   /* Output */
 
-  return {
-    start: `<${tag}${attrs}${styles}>`,
-    end: `</${tag}>`
-  }
+  return [
+    `<${tag}${attrs}${styles}>`,
+    `</${tag}>`
+  ]
 }
 
 /* Exports */

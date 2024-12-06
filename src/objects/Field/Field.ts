@@ -47,13 +47,19 @@ const getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
     const id: string = uuid()
 
     return `
-      <div data-option-field data-type="${type}">
-        <input type="${type}" name="${name}" id="${id}" class="${classes}" value="${value}"${attr}${selected ? ' checked' : ''}>
-        <label for="${id}" data-option>
-          <span${labelClass} data-label>
-            <span data-label-text>${text}</span>
+      <div data-field-option-${type}>
+        <input
+          type="${type}"
+          name="${name}"
+          id="${id}"
+          class="${classes}"
+          value="${value}"${attr}${selected ? ' checked' : ''}
+        >
+        <label for="${id}" data-field-option>
+          <span${labelClass} data-field-label>
+            <span data-field-text>${text}</span>
           </span>
-          <span data-control data-type="${type}">${icon}</span>
+          <span data-field-control="${type}">${icon}</span>
         </label>
       </div>
     `
@@ -64,16 +70,16 @@ const getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
  * Output form field
  *
  * @param {FieldProps} props
- * @return {Promise<string>} HTMLDivElement
+ * @return {string} HTMLDivElement
  */
-const Field = async (props: FieldProps): Promise<string> => {
+const Field = (props: FieldProps): string => {
   /* Props must be object */
 
   if (!isObjectStrict(props)) {
     return ''
   }
 
-  props = await applyFilters('fieldProps', props, { renderType: 'field' })
+  props = applyFilters('fieldProps', props, { renderType: 'field' })
 
   /* Filtered props must be object */
 
@@ -173,14 +179,14 @@ const Field = async (props: FieldProps): Promise<string> => {
     options.forEach((option) => {
       const [optText, optValue, optSelected] = option.split(' : ')
 
-      if (optText === undefined || optValue === undefined) {
+      if (!isStringStrict(optText) || !isStringStrict(optValue)) {
         return
       }
 
       opts.push({
         text: optText,
         value: optText,
-        selected: optSelected !== undefined
+        selected: optSelected === 'selected'
       })
     })
   }
@@ -199,7 +205,7 @@ const Field = async (props: FieldProps): Promise<string> => {
   const attr: string[] = []
 
   if (required) {
-    attr.push(fieldset ? 'data-aria-required="true"' : 'aria-required="true"')
+    attr.push(fieldset ? 'data-fieldset-required="true"' : 'aria-required="true"')
   }
 
   if (isStringStrict(value) && !checkboxRadioOpts) {
@@ -215,11 +221,11 @@ const Field = async (props: FieldProps): Promise<string> => {
   }
 
   if (isStringStrict(emptyErrorMessage)) {
-    attr.push(`data-empty-message="${emptyErrorMessage}"`)
+    attr.push(`data-field-empty="${emptyErrorMessage}"`)
   }
 
   if (isStringStrict(invalidErrorMessage)) {
-    attr.push(`data-invalid-message="${invalidErrorMessage}"`)
+    attr.push(`data-field-invalid="${invalidErrorMessage}"`)
   }
 
   if (classesArr.length > 0) {
@@ -241,36 +247,37 @@ const Field = async (props: FieldProps): Promise<string> => {
   let labelBefore = ''
   let labelAfter = ''
 
-  const labelRequired = required ? ' data-required' : ''
-  const labelRequiredIcon = required ? '<span data-required-icon aria-hidden="true"></span>' : ''
+  const labelRequired = required ? ' data-field-required' : ''
+  const labelRequiredIcon = required ? '<span data-field-required-icon aria-hidden="true"></span>' : ''
   const labelClass = isStringStrict(labelClasses) ? ` class="${labelClasses}"` : ''
 
   if (checkboxRadio) {
     if (fieldset) {
       labelBefore = `
         <legend id="${uuid()}"${labelRequired}>
-          <span data-legend-text>${label}${required ? `<span${isStringStrict(visuallyHiddenClass) ? ` class="${visuallyHiddenClass}"` : ''}> required</span>` : ''}
+          <span data-field-legend>
+            ${label}${required ? `<span${isStringStrict(visuallyHiddenClass) ? ` class="${visuallyHiddenClass}"` : ''}> required</span>` : ''}
             ${labelRequiredIcon}
           </span>
         </legend>
       `
     } else {
       labelAfter = `
-        <label for="${id}" data-option>
-          <span${labelClass} data-label${labelRequired}>
-            <span data-label-text>
+        <label for="${id}" data-field-option>
+          <span${labelClass} data-field-label${labelRequired}>
+            <span data-field-text>
               ${label}
               ${labelRequiredIcon}
             </span>
           </span>
-          <span data-control data-type="${type}">${icon}</span>
+          <span data-field-control="${type}">${icon}</span>
         </label>
       `
     }
   } else {
     labelBefore = `
-      <label for="${id}"${labelClass} data-label${labelRequired}>
-        <span data-label-text>
+      <label for="${id}"${labelClass} data-field-label${labelRequired}>
+        <span data-field-text>
           ${label}
           ${labelRequiredIcon}
         </span>
@@ -323,9 +330,9 @@ const Field = async (props: FieldProps): Promise<string> => {
         }).join('')
 
         input = `
-          <div data-type="select">
+          <div data-field-select>
             <select name="${name}" id="${id}"${attrs}>${optsOutput}</select>
-            <div data-select-icon>${selectIcon}</div>
+            <div data-field-select-icon>${selectIcon}</div>
           </div>
         `
       }
@@ -341,7 +348,7 @@ const Field = async (props: FieldProps): Promise<string> => {
   /* Output */
 
   return `
-    <div class="${fieldClassesArr.join(' ')}" data-type="${type}">
+    <div class="${fieldClassesArr.join(' ')}" data-field="${type}">
       ${fieldset ? `<fieldset${isStringStrict(fieldsetClasses) ? ` class="${fieldsetClasses}"` : ''}>` : ''}
       ${labelBefore}
       ${input}

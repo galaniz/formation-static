@@ -1,8 +1,9 @@
 {
   "name": "@alanizcreative/static-site-formation",
   "version": "1.3.0-beta.16",
-  "description": "Base and helpers for static sites built with json files, Contentful or WordPress",
+  "description": "Foundation and utilities to build static sites using local JSON files, Contentful, or WordPress.",
   "main": "./lib/config/config.js",
+  "packageManager": "pnpm@9.14.4",
   "type": "module",
   "files": [
     "./lib",
@@ -15,16 +16,16 @@
     }
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "scripts": {
     "build:lib": "tsc",
     "build:cjs": "tsc --moduleResolution node --module commonjs --esModuleInterop --outDir cjs/",
-    "build": "npm run build:lib && npm run build:cjs && node build/packageFile.js",
+    "build": "pnpm build:lib && pnpm build:cjs && node scripts/packageFile.js",
     "test": "vitest --run --reporter verbose --coverage",
     "lint": "npx ts-standard",
-    "release": "release-it --preRelease=beta",
-    "jsdoc": "jsdoc -c jsdoc.json"
+    "release": "release-it",
+    "release:beta": "release-it --preRelease=beta"
   },
   "repository": {
     "type": "git",
@@ -37,32 +38,34 @@
   "author": "Graciela Alaniz (https://alanizcreative.com/)",
   "license": "MIT",
   "devDependencies": {
+    "@cloudflare/workers-types": "4.20241112.0",
     "@types/contentful-resolve-response": "^0.1.33",
-    "@types/node": "^22.2.0",
+    "@types/node": "^22.10.1",
     "@types/uuid": "^10.0.0",
     "@types/wordpress__block-serialization-spec-parser": "^3.1.3",
-    "@vitest/coverage-v8": "^2.0.5",
-    "release-it": "^17.6.0",
+    "@vitest/coverage-v8": "^2.1.6",
+    "release-it": "^17.10.0",
     "ts-standard": "^12.0.2",
-    "typescript": "^5.5.4",
-    "vitest": "^2.0.5"
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.6"
   },
   "dependencies": {
-    "@wordpress/block-serialization-spec-parser": "^5.5.0",
+    "uuid": "^11.0.3"
+  },
+  "peerDependencies": {
+    "@wordpress/block-serialization-spec-parser": "^5.11.0",
     "contentful-resolve-response": "^1.9.0",
-    "sharp": "^0.33.4",
-    "uuid": "^10.0.0"
+    "jimp": "^1.6.0"
   },
-  "release-it": {
-    "git": {
-      "requireCommits": true,
-      "commitMessage": "chore: release ${version} [ci skip]"
+  "peerDependenciesMeta": {
+    "@wordpress/block-serialization-spec-parser": {
+      "optional": true
     },
-    "github": {
-      "release": true
+    "contentful-resolve-response": {
+      "optional": true
+    },
+    "jimp": {
+      "optional": true
     }
-  },
-  "publishconfig": {
-    "access": "public"
   }
 }

@@ -2,12 +2,16 @@
  * Utils - Data Source Types
  */
 
+/* Imports */
+
+import type { Source } from '../../global/globalTypes.js'
+
 /**
  * @typedef {function} DataSourceCheck
- * @param {string} source
+ * @param {Source} source
  * @return {boolean}
  */
-export type DataSourceCheck = (source?: string) => boolean
+export type DataSourceCheck = (source?: Source) => boolean
 
 /**
  * @typedef {function} DataSourceGet
@@ -18,12 +22,13 @@ export type DataSourceGet = () => string
 /**
  * @typedef {object} DataSource
  * @prop {DataSourceCheck} isContentful
- * @prop {DataSourceCheck} isStatic
+ * @prop {DataSourceCheck} isWordPress
+ * @prop {DataSourceCheck} isLocal
  * @prop {DataSourceGet} get
  */
 export interface DataSource {
   isContentful: DataSourceCheck
   isWordPress: DataSourceCheck
-  isStatic: DataSourceCheck
+  isLocal: DataSourceCheck
   get: DataSourceGet
 }

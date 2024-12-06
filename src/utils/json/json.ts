@@ -32,12 +32,12 @@ const getJson = <T>(value: string): object & T | undefined => {
  * Import json file and return contents if object
  *
  * @param {string} path
- * @param {boolean} store
+ * @param {boolean} isStore
  * @return {Promise<object|undefined>}
  */
-const getJsonFile = async <T>(path: string, store: boolean = true): Promise<object & T | undefined> => {
+const getJsonFile = async <T>(path: string, isStore: boolean = true): Promise<object & T | undefined> => {
   try {
-    const newPath = store ? getPath(path, 'store') : path
+    const newPath = isStore ? getPath(path, 'store') : path
 
     const { default: obj } = await import(newPath) // Removed assert json as not all exports are esnext
 
@@ -47,11 +47,11 @@ const getJsonFile = async <T>(path: string, store: boolean = true): Promise<obje
 
     throw new Error('No object in json file')
   } catch {
-    if (!store) {
+    if (!isStore) {
       return undefined
     }
 
-    return await applyFilters('storeData', undefined, path)
+    return await applyFilters('storeData', undefined, path, true)
   }
 }
 

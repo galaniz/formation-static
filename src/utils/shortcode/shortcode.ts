@@ -9,7 +9,8 @@ import type {
   ShortcodeAttrValue,
   ShortcodeData,
   Shortcode,
-  Shortcodes
+  Shortcodes,
+  ShortcodesSet
 } from './shortcodeTypes.js'
 import { isObjectStrict } from '../object/object.js'
 import { isArrayStrict } from '../array/array.js'
@@ -19,11 +20,11 @@ import { isNumber } from '../number/number.js'
 import { escape } from '../escape/escape.js'
 
 /**
- * Store shortcode callbacks by name
+ * Shortcode callbacks by name
  *
  * @type {Shortcodes}
  */
-let shortcodes: Shortcodes = {}
+let shortcodes: Shortcodes = new Map()
 
 /**
  * Regex for searching x="" in strings
@@ -58,7 +59,7 @@ const getShortcodeData = (content: string, tagNames: string, props?: Partial<Sho
     return []
   }
 
-  /* Store data items */
+  /* Data items */
 
   const data: ShortcodeData[] = []
 
@@ -95,9 +96,9 @@ const getShortcodeData = (content: string, tagNames: string, props?: Partial<Sho
 
     /* Shortcode info */
 
-    const info = props === undefined ? shortcodes[name] : props
+    const info = props != null ? props : shortcodes.get(name)
 
-    if (info === undefined) {
+    if (!isObjectStrict(info)) {
       return
     }
 
@@ -111,7 +112,7 @@ const getShortcodeData = (content: string, tagNames: string, props?: Partial<Sho
       attr.forEach((a) => {
         const [key, value] = a.split('=')
 
-        if (key === undefined || value === undefined) {
+        if (!isStringStrict(key) || !isStringStrict(value)) {
           return
         }
 
@@ -175,7 +176,7 @@ const getShortcodeData = (content: string, tagNames: string, props?: Partial<Sho
 }
 
 /**
- * Add shortcode to shortcodes object
+ * Add shortcode to shortcodes map
  *
  * @param {string} name
  * @param {Shortcode} shortcode
@@ -186,13 +187,13 @@ const addShortcode = <T extends Shortcode>(name: string, shortcode: T): boolean 
     return false
   }
 
-  shortcodes[name] = shortcode
+  shortcodes.set(name, shortcode)
 
   return true
 }
 
 /**
- * Remove shortcode from shortcodes object
+ * Remove shortcode from shortcodes map
  *
  * @param {string} name
  * @return {boolean}
@@ -202,14 +203,7 @@ const removeShortcode = (name: string): boolean => {
     return false
   }
 
-  if (shortcodes[name] === undefined) {
-    return false
-  }
-
-  // @ts-expect-error: Type 'undefined' is not assignable to type 'Shortcode'
-  shortcodes[name] = undefined
-
-  return true
+  return shortcodes.delete(name)
 }
 
 /**
@@ -221,15 +215,14 @@ const removeShortcode = (name: string): boolean => {
 const doShortcodes = async (content: string): Promise<string> => {
   /* Check if any shortcodes */
 
-  const names = Object.keys(shortcodes)
-
-  if (names.length === 0) {
+  if (shortcodes.size === 0) {
     return content
   }
 
   /* Get data */
 
-  const data = getShortcodeData(content, names.join('|'))
+  const names = [...shortcodes.keys()].join('|')
+  const data = getShortcodeData(content, names)
 
   if (data.length === 0) {
     return content
@@ -241,7 +234,7 @@ const doShortcodes = async (content: string): Promise<string> => {
 
   for (const d of data) {
     const { name, replaceContent } = d
-    const callback = shortcodes?.[name]?.callback
+    const callback = shortcodes.get(name)?.callback
 
     if (isFunction(callback)) {
       const res = await callback(d)
@@ -256,26 +249,26 @@ const doShortcodes = async (content: string): Promise<string> => {
 }
 
 /**
- * Empty shortcodes object
+ * Empty shortcodes map
  *
  * @return {void}
  */
 const resetShortcodes = (): void => {
-  shortcodes = {}
+  shortcodes.clear()
 }
 
 /**
- * Fill shortcodes object
+ * Fill shortcodes map
  *
- * @param {Shortcodes} args
+ * @param {ShortcodesSet} args
  * @return {boolean}
  */
-const setShortcodes = <T extends Shortcodes>(args: T): boolean => {
+const setShortcodes = <T extends ShortcodesSet>(args: T): boolean => {
   if (!isObjectStrict(args)) {
     return false
   }
 
-  const names = Object.keys(args)
+  const names = Object.entries(args)
 
   if (names.length === 0) {
     return false
@@ -283,14 +276,12 @@ const setShortcodes = <T extends Shortcodes>(args: T): boolean => {
 
   resetShortcodes()
 
-  names.forEach((n) => {
-    const shortcode = args[n]
-
-    if (shortcode === undefined) {
+  names.forEach(([name, shortcode]) => {
+    if (shortcode == null) {
       return
     }
 
-    addShortcode(n, shortcode)
+    addShortcode(name, shortcode)
   })
 
   return true
@@ -305,15 +296,15 @@ const setShortcodes = <T extends Shortcodes>(args: T): boolean => {
 const stripShortcodes = (content: string): string => {
   /* Check if any shortcodes */
 
-  const names = Object.keys(shortcodes)
-
-  if (names.length === 0) {
+  if (shortcodes.size === 0) {
     return content
   }
 
   /* Replace tags with empty strings */
+  
+  const names = [...shortcodes.keys()].join('|')
 
-  return content.replace(String.raw`/\[\/?(?:${names.join('|')})[^\]]*?\]/g`, '')
+  return content.replace(String.raw`/\[\/?(?:${names})[^\]]*?\]/g`, '')
 }
 
 /* Exports */

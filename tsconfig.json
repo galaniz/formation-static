@@ -20,16 +20,21 @@
     "outDir": "lib",
     "lib": [
       "es2022"
+    ],
+    "types": [
+      "@cloudflare/workers-types"
     ]
   },
   "include": [
-    "**/*.ts"
+    "**/*.ts",
+    "**/*.test.ts",
+    "**/*.config.ts"
   ],
   "exclude": [
     "lib",
     "cjs",
     "node_modules",
     "**/*.test.ts",
-    "vitest.config.ts"
+    "**/*.config.ts"
   ]
 }

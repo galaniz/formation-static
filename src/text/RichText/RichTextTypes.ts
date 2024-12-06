@@ -4,8 +4,8 @@
 
 /* Imports */
 
-import type { RenderRichText } from '../../render/renderTypes.js'
-import type { InternalLink, ParentArgs } from '../../global/globalTypes.js'
+import type { InternalLink, Generic } from '../../global/globalTypes.js'
+import type { RenderRichText, RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js'
 
 /**
  * @typedef {object} RichTextHeading
@@ -32,8 +32,8 @@ export interface RichTextElement {
 }
 
 /**
- * @typedef {object} RichTextProps
- * @prop {object} args
+ * @typedef RichTextArgs
+ * @type {Generic}
  * @prop {string} [args.tag]
  * @prop {RenderRichText[]|string} [args.content]
  * @prop {string} [args.classes]
@@ -46,27 +46,29 @@ export interface RichTextElement {
  * @prop {string} [args.style]
  * @prop {string} [args.attr]
  * @prop {boolean|string[]} [args.dataAttr=true]
- * @prop {ParentArgs} [parents]
- * @prop {RichTextHeading[]} [headings]
  */
-export interface RichTextProps {
-  args: {
-    tag?: string
-    content?: RenderRichText[] | string
-    classes?: string
-    textStyle?: string
-    headingStyle?: string
-    caption?: string
-    align?: string
-    link?: string
-    internalLink?: InternalLink
-    style?: string
-    attr?: string
-    dataAttr?: boolean | string[]
-    [key: string]: unknown
-  }
-  parents?: ParentArgs[]
-  headings?: RichTextHeading[]
+export interface RichTextArgs extends Generic {
+  tag?: string
+  content?: RenderRichText[] | string
+  classes?: string
+  textStyle?: string
+  headingStyle?: string
+  caption?: string
+  align?: string
+  link?: string
+  internalLink?: InternalLink
+  style?: string
+  attr?: string
+  dataAttr?: boolean | string[]
+}
+
+/**
+ * @typedef RichTextProps
+ * @type {RenderFunctionArgs}
+ * @prop {RichTextArgs} args
+ */
+export interface RichTextProps<T = RichTextArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {
+  args: RichTextArgs & T
 }
 
 /**
@@ -117,37 +119,38 @@ export interface RichTextOutputFilterArgs {
  * @param {RichTextProps} props
  * @param {object} args
  * @param {string} args.renderType
- * @return {Promise<RichTextProps>}
+ * @return {RichTextProps}
  */
-export type RichTextPropsFilter = (props: RichTextProps, args: { renderType: string }) => Promise<RichTextProps>
+export type RichTextPropsFilter = (props: RichTextProps, args: { renderType: string }) => RichTextProps
 
 /**
  * @typedef {function} RichTextOutputFilter
  * @param {string} output
  * @param {RichTextContentOutputFilterArgs} args
- * @return {Promise<string>}
+ * @return {string}
  */
-export type RichTextOutputFilter = (output: string, args: RichTextContentOutputFilterArgs) => Promise<string>
+export type RichTextOutputFilter = (output: string, args: RichTextContentOutputFilterArgs) => string
 
 /**
  * @typedef {function} RichTextContentItemFilter
  * @param {RenderRichText} item
  * @param {RichTextProps} args
- * @return {Promise<RenderRichText>}
+ * @return {RenderRichText}
  */
-export type RichTextContentItemFilter = (item: RenderRichText, args: RichTextProps) => Promise<RenderRichText>
+export type RichTextContentItemFilter = (item: RenderRichText, args: RichTextProps) => RenderRichText
 
 /**
  * @typedef {function} RichTextContentFilter
  * @param {string} content
  * @param {RichTextContentFilterArgs} args
- * @return {Promise<string>}
+ * @return {string}
  */
-export type RichTextContentFilter = (content: string, args: RichTextContentFilterArgs) => Promise<string>
+export type RichTextContentFilter = (content: string, args: RichTextContentFilterArgs) => string
 
 /**
  * @typedef {function} RichTextContentOutputFilter
  * @param {string} content
  * @param {RichTextContentFilterArgs} args
+ * @return {string}
  */
-export type RichTextContentOutputFilter = (content: string, args: RichTextContentFilterArgs) => Promise<string>
+export type RichTextContentOutputFilter = (content: string, args: RichTextContentOutputFilterArgs) => string

@@ -4,10 +4,11 @@
 
 /* Imports */
 
-import type { GenericNumbers, ParentArgs } from '../../global/globalTypes.js'
+import type { Source, GenericNumbers, ParentArgs } from '../../global/globalTypes.js'
 import type { RenderFile } from '../../render/renderTypes.js'
 import type { ColumnProps } from '../../layouts/Column/ColumnTypes.js'
 import type { ContainerProps } from '../../layouts/Container/ContainerTypes.js'
+import type { Jimp } from 'jimp'
 
 /**
  * @typedef {object} ImageArgs
@@ -20,7 +21,7 @@ import type { ContainerProps } from '../../layouts/Container/ContainerTypes.js'
  * @prop {boolean} [lazy]
  * @prop {boolean} [picture]
  * @prop {number} [quality]
- * @prop {string} [source]
+ * @prop {Source} [source]
  * @prop {number} [maxWidth]
  * @prop {number} [viewportWidth]
  */
@@ -34,7 +35,7 @@ export interface ImageArgs {
   lazy?: boolean
   picture?: boolean
   quality?: number
-  source?: string
+  source?: Source
   maxWidth?: number
   viewportWidth?: number
 }
@@ -72,24 +73,26 @@ export type ImageMaxWidthParents = ParentArgs & ColumnProps & ContainerProps
  * @prop {GenericNumbers} widths
  * @prop {GenericNumbers} maxWidths
  * @prop {number[]} breakpoints
- * @prop {string} [source]
+ * @prop {Source} [source]
  */
 export interface ImageMaxWidthArgs {
   parents: ImageMaxWidthParents[]
   widths: GenericNumbers
   maxWidths: GenericNumbers
   breakpoints: number[]
-  source?: string
+  source?: Source
 }
 
 /**
- * @typedef {object} ImagesSharp
+ * @typedef {object} ImageLocal
+ * @prop {Jimp} instance
  * @prop {number} size
  * @prop {string} ext
  * @prop {string} path
  * @prop {string} newPath
  */
-export interface ImagesSharp {
+export interface ImageLocal {
+  instance: InstanceType<typeof Jimp>
   size: number
   ext: string
   path: string
@@ -97,7 +100,19 @@ export interface ImagesSharp {
 }
 
 /**
- * @typedef {object} ImagesProps
+ * @typedef {object} ImageRemote
+ * @prop {string} path
+ * @prop {string} url
+ * @prop {string} [ext]
+ */
+export interface ImageRemote {
+  path: string
+  url: string
+  ext?: string
+}
+
+/**
+ * @typedef {object} ImageProps
  * @prop {string} path
  * @prop {string} name
  * @prop {string} type
@@ -106,7 +121,7 @@ export interface ImagesSharp {
  * @prop {number} height
  * @prop {number} size
  */
-export interface ImagesProps {
+export interface ImageProps {
   path: string
   name: string
   type: string
@@ -114,21 +129,4 @@ export interface ImagesProps {
   width: number
   height: number
   size: number
-}
-
-/**
- * @typedef {Object.<string, ImagesProps>} ImagesStore
- */
-export type ImagesStore = Record<string, ImagesProps>
-
-/**
- * @typedef {object} Images
- * @prop {string} path
- * @prop {string} url
- * @prop {string} [ext]
- */
-export interface Images {
-  path: string
-  url: string
-  ext?: string
 }

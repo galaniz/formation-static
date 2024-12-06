@@ -2,41 +2,23 @@
  * Utils - Escape
  */
 
-/**
- * Check if valid string
- *
- * @private
- * @see {@link https://github.com/validatorjs/validator.js/blob/master/src/lib/util/assertString.js|GitHub}
- * @param {*} input
- * @return {void}
- */
-const assertString = (input: any): void => {
-  const isString = typeof input === 'string' || input instanceof String
+/* Imports */
 
-  if (!isString) {
-    let invalidType: string = typeof input
-
-    if (input === null) {
-      invalidType = 'null'
-    } else if (invalidType === 'object') {
-      invalidType = input.constructor.name
-    }
-
-    throw new TypeError(`Expected a string but received a ${invalidType}`)
-  }
-}
+import { isString } from '../string/string.js'
 
 /**
  * Check string validity and escape special characters
  *
- * @see {@link https://github.com/validatorjs/validator.js/blob/master/src/lib/escape.js|GitHub}
- * @param {string} str
+ * @see {@link https://github.com/validatorjs/validator.js/blob/master/src/lib/escape.js|Validator}
+ * @param {string} value
  * @return {string}
  */
-const escape = (str: string): string => {
-  assertString(str)
+const escape = (value: string): string => {
+  if (!isString(value)) {
+    throw new TypeError('Value is not a string')
+  }
 
-  return str
+  return value
     .replace(/&/g, '&amp')
     .replace(/'/g, '&quot')
     .replace(/'/g, '&#x27')

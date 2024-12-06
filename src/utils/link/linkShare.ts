@@ -41,7 +41,7 @@ const getShareLinks = (
   return platforms.map((platform) => {
     const platformLink = shareLinks[platform]
 
-    let link = platformLink !== undefined ? `${platformLink}${url}` : ''
+    let link = isStringStrict(platformLink) ? `${platformLink}${url}` : ''
 
     if (platform === 'Email') {
       link = `mailto:?subject=${encodeURIComponent(isStringStrict(title) ? title : 'Check out this article')}&body=${url}`

@@ -1,0 +1,178 @@
+/**
+ * Serverless - Files
+ */
+
+/* Imports */
+
+import type { ServerlessFilesArgs } from './serverlessTypes.js'
+import { mkdir, writeFile } from 'node:fs/promises'
+import { resolve, dirname } from 'node:path'
+import { getPathDepth } from '../utils/path/path.js'
+import { isObjectStrict } from '../utils/object/object.js'
+import { isArrayStrict } from '../utils/array/array.js'
+import { isStringStrict } from '../utils/string/string.js'
+import { dataSource } from '../utils/dataSource/dataSource.js'
+import { print } from '../utils/print/print.js'
+import { config } from '../config/config.js'
+import { serverlessDir, serverlessRoutes } from './serverless.js'
+
+/**
+ * Minify template strings
+ *
+ * @param {string} str
+ * @return {string}
+ */
+const minify = (str: string): string => {
+  return str
+    .replace(/\s+/g, ' ')
+    .replace(/;\s*}/g, ';}')
+    .trim()
+}
+
+/**
+ * Create files for serverless functions
+ *
+ * @param {ServerlessFilesArgs} [args]
+ * @return {Promise<void>}
+ */
+const createServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> => {
+  try {
+    /* Defaults and args */
+
+    let defaultDataExport = 'getAllContentfulData'
+    let defaultDataFile = '@alanizcreative/static-site-formation/contentful/contentfulData.js'
+
+    if (dataSource.isWordPress()) {
+      defaultDataExport = 'getAllWordPressData'
+      defaultDataFile = '@alanizcreative/static-site-formation/wordpress/wordpressData.js'
+    }
+
+    const defaults = {
+      dataExport: defaultDataExport,
+      dataExportFile: defaultDataFile,
+      setupExport: 'serverlessSetup',
+      setupExportFile: 'lib/serverless/serverlessSetup.js',
+      previewExportFile: '@alanizcreative/static-site-formation/serverless/Preview/Preview.js',
+      reloadExportFile: '@alanizcreative/static-site-formation/serverless/Reload/Reload.js',
+      ajaxExportFile: '@alanizcreative/static-site-formation/serverless/Ajax/Ajax.js',
+      ajaxFile: 'ajax/index.js',
+      previewFile: '_middleware.js',
+      reloadFile: '_middleware.js'
+    }
+
+    const {
+      dataExport,
+      dataExportFile,
+      setupExport,
+      setupExportFile,
+      previewExportFile,
+      reloadExportFile,
+      ajaxExportFile,
+      ajaxFile,
+      previewFile,
+      reloadFile
+    } = Object.assign(defaults, isObjectStrict(args) ? args : {})
+
+    /* Serverless folder required */
+
+    if (!isStringStrict(serverlessDir)) {
+      throw new Error('No serverless directory')
+    }
+
+    await mkdir(resolve(serverlessDir), { recursive: true })
+
+    /* Ajax file */
+
+    if (isStringStrict(ajaxFile)) {
+      const pathDepth = getPathDepth(`${serverlessDir}/${ajaxFile}`)
+      const content = `
+        import { Ajax } from '${ajaxExportFile.startsWith('@') ? '' : pathDepth}${ajaxExportFile}';
+        import { ${setupExport} } from '${pathDepth}${setupExportFile}';
+        const render = async (context) => {
+          return await Ajax(context, ${setupExport});
+        };
+        export const onRequestPost = [render];
+      `
+
+      const path = resolve(serverlessDir, ajaxFile)
+      const dir = dirname(path)
+
+      await mkdir(resolve(serverlessDir, dir), { recursive: true })
+      await writeFile(path, minify(content))
+
+      print('[SSF] Successfully wrote', path, 'success')
+    }
+
+    /* Preview file */
+
+    if (config.env.dev && isStringStrict(previewFile)) {
+      const pathDepth = getPathDepth(`${serverlessDir}/${previewFile}`)
+      const content = `
+        import { Preview } from '${previewExportFile.startsWith('@') ? '' : pathDepth}${previewExportFile}';
+        import { ${dataExport} } from '${dataExportFile.startsWith('@') ? '' : pathDepth}${dataExportFile}';
+        import { ${setupExport} } from '${pathDepth}${setupExportFile}';
+        const render = async (context) => {
+          return await Preview(context, ${setupExport}, ${dataExport});
+        };
+        export const onRequestGet = [render];
+      `
+
+      const path = resolve(serverlessDir, previewFile)
+      const dir = dirname(path)
+
+      await mkdir(resolve(serverlessDir, dir), { recursive: true })
+      await writeFile(path, minify(content))
+
+      print('[SSF] Successfully wrote', path, 'success')
+    }
+
+    /* Routes */
+
+    for (const [type, routes] of Object.entries(serverlessRoutes)) {
+      if (!isArrayStrict(routes)) {
+        continue
+      }
+
+      for (const route of routes) {
+        let { path = '', content = '' } = route
+
+        if (!isStringStrict(path)) {
+          continue
+        }
+
+        if (type === 'reload' && isStringStrict(reloadFile)) {
+          path = `${path}/${reloadFile}`
+
+          const pathDepth = getPathDepth(`${serverlessDir}/${path}`)
+
+          content = `
+            import { Reload } from '${reloadExportFile.startsWith('@') ? '' : pathDepth}${reloadExportFile}';
+            import { ${dataExport} } from '${dataExportFile.startsWith('@') ? '' : pathDepth}${dataExportFile}';
+            import { ${setupExport} } from '${pathDepth}${setupExportFile}';
+            const render = async (context) => {
+              return await Reload(context, ${setupExport}, ${dataExport});
+            };
+            export const onRequestGet = [render];
+          `
+        }
+
+        if (isStringStrict(content)) {
+          path = resolve(serverlessDir, path)
+
+          const dir = dirname(path)
+
+          await mkdir(resolve(serverlessDir, dir), { recursive: true })
+          await writeFile(path, content)
+
+          print('[SSF] Successfully wrote', path, 'success')
+        }
+      }
+    }
+  } catch (error) {
+    print('[SSF] Error writing serverless files', error)
+  }
+}
+
+/* Exports */
+
+export { createServerlessFiles }

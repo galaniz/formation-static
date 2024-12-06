@@ -5,27 +5,30 @@
 /* Imports */
 
 import type { LinkSlugArgs, LinkSlugReturnType } from './linkTypes.js'
-import type { ConfigParent } from '../../config/configTypes.js'
 import type { InternalLink } from '../../global/globalTypes.js'
+import type { StoreParent } from '../../store/storeTypes.js'
 import { config } from '../../config/config.js'
 import { isObjectStrict } from '../object/object.js'
 import { isString, isStringStrict } from '../string/string.js'
-import { applyFiltersSync } from '../filter/filter.js'
+import { applyFilters } from '../filter/filter.js'
 import { getArchiveInfo, getTaxonomyInfo } from '../archive/archive.js'
+import { getStoreItem } from '../../store/store.js'
 
 /**
  * Recurse to get ascendents
  *
  * @private
  * @param {string} id
- * @param {ConfigParent[]} parents
+ * @param {StoreParent[]} parents
  * @return {void}
  */
-const getParentSlug = (id: string = '', parents: ConfigParent[] = []): void => {
-  if (config.parents[id] !== undefined && id !== '') {
-    parents.unshift(config.parents[id])
+const getParentSlug = (id: string = '', parents: StoreParent[] = []): void => {
+  const storeParents = getStoreItem('parents')
 
-    getParentSlug(config.parents[id].id, parents)
+  if (storeParents[id] != null) {
+    parents.unshift(storeParents[id])
+
+    getParentSlug(storeParents[id].id, parents)
   }
 }
 
@@ -35,7 +38,10 @@ const getParentSlug = (id: string = '', parents: ConfigParent[] = []): void => {
  * @param {LinkSlugArgs} args
  * @return {LinkSlugReturnType}
  */
-const getSlug = <T extends boolean>(args: LinkSlugArgs, returnParents = false as T): LinkSlugReturnType<T> => {
+const getSlug = <T extends boolean = false>(
+  args: LinkSlugArgs,
+  returnParents = false as T
+): LinkSlugReturnType<T> => {
   const {
     id = '',
     slug = '',
@@ -55,6 +61,23 @@ const getSlug = <T extends boolean>(args: LinkSlugArgs, returnParents = false as
   /* Parts */
 
   let parts: string[] = []
+
+  /* Config types */
+
+  const {
+    hierarchicalTypes,
+    typesInSlug,
+    localesInSlug
+  } = config
+
+  /* Locale */
+
+  const locale = pageData?.locale
+  const hasLocale = isStringStrict(locale)
+
+  if (hasLocale && localesInSlug.includes(locale)) {
+    parts.push(locale)
+  }
 
   /* Term/taxonomy */
 
@@ -83,9 +106,10 @@ const getSlug = <T extends boolean>(args: LinkSlugArgs, returnParents = false as
   /* Archive and/or taxonomy parent */
 
   let archiveParent
+  let archiveParts: string[] = []
 
   if (archiveSlug !== '' && archiveId !== '') {
-    parts.push(archiveSlug)
+    archiveParts.push(archiveSlug)
 
     archiveParent = {
       contentType: 'page',
@@ -96,15 +120,15 @@ const getSlug = <T extends boolean>(args: LinkSlugArgs, returnParents = false as
   }
 
   if (contentType === 'taxonomy' && !taxonomyUseTypeSlug) {
-    parts = []
+    archiveParts = []
     archiveParent = undefined
   }
 
   if (contentType === 'term' && taxonomySlug !== '' && taxonomyId !== '') {
     if (taxonomyUseTypeSlug) {
-      parts.push(taxonomySlug)
+      archiveParts.push(taxonomySlug)
     } else {
-      parts = [taxonomySlug]
+      archiveParts = [taxonomySlug]
     }
 
     if (taxonomyIsPage) {
@@ -117,33 +141,38 @@ const getSlug = <T extends boolean>(args: LinkSlugArgs, returnParents = false as
     }
   }
 
+  parts = [...parts, ...archiveParts]
+
   /* Content type */
 
-  if (config.typesInSlug.includes(contentType)) {
-    parts = [contentType]
+  const typeInSlug = typesInSlug[contentType]
+
+  if (isString(typeInSlug)) {
+    parts.push(typeInSlug)
+  }
+
+  if (isObjectStrict(typeInSlug) && hasLocale) {
+    const localizedTypeSlug = typeInSlug[locale]
+
+    if (isString(localizedTypeSlug)) {
+      parts.push(localizedTypeSlug)
+    }
   }
 
   /* Page parents */
 
-  const parents: ConfigParent[] = []
+  const isHierarchical = hierarchicalTypes.includes(contentType)
+  const parents: StoreParent[] = []
 
-  getParentSlug(contentType === 'page' ? id : archiveId, parents)
+  getParentSlug(isHierarchical ? id : archiveId, parents)
 
   if (parents.length > 0) {
     parts.push(`${parents.map(({ slug }) => slug).join('/')}`)
   }
 
-  /* Locale */
-
-  const locale = pageData?.locale
-
-  if (isStringStrict(locale) && config.localesInSlug.includes(locale)) {
-    parts.unshift(locale)
-  }
-
   /* Filter parts */
 
-  parts = applyFiltersSync('slugParts', parts, args)
+  parts = applyFilters('slugParts', parts, args)
 
   /* Slug */
 
@@ -151,12 +180,14 @@ const getSlug = <T extends boolean>(args: LinkSlugArgs, returnParents = false as
     parts.push(slug)
   }
 
-  const s = `${parts.length > 0 ? parts.join('/') : ''}${page !== 0 ? `/?page=${page}` : ''}`
+  let s = `${parts.length > 0 ? parts.join('/') : ''}${page !== 0 ? `/?page=${page}` : ''}`
+
+  s = applyFilters('slug', s, args)
 
   /* Parents and slug return */
 
   if (returnParents === true) {
-    if (archiveParent !== undefined) {
+    if (archiveParent != null) {
       parents.unshift(archiveParent)
     }
 
@@ -210,7 +241,7 @@ const getLink = (internalLink?: InternalLink, externalLink?: string): string => 
       contentType: internalLink.contentType,
       pageData: internalLink,
       slug: isString(slug) ? slug : ''
-    }, false)
+    })
 
     return getPermalink(res)
   }

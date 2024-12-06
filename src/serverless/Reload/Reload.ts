@@ -4,35 +4,33 @@
 
 /* Imports */
 
-import type { ReloadArgs, ReloadQuery } from './ReloadTypes.js'
-import { config, setConfig, setConfigFilter } from '../../config/config.js'
+import type { ReloadQuery } from './ReloadTypes.js'
+import type { ServerlessContext, ServerlessSetup } from '../serverlessTypes.js'
+import type { getAllContentfulData } from '../../contentful/contentfulData.js'
+import type { getAllWordPressData } from '../../wordpress/wordpressData.js'
+import { isString, isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
-import { isStringStrict } from '../../utils/string/string.js'
 import { isFunction } from '../../utils/function/function.js'
-import { setFilters } from '../../utils/filter/filter.js'
-import { setActions } from '../../utils/action/action.js'
-import { setShortcodes } from '../../utils/shortcode/shortcode.js'
-import { getPathDepth } from '../../utils/path/path.js'
 import { print } from '../../utils/print/print.js'
-import { render } from '../../render/render.js'
+import { render, renderHttpError } from '../../render/render.js'
 
 /**
  * Output paginated and/or filtered page on browser reload
  *
- * @param {ReloadArgs} args
+ * @param {ServerlessContext} context
+ * @param {ServerlessSetup} serverlessSetup
+ * @param {function} getData - getAllContentfulData | getAllWordPressData
  * @return {Promise<Response>} Response
  */
-const Reload = async ({
-  request,
-  functionPath,
-  next,
-  env,
-  siteConfig,
-  getData
-}: ReloadArgs): Promise<Response> => {
+const Reload = async (
+  context: ServerlessContext,
+  serverlessSetup: ServerlessSetup,
+  getData: typeof getAllContentfulData | typeof getAllWordPressData
+): Promise<Response> => {
   try {
     /* Query */
 
+    const { request, next } = context
     const { searchParams, pathname } = new URL(request.url)
     const page = searchParams.get('page')
     const filters = searchParams.get('filters')
@@ -60,17 +58,9 @@ const Reload = async ({
       return next()
     }
 
-    /* Config */
+    /* Setup */
 
-    setConfig(siteConfig)
-
-    await setConfigFilter(env)
-
-    siteConfig.env.dir = getPathDepth(functionPath)
-
-    setFilters(siteConfig.filters)
-    setActions(siteConfig.actions)
-    setShortcodes(siteConfig.shortcodes)
+    serverlessSetup(context)
 
     /* Data params */
 
@@ -88,7 +78,9 @@ const Reload = async ({
     let html = ''
 
     if (isObjectStrict(data)) {
-      html = data.output !== undefined ? data.output : ''
+      const output = data.output
+
+      html = isString(output) ? output : ''
     }
 
     return new Response(html, {
@@ -104,8 +96,8 @@ const Reload = async ({
 
     let html = ''
 
-    if (isFunction(config.renderHttpError)) {
-      html = await config.renderHttpError({ code: statusCode })
+    if (isFunction(renderHttpError)) {
+      html = await renderHttpError({ code: statusCode })
     }
 
     return new Response(html, {

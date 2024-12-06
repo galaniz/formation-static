@@ -4,8 +4,8 @@
 
 /* Imports */
 
-import type { ConfigParent } from '../../config/configTypes.js'
 import type { RenderItem } from '../../render/renderTypes.js'
+import type { StoreParent } from '../../store/storeTypes.js'
 
 /**
  * @typedef {object} LinkSlugArgs
@@ -26,11 +26,11 @@ export interface LinkSlugArgs {
 /**
  * @typedef {object} LinkSlugReturn
  * @prop {string} slug
- * @prop {ConfigParent[]} parents
+ * @prop {StoreParent[]} parents
  */
 export interface LinkSlugReturn {
   slug: string
-  parents: ConfigParent[]
+  parents: StoreParent[]
 }
 
 /**
@@ -65,3 +65,19 @@ export interface LinkShareReturn {
   type: string
   link: string
 }
+
+/**
+ * @typedef {function} LinkSlugPartsFilter
+ * @param {string[]} parts
+ * @param {LinkSlugArgs} args
+ * @returns {string[]}
+ */
+export type LinkSlugPartsFilter = (parts: string[], args: LinkSlugArgs) => string[]
+
+/**
+ * @typedef {function} LinkSlugFilter
+ * @param {string} slug
+ * @param {LinkSlugArgs} args
+ * @returns {string}
+ */
+export type LinkSlugFilter = (slug: string, args: LinkSlugArgs) => string

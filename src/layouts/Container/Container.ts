@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { ContainerProps, ContainerReturn } from './ContainerTypes.js'
+import type { ContainerProps } from './ContainerTypes.js'
 import { applyFilters } from '../../utils/filter/filter.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isStringStrict } from '../../utils/string/string.js'
@@ -13,15 +13,12 @@ import { isStringStrict } from '../../utils/string/string.js'
  * Output container wrapper
  *
  * @param {ContainerProps} props
- * @return {Promise<ContainerReturn>}
+ * @return {string[]}
  */
-const Container = async (props: ContainerProps): Promise<ContainerReturn> => {
+const Container = (props: ContainerProps): string[] => {
   /* Fallback output */
 
-  const fallback = {
-    start: '',
-    end: ''
-  }
+  const fallback: string[] = []
 
   /* Props must be object */
 
@@ -29,7 +26,7 @@ const Container = async (props: ContainerProps): Promise<ContainerReturn> => {
     return fallback
   }
 
-  props = await applyFilters('containerProps', props, { renderType: 'container' })
+  props = applyFilters('containerProps', props, { renderType: 'container' })
 
   /* Filtered props must be object */
 
@@ -135,10 +132,7 @@ const Container = async (props: ContainerProps): Promise<ContainerReturn> => {
     end = `</${innerTag}>${end}`
   }
 
-  return {
-    start,
-    end
-  }
+  return [start, end]
 }
 
 /* Exports */

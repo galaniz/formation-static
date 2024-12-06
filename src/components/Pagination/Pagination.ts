@@ -62,7 +62,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     return fallback
   }
 
-  /* Store items output */
+  /* Items output */
 
   let output = ''
 
@@ -184,14 +184,14 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     `
   }
 
-  output += `<li${itemAttrs} data-prev="${isPrevLink ? 'link' : 'text'}">${prevItem}</li>`
+  output += `<li${itemAttrs} data-pag-prev="${isPrevLink ? 'link' : 'text'}">${prevItem}</li>`
 
   /* Ellipsis */
 
   let ellipsisOutput = ''
 
   if (hasEllipsis) {
-    ellipsisOutput = `<li${itemAttrs} aria-hidden="true" data-ellipsis>${ellipsis}</li>`
+    ellipsisOutput = `<li${itemAttrs} aria-hidden="true" data-pag-ellipsis>${ellipsis}</li>`
   }
 
   if (center && current >= limit && current > halff) {
@@ -223,7 +223,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
       `
     }
 
-    output += `<li${itemAttrs}${isCurrent ? ' data-current="true"' : ''}>${content}</li>`
+    output += `<li${itemAttrs}${isCurrent ? ' data-pag-current' : ''}>${content}</li>`
   }
 
   /* Ellipsis */
@@ -249,7 +249,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     `
   }
 
-  output += `<li${itemAttrs} data-next="${nextLink ? 'link' : 'text'}">${nextItem}</li>`
+  output += `<li${itemAttrs} data-pag-next="${nextLink ? 'link' : 'text'}">${nextItem}</li>`
 
   /* Output */
 

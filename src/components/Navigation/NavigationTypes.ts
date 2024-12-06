@@ -44,9 +44,9 @@ export interface NavigationByLocationItem {
 }
 
 /**
- * @typedef {Object.<string, NavigationInfo>} NavigationByLocation
+ * @typedef {Map<string, NavigationInfo>} NavigationByLocation
  */
-export type NavigationByLocation = Record<string, NavigationByLocationItem>
+export type NavigationByLocation = Map<string, NavigationByLocationItem>
 
 /**
  * @typedef NavigationItem
@@ -76,9 +76,9 @@ export interface NavigationItem extends Generic {
 }
 
 /**
- * @typedef {Object.<string, NavigationItem>} NavigationItemsById
+ * @typedef {Map<string, NavigationItem>} NavigationItemsById
  */
-export type NavigationItemsById = Record<string, NavigationItem>
+export type NavigationItemsById = Map<string, NavigationItem>
 
 /**
  * @typedef NavigationBreadcrumbItem

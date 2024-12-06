@@ -63,21 +63,26 @@ export interface HtmlString {
 }
 
 /**
- * @typedef {Object.<string, *>} Generic
+ * @typedef {string} Source - cms | local
+ */
+export type Source = 'cms' | 'local'
+
+/**
+ * @typedef {Object<string, *>} Generic
  */
 export type Generic = Record<string, unknown>
 
 /**
- * @typedef {Object.<string, function>} GenericFunctions
+ * @typedef {Object<string, function>} GenericFunctions
  */
 export type GenericFunctions = Record<string, Function>
 
 /**
- * @typedef {Object.<string, string>} GenericStrings
+ * @typedef {Object<string, string>} GenericStrings
  */
 export type GenericStrings = Record<string, string>
 
 /**
- * @typedef {Object.<string, number>} GenericNumbers
+ * @typedef {Object<string, number>} GenericNumbers
  */
 export type GenericNumbers = Record<string, number>

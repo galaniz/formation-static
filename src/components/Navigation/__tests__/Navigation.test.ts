@@ -7,7 +7,7 @@
 import type { NavigationBreadcrumbItem, NavigationProps } from '../NavigationTypes.js'
 import { it, expect, describe, beforeEach, afterEach } from 'vitest'
 import { Navigation } from '../Navigation.js'
-import { setConfig } from '../../../config/config.js'
+import { setStore } from '../../../store/store.js'
 
 /**
  * Remove all empty spaces from string
@@ -105,13 +105,13 @@ describe('Navigation', () => {
   let blogPost: Navigation
 
   afterEach(() => {
-    setConfig({
+    setStore({
       archiveMeta: {}
     })
   })
 
   beforeEach(() => {
-    setConfig({
+    setStore({
       archiveMeta: {
         blog: {
           id: 'blog'
@@ -164,22 +164,22 @@ describe('Navigation', () => {
       expect(result).toBe(expectedResult)
     })
 
-    it('should store navigation items by id', () => {
+    it('should contain navigation items by id', () => {
       const items = home.getItemsById()
 
-      expect(items.home).toBeDefined()
-      expect(items.about).toBeDefined()
-      expect(items.blog).toBeDefined()
-      expect(items['https://external.com/']).toBeDefined()
-      expect(Object.keys(items).length).toBe(4)
+      expect(items.get('home')).toBeDefined()
+      expect(items.get('about')).toBeDefined()
+      expect(items.get('blog')).toBeDefined()
+      expect(items.get('https://external.com/')).toBeDefined()
+      expect(items.size).toBe(4)
     })
 
-    it('should store navigations with items by location', () => {
+    it('should contain navigations with items by location', () => {
       const navs = home.getNavigationsByLocation()
 
-      expect(navs.header).toBeDefined()
-      expect(navs.empty).not.toBeDefined()
-      expect(Object.keys(navs).length).toBe(1)
+      expect(navs.get('header')).toBeDefined()
+      expect(navs.get('empty')).not.toBeDefined()
+      expect(navs.size).toBe(1)
     })
   })
 
@@ -222,20 +222,20 @@ describe('Navigation', () => {
     it('should return list markup string with home as current', () => {
       const res = home.getOutput('header')
       const expected = `
-        <ul data-depth="0">
-          <li data-depth="0" data-current="true">
-            <a data-depth="0" href="/" data-current="true" aria-current="page">Home</a>
+        <ul data-nav-depth="0">
+          <li data-nav-depth="0" data-nav-current>
+            <a data-nav-depth="0" href="/" data-nav-current aria-current="page">Home</a>
           </li>
-          <li data-depth="0">
-            <a data-depth="0" href="/about/">About</a>
-            <ul data-depth="1">
-              <li data-depth="1">
-                <a data-depth="1" href="/blog/">Blog</a>
+          <li data-nav-depth="0">
+            <a data-nav-depth="0" href="/about/">About</a>
+            <ul data-nav-depth="1">
+              <li data-nav-depth="1">
+                <a data-nav-depth="1" href="/blog/">Blog</a>
               </li>
             </ul>
           </li>
-          <li data-depth="0">
-            <a data-depth="0" href="https://external.com/">External</a>
+          <li data-nav-depth="0">
+            <a data-nav-depth="0" href="https://external.com/">External</a>
           </li>
         </ul>
       `
@@ -249,15 +249,15 @@ describe('Navigation', () => {
     it('should return list markup string one level deep', () => {
       const res = home.getOutput('header', {}, 0)
       const expected = `
-        <ul data-depth="0">
-          <li data-depth="0" data-current="true">
-            <a data-depth="0" href="/" data-current="true" aria-current="page">Home</a>
+        <ul data-nav-depth="0">
+          <li data-nav-depth="0" data-nav-current>
+            <a data-nav-depth="0" href="/" data-nav-current aria-current="page">Home</a>
           </li>
-          <li data-depth="0">
-            <a data-depth="0" href="/about/">About</a>
+          <li data-nav-depth="0">
+            <a data-nav-depth="0" href="/about/">About</a>
           </li>
-          <li data-depth="0">
-            <a data-depth="0" href="https://external.com/">External</a>
+          <li data-nav-depth="0">
+            <a data-nav-depth="0" href="https://external.com/">External</a>
           </li>
         </ul>
       `
@@ -280,20 +280,20 @@ describe('Navigation', () => {
       })
 
       const expected = `
-        <ul data-depth="0" class="x" data-x>
-          <li data-depth="0" class="y" data-y data-current="true">
-            <a data-depth="0" class="z in" href="/" data-z data-current="true" aria-current="page">Home</a>
+        <ul data-nav-depth="0" class="x" data-x>
+          <li data-nav-depth="0" class="y" data-y data-nav-current>
+            <a data-nav-depth="0" class="z in" href="/" data-z data-nav-current aria-current="page">Home</a>
           </li>
-          <li data-depth="0" class="y" data-y>
-            <a data-depth="0" class="z in" href="/about/" data-z>About</a>
-            <ul data-depth="1" class="x" data-x>
-              <li data-depth="1" class="y" data-y>
-                <a data-depth="1" class="z in" href="/blog/" data-z>Blog</a>
+          <li data-nav-depth="0" class="y" data-y>
+            <a data-nav-depth="0" class="z in" href="/about/" data-z>About</a>
+            <ul data-nav-depth="1" class="x" data-x>
+              <li data-nav-depth="1" class="y" data-y>
+                <a data-nav-depth="1" class="z in" href="/blog/" data-z>Blog</a>
               </li>
             </ul>
           </li>
-          <li data-depth="0" class="y" data-y>
-            <a data-depth="0" class="z" href="https://external.com/" data-z>External</a>
+          <li data-nav-depth="0" class="y" data-y>
+            <a data-nav-depth="0" class="z" href="https://external.com/" data-z>External</a>
           </li>
         </ul>
       `
@@ -363,16 +363,16 @@ describe('Navigation', () => {
 
       const expected = `
         <!-- Before List -->
-        <ul data-depth="0" class="x-0-3" data-x-0>
+        <ul data-nav-depth="0" class="x-0-3" data-x-0>
           <!-- Before Item -->
-          <li data-depth="0" class="y-0-0-3" data-y="Home" data-current="true">
+          <li data-nav-depth="0" class="y-0-0-3" data-y="Home" data-nav-current>
             <!-- Before Link -->
             <a
-              data-depth="0"
+              data-nav-depth="0"
               class="z-0-0-3 in"
               href="/"
               data-z="Home"
-              data-current="true"
+              data-nav-current
               aria-current="page"
             >
               <!-- Before Link Text: z-0-0-3-Home-0-3-0 -->
@@ -383,20 +383,20 @@ describe('Navigation', () => {
           </li>
           <!-- After Item: y-0-0-3-Home-0-3-0 -->
           <!-- Before Item -->
-          <li data-depth="0" class="y-0-1-3" data-y="About">
+          <li data-nav-depth="0" class="y-0-1-3" data-y="About">
             <!-- Before Link -->
-            <a data-depth="0" class="z-0-1-3 in" href="/about/" data-z="About">
+            <a data-nav-depth="0" class="z-0-1-3 in" href="/about/" data-z="About">
               <!-- Before Link Text: z-0-1-3-About-1-3-0 -->
               About
               <!-- After Link Text: z-0-1-3-About-1-3-0 -->
             </a>
             <!-- After Link: z-0-1-3-About-1-3-0 -->
             <!-- Before List -->
-            <ul data-depth="1" class="x-1-1" data-x-1>
+            <ul data-nav-depth="1" class="x-1-1" data-x-1>
               <!-- Before Item -->
-              <li data-depth="1" class="y-1-0-1" data-y="Blog">
+              <li data-nav-depth="1" class="y-1-0-1" data-y="Blog">
                 <!-- Before Link -->
-                <button data-depth="1" class="z-1-0-1 in" type="button" data-z="Blog">
+                <button data-nav-depth="1" class="z-1-0-1 in" type="button" data-z="Blog">
                   <!-- Before Link Text: z-1-0-1-Blog-0-1-1 -->
                   Blog
                   <!-- After Link Text: z-1-0-1-Blog-0-1-1 -->
@@ -409,9 +409,9 @@ describe('Navigation', () => {
           </li>
           <!-- After Item: y-1-0-1-About-1-3-0 -->
           <!-- Before Item -->
-          <li data-depth="0" class="y-0-2-3" data-y="External">
+          <li data-nav-depth="0" class="y-0-2-3" data-y="External">
             <!-- Before Link -->
-            <a data-depth="0" class="z-0-2-3" href="https://external.com/" data-z="External">
+            <a data-nav-depth="0" class="z-0-2-3" href="https://external.com/" data-z="External">
               <!-- Before Link Text: z-0-2-3-External-2-3-0 -->
               External
               <!-- After Link Text: z-0-2-3-External-2-3-0 -->
@@ -432,20 +432,20 @@ describe('Navigation', () => {
     it('should return list markup string with about as current', () => {
       const res = about.getOutput('header')
       const expected = `
-        <ul data-depth="0">
-          <li data-depth="0">
-            <a data-depth="0" href="/">Home</a>
+        <ul data-nav-depth="0">
+          <li data-nav-depth="0">
+            <a data-nav-depth="0" href="/">Home</a>
           </li>
-          <li data-depth="0" data-current="true">
-            <a data-depth="0" href="/about/" data-current="true" aria-current="page">About</a>
-            <ul data-depth="1">
-              <li data-depth="1">
-                <a data-depth="1" href="/blog/">Blog</a>
+          <li data-nav-depth="0" data-nav-current>
+            <a data-nav-depth="0" href="/about/" data-nav-current aria-current="page">About</a>
+            <ul data-nav-depth="1">
+              <li data-nav-depth="1">
+                <a data-nav-depth="1" href="/blog/">Blog</a>
               </li>
             </ul>
           </li>
-          <li data-depth="0">
-            <a data-depth="0" href="https://external.com/">External</a>
+          <li data-nav-depth="0">
+            <a data-nav-depth="0" href="https://external.com/">External</a>
           </li>
         </ul>
       `
@@ -459,20 +459,20 @@ describe('Navigation', () => {
     it('should return list markup string with blog as current', () => {
       const res = blog.getOutput('header')
       const expected = `
-        <ul data-depth="0">
-          <li data-depth="0">
-            <a data-depth="0" href="/">Home</a>
+        <ul data-nav-depth="0">
+          <li data-nav-depth="0">
+            <a data-nav-depth="0" href="/">Home</a>
           </li>
-          <li data-depth="0" data-descendent-current="true">
-            <a data-depth="0" href="/about/" data-descendent-current="true">About</a>
-            <ul data-depth="1">
-              <li data-depth="1" data-current="true">
-                <a data-depth="1" href="/blog/" data-current="true" aria-current="page">Blog</a>
+          <li data-nav-depth="0" data-nav-descendent-current>
+            <a data-nav-depth="0" href="/about/" data-nav-descendent-current>About</a>
+            <ul data-nav-depth="1">
+              <li data-nav-depth="1" data-nav-current>
+                <a data-nav-depth="1" href="/blog/" data-nav-current aria-current="page">Blog</a>
               </li>
             </ul>
           </li>
-          <li data-depth="0">
-            <a data-depth="0" href="https://external.com/">External</a>
+          <li data-nav-depth="0">
+            <a data-nav-depth="0" href="https://external.com/">External</a>
           </li>
         </ul>
       `
@@ -486,20 +486,20 @@ describe('Navigation', () => {
     it('should return list markup string with blog as archive current', () => {
       const res = blogPost.getOutput('header')
       const expected = `
-        <ul data-depth="0">
-          <li data-depth="0">
-            <a data-depth="0" href="/">Home</a>
+        <ul data-nav-depth="0">
+          <li data-nav-depth="0">
+            <a data-nav-depth="0" href="/">Home</a>
           </li>
-          <li data-depth="0" data-descendent-current="true">
-            <a data-depth="0" href="/about/" data-descendent-current="true">About</a>
-            <ul data-depth="1">
-              <li data-depth="1" data-archive-current="true">
-                <a data-depth="1" href="/blog/" data-archive-current="true">Blog</a>
+          <li data-nav-depth="0" data-nav-descendent-current>
+            <a data-nav-depth="0" href="/about/" data-nav-descendent-current>About</a>
+            <ul data-nav-depth="1">
+              <li data-nav-depth="1" data-nav-archive-current>
+                <a data-nav-depth="1" href="/blog/" data-nav-archive-current>Blog</a>
               </li>
             </ul>
           </li>
-          <li data-depth="0">
-            <a data-depth="0" href="https://external.com/">External</a>
+          <li data-nav-depth="0">
+            <a data-nav-depth="0" href="https://external.com/">External</a>
           </li>
         </ul>
       `
@@ -560,13 +560,13 @@ describe('Navigation', () => {
       const res = home.getBreadcrumbs(breadcrumbItems, 'Current Page')
       const expected = `
         <ol>
-          <li data-last-level="false">
+          <li>
             <a href="/">Home</a>
           </li>
-          <li data-last-level="true">
+          <li data-nav-last>
             <a href="/about/">About</a>
           </li>
-          <li data-current="true">
+          <li data-nav-current>
             <span>
               Current Page
               <span class="a-hide-vis"> (current page)</span>
@@ -596,13 +596,13 @@ describe('Navigation', () => {
 
       const expected = `
         <ol class="x" data-x>
-          <li class="y" data-y data-last-level="false">
+          <li class="y" data-y>
             <a class="z in" href="/" data-z>Home</a>
           </li>
-          <li class="y" data-y data-last-level="true">
+          <li class="y" data-y data-nav-last>
             <a class="z in" href="/about/" data-z>About</a>
           </li>
-          <li class="y" data-y data-current="true">
+          <li class="y" data-y data-nav-current>
             <span class="c">
               Current Page
               <span> (current page)</span>
@@ -638,17 +638,17 @@ describe('Navigation', () => {
 
       const expected = `
         <ol class="x" data-x>
-          <li class="y" data-y data-last-level="false">
+          <li class="y" data-y>
             <!-- Before Link: false -->
             <a class="z in" href="/" data-z>Home</a>
             <!-- After Link: false -->
           </li>
-          <li class="y" data-y data-last-level="true">
+          <li class="y" data-y data-nav-last>
             <!-- Before Link: true -->
             <a class="z in" href="/about/" data-z>About</a>
             <!-- After Link: true -->
           </li>
-          <li class="y" data-y data-current="true">
+          <li class="y" data-y data-nav-current>
             <span class="c">
               Current Page
               <span> (current page)</span>

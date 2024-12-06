@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { Images } from './imageTypes.js'
+import type { ImageRemote } from './imageTypes.js'
 import { mkdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { createWriteStream } from 'node:fs'
@@ -24,7 +24,7 @@ import { print } from '../print/print.js'
 const createFile = async (path: string, buffer: Buffer): Promise<void> => {
   return await new Promise((resolve, reject) => {
     createWriteStream(path).write(buffer, (error) => {
-      if (error !== null && error !== undefined) {
+      if (error instanceof Error) {
         reject(error)
       } else {
         resolve()
@@ -34,16 +34,16 @@ const createFile = async (path: string, buffer: Buffer): Promise<void> => {
 }
 
 /**
- * Download remote images to static images directory
+ * Download remote images to local images directory
  *
- * @param {Images[]} images
+ * @param {ImageRemote[]} images
  * @return {Promise<PromiseSettledResult<void>[]>}
  */
-const getRemoteImages = async (images: Images[]): Promise<Array<PromiseSettledResult<void>>> => {
+const getRemoteImages = async (images: ImageRemote[]): Promise<Array<PromiseSettledResult<void>>> => {
   try {
-    const inputDir = config.image.inputDir
-
     /* Input directory required */
+
+    const inputDir = config.image.inputDir
 
     if (!isStringStrict(inputDir)) {
       throw new Error('No input directory')

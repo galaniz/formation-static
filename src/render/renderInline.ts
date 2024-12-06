@@ -5,7 +5,7 @@
 /* Imports */
 
 import type { RenderItem, RenderInlineItemArgs } from './renderTypes.js'
-import { renderContent, renderItem, getRenderFunctions } from './render.js'
+import { renderContent, renderItem } from './render.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isString } from '../utils/string/string.js'
 
@@ -22,8 +22,7 @@ const renderInlineContent = async (items: RenderItem[]): Promise<string> => {
     pageData: {},
     pageContains: [],
     pageHeadings: [],
-    navigations: {},
-    renderFunctions: getRenderFunctions()
+    navigations: {}
   })
 }
 
@@ -42,8 +41,7 @@ const renderInlineItem = async (args: RenderInlineItemArgs): Promise<string> => 
 
   const res = await renderItem({
     item: args,
-    contentType,
-    renderFunctions: getRenderFunctions()
+    contentType
   })
 
   if (isString(res?.data?.output)) {

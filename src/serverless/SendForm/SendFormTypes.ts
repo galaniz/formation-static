@@ -3,7 +3,7 @@
  */
 
 /**
- * @typedef {Object.<string, (string[]|SendFormOutputData)>} SendFormOutputData
+ * @typedef {Object<string, (string[]|SendFormOutputData)>} SendFormOutputData
  */
 export interface SendFormOutputData {
   [key: string]: string[] | SendFormOutputData

@@ -32,7 +32,7 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
     returnDetails = false,
     lazy = true,
     picture = false,
-    quality = config.image.quality,
+    quality = 75,
     source = config.source,
     maxWidth = 1200,
     viewportWidth = 100
@@ -52,18 +52,18 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
     format = 'jpg'
   } = data
 
-  let { url = '' } = data
+  let { url = config.image.cmsUrl } = data
 
   /* Source */
 
-  const isStatic = source === 'static'
+  const isLocal = source === 'local'
   const isContentful = dataSource.isContentful(source)
   const isWordpress = dataSource.isWordPress(source)
 
-  /* Static url */
+  /* Local url */
 
-  if (isStatic && isStringStrict(path)) {
-    url = `${config.image.url}${path}`
+  if (isLocal && isStringStrict(path)) {
+    url = `${config.image.localUrl}${path}`
   }
 
   /* Dimensions */
@@ -94,7 +94,7 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
   let src = url
   let srcFallback = url
 
-  if (dataSource.isStatic(source)) {
+  if (dataSource.isLocal(source)) {
     src = `${url}.webp`
     srcFallback = `${url}.${format}`
   }
@@ -122,7 +122,7 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
   const srcsetStr: string[] = []
 
   srcset.forEach(s => {
-    if (isStatic) {
+    if (isLocal) {
       const common = `${url}${s !== naturalWidth ? `@${s}` : ''}`
 
       srcsetFallback.push(`${common}.${format} ${s}w`)
@@ -231,7 +231,7 @@ const getImageMaxWidth = ({
 
   const w = [1, 1, 1, 1]
 
-  /* Store max width */
+  /* Max width */
 
   let m = 0
 
@@ -275,7 +275,7 @@ const getImageMaxWidth = ({
   bk.forEach((b, i) => {
     const wd = w[i]
 
-    if (wd === undefined) {
+    if (!isNumber(wd)) {
       return
     }
 
@@ -297,7 +297,7 @@ const getImageMaxWidth = ({
 
   const res = Math.max(...calc) * 2
 
-  if (source === 'static') {
+  if (source === 'local') {
     return getImageClosestSize(res)
   }
 

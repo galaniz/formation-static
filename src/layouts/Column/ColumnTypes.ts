@@ -40,25 +40,15 @@ export interface ColumnProps<T = ColumnArgs, R = RenderItem> extends RenderFunct
 }
 
 /**
- * @typedef {object} ColumnReturn
- * @prop {string} start
- * @prop {string} end
- */
-export interface ColumnReturn {
-  start: string
-  end: string
-}
-
-/**
  * @typedef {function} ColumnPropsFilter
  * @param {ColumnProps} props
- * @param {Object.<string, string>} args
+ * @param {Object<string, string>} args
  * @param {string} args.renderType
- * @return {Promise<ColumnProps>}
+ * @return {ColumnProps}
  */
 export type ColumnPropsFilter<T = ColumnArgs, R = RenderItem> = (
   props: ColumnProps<T, R>,
   args: {
     renderType: string
   }
-) => Promise<ColumnProps<T, R>>
+) => ColumnProps<T, R>

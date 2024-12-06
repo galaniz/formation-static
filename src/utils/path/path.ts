@@ -4,9 +4,10 @@
 
 /* Imports */
 
-import type { ConfigServerlessFiles } from '../../config/configTypes.js'
-import { config } from '../../config/config.js'
 import { isStringStrict } from '../string/string.js'
+import { config } from '../../config/config.js'
+import { storeDir } from '../../store/store.js'
+import { serverlessDir } from '../../serverless/serverless.js'
 
 /**
  * Get absolute path to file or file from config
@@ -25,39 +26,18 @@ const getPath = (file: string = '', type: string = ''): string => {
   let append = file
 
   if (type === 'store') {
-    const dir = config.storeDir
-    const name = config.storeFiles[file]?.name
+    const dir = storeDir
 
-    if (isStringStrict(dir) && isStringStrict(name)) {
-      append = `${dir}/${name}`
-    }
-  }
-
-  if (file === 'image') {
-    if (type === 'data') {
-      const dataFile = config.image.dataFile
-
-      if (isStringStrict(dataFile)) {
-        append = dataFile
-      }
-    }
-
-    if (type === 'input' || type === 'output') {
-      const dirName = type === 'input' ? 'inputDir' : 'outputDir'
-      const dir = config.image[dirName]
-
-      if (isStringStrict(dir)) {
-        append = `${dir}/${file}`
-      }
+    if (isStringStrict(dir)) {
+      append = `${dir}/${file}`
     }
   }
 
   if (type === 'serverless') {
-    const dir = config.serverlessDir
-    const name = config.serverlessFiles[file as keyof ConfigServerlessFiles]
+    const dir = serverlessDir
 
-    if (isStringStrict(dir) && isStringStrict(name)) {
-      append = `${dir}/${name}`
+    if (isStringStrict(dir)) {
+      append = `${dir}/${file}`
     }
   }
 
@@ -71,6 +51,10 @@ const getPath = (file: string = '', type: string = ''): string => {
  * @return {string}
  */
 const getPathDepth = (path: string = ''): string => {
+  if (!isStringStrict(path)) {
+    return ''
+  }
+
   let pathDepth = path.split('/')
 
   pathDepth.pop()

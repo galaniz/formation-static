@@ -20,8 +20,8 @@ const dataSource: DataSource = {
   isWordPress (source = config.source) {
     return config.cms.name === 'wordpress' && source === 'cms'
   },
-  isStatic (source = config.source) {
-    return source === 'static'
+  isLocal (source = config.source) {
+    return source === 'local'
   },
   get () {
     const cmsName = config.cms.name

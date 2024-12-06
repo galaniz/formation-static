@@ -56,9 +56,9 @@ const addDataAttr = (dataAttr: boolean | string[] = true, tag: string = ''): boo
  *
  * @private
  * @param {RichTextContentProps} args
- * @return {Promise<string>}
+ * @return {string}
  */
-const getContent = async (args: RichTextContentProps): Promise<string> => {
+const getContent = (args: RichTextContentProps): string => {
   const {
     content = [],
     props,
@@ -70,7 +70,7 @@ const getContent = async (args: RichTextContentProps): Promise<string> => {
   } = args
 
   for (let item of content) {
-    item = await applyFilters('richTextContentItem', item, props)
+    item = applyFilters('richTextContentItem', item, props)
 
     const {
       link = '',
@@ -88,7 +88,7 @@ const getContent = async (args: RichTextContentProps): Promise<string> => {
     /* Nested content */
 
     if (isArrayStrict(c)) {
-      cc = await getContent({
+      cc = getContent({
         content: c,
         props,
         dataAttr
@@ -112,7 +112,7 @@ const getContent = async (args: RichTextContentProps): Promise<string> => {
     if (tag === 'a') {
       let anchorLink = link
 
-      if (internalLink !== undefined) {
+      if (internalLink != null) {
         anchorLink = getLink(internalLink)
       }
 
@@ -131,7 +131,7 @@ const getContent = async (args: RichTextContentProps): Promise<string> => {
         props
       }
 
-      const ccc = await applyFilters('richTextContent', cc, richTextContentFilterArgs)
+      const ccc = applyFilters('richTextContent', cc, richTextContentFilterArgs)
 
       if (isString(ccc)) {
         cc = ccc
@@ -167,7 +167,7 @@ const getContent = async (args: RichTextContentProps): Promise<string> => {
       }
     }
 
-    outputStr = await applyFilters('richTextContentOutput', outputStr, richTextContentOutputArgs)
+    outputStr = applyFilters('richTextContentOutput', outputStr, richTextContentOutputArgs)
 
     _output += outputStr
   }
@@ -181,16 +181,16 @@ const getContent = async (args: RichTextContentProps): Promise<string> => {
  * Output rich text
  *
  * @param {RichTextProps} props
- * @return {Promise<string>}
+ * @return {string}
  */
-const RichText = async (props: RichTextProps): Promise<string> => {
+const RichText = (props: RichTextProps): string => {
   /* Props must be object */
 
   if (!isObjectStrict(props)) {
     return ''
   }
 
-  props = await applyFilters('richTextProps', props, { renderType: 'richText' })
+  props = applyFilters('richTextProps', props, { renderType: 'richText' })
 
   /* Filtered props must be object */
 
@@ -271,7 +271,7 @@ const RichText = async (props: RichTextProps): Promise<string> => {
   if (isArrayStrict(content)) {
     headingObj = content
 
-    output = await getContent({
+    output = getContent({
       content,
       props: filterProps,
       dataAttr
@@ -366,7 +366,7 @@ const RichText = async (props: RichTextProps): Promise<string> => {
     }
   }
 
-  output = await applyFilters('richTextOutput', output, richTextOutputArgs)
+  output = applyFilters('richTextOutput', output, richTextOutputArgs)
 
   return output
 }

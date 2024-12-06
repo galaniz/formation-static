@@ -4,8 +4,8 @@
 
 /* Imports */
 
-import type { Filters, FiltersFunctions } from './filterTypes.js'
-import { isArrayStrict } from '../array/array.js'
+import type { Filters, FilterMap, FilterReturnType } from './filterTypes.js'
+import { isSet, isSetStrict } from '../set/set.js'
 import { isStringStrict } from '../string/string.js'
 import { isObjectStrict } from '../object/object.js'
 import { isFunction } from '../function/function.js'
@@ -13,29 +13,29 @@ import { isFunction } from '../function/function.js'
 /**
  * Store filter callbacks by name
  *
- * @type {FiltersFunctions}
+ * @type {FilterMap}
  */
-let filters: FiltersFunctions = {
-  columnProps: [],
-  containerProps: [],
-  fieldProps: [],
-  formProps: [],
-  richTextProps: [],
-  richTextOutput: [],
-  richTextContentItem: [],
-  richTextContent: [],
-  richTextContentOutput: [],
-  renderItem: [],
-  renderContent: [],
-  renderContentStart: [],
-  renderContentEnd: [],
-  ajaxRes: [],
-  cacheData: [],
-  storeData: []
-}
+let filters: FilterMap = new Map([
+  ['columnProps', new Set()],
+  ['containerProps', new Set()],
+  ['fieldProps', new Set()],
+  ['formProps', new Set()],
+  ['richTextProps', new Set()],
+  ['richTextOutput', new Set()],
+  ['richTextContentItem', new Set()],
+  ['richTextContent', new Set()],
+  ['richTextContentOutput', new Set()],
+  ['renderItem', new Set()],
+  ['renderContent', new Set()],
+  ['ajaxResult', new Set()],
+  ['cacheData', new Set()],
+  ['storeData', new Set()],
+  ['slugParts', new Set()],
+  ['slug', new Set()]
+])
 
 /**
- * Add filter to filters object
+ * Add filter to filters map
  *
  * @param {string} name
  * @param {function} filter
@@ -46,17 +46,21 @@ const addFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boolea
     return false
   }
 
-  if (filters[name] === undefined) {
-    filters[name] = []
+  if (!isSet(filters.get(name))) {
+    filters.set(name, new Set())
   }
 
-  filters[name].push(filter)
+  const filterSet = filters.get(name)
+
+  if (isSet(filterSet)) {
+    filterSet.add(filter)
+  }
 
   return true
 }
 
 /**
- * Remove filter from filters object
+ * Remove filter from filters map
  *
  * @param {string} name
  * @param {function} filter
@@ -67,19 +71,30 @@ const removeFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boo
     return false
   }
 
-  const callbacks = filters[name]
+  const filterSet = filters.get(name)
 
-  if (isArrayStrict(callbacks)) {
-    const index = callbacks.indexOf(filter)
-
-    if (index > -1) {
-      callbacks.splice(index, 1)
-
-      return true
-    }
+  if (!isSet(filterSet)) {
+    return false
   }
 
-  return false
+  return filterSet.delete(filter)
+}
+
+/**
+ * Call asynchronous functions sequentially
+ *
+ * @private
+ * @param {function[]} callbacks
+ * @param {*} value
+ * @param {*} [args]
+ * @return {*}
+ */
+const applySequentially = async <T, U>(callbacks: Function[], value: T, args: U): Promise<T> => {
+  for (const callback of callbacks) {
+    value = await callback(value, args)
+  }
+
+  return value
 }
 
 /**
@@ -88,68 +103,68 @@ const removeFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boo
  * @param {string} name
  * @param {*} value
  * @param {*} [args]
- * @return {Promise<*>}
- */
-const applyFilters = async<T, U>(name: string, value: T, args?: U): Promise<T> => {
-  const callbacks = filters[name]
-
-  if (isArrayStrict(callbacks)) {
-    for (const callback of callbacks) {
-      value = await callback(value, args)
-    }
-  }
-
-  return value
-}
-
-/**
- * Synchronously update value from callback return values
- *
- * @param {string} name
- * @param {*} value
- * @param {*} [args]
+ * @param {boolean} [isAwait]
  * @return {*}
  */
-const applyFiltersSync = <T, U>(name: string, value: T, args?: U): T => {
-  const callbacks = filters[name]
+const applyFilters = <T, U, V extends boolean = false>(
+  name: string,
+  value: T,
+  args?: U,
+  isAwait: V = false as V
+): FilterReturnType<T, V> => {
+  const filterSet = filters.get(name)
 
-  if (isArrayStrict(callbacks)) {
-    for (const callback of callbacks) {
+  if (!isSetStrict(filterSet)) {
+    return value as FilterReturnType<T, V>
+  }
+
+  const callbacks: Function[] = []
+
+  for (const callback of filterSet.values()) {
+    if (isAwait) {
+      callbacks.push(callback)
+    } else {
       value = callback(value, args)
     }
   }
 
-  return value
+  if (isAwait) {
+    return applySequentially(callbacks, value, args)
+      .then(newValue => newValue)
+      .catch(() => value) as FilterReturnType<T, V>
+  }
+
+  return value as FilterReturnType<T, V>
 }
 
 /**
- * Empty filters object
+ * Empty filters map
  *
  * @return {void}
  */
 const resetFilters = (): void => {
-  filters = {
-    columnProps: [],
-    containerProps: [],
-    fieldProps: [],
-    formProps: [],
-    richTextProps: [],
-    richTextOutput: [],
-    richTextContentItem: [],
-    richTextContent: [],
-    richTextContentOutput: [],
-    renderItem: [],
-    renderContent: [],
-    renderContentStart: [],
-    renderContentEnd: [],
-    ajaxRes: [],
-    cacheData: [],
-    storeData: []
-  }
+  filters = new Map([
+    ['columnProps', new Set()],
+    ['containerProps', new Set()],
+    ['fieldProps', new Set()],
+    ['formProps', new Set()],
+    ['richTextProps', new Set()],
+    ['richTextOutput', new Set()],
+    ['richTextContentItem', new Set()],
+    ['richTextContent', new Set()],
+    ['richTextContentOutput', new Set()],
+    ['renderItem', new Set()],
+    ['renderContent', new Set()],
+    ['ajaxResult', new Set()],
+    ['cacheData', new Set()],
+    ['storeData', new Set()],
+    ['slugParts', new Set()],
+    ['slug', new Set()]
+  ])
 }
 
 /**
- * Fill filters object
+ * Fill filters map
  *
  * @param {Filters} args
  * @return {boolean}
@@ -168,7 +183,7 @@ const setFilters = (args: Partial<Filters>): boolean => {
   resetFilters()
 
   newFilters.forEach(([name, filter]) => {
-    if (filter === undefined) {
+    if (filter == null) {
       return
     }
 
@@ -185,7 +200,6 @@ export {
   addFilter,
   removeFilter,
   applyFilters,
-  applyFiltersSync,
   resetFilters,
   setFilters
 }
