@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import { it, expect, describe, beforeEach } from 'vitest'
+import { it, expect, describe, beforeEach, afterEach } from 'vitest'
 import { getPath, getPathDepth } from '../path.js'
 import { config } from '../../../config/config.js'
 
@@ -13,6 +13,10 @@ import { config } from '../../../config/config.js'
 describe('getPath()', () => {
   beforeEach(() => {
     config.env.dir = '/root'
+  })
+
+  afterEach(() => {
+    config.env.dir = ''
   })
 
   it('should return empty string if file is null', () => {

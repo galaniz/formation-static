@@ -24,7 +24,7 @@ describe('print()', () => {
 
     const message = mockConsoleError.mock.calls[0][0]
     const expectedMessage = '\x1b[31m\x1b[1mLog: \x1b[0m\n'
-    
+
     expect(mockConsoleError).toHaveBeenCalledTimes(1)
     expect(message).toBe(expectedMessage)
   })
@@ -34,7 +34,7 @@ describe('print()', () => {
 
     const message = mockConsoleError.mock.calls[0][0]
     const expectedMessage = '\x1b[31m\x1b[1mError: \x1b[0m\nError message'
-    
+
     expect(mockConsoleError).toHaveBeenCalledTimes(1)
     expect(message).toBe(expectedMessage)
   })
@@ -44,7 +44,7 @@ describe('print()', () => {
 
     const message = mockConsoleError.mock.calls[0][0]
     const expectedMessage = '\x1b[31m\x1b[1mError: \x1b[0m\nError one\nError two'
-    
+
     expect(mockConsoleError).toHaveBeenCalledTimes(1)
     expect(message).toBe(expectedMessage)
   })
@@ -54,7 +54,7 @@ describe('print()', () => {
 
     const message = mockConsoleError.mock.calls[0][0]
     const expectedMessage = '\x1b[31m\x1b[1mError: \x1b[0m\nError: Custom error'
-    
+
     expect(mockConsoleError).toHaveBeenCalledTimes(1)
     expect(message).toBe(expectedMessage)
   })
@@ -64,7 +64,7 @@ describe('print()', () => {
 
     const message = mockConsoleWarn.mock.calls[0][0]
     const expectedMessage = '\x1b[33m\x1b[1mWarning: \x1b[0m\nWarning message'
-    
+
     expect(mockConsoleWarn).toHaveBeenCalledTimes(1)
     expect(message).toBe(expectedMessage)
   })
@@ -74,7 +74,7 @@ describe('print()', () => {
 
     const message = mockConsoleInfo.mock.calls[0][0]
     const expectedMessage = '\x1b[36m\x1b[1mInfo: \x1b[0m\nInfo message'
-    
+
     expect(mockConsoleInfo).toHaveBeenCalledTimes(1)
     expect(message).toBe(expectedMessage)
   })
@@ -84,7 +84,7 @@ describe('print()', () => {
 
     const message = mockConsoleInfo.mock.calls[0][0]
     const expectedMessage = '\x1b[32m\x1b[1mSuccess: \x1b[0m\nSuccess one\nSuccess two\nSuccess three'
-    
+
     expect(mockConsoleInfo).toHaveBeenCalledTimes(1)
     expect(message).toBe(expectedMessage)
   })

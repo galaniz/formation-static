@@ -34,7 +34,7 @@ const Preview = async (
   /* Preview id and content type required */
 
   if (!isStringStrict(id) || !isStringStrict(contentType)) {
-    return next()
+    return next() // eslint-disable-line @typescript-eslint/return-await
   }
 
   /* Setup */

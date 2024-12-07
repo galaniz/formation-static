@@ -55,7 +55,7 @@ const Reload = async (
     /* No query move on to default page */
 
     if (noPage || noFilters) {
-      return next()
+      return next() // eslint-disable-line @typescript-eslint/return-await
     }
 
     /* Setup */

@@ -345,7 +345,7 @@ const SendForm: ServerlessAction = async (args) => {
     }
   )
 
-  const resJson = await res.json() as SendFormRequestRes | undefined
+  const resJson: SendFormRequestRes | undefined = await res.json()
 
   /* Success */
 

@@ -35,13 +35,11 @@ const normalizeContentType = (contentType: string = ''): string => {
  * Singular and plural labels by content/taxonomy type
  *
  * @param {string} contentType
- * @param {string} [casing]
  * @param {Taxonomy} [taxonomy]
  * @return {ContentTypeLabels}
  */
 const getContentTypeLabels = (
-  contentType: string = '',
-  casing: string = '',
+  contentType: string,
   taxonomy?: Taxonomy
 ): ContentTypeLabels => {
   let singular = 'Post'
@@ -59,18 +57,8 @@ const getContentTypeLabels = (
     const s = archiveType?.singular
     const p = archiveType?.plural
 
-    singular = isStringStrict(s) ? s : ''
-    plural = isStringStrict(p) ? p : ''
-  }
-
-  if (casing === 'lower') {
-    singular = singular.toLowerCase()
-    plural = plural.toLowerCase()
-  }
-
-  if (casing === 'upper') {
-    singular = singular.toUpperCase()
-    plural = plural.toUpperCase()
+    singular = isStringStrict(s) ? s : 'Post'
+    plural = isStringStrict(p) ? p : 'Posts'
   }
 
   return {

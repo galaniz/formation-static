@@ -89,7 +89,7 @@ describe('addFilter()', () => {
 
   it('should return false if name is null', () => {
     const name = null
-    const filter = () => {}
+    const filter = (): void => {}
     // @ts-expect-error
     const result = addFilter(name, filter)
     const expectedResult = false
@@ -158,8 +158,8 @@ describe('applyFilters()', () => {
   })
 
   it('async filters should be called and return cumulative number', async () => {
-    const testFilterOne = vi.fn(async (value: number): Promise<number> => value += 4)
-    const testFilterTwo = vi.fn(async (value: number): Promise<number> => value -= 8)
+    const testFilterOne = vi.fn(async (value: number): Promise<number> => value + 4)
+    const testFilterTwo = vi.fn(async (value: number): Promise<number> => value - 8)
 
     addFilter(testNameOne, testFilterOne)
     addFilter(testNameOne, testFilterTwo)
@@ -209,7 +209,7 @@ describe('removeFilter()', () => {
 
   it('should return false if name is null', () => {
     const name = null
-    const filter = () => {}
+    const filter = (): void => {}
     // @ts-expect-error
     const result = removeFilter(name, filter)
     const expectedResult = false
@@ -229,7 +229,7 @@ describe('removeFilter()', () => {
 
   it('should return false if filter does not exist', () => {
     const name = 'name'
-    const filter = () => false
+    const filter = (): boolean => false
     const result = removeFilter(name, filter)
     const expectedResult = false
 

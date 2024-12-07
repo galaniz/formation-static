@@ -24,7 +24,7 @@ import { escape } from '../escape/escape.js'
  *
  * @type {Shortcodes}
  */
-let shortcodes: Shortcodes = new Map()
+const shortcodes: Shortcodes = new Map()
 
 /**
  * Regex for searching x="" in strings
@@ -301,7 +301,7 @@ const stripShortcodes = (content: string): string => {
   }
 
   /* Replace tags with empty strings */
-  
+
   const names = [...shortcodes.keys()].join('|')
 
   return content.replace(String.raw`/\[\/?(?:${names})[^\]]*?\]/g`, '')

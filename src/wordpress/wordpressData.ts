@@ -153,7 +153,7 @@ const getWordPressData = async (
       }
     })
 
-    const data = await resp.json() as WordPressDataError | WordPressDataItem | WordPressDataItem[]
+    const data: WordPressDataError | WordPressDataItem | WordPressDataItem[] = await resp.json()
     const isObj = isObjectStrict(data)
 
     /* Check if error */

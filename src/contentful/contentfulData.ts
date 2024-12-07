@@ -90,7 +90,7 @@ const getContentfulData = async (
     /* Check and transform data */
 
     const resp = await fetch(url)
-    const data = await resp.json() as ContentfulData | undefined
+    const data: ContentfulData | undefined = await resp.json()
 
     if (!resp.ok) {
       throw new ResponseError('Bad fetch response', resp)

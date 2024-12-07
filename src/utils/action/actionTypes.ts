@@ -51,4 +51,4 @@ RenderItemEndAction
 /**
  * @typedef {void|Promise<void>} ActionReturnType
  */
-export type ActionReturnType<V extends false | true> = V extends true ? Promise<void> : void
+export type ActionReturnType<V extends false | true> = V extends true ? Promise<void> : undefined

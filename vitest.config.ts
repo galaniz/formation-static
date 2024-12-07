@@ -12,6 +12,7 @@ export default defineConfig({
   test: {
     cache: false,
     globals: true,
+    environment: 'node',
     coverage: {
       include: [
         'src/**/*.ts'
