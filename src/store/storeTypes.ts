@@ -39,6 +39,7 @@ export interface StoreParent {
  * @prop {string} [id]
  * @prop {string} [slug]
  * @prop {string} [title]
+ * @prop {string} [contentType]
  * @prop {string} [singular]
  * @prop {string} [plural]
  * @prop {string} [layout]
@@ -49,6 +50,7 @@ export interface StoreArchiveMeta {
   id?: string
   slug?: string
   title?: string
+  contentType?: string
   singular?: string
   plural?: string
   layout?: string

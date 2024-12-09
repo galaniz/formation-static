@@ -163,6 +163,7 @@ const setStoreData = async (args: StoreDataArgs): Promise<boolean> => {
           id,
           slug: archiveSlug,
           title: archiveTitle,
+          contentType: type,
           ...archiveObj
         }
       }

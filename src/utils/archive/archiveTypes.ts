@@ -7,11 +7,13 @@
  * @prop {string} id
  * @prop {string} slug
  * @prop {string} title
+ * @prop {string} contentType
  */
 export interface ArchiveInfo {
   id: string
   slug: string
   title: string
+  contentType: string
 }
 
 /**

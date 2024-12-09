@@ -20,11 +20,12 @@ import { getSlug, getPermalink } from '../link/link.js'
  * @param {string} contentType
  * @return {ArchiveInfo}
  */
-const getArchiveInfo = (contentType: string = ''): ArchiveInfo => {
+const getArchiveInfo = (contentType: string): ArchiveInfo => {
   const value = {
     id: '',
     slug: '',
-    title: ''
+    title: '',
+    contentType: ''
   }
 
   contentType = normalizeContentType(contentType)
@@ -39,11 +40,12 @@ const getArchiveInfo = (contentType: string = ''): ArchiveInfo => {
     return value
   }
 
-  const { id, slug, title } = info
+  const { id, slug, title, contentType: type } = info
 
   value.id = isStringStrict(id) ? id : ''
   value.slug = isStringStrict(slug) ? slug : ''
   value.title = isStringStrict(title) ? title : ''
+  value.contentType = isStringStrict(type) ? type : ''
 
   return value
 }
@@ -52,10 +54,10 @@ const getArchiveInfo = (contentType: string = ''): ArchiveInfo => {
  * Get taxonomy attributes
  *
  * @param {string} contentType
- * @param {RenderItem} pageData
+ * @param {RenderItem} [pageData]
  * @return {Taxonomy}
  */
-const getTaxonomyInfo = (contentType: string, pageData: RenderItem | undefined): Required<Taxonomy> => {
+const getTaxonomyInfo = (contentType: string, pageData?: RenderItem): Required<Taxonomy> => {
   const value = {
     id: '',
     slug: '',
@@ -97,7 +99,7 @@ const getTaxonomyInfo = (contentType: string, pageData: RenderItem | undefined):
  * @param {RenderItem} [pageData]
  * @return {ArchiveLinkReturn}
  */
-const getArchiveLink = (contentType: string = '', pageData?: RenderItem): ArchiveLinkReturn => {
+const getArchiveLink = (contentType: string, pageData?: RenderItem): ArchiveLinkReturn => {
   /* Defaults */
 
   let title = ''
@@ -145,14 +147,15 @@ const getArchiveLink = (contentType: string = '', pageData?: RenderItem): Archiv
   const {
     id: archiveId,
     slug: archiveSlug,
-    title: archiveTitle
+    title: archiveTitle,
+    contentType: archiveType
   } = archiveInfo
 
   if (archiveSlug !== '' && archiveId !== '') {
     slug = getSlug({
       id: archiveId,
       slug: archiveSlug,
-      contentType: 'page'
+      contentType: archiveType
     })
 
     const plural = getStoreItem('archiveMeta')[contentType]?.plural

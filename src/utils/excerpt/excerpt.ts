@@ -7,7 +7,6 @@
 import type { ExcerptContentWordArgs, ExcerptArgs } from './excerptTypes.js'
 import { isObject, isObjectStrict } from '../object/object.js'
 import { isStringStrict } from '../string/string.js'
-import { getObjectKeys } from '../object/objectUtils.js'
 import { stripShortcodes } from '../shortcode/shortcode.js'
 
 /**
@@ -24,9 +23,7 @@ const getContentWords = <T>(args: ExcerptContentWordArgs<T>): string[] => {
     limit = 25
   } = args
 
-  let {
-    _words = []
-  } = args
+  let { _words = [] } = args
 
   const max = limit + 1
   const wordsLen = _words.length
@@ -34,18 +31,14 @@ const getContentWords = <T>(args: ExcerptContentWordArgs<T>): string[] => {
   if (isObject(content) && wordsLen < max) {
     const addMax = max - wordsLen
 
-    getObjectKeys(content).forEach((key) => {
-      const value = content[key]
-
+    for (const [key, value] of Object.entries(content)) {
       if (key === prop && isStringStrict(value)) {
         const val = stripShortcodes(value)
 
         if (isStringStrict(val)) {
           let valArr = val.split(' ')
 
-          const valArrLen = valArr.length
-
-          if (valArrLen > addMax) {
+          if (valArr.length > addMax) {
             valArr = valArr.splice(0, addMax)
           }
 
@@ -61,7 +54,7 @@ const getContentWords = <T>(args: ExcerptContentWordArgs<T>): string[] => {
           _words
         })
       }
-    })
+    }
   }
 
   return _words

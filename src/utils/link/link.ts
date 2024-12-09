@@ -8,6 +8,7 @@ import type { LinkSlugArgs, LinkSlugReturnType } from './linkTypes.js'
 import type { InternalLink } from '../../global/globalTypes.js'
 import type { StoreParent } from '../../store/storeTypes.js'
 import { config } from '../../config/config.js'
+import { isNumber } from '../number/number.js'
 import { isObjectStrict } from '../object/object.js'
 import { isString, isStringStrict } from '../string/string.js'
 import { applyFilters } from '../filter/filter.js'
@@ -50,14 +51,6 @@ const getSlug = <T extends boolean = false>(
     pageData = undefined
   } = isObjectStrict(args) ? args : {}
 
-  /* Index */
-
-  const isIndex = slug === 'index'
-
-  if (isIndex && returnParents === false) {
-    return '' as LinkSlugReturnType<T>
-  }
-
   /* Parts */
 
   let parts: string[] = []
@@ -79,9 +72,19 @@ const getSlug = <T extends boolean = false>(
     parts.push(locale)
   }
 
+  /* Index */
+
+  const isIndex = slug === 'index'
+
+  if (isIndex && returnParents === false) {
+    return parts.join('/') as LinkSlugReturnType<T>
+  }
+
   /* Term/taxonomy */
 
   const taxonomyInfo = getTaxonomyInfo(contentType, pageData)
+  const isTaxonomy = contentType === 'taxonomy'
+  const isTerm = contentType === 'term'
 
   const {
     id: taxonomyId,
@@ -100,47 +103,55 @@ const getSlug = <T extends boolean = false>(
   const {
     id: archiveId,
     slug: archiveSlug,
-    title: archiveTitle
+    title: archiveTitle,
+    contentType: archiveContentType
   } = archiveInfo
 
   /* Archive and/or taxonomy parent */
 
-  let archiveParent
+  let archiveParents: StoreParent[] = []
   let archiveParts: string[] = []
 
   if (archiveSlug !== '' && archiveId !== '') {
     archiveParts.push(archiveSlug)
-
-    archiveParent = {
-      contentType: 'page',
+    archiveParents.push({
+      contentType: archiveContentType,
       title: archiveTitle,
       slug: archiveSlug,
       id: archiveId
-    }
+    })
   }
 
-  if (contentType === 'taxonomy' && !taxonomyUseTypeSlug) {
+  if ((isTaxonomy || isTerm) && !taxonomyUseTypeSlug) {
     archiveParts = []
-    archiveParent = undefined
+    archiveParents = []
   }
 
-  if (contentType === 'term' && taxonomySlug !== '' && taxonomyId !== '') {
-    if (taxonomyUseTypeSlug) {
-      archiveParts.push(taxonomySlug)
-    } else {
-      archiveParts = [taxonomySlug]
-    }
+  if (isTerm && taxonomySlug !== '' && taxonomyId !== '') {
+    archiveParts.push(taxonomySlug)
 
     if (taxonomyIsPage) {
-      archiveParent = {
+      archiveParents.push({
         contentType: 'taxonomy',
         title: taxonomyTitle,
         slug: taxonomySlug,
         id: taxonomyId
-      }
+      })
     }
   }
 
+  /* Page parents */
+
+  const isHierarchical = hierarchicalTypes.includes(contentType)
+  let parents: StoreParent[] = []
+
+  getParentSlug(isHierarchical ? id : archiveId, parents)
+
+  if (parents.length > 0) {
+    parts.push(`${parents.map(({ slug }) => slug).join('/')}`)
+  }
+
+  parents = [...parents, ...archiveParents]
   parts = [...parts, ...archiveParts]
 
   /* Content type */
@@ -159,17 +170,6 @@ const getSlug = <T extends boolean = false>(
     }
   }
 
-  /* Page parents */
-
-  const isHierarchical = hierarchicalTypes.includes(contentType)
-  const parents: StoreParent[] = []
-
-  getParentSlug(isHierarchical ? id : archiveId, parents)
-
-  if (parents.length > 0) {
-    parts.push(`${parents.map(({ slug }) => slug).join('/')}`)
-  }
-
   /* Filter parts */
 
   parts = applyFilters('slugParts', parts, args)
@@ -180,19 +180,15 @@ const getSlug = <T extends boolean = false>(
     parts.push(slug)
   }
 
-  let s = `${parts.length > 0 ? parts.join('/') : ''}${page !== 0 ? `/?page=${page}` : ''}`
+  let fullSlug = `${parts.length > 0 ? parts.join('/') : ''}${isNumber(page) && page > 0 ? `/?page=${page}` : ''}`
 
-  s = applyFilters('slug', s, args)
+  fullSlug = applyFilters('slug', fullSlug, args)
 
   /* Parents and slug return */
 
   if (returnParents === true) {
-    if (archiveParent != null) {
-      parents.unshift(archiveParent)
-    }
-
     const res = {
-      slug: s,
+      slug: fullSlug,
       parents
     }
 
@@ -201,7 +197,7 @@ const getSlug = <T extends boolean = false>(
 
   /* Slug return */
 
-  return s as LinkSlugReturnType<T>
+  return fullSlug as LinkSlugReturnType<T>
 }
 
 /**

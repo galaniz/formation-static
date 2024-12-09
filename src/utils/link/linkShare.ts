@@ -27,7 +27,7 @@ const shareLinks: LinkShare = {
  *
  * @param {string} url
  * @param {string[]} platforms
- * @return {ShareLinksReturn[]}
+ * @return {LinkShareReturn[]}
  */
 const getShareLinks = (
   url: string,

@@ -63,7 +63,7 @@ describe('getJsonFile()', () => {
   })
 
   it('should return undefined if file is a text file', async () => {
-    const path = resolve(__dirname, './invalid.txt')
+    const path = resolve(__dirname, './files/invalid.txt')
     const result = await getJsonFile(path, false)
     const expectedResult = undefined
 
@@ -71,7 +71,7 @@ describe('getJsonFile()', () => {
   })
 
   it('should return undefined if file contains invalid json', async () => {
-    const path = resolve(__dirname, './invalid.json')
+    const path = resolve(__dirname, './files/invalid.json')
     const result = await getJsonFile(path, false)
     const expectedResult = undefined
 
@@ -79,7 +79,7 @@ describe('getJsonFile()', () => {
   })
 
   it('should return object if file contains valid json', async () => {
-    const path = resolve(__dirname, './valid.json')
+    const path = resolve(__dirname, './files/valid.json')
     const result = await getJsonFile(path, false)
     const expectedResult = [{ test: 'test' }]
 
@@ -87,9 +87,9 @@ describe('getJsonFile()', () => {
   })
 
   it('should return object if store file contains valid json', async () => {
-    setStore({}, 'src/utils/json/__tests__')
+    setStore({}, 'src/utils/json/__tests__/files')
 
-    const path = resolve(__dirname, './slugs.json')
+    const path = resolve(__dirname, './files/slugs.json')
     const result = await getJsonFile(path, false)
     const expectedResult = {
       slug: {
@@ -100,4 +100,6 @@ describe('getJsonFile()', () => {
 
     expect(result).toEqual(expectedResult)
   })
+
+  // TODO: Test filter
 })

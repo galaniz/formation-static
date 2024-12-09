@@ -43,7 +43,11 @@ const attrReg: RegExp = /[\w-]+=".*?"/g
  * @param {Shortcode} [props]
  * @return {ShortcodeData[]}
  */
-const getShortcodeData = (content: string, tagNames: string, props?: Partial<Shortcode>): ShortcodeData[] => {
+const getShortcodeData = (
+  content: string,
+  tagNames: string,
+  props?: Partial<Shortcode>
+): ShortcodeData[] => {
   /* Content and tag names required */
 
   if (!isStringStrict(content) || !isStringStrict(tagNames)) {
@@ -303,8 +307,9 @@ const stripShortcodes = (content: string): string => {
   /* Replace tags with empty strings */
 
   const names = [...shortcodes.keys()].join('|')
+  const reg = new RegExp(String.raw`\[\/?(?<name>${names})[^\]]*?\]`, 'g')
 
-  return content.replace(String.raw`/\[\/?(?:${names})[^\]]*?\]/g`, '')
+  return content.replace(reg, () => '')
 }
 
 /* Exports */

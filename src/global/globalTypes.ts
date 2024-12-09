@@ -9,7 +9,7 @@
  * @prop {string} contentType
  * @prop {string} [slug]
  * @prop {boolean} [isPage]
- * @prop {boolean} [useContentTypeSlug]
+ * @prop {boolean} [useContentTypeSlug=true]
  */
 export interface Taxonomy {
   id: string

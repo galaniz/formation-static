@@ -107,7 +107,7 @@ const setRenderFunctions = (
  * @param {RenderItem[]} [_templates]
  * @return {RenderTemplate}
  */
-const getTemplate = (
+const getContentTemplate = (
   content: RenderItem[],
   _templates: RenderItem[] = []
 ): RenderTemplate => {
@@ -163,7 +163,7 @@ const getTemplate = (
  * @param {RenderItem[]} [content]
  * @return {RenderItem[]}
  */
-const mapTemplate = (
+const mapContentTemplate = (
   templates: RenderItem[],
   content: RenderItem[] = []
 ): RenderItem[] => {
@@ -247,7 +247,7 @@ const mapTemplate = (
     /* Recurse children */
 
     if (isArray(children) && templates[i] != null) {
-      templates[i].content = mapTemplate(children, content)
+      templates[i].content = mapContentTemplate(children, content)
     }
   })
 
@@ -312,9 +312,9 @@ const renderContent = async (
 
     /* Map out content to template */
 
-    if (renderType === 'template') {
-      const template = getTemplate(isArray(props.content) ? props.content : [])
-      const templates = mapTemplate(template.templates, template.content)
+    if (renderType === 'contentTemplate') {
+      const template = getContentTemplate(isArray(props.content) ? props.content : [])
+      const templates = mapContentTemplate(template.templates, template.content)
 
       children = templates
     }
