@@ -41,19 +41,14 @@ export type ShortcodeCallback = (args: ShortcodeData) => string | Promise<string
 
 /**
  * @typedef {object} Shortcode
- * @prop {string} [child]
- * @prop {string} child.name
- * @prop {GenericStrings} [child.attributeTypes]
- * @prop {GenericStrings} [attributeTypes]
  * @prop {ShortcodeCallback} callback
+ * @prop {GenericStrings} [attributeTypes] - property values: number | boolean | string
+ * @prop {string} [child]
  */
 export interface Shortcode {
-  child?: {
-    name: string
-    attributeTypes?: GenericStrings
-  }
-  attributeTypes?: GenericStrings
   callback: ShortcodeCallback
+  attributeTypes?: GenericStrings
+  child?: string
 }
 
 /**

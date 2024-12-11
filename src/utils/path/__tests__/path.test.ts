@@ -67,7 +67,7 @@ describe('getPath()', () => {
   it('should return path with store dir if type is store', () => {
     const file = 'file'
     const result = getPath(file, 'store')
-    const expectedResult = '/root/lib/store/file'
+    const expectedResult = '/root/lib/store/file.json'
 
     expect(result).toBe(expectedResult)
   })
@@ -75,7 +75,7 @@ describe('getPath()', () => {
   it('should return path with serverless dir if type is serverless', () => {
     const file = 'file'
     const result = getPath(file, 'serverless')
-    const expectedResult = '/root/functions/file'
+    const expectedResult = '/root/functions/file.js'
 
     expect(result).toBe(expectedResult)
   })

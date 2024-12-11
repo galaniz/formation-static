@@ -12,7 +12,11 @@ export default defineConfig({
   test: {
     cache: false,
     globals: true,
+    clearMocks: true,
     environment: 'node',
+    setupFiles: [
+      './tests/setup.ts'
+    ],
     coverage: {
       include: [
         'src/**/*.ts'

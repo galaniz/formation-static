@@ -56,7 +56,7 @@ const getShortcodeData = (
 
   /* Search tags in content */
 
-  const reg = new RegExp(String.raw`\[\/?(?<name>${tagNames})[^\]]*?\]`, 'g')
+  const reg = new RegExp(String.raw`\[(?:\/)?(?<name>${tagNames})(?:\s[^\]]*?)?\]`, 'g')
   const matches = [...content.matchAll(reg)]
 
   if (matches.length === 0) {
@@ -69,34 +69,15 @@ const getShortcodeData = (
 
   /* Recurse matches */
 
-  matches.forEach((opening) => {
-    /* Name required */
+  matches.forEach((opening, i) => {
+    /* Name and opening tag required */
 
-    const name = opening?.groups?.name
-
-    if (!isStringStrict(name)) {
-      return
-    }
-
-    /* Skip closing tag */
-
+    const name = opening.groups?.name
     const tag = opening[0]
 
-    if (tag.slice(0, 2) === '[/') {
+    if (!isStringStrict(name) || tag.startsWith('[/')) {
       return
     }
-
-    /* Corresponding closing tag required */
-
-    const closingTag = `[/${name}]`
-    const closingIndex = matches.findIndex((m) => m[0] === closingTag)
-
-    if (closingIndex === -1) {
-      return
-    }
-
-    const closingArr = matches.splice(closingIndex, 1)
-    const closing = closingArr[0]
 
     /* Shortcode info */
 
@@ -104,6 +85,27 @@ const getShortcodeData = (
 
     if (!isObjectStrict(info)) {
       return
+    }
+
+    const child = info.child
+    const hasChild = isStringStrict(child)
+
+    /* Indexes */
+
+    const startIndex = opening.index
+    const startLen = tag.length
+
+    let endIndex = startIndex + tag.length
+    let endLen = 0
+
+    /* Closing tag */
+
+    const closingTag = `[/${name}]`
+    const closingMatch = hasChild ? matches.find((m) => m[0] === closingTag) : matches?.[i + 1]
+
+    if (closingMatch?.[0] === closingTag) {
+      endIndex = closingMatch.index
+      endLen = closingTag.length
     }
 
     /* Attributes from opening tag */
@@ -145,22 +147,17 @@ const getShortcodeData = (
     let replaceContent = ''
     let innerContent = ''
 
-    const startIndex = opening.index
-    const endIndex = closing?.index
-
     if (isNumber(startIndex) && isNumber(endIndex)) {
-      replaceContent = content.slice(startIndex, endIndex + closingTag.length)
-      innerContent = content.slice(startIndex + tag.length, endIndex)
+      replaceContent = content.slice(startIndex, endIndex + endLen)
+      innerContent = content.slice(startIndex + startLen, endIndex)
     }
 
-    /* Check for children */
+    /* Handle nested shortcodes */
 
     let children: ShortcodeData[] = []
 
-    const child = info.child
-
-    if (isObjectStrict(child)) {
-      children = getShortcodeData(innerContent, child.name, child)
+    if (hasChild) {
+      children = getShortcodeData(innerContent, child)
     }
 
     /* Add data */
@@ -307,7 +304,7 @@ const stripShortcodes = (content: string): string => {
   /* Replace tags with empty strings */
 
   const names = [...shortcodes.keys()].join('|')
-  const reg = new RegExp(String.raw`\[\/?(?<name>${names})[^\]]*?\]`, 'g')
+  const reg = new RegExp(String.raw`\[(?:\/)?(?<name>${names})(?:\s[^\]]*?)?\]`, 'g')
 
   return content.replace(reg, () => '')
 }
@@ -315,6 +312,7 @@ const stripShortcodes = (content: string): string => {
 /* Exports */
 
 export {
+  shortcodes,
   addShortcode,
   removeShortcode,
   doShortcodes,

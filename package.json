@@ -44,6 +44,7 @@
     "@types/uuid": "^10.0.0",
     "@types/wordpress__block-serialization-spec-parser": "^3.1.3",
     "@vitest/coverage-v8": "^2.1.6",
+    "memfs": "4.15.0",
     "release-it": "^17.10.0",
     "ts-standard": "^12.0.2",
     "typescript": "^5.7.2",

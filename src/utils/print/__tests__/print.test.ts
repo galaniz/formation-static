@@ -14,10 +14,6 @@ describe('print()', () => {
   const mockConsoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
   const mockConsoleInfo = vi.spyOn(console, 'info').mockImplementation(() => undefined)
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('should print an empty error message on two lines', () => {
     // @ts-expect-error
     print()

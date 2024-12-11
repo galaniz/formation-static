@@ -39,7 +39,7 @@ const getContentWords = <T>(args: ExcerptContentWordArgs<T>): string[] => {
           let valArr = val.split(' ')
 
           if (valArr.length > addMax) {
-            valArr = valArr.splice(0, addMax)
+            valArr = valArr.slice(0, addMax)
           }
 
           _words = _words.concat(valArr)
@@ -87,8 +87,7 @@ const getExcerpt = <T extends object>(args: ExcerptArgs<T>): string => {
       const excerptLen = excerptArr.length
 
       if (excerptLen > limit) {
-        excerptArr = excerptArr.splice(0, limit)
-
+        excerptArr = excerptArr.slice(0, limit)
         output = `${excerptArr.join(' ')}${more}`
       }
     }

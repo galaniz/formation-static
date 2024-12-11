@@ -29,7 +29,7 @@ const getPath = (file: string = '', type: string = ''): string => {
     const dir = storeDir
 
     if (isStringStrict(dir)) {
-      append = `${dir}/${file}`
+      append = `${dir}/${file}.json`
     }
   }
 
@@ -37,7 +37,7 @@ const getPath = (file: string = '', type: string = ''): string => {
     const dir = serverlessDir
 
     if (isStringStrict(dir)) {
-      append = `${dir}/${file}`
+      append = `${dir}/${file}.js`
     }
   }
 

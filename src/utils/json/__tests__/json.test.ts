@@ -4,10 +4,11 @@
 
 /* Imports */
 
-import { it, expect, describe, afterEach } from 'vitest'
-import { resolve } from 'node:path'
+import { it, expect, describe, vi, afterEach, beforeEach } from 'vitest'
+import { vol } from 'memfs'
 import { getJson, getJsonFile } from '../json.js'
 import { setStore } from '../../../store/store.js'
+import { config } from '../../../config/config.js'
 
 /* Test getJson */
 
@@ -49,8 +50,49 @@ describe('getJson()', () => {
 /* Test getJsonFile */
 
 describe('getJsonFile()', () => {
+  beforeEach(() => {
+    vol.fromJSON({
+      '/files/invalid.json': 'false',
+      '/files/invalid.txt': 'Test text',
+      '/files/valid.json': JSON.stringify([{
+        test: 'test'
+      }]),
+      '/files/slugs.json': JSON.stringify([{
+        slug: {
+          contentType: 'page',
+          id: '123'
+        }
+      }])
+    })
+
+    vi.mock('/files/invalid.json', () => ({
+      default: 'false'
+    }))
+
+    vi.mock('/files/invalid.txt', () => ({
+      default: 'Test text'
+    }))
+
+    vi.mock('/files/valid.json', () => ({
+      default: [{
+        test: 'test',
+      }]
+    }))
+
+    vi.mock('/files/slugs.json', () => ({
+      default: {
+        slug: {
+          contentType: 'page',
+          id: '123'
+        }
+      }
+    }))
+  })
+
   afterEach(() => {
+    vol.reset()
     setStore({})
+    config.env.dir = ''
   })
 
   it('should return undefined if path is null', async () => {
@@ -63,7 +105,7 @@ describe('getJsonFile()', () => {
   })
 
   it('should return undefined if file is a text file', async () => {
-    const path = resolve(__dirname, './files/invalid.txt')
+    const path = '/files/invalid.txt'
     const result = await getJsonFile(path, false)
     const expectedResult = undefined
 
@@ -71,7 +113,7 @@ describe('getJsonFile()', () => {
   })
 
   it('should return undefined if file contains invalid json', async () => {
-    const path = resolve(__dirname, './files/invalid.json')
+    const path = '/files/invalid.json'
     const result = await getJsonFile(path, false)
     const expectedResult = undefined
 
@@ -79,18 +121,20 @@ describe('getJsonFile()', () => {
   })
 
   it('should return object if file contains valid json', async () => {
-    const path = resolve(__dirname, './files/valid.json')
+    const path = '/files/valid.json'
     const result = await getJsonFile(path, false)
-    const expectedResult = [{ test: 'test' }]
+    const expectedResult = [{
+      test: 'test'
+    }]
 
     expect(result).toEqual(expectedResult)
   })
 
   it('should return object if store file contains valid json', async () => {
-    setStore({}, 'src/utils/json/__tests__/files')
+    config.env.dir = '/'
+    setStore({}, 'files')
 
-    const path = resolve(__dirname, './files/slugs.json')
-    const result = await getJsonFile(path, false)
+    const result = await getJsonFile('slugs')
     const expectedResult = {
       slug: {
         contentType: 'page',
