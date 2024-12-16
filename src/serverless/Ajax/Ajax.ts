@@ -25,14 +25,14 @@ import { serverlessActions } from '../serverless.js'
  * Handle ajax requests by processing data and calling serverless actions
  *
  * @param {ServerlessContext} context
- * @param {ServerlessSetup} serverlessSetup
+ * @param {ServerlessSetup} setupServerless
  * @return {Promise<Response>} Response
  */
-const Ajax = async (context: ServerlessContext, serverlessSetup: ServerlessSetup): Promise<Response> => {
+const Ajax = async (context: ServerlessContext, setupServerless: ServerlessSetup): Promise<Response> => {
   try {
     /* Setup */
 
-    serverlessSetup(context)
+    setupServerless(context)
 
     /* Get form data */
 

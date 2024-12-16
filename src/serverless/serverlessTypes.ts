@@ -116,8 +116,8 @@ export interface ServerlessApiKeys extends GenericStrings {
  * @typedef {object} ServerlessFilesArgs
  * @prop {string} [dataExport=getAllContentfulData]
  * @prop {string} [dataExportFile=@alanizcreative/static-site-formation/contentful/contentfulData.js]
- * @prop {string} [setupExportFile=serverlessSetup]
- * @prop {string} [setupExportFile=lib/serverless/serverlessSetup.js]
+ * @prop {string} [setupExportFile=setupServerless]
+ * @prop {string} [setupExportFile=lib/setup/setupServerless.js]
  * @prop {string} [previewExportFile=@alanizcreative/static-site-formation/serverless/Preview/Preview.js]
  * @prop {string} [reloadExportFile=@alanizcreative/static-site-formation/serverless/Reload/Reload.js]
  * @prop {string} [ajaxExportFile=@alanizcreative/static-site-formation/serverless/Ajax/Ajax.js]

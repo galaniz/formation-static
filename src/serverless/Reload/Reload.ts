@@ -18,13 +18,13 @@ import { render, renderHttpError } from '../../render/render.js'
  * Output paginated and/or filtered page on browser reload
  *
  * @param {ServerlessContext} context
- * @param {ServerlessSetup} serverlessSetup
+ * @param {ServerlessSetup} setupServerless
  * @param {function} getData - getAllContentfulData | getAllWordPressData
  * @return {Promise<Response>} Response
  */
 const Reload = async (
   context: ServerlessContext,
-  serverlessSetup: ServerlessSetup,
+  setupServerless: ServerlessSetup,
   getData: typeof getAllContentfulData | typeof getAllWordPressData
 ): Promise<Response> => {
   try {
@@ -60,7 +60,7 @@ const Reload = async (
 
     /* Setup */
 
-    serverlessSetup(context)
+    setupServerless(context)
 
     /* Data params */
 

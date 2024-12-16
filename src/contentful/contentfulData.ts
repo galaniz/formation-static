@@ -1,5 +1,5 @@
 /**
- * Utils - Contentful Data
+ * Contentful - Data
  */
 
 /* Imports */
@@ -115,6 +115,10 @@ const getContentfulData = async (
 
     return newData
   } catch (error) {
+    if (config.throwError) {
+      throw error
+    }
+
     print('[SSF] Error fetching Contentful data', error)
 
     /* Add to cache (avoid extra calls when no result) */
@@ -269,6 +273,10 @@ const getAllContentfulData = async (
 
     return allData
   } catch (error) {
+    if (config.throwError) {
+      throw error
+    }
+
     print('[SSF] Error getting all Contentful data', error)
   }
 }

@@ -6,8 +6,8 @@
 
 import type { ImageLocal, ImageProps } from './imageTypes.js'
 import { extname, resolve, basename, dirname } from 'node:path'
-import { mkdir } from 'node:fs/promises'
-import { Jimp } from 'jimp'
+import { mkdir, stat } from 'node:fs/promises'
+import sharp from 'sharp'
 import { config } from '../../config/config.js'
 import { getFilePaths } from '../file/filePath.js'
 import { isStringStrict } from '../string/string.js'
@@ -17,9 +17,9 @@ import { print } from '../print/print.js'
 /**
  * Get and transform local images (quality and sizes)
  *
- * @return {Promise<PromiseSettledResult<void>[]>}
+ * @return {Promise<PromiseSettledResult<sharp.OutputInfo>[]>}
  */
-const setLocalImages = async (): Promise<Array<PromiseSettledResult<void>>> => {
+const setLocalImages = async (): Promise<Array<PromiseSettledResult<sharp.OutputInfo>>> => {
   try {
     /* Directory paths required */
 
@@ -38,10 +38,6 @@ const setLocalImages = async (): Promise<Array<PromiseSettledResult<void>>> => {
     const meta: Record<string, ImageProps> = {}
 
     for await (const path of getFilePaths(inputDir)) {
-      if (path.includes('.DS_Store')) {
-        continue
-      }
-
       const ext = extname(path)
       const baseName = basename(path)
       const [base] = baseName.split(ext)
@@ -64,13 +60,19 @@ const setLocalImages = async (): Promise<Array<PromiseSettledResult<void>>> => {
 
       /* Image instance */
 
-      const instance = await Jimp.read(path) as ImageLocal['instance']
+      const instance = await sharp(path)
 
       /* Store meta data */
 
-      const width = instance.width
-      const height = instance.height
-      const bytes = instance.bitmap.data.length
+      const metadata = await sharp(path).metadata()
+      const stats = await stat(path)
+
+      const {
+        width = 0,
+        height = 0,
+        format: fileFormat = 'jpeg'
+      } = metadata
+
       const id = `${folders !== '' ? `${folders}/` : ''}${base}`
       const [, format] = ext.split('.')
 
@@ -81,9 +83,9 @@ const setLocalImages = async (): Promise<Array<PromiseSettledResult<void>>> => {
       meta[id] = {
         path: id,
         name: baseName,
-        type: `image/${format}`,
+        type: `image/${fileFormat}`,
         format,
-        size: bytes,
+        size: stats.size,
         width,
         height
       }
@@ -119,18 +121,21 @@ const setLocalImages = async (): Promise<Array<PromiseSettledResult<void>>> => {
 
         await instance
           .clone()
-          .resize({ w: size })
-          .write(`${newPath}.${ext}`)
+          .resize(size)
+          .toFile(`${newPath}.${ext}`)
 
-        await instance
+        return await instance
           .clone()
-          .resize({ w: size })
-          .write(`${newPath}.webp`, {
-            quality: config.image.quality
-          })
+          .resize(size)
+          .webp({ quality: config.image.quality })
+          .toFile(`${newPath}.webp`)
       })
     )
   } catch (error) {
+    if (config.throwError) {
+      throw error
+    }
+
     print('[SSF] Error transforming local images', error)
   }
 

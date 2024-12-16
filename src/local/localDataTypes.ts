@@ -1,6 +1,6 @@
 
 /**
- * Utils - Local Data Types
+ * Local - Data Types
  */
 
 /* Imports */

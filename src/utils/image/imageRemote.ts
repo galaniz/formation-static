@@ -84,6 +84,10 @@ const getRemoteImages = async (images: ImageRemote[]): Promise<Array<PromiseSett
       })
     )
   } catch (error) {
+    if (config.throwError) {
+      throw error
+    }
+
     print('[SSF] Error downloading remote images', error)
   }
 

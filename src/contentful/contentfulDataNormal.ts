@@ -1,5 +1,5 @@
 /**
- * Utils - Contentful Data Normal
+ * Contentful - Data Normal
  */
 
 /* Imports */

@@ -6,18 +6,9 @@
 
 import type { NavigationBreadcrumbItem, NavigationProps } from '../NavigationTypes.js'
 import { it, expect, describe, beforeEach, afterEach } from 'vitest'
+import { testMinify } from '../../../../tests/utils.js'
 import { Navigation } from '../Navigation.js'
 import { setStore } from '../../../store/store.js'
-
-/**
- * Remove all empty spaces from string
- *
- * @param {string} str
- * @return {string}
- */
-const testMinify = (str: string): string => {
-  return str.replace(/\s/g, '')
-}
 
 /**
  * Return nav props with specified current link and type

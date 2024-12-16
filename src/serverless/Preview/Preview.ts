@@ -15,13 +15,13 @@ import { render } from '../../render/render.js'
  * Output preview from contentful or wordpress
  *
  * @param {ServerlessContext} context
- * @param {ServerlessSetup} serverlessSetup
+ * @param {ServerlessSetup} setupServerless
  * @param {function} getData - getAllContentfulData | getAllWordPressData
  * @return {Promise<Response>} Response
  */
 const Preview = async (
   context: ServerlessContext,
-  serverlessSetup: ServerlessSetup,
+  setupServerless: ServerlessSetup,
   getData: typeof getAllContentfulData | typeof getAllWordPressData
 ): Promise<Response> => {
   /* Params */
@@ -39,7 +39,7 @@ const Preview = async (
 
   /* Setup */
 
-  serverlessSetup(context)
+  setupServerless(context)
 
   /* Data params */
 

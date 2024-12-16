@@ -7,6 +7,7 @@
 import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { print } from '../utils/print/print.js'
+import { config } from '../config/config.js'
 import { redirects } from './redirects.js'
 
 /**
@@ -23,6 +24,10 @@ const createRedirectsFile = async (path: 'site/_redirects'): Promise<void> => {
 
     print('[SSF] Successfully wrote', redirectsPath, 'success')
   } catch (error) {
+    if (config.throwError) {
+      throw error
+    }
+
     print('[SSF] Error writing redirects file', error)
   }
 }

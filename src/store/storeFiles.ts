@@ -8,6 +8,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { isStringStrict } from '../utils/string/string.js'
 import { print } from '../utils/print/print.js'
+import { config } from '../config/config.js'
 import { storeDir, store } from './store.js'
 
 /**
@@ -32,6 +33,10 @@ const createStoreFiles = async (): Promise<void> => {
       print('[SSF] Successfully wrote', path, 'success')
     }
   } catch (error) {
+    if (config.throwError) {
+      throw error
+    }
+
     print('[SSF] Error writing store files', error)
   }
 }

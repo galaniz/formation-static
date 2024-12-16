@@ -50,8 +50,8 @@ const createServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> 
     const defaults = {
       dataExport: defaultDataExport,
       dataExportFile: defaultDataFile,
-      setupExport: 'serverlessSetup',
-      setupExportFile: 'lib/serverless/serverlessSetup.js',
+      setupExport: 'setupServerless',
+      setupExportFile: 'lib/setup/setupServerless.js',
       previewExportFile: '@alanizcreative/static-site-formation/serverless/Preview/Preview.js',
       reloadExportFile: '@alanizcreative/static-site-formation/serverless/Reload/Reload.js',
       ajaxExportFile: '@alanizcreative/static-site-formation/serverless/Ajax/Ajax.js',
@@ -169,6 +169,10 @@ const createServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> 
       }
     }
   } catch (error) {
+    if (config.throwError) {
+      throw error
+    }
+
     print('[SSF] Error writing serverless files', error)
   }
 }

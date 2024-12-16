@@ -132,23 +132,23 @@ describe('doShortcodes()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return content with shortcode replaced and skipped invalid attribute', async () => {
-    addShortcode('test', {
-      callback ({ attributes }) {
-        const { key = 'p' } = attributes
+  it(
+    'should return content with shortcode replaced and skip invalid attributes',
+    async () => await new Promise(async (resolve) => {  // eslint-disable-line
+      addShortcode('test', {
+        callback ({ attributes }) {
+          const result = Object.keys(attributes).length
 
-        return `<${key}>test</${key}>`
-      },
-      attributeTypes: {
-        key: 'string'
-      }
+          expect(result).toEqual(0)
+          resolve('')
+
+          return 'test'
+        }
+      })
+
+      await doShortcodes('Test [test key="= =value key1= key3=value2 key4=\'\'] content.')
     })
-
-    const result = await doShortcodes('Test [test key="=] content.')
-    const expectedResult = 'Test <p>test</p> content.'
-
-    expect(result).toBe(expectedResult)
-  })
+  )
 
   it('should return content with shortcodes replaced', async () => {
     addShortcode('test', {
@@ -157,9 +157,13 @@ describe('doShortcodes()', () => {
           type = 'default',
           required = false,
           size = 0
-        } = attributes
+        } = attributes as {
+          type: string
+          required: boolean
+          size: number
+        }
 
-        return `<${type} ${required} ${size}${content} />`
+        return `<${type} ${required.toString()} ${size}${content} />`
       },
       attributeTypes: {
         type: 'string',
@@ -182,7 +186,9 @@ describe('doShortcodes()', () => {
   it('should return content with parent and child shortcodes replaced', async () => {
     addShortcode('child', {
       callback ({ attributes, content = '' }) {
-        const { subtype = 'default' } = attributes
+        const { subtype = 'default' } = attributes as {
+          subtype: string
+        }
 
         return `<child ${subtype}>${content}</child>`
       },
@@ -198,9 +204,13 @@ describe('doShortcodes()', () => {
           type = 'default',
           required = false,
           size = 0
-        } = attributes
+        } = attributes as {
+          type: string
+          required: boolean
+          size: number
+        }
 
-        return `<parent ${type} ${required} ${size}>${content}</parent>`
+        return `<parent ${type} ${required.toString()} ${size}>${content}</parent>`
       },
       attributeTypes: {
         type: 'string',
@@ -209,7 +219,7 @@ describe('doShortcodes()', () => {
       }
     })
 
-    const content = 
+    const content =
       'Before [parent type="foo" required="true" size="5"][child]One[/child][child subtype="bar"]Two[/child][/parent] after.'
 
     const expectedResult =
@@ -282,12 +292,14 @@ describe('setShortcodes()', () => {
     const result = setShortcodes({
       test: {
         callback ({ attributes, content = '' }) {
-          const { tag = 'p' } = attributes
-  
+          const { tag = 'p' } = attributes as {
+            tag: string
+          }
+
           return `<${tag}>${content}</${tag}>`
         },
         attributeTypes: {
-          type: 'string'
+          tag: 'string'
         },
         child: 'testChild'
       },
@@ -325,7 +337,9 @@ describe('stripShortcodes()', () => {
   it('should remove shortcodes from content', () => {
     addShortcode('child', {
       callback ({ attributes, content = '' }) {
-        const { subtype = 'default' } = attributes
+        const { subtype = 'default' } = attributes as {
+          subtype: string
+        }
 
         return `<child ${subtype}>${content}</child>`
       },
@@ -341,9 +355,13 @@ describe('stripShortcodes()', () => {
           type = 'default',
           required = false,
           size = 0
-        } = attributes
+        } = attributes as {
+          type: string
+          required: boolean
+          size: number
+        }
 
-        return `<parent ${type} ${required} ${size}>${content}</parent>`
+        return `<parent ${type} ${required.toString()} ${size}>${content}</parent>`
       },
       attributeTypes: {
         type: 'string',

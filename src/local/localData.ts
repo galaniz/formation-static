@@ -1,5 +1,5 @@
 /**
- * Utils - Local Data
+ * Local - Data
  */
 
 /* Imports */
@@ -123,6 +123,10 @@ const getLocalData = async (
 
     return data
   } catch (error) {
+    if (config.throwError) {
+      throw error
+    }
+
     print('[SSF] Error getting file data', error)
 
     return null
@@ -331,6 +335,10 @@ const getAllLocalData = async (
 
     return allData
   } catch (error) {
+    if (config.throwError) {
+      throw error
+    }
+
     print('[SSF] Error getting all file data', error)
   }
 }

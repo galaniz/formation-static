@@ -1,5 +1,5 @@
 /**
- * Utils - WordPress Data Normal
+ * WordPress - Data Normal
  */
 
 /* Imports */
@@ -30,7 +30,7 @@ import { config } from '../config/config.js'
  * @type {Object<string, string>}
  */
 const camelCaseKeys: Record<string, string> = {
-  date_gmt: 'dataGmt',
+  date_gmt: 'dateGmt',
   modified_gmt: 'modifiedGmt',
   featured_media: 'featuredMedia',
   menu_order: 'menuOrder',
@@ -97,7 +97,7 @@ const normalizeFile = (file: WordPressDataFile): RenderFile => {
     height,
     filesizeInBytes,
     subtype,
-    type,
+    mime,
     sizes
   } = file
 
@@ -132,8 +132,8 @@ const normalizeFile = (file: WordPressDataFile): RenderFile => {
     width: isNumber(width) ? width : 0,
     height: isNumber(height) ? height : 0,
     size: isNumber(filesizeInBytes) ? filesizeInBytes : 0,
-    format: subtype,
-    type: isString(type) ? type : '',
+    format: subtype === 'jpeg' ? 'jpg' : subtype,
+    type: mime,
     sizes: s
   }
 }
@@ -204,7 +204,6 @@ const normalizeEmbedded = (
           id,
           link,
           title,
-          excerpt,
           type,
           slug
         } = embed as WordPressDataParent
@@ -217,7 +216,6 @@ const normalizeEmbedded = (
           id: id.toString(),
           contentType: type,
           title: isString(title.rendered) ? title.rendered : '',
-          excerpt: isString(excerpt.rendered) ? excerpt.rendered : '',
           slug,
           link
         }
@@ -237,7 +235,6 @@ const normalizeEmbedded = (
           source_url: url,
           media_details: details,
           mime_type: mimeType,
-          media_type: type,
           alt_text: alt
         } = embed as WordPressDataFeaturedMedia
 
@@ -265,7 +262,7 @@ const normalizeEmbedded = (
           height,
           filesizeInBytes: filesize,
           subtype: mimeType.split('/').pop(),
-          type,
+          mime: mimeType,
           sizes
         })
       })
@@ -298,7 +295,7 @@ const normalizeEmbedded = (
             taxonomyLookup = 'categories'
           }
 
-          if (taxonomy === 'tag') {
+          if (taxonomy === 'post_tag') {
             taxonomyLookup = 'tags'
           }
 
@@ -310,7 +307,7 @@ const normalizeEmbedded = (
 
           newItem[taxonomyLookup] = itemTaxonomy.map((taxonomyId) => {
             if (taxonomyId !== id) {
-              return taxonomyId
+              return null
             }
 
             return {
@@ -380,13 +377,12 @@ const normalizeBlocks = (blocks?: readonly Block[]): RenderItem[] => {
       if (attrItemExists && attrItemArr.includes(key)) {
         const itemValue = normalizeItem(value)
         itemValue.content = undefined
-
         attributes[key] = itemValue
       }
 
       const attrContentType = value.contentType
 
-      if (attrContentType === 'file') {
+      if (attrContentType === 'file' || attrContentType === 'attachment') {
         attributes[key] = normalizeFile(value)
       }
     }
@@ -408,7 +404,6 @@ const normalizeBlocks = (blocks?: readonly Block[]): RenderItem[] => {
 
     if (isArrayStrict(innerBlocks)) {
       const contentAttr = isStringStrict(contentIsAttribute) ? contentIsAttribute : 'content'
-
       newItem[contentAttr] = normalizeBlocks(innerBlocks)
     }
 
@@ -476,13 +471,14 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
     /* Excerpt */
 
     if (key === 'excerpt' && isString(val)) {
-      val = val.replace(/<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g, '')
+      val = val.replace(/<[^>]*>|\[.*?\]/g, '').trim()
     }
 
     /* Content */
 
-    if (key === 'content' && isString(val)) {
-      val = normalizeBlocks(parse(val))
+    if (key === 'content' && isStringStrict(val)) {
+      const normalVal = normalizeBlocks(parse(val))
+      val = normalVal.length > 0 ? normalVal : val
     }
 
     /* Links */

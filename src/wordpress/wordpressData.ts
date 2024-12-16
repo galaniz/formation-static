@@ -1,5 +1,5 @@
 /**
- * Utils - WordPress Data
+ * WordPress - Data
  */
 
 /* Imports */
@@ -147,12 +147,10 @@ const getWordPressData = async (
 
     /* Check and transform data */
 
-    const resp = await fetch(url, {
-      headers: {
-        Authorization: `Basic ${btoa(`${user}:${pass}`)}`
-      }
-    })
+    const headers = new Headers()
+    headers.set('Authorization', `Basic ${btoa(`${user}:${pass}`)}`)
 
+    const resp = await fetch(url, { headers })
     const data: WordPressDataError | WordPressDataItem | WordPressDataItem[] = await resp.json()
     const isObj = isObjectStrict(data)
 
@@ -209,6 +207,10 @@ const getWordPressData = async (
 
     return newData
   } catch (error) {
+    if (config.throwError) {
+      throw error
+    }
+
     print('[SSF] Error fetching WordPress data', error)
 
     /* Add to cache (avoid extra calls when no result) */
@@ -357,6 +359,10 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
 
     return allData
   } catch (error) {
+    if (config.throwError) {
+      throw error
+    }
+
     print('[SSF] Error getting all WordPress data', error)
   }
 }

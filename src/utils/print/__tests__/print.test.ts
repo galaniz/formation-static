@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import { it, expect, describe, afterEach, vi } from 'vitest'
+import { it, expect, describe, vi } from 'vitest'
 import { print } from '../print.js'
 
 /* Tests */

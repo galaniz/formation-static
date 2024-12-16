@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import { it, expect, describe, vi, afterEach, beforeEach } from 'vitest'
+import { it, expect, describe, vi, afterAll, beforeAll, afterEach } from 'vitest'
 import { vol } from 'memfs'
 import { getJson, getJsonFile } from '../json.js'
 import { setStore } from '../../../store/store.js'
@@ -50,7 +50,7 @@ describe('getJson()', () => {
 /* Test getJsonFile */
 
 describe('getJsonFile()', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     vol.fromJSON({
       '/files/invalid.json': 'false',
       '/files/invalid.txt': 'Test text',
@@ -75,7 +75,7 @@ describe('getJsonFile()', () => {
 
     vi.mock('/files/valid.json', () => ({
       default: [{
-        test: 'test',
+        test: 'test'
       }]
     }))
 
@@ -89,8 +89,11 @@ describe('getJsonFile()', () => {
     }))
   })
 
-  afterEach(() => {
+  afterAll(() => {
     vol.reset()
+  })
+
+  afterEach(() => {
     setStore({})
     config.env.dir = ''
   })

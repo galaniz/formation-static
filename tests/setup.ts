@@ -9,4 +9,5 @@ import { fs } from 'memfs'
 
 /* Mock fs dependencies */
 
+vi.mock('node:fs', () => fs)
 vi.mock('node:fs/promises', () => fs.promises)

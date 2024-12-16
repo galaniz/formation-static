@@ -6,7 +6,7 @@
 
 import type {
   ImageArgs,
-  ImageReturn,
+  ImageReturnType,
   ImageMaxWidthArgs
 } from './imageTypes.js'
 import { config } from '../../config/config.js'
@@ -20,16 +20,20 @@ import { dataSource } from '../dataSource/dataSource.js'
  * Get responsive image output
  *
  * @param {ImageArgs} args
- * @return {ImageReturn|string}
+ * @param {boolean} [returnDetails]
+ * @return {ImageReturnType}
  */
-const getImage = (args: ImageArgs = {}): ImageReturn | string => {
+const getImage = <V extends boolean = false>(
+  args: ImageArgs,
+  returnDetails: V = false as V
+): ImageReturnType<V> => {
   const {
     data = undefined,
     classes = '',
     attr = '',
+    alt: imageAlt = 'inherit',
     width = 'auto',
     height = 'auto',
-    returnDetails = false,
     lazy = true,
     picture = false,
     quality = 75,
@@ -38,21 +42,44 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
     viewportWidth = 100
   } = isObjectStrict(args) ? args : {}
 
+  /* Fallback */
+
+  const fallbackDetails = {
+    output: '',
+    aspectRatio: 0,
+    naturalWidth: 0,
+    naturalHeight: 0,
+    src: '',
+    srcFallback: '',
+    srcset: [],
+    sizes: ''
+  }
+
+  const fallback = returnDetails ? fallbackDetails : ''
+
   /* Data required */
 
   if (!isObjectStrict(data)) {
-    return ''
+    return fallback as ImageReturnType<V>
   }
 
   const {
     path = '',
-    alt = '',
+    alt: dataAlt = '',
     width: naturalWidth = 1,
     height: naturalHeight = 1,
     format = 'jpg'
   } = data
 
   let { url = config.image.cmsUrl } = data
+
+  /* Alt */
+
+  let alt = imageAlt === 'inherit' ? dataAlt : imageAlt
+
+  if (!isStringStrict(alt)) {
+    alt = ''
+  }
 
   /* Source */
 
@@ -62,7 +89,11 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
 
   /* Local url */
 
-  if (isLocal && isStringStrict(path)) {
+  if (isLocal) {
+    if (!isStringStrict(path)) {
+      return fallback as ImageReturnType<V>
+    }
+
     url = `${config.image.localUrl}${path}`
   }
 
@@ -116,31 +147,30 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
   }
 
   srcset = srcset.filter(s => s <= w)
-
   srcset.sort((a, b) => a - b)
 
-  const srcsetStr: string[] = []
+  const srcsetSource: string[] = []
 
   srcset.forEach(s => {
     if (isLocal) {
       const common = `${url}${s !== naturalWidth ? `@${s}` : ''}`
 
       srcsetFallback.push(`${common}.${format} ${s}w`)
-      srcsetStr.push(`${common}.webp ${s}w`)
+      srcsetSource.push(`${common}.webp ${s}w`)
     }
 
     if (isContentful) {
       const common = `&q=${quality}&w=${s}&h=${Math.round(s * aspectRatio)} ${s}w`
 
       srcsetFallback.push(`${url}?fm=${format}${common}`)
-      srcsetStr.push(`${url}?fm=webp${common}`)
+      srcsetSource.push(`${url}?fm=webp${common}`)
     }
 
     if (isWordpress) {
       const sizeUrl = data?.sizes?.[s]
 
       if (isStringStrict(sizeUrl)) {
-        srcsetStr.push(`${sizeUrl} ${s}w`)
+        srcsetSource.push(`${sizeUrl} ${s}w`)
       }
     }
   })
@@ -150,7 +180,7 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
   let sourceOutput = ''
 
   if (picture) {
-    sourceOutput = `<source srcset="${srcsetStr.join(', ')}" sizes="${sizes}" type="image/webp">`
+    sourceOutput = `<source srcset="${srcsetSource.join(', ')}" sizes="${sizes}" type="image/webp">`
   }
 
   let eagerHackOutput = ''
@@ -173,7 +203,7 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
       ${classes !== '' ? ` class="${classes}"` : ''}
       alt="${alt}"
       src="${picture ? srcFallback : src}"
-      srcset="${picture ? srcsetFallback.join(', ') : srcsetStr.join(', ')}"
+      srcset="${picture ? srcsetFallback.join(', ') : srcsetSource.join(', ')}"
       sizes="${sizes}"
       width="${w}"
       height="${h}"
@@ -183,19 +213,19 @@ const getImage = (args: ImageArgs = {}): ImageReturn | string => {
   `
 
   if (returnDetails) {
-    return {
+    return { // eslint-disable-line @typescript-eslint/consistent-type-assertions
       output,
       aspectRatio,
       naturalWidth,
       naturalHeight,
       src,
       srcFallback,
-      srcset: srcsetStr,
+      srcset: srcsetSource,
       sizes
-    }
+    } as ImageReturnType<V>
   }
 
-  return output
+  return output as ImageReturnType<V>
 }
 
 /**
@@ -216,20 +246,36 @@ const getImageClosestSize = (size: number): number => {
  * @param {ImageMaxWidthArgs} args
  * @return {number}
  */
-const getImageMaxWidth = ({
-  parents,
-  widths,
-  maxWidths,
-  breakpoints,
-  source = config.source
-}: ImageMaxWidthArgs): number => {
-  if (!isArrayStrict(parents)) {
+const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
+  /* Args must be an object */
+
+  if (!isObjectStrict(args)) {
+    return 0
+  }
+
+  const {
+    parents,
+    widths,
+    maxWidths,
+    breakpoints,
+    source = config.source
+  } = args
+
+  /* Parents, widths, maxWidths and breakpoints required */
+
+  const required =
+    isArrayStrict(parents) &&
+    isObjectStrict(widths) &&
+    isObjectStrict(maxWidths) &&
+    isArrayStrict(breakpoints)
+
+  if (!required) {
     return 0
   }
 
   /* Widths as floats */
 
-  const w = [1, 1, 1, 1]
+  const w: number[] = []
 
   /* Max width */
 
@@ -238,6 +284,10 @@ const getImageMaxWidth = ({
   /* Width strings to numbers */
 
   parents.forEach((parent) => {
+    if (!isObjectStrict(parent)) {
+      return
+    }
+
     const { renderType, args } = parent
 
     if (!isObjectStrict(args)) {
@@ -265,10 +315,14 @@ const getImageMaxWidth = ({
     }
   })
 
+  if (w.length === 0 && m === 0) {
+    return 0
+  }
+
   /* Convert to fixed widths */
 
   const bk = [...breakpoints]
-  const calc = []
+  const calc: number[] = []
 
   let lastW = 1
 

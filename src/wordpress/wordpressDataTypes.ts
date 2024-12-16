@@ -1,5 +1,5 @@
 /**
- * Utils - WordPress Data Types
+ * WordPress - Data Types
  */
 
 /* Imports */

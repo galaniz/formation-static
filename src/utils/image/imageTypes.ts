@@ -8,16 +8,16 @@ import type { Source, GenericNumbers, ParentArgs } from '../../global/globalType
 import type { RenderFile } from '../../render/renderTypes.js'
 import type { ColumnProps } from '../../layouts/Column/ColumnTypes.js'
 import type { ContainerProps } from '../../layouts/Container/ContainerTypes.js'
-import type { Jimp } from 'jimp'
+import type sharp from 'sharp'
 
 /**
  * @typedef {object} ImageArgs
  * @prop {RenderFile} [data]
  * @prop {string} [classes]
  * @prop {string} [attr]
+ * @prop {string} [alt=inherit]
  * @prop {string|number} [width]
  * @prop {string|number} [height]
- * @prop {boolean} [returnDetails]
  * @prop {boolean} [lazy]
  * @prop {boolean} [picture]
  * @prop {number} [quality]
@@ -29,9 +29,9 @@ export interface ImageArgs {
   data?: RenderFile
   classes?: string
   attr?: string
+  alt?: string
   width?: string | number
   height?: string | number
-  returnDetails?: boolean
   lazy?: boolean
   picture?: boolean
   quality?: number
@@ -63,6 +63,11 @@ export interface ImageReturn {
 }
 
 /**
+ * @typedef {ImageReturn|string} ImageReturnType
+ */
+export type ImageReturnType<V extends false | true> = V extends true ? ImageReturn : string
+
+/**
  * @typedef {ParentArgs|ColumnProps|ContainerProps} ImageMaxWidthParents
  */
 export type ImageMaxWidthParents = ParentArgs & ColumnProps & ContainerProps
@@ -85,14 +90,14 @@ export interface ImageMaxWidthArgs {
 
 /**
  * @typedef {object} ImageLocal
- * @prop {Jimp} instance
+ * @prop {Sharp} instance
  * @prop {number} size
  * @prop {string} ext
  * @prop {string} path
  * @prop {string} newPath
  */
 export interface ImageLocal {
-  instance: InstanceType<typeof Jimp>
+  instance: sharp.Sharp
   size: number
   ext: string
   path: string

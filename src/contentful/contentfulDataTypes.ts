@@ -1,5 +1,5 @@
 /**
- * Utils - Contentful Data Types
+ * Contentful - Data Types
  */
 
 /* Imports */

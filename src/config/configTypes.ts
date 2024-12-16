@@ -127,6 +127,7 @@ export type ConfigFilter = (
  * @prop {ConfigAsset} styles
  * @prop {ConfigImage} image
  * @prop {ConfigFilter} filter
+ * @prop {boolean} throwError
  */
 export interface Config {
   namespace: string
@@ -147,6 +148,7 @@ export interface Config {
   styles: ConfigAsset
   image: ConfigImage
   filter: ConfigFilter
+  throwError: boolean
 }
 
 /**
