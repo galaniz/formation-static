@@ -22,6 +22,7 @@ const testNavProps = (
   currentType: string = 'page'
 ): NavigationProps => {
   const homeItem = {
+    id: '1',
     title: 'Home',
     internalLink: {
       id: 'home',
@@ -30,6 +31,7 @@ const testNavProps = (
   }
 
   const blogItem = {
+    id: '2',
     title: 'Blog',
     internalLink: {
       id: 'blog',
@@ -38,18 +40,23 @@ const testNavProps = (
   }
 
   const aboutItem = {
+    id: '3',
     title: 'About',
     internalLink: {
       id: 'about',
       slug: 'about'
     },
     children: [
-      blogItem,
+      {
+        id: blogItem.id,
+        title: blogItem.title
+      },
       null
     ]
   }
 
   const externalItem = {
+    id: '4',
     title: 'External',
     externalLink: 'https://external.com/'
   }
@@ -57,15 +64,24 @@ const testNavProps = (
   return {
     navigations: [
       {
+        id: '5',
         title: 'Home',
-        location: 'header',
+        location: [
+          'header',
+          'footer'
+        ],
         items: [
-          homeItem,
+          {
+            id: homeItem.id,
+            title: homeItem.title
+          },
+          // @ts-expect-error - null children
           aboutItem,
           externalItem
         ]
       },
       {
+        id: '6',
         title: 'Empty',
         location: 'empty',
         items: []
@@ -158,10 +174,10 @@ describe('Navigation', () => {
     it('should contain navigation items by id', () => {
       const items = home.getItemsById()
 
-      expect(items.get('home')).toBeDefined()
-      expect(items.get('about')).toBeDefined()
-      expect(items.get('blog')).toBeDefined()
-      expect(items.get('https://external.com/')).toBeDefined()
+      expect(items.get('1')).toBeDefined()
+      expect(items.get('2')).toBeDefined()
+      expect(items.get('3')).toBeDefined()
+      expect(items.get('4')).toBeDefined()
       expect(items.size).toBe(4)
     })
 
@@ -169,8 +185,9 @@ describe('Navigation', () => {
       const navs = home.getNavigationsByLocation()
 
       expect(navs.get('header')).toBeDefined()
+      expect(navs.get('footer')).toBeDefined()
       expect(navs.get('empty')).not.toBeDefined()
-      expect(navs.size).toBe(1)
+      expect(navs.size).toBe(2)
     })
   })
 

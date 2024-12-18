@@ -147,12 +147,18 @@ class Navigation {
         items = []
       } = nav
 
-      if (isStringStrict(title) && isStringStrict(location) && isArrayStrict(items)) {
-        this.#navigationsByLocation.set(location.toLowerCase().replace(/\s+/g, ''), {
+      const locations = isArrayStrict(location) ? location : [location]
+
+      if (!isStringStrict(title) || !isArrayStrict(items)) {
+        return
+      }
+
+      locations.forEach(loc => {
+        this.#navigationsByLocation.set(loc.toLowerCase().replace(/\s+/g, ''), {
           title,
           items
         })
-      }
+      })
     })
 
     /* Init successful */
@@ -173,38 +179,35 @@ class Navigation {
     }
 
     const {
+      id,
       title = '',
+      link,
       internalLink,
       externalLink = '',
       children
     } = item
 
-    let id = isStringStrict(title) ? title : ''
     let external = false
 
     if (isStringStrict(externalLink)) {
-      id = externalLink
       external = true
     }
 
-    if (isObjectStrict(internalLink) && isStringStrict(internalLink.id)) {
-      id = internalLink.id
-    }
-
-    const link = getLink(internalLink, externalLink)
     const props: NavigationItem = {
       id,
       title,
-      link,
+      link: isStringStrict(link) ? link : getLink(internalLink, externalLink),
       external
     }
 
-    if (isStringStrict(link) && !external) {
+    if (isStringStrict(props.link) && !external) {
       props.current = props.link === this.currentLink
     }
 
-    if (id === getStoreItem('archiveMeta')[this.currentType]?.id) {
-      props.archiveCurrent = true
+    const internalId = internalLink?.id
+
+    if (isStringStrict(internalId)) {
+      props.archiveCurrent = internalId === getStoreItem('archiveMeta')[this.currentType]?.id
     }
 
     let descendentCurrent = false
@@ -242,7 +245,13 @@ class Navigation {
     let childCurrent = false
 
     children.forEach(child => {
-      const info = this.#getItemInfo(child)
+      const childItem = this.#itemsById.get(child?.id)
+
+      if (childItem == null) {
+        return
+      }
+
+      const info = this.#getItemInfo(childItem)
 
       if (info == null) {
         return
@@ -278,26 +287,7 @@ class Navigation {
         return
       }
 
-      const {
-        title = '',
-        internalLink,
-        externalLink
-      } = item
-
-      let id = ''
-
-      if (isStringStrict(title)) {
-        id = title
-      }
-
-      if (isStringStrict(externalLink)) {
-        id = externalLink
-      }
-
-      if (isObjectStrict(internalLink) && isStringStrict(internalLink.id)) {
-        id = internalLink.id
-      }
-
+      const { id } = item
       const storedItem = this.#itemsById.get(id)
 
       if (storedItem != null) {

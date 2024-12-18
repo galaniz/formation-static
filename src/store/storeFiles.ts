@@ -8,7 +8,6 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { isStringStrict } from '../utils/string/string.js'
 import { print } from '../utils/print/print.js'
-import { config } from '../config/config.js'
 import { storeDir, store } from './store.js'
 
 /**
@@ -17,27 +16,19 @@ import { storeDir, store } from './store.js'
  * @return {Promise<void>}
  */
 const createStoreFiles = async (): Promise<void> => {
-  try {
-    if (!isStringStrict(storeDir)) {
-      throw new Error('No store directory')
-    }
+  if (!isStringStrict(storeDir)) {
+    throw new Error('No store directory')
+  }
 
-    await mkdir(resolve(storeDir), { recursive: true })
+  await mkdir(resolve(storeDir), { recursive: true })
 
-    for (const [key, data] of Object.entries(store)) {
-      const fileName = `${key}.json`
-      const path = resolve(storeDir, fileName)
+  for (const [key, data] of Object.entries(store)) {
+    const fileName = `${key}.json`
+    const path = resolve(storeDir, fileName)
 
-      await writeFile(path, JSON.stringify(data))
+    await writeFile(path, JSON.stringify(data))
 
-      print('[SSF] Successfully wrote', path, 'success')
-    }
-  } catch (error) {
-    if (config.throwError) {
-      throw error
-    }
-
-    print('[SSF] Error writing store files', error)
+    print('[SSF] Successfully wrote', path, 'success')
   }
 }
 

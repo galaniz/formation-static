@@ -13,11 +13,16 @@ import type {
   WordPressDataAuthor,
   WordPressDataFeaturedMedia,
   WordPressDataParent,
-  WordPressDataRichText
+  WordPressDataRichText,
+  WordPressDataMenuItem,
+  WordPressDataMenuChild,
+  WordPressDataMenu
 } from './wordpressDataTypes.js'
 import type { RenderItem, RenderFile } from '../render/renderTypes.js'
+import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes.js'
 import { parse } from '@wordpress/block-serialization-spec-parser'
 import { getObjectKeys } from '../utils/object/objectUtils.js'
+import { getPermalink } from '../utils/link/link.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
 import { isArrayStrict } from '../utils/array/array.js'
 import { isObjectStrict } from '../utils/object/object.js'
@@ -27,6 +32,7 @@ import { config } from '../config/config.js'
 /**
  * Camel case version of prop names
  *
+ * @private
  * @type {Object<string, string>}
  */
 const camelCaseKeys: Record<string, string> = {
@@ -36,12 +42,24 @@ const camelCaseKeys: Record<string, string> = {
   menu_order: 'menuOrder',
   comment_status: 'commentStatus',
   ping_status: 'pingStatus',
-  class_list: 'classList'
+  class_list: 'classList',
+  attr_title: 'attrTitle',
+  type_label: 'typeLabel',
+  object_id: 'objectId'
 }
+
+/**
+ * Menu items grouped by menu id
+ *
+ * @private
+ * @type {Map<string, WordPressDataMenuChild[]>}
+ */
+const menusById: Map<string, WordPressDataMenuChild[]> = new Map()
 
 /**
  * Remove #text tags and set attr
  *
+ * @private
  * @param {WordPressDataRichText} item
  * @return {RenderItem}
  */
@@ -64,10 +82,8 @@ const normalizeRichText = (item: WordPressDataRichText): RenderItem => {
       attr.push(`${k}="${v}"`)
     }
 
-    if (attr.length > 0) {
-      item.attr = attr.join(' ')
-      item.attrs = undefined
-    }
+    item.attr = attr.join(' ')
+    item.attrs = undefined
   }
 
   if (isArrayStrict(content)) {
@@ -141,6 +157,7 @@ const normalizeFile = (file: WordPressDataFile): RenderFile => {
 /**
  * Link embeds to item parent, author, featured media or term
  *
+ * @private
  * @param {WordPressDataEmbedded} value
  * @param {WordPressDataItem} item
  * @param {RenderItem} newItem
@@ -343,15 +360,11 @@ const normalizeBlocks = (blocks?: readonly Block[]): RenderItem[] => {
   /* Recurse */
 
   blocks.forEach((block) => {
-    if (!isObjectStrict(block)) {
-      return
-    }
-
     const {
-      blockName,
-      attrs,
-      innerBlocks
-    } = block
+      blockName = '',
+      attrs = null,
+      innerBlocks = null
+    } = isObjectStrict(block) ? block : {}
 
     const contentType = blockName
 
@@ -380,9 +393,7 @@ const normalizeBlocks = (blocks?: readonly Block[]): RenderItem[] => {
         attributes[key] = itemValue
       }
 
-      const attrContentType = value.contentType
-
-      if (attrContentType === 'file' || attrContentType === 'attachment') {
+      if (isStringStrict(value.mime)) {
         attributes[key] = normalizeFile(value)
       }
     }
@@ -442,7 +453,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 
     /* Id */
 
-    if (key === 'id') {
+    if (key === 'id' || k === 'objectId') {
       val = value?.toString()
     }
 
@@ -483,11 +494,11 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 
     /* Links */
 
-    if (key === '_links') {
+    if (key === '_links' || key === 'auto_add') {
       continue
     }
 
-    /* Embeded */
+    /* Embedded */
 
     if (key === '_embedded' && isObj) {
       normalizeEmbedded(value, item, newItem)
@@ -505,7 +516,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 }
 
 /**
- * Transform WordPressData data into simpler objects
+ * Transform wordpress data into simpler objects
  *
  * @param {WordPressDataItem[]} data
  * @param {RenderItem[]} [_newData]
@@ -531,6 +542,145 @@ const normalizeWordPressData = (data: WordPressDataItem[], _newData: RenderItem[
   return _newData
 }
 
+/**
+ * Transform wordpress menu items into navigation item objects
+ *
+ * @param {WordPressDataMenuItem[]} items
+ * @return {NavigationItem[]}
+ */
+const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): NavigationItem[] => {
+  const itemsObj: Record<string, WordPressDataMenuItem> = Object.fromEntries(items.map(item => [item.id, item]))
+
+  menusById.clear()
+
+  items.forEach((item) => {
+    const {
+      id = '',
+      title = '',
+      menuOrder = 0,
+      menus = 0
+    } = item
+
+    const parent = isNumber(item.parent) ? item.parent : 0
+    const hasMenuOrder = isNumber(menuOrder)
+
+    if (hasMenuOrder && isObjectStrict(itemsObj[parent])) {
+      if (itemsObj[parent]?.children == null) {
+        itemsObj[parent].children = []
+      }
+
+      itemsObj[parent].children.push({ id, menuOrder, title })
+    }
+
+    if (hasMenuOrder && isNumber(menus) && parent === 0) {
+      const menuId = menus.toString()
+
+      if (menusById.get(menuId) == null) {
+        menusById.set(menuId, [])
+      }
+
+      menusById.get(menuId)?.push({ id, menuOrder, title })
+    }
+  })
+
+  const newItems: NavigationItem[] = []
+
+  for (const [id, obj] of Object.entries(itemsObj)) {
+    const {
+      title = '',
+      attrTitle = '',
+      description = '',
+      contentType = '',
+      children = [],
+      object = '',
+      objectId = '',
+      target = '',
+      classes = [],
+      xfn = [],
+      meta = []
+    } = obj
+
+    const url = isString(obj.url) ? obj.url : ''
+    const isCustom = contentType === 'custom'
+    const newItem: NavigationItem = {
+      id,
+      title,
+      attrTitle,
+      description,
+      contentType: 'navigationItem',
+      target,
+      classes,
+      xfn,
+      meta
+    }
+
+    if (!isCustom && isStringStrict(object) && isStringStrict(objectId)) {
+      const slug = url.split('/').filter(Boolean).pop()
+
+      newItem.link = url
+      newItem.internalLink = {
+        contentType: object,
+        id: objectId,
+        slug
+      }
+    }
+
+    if (isCustom) {
+      const permalink = getPermalink()
+      const isExternal = permalink !== '' ? !url.startsWith(permalink) : true
+
+      if (isExternal) {
+        newItem.externalLink = url
+      }
+    }
+
+    if (isArrayStrict(children)) {
+      newItem.children = children.sort((a, b) => a.menuOrder - b.menuOrder)
+    }
+
+    newItems.push(newItem)
+  }
+
+  return newItems
+}
+
+/**
+ * Transform wordpress menus into navigation item objects
+ *
+ * @param {WordPressDataMenu[]} menus
+ * @return {Navigation[]}
+ */
+const normalizeWordPressMenus = (menus: WordPressDataMenu[]): Navigation[] => {
+  const newMenus: Navigation[] = []
+
+  menus.forEach((menu) => {
+    const {
+      id = '',
+      name = '',
+      description = '',
+      locations = [],
+      meta = []
+    } = menu
+
+    const newMenu: Navigation = {
+      id,
+      title: name,
+      description,
+      meta,
+      location: locations,
+      items: menusById.get(id)?.sort((a, b) => a.menuOrder - b.menuOrder) ?? []
+    }
+
+    newMenus.push(newMenu)
+  })
+
+  return newMenus
+}
+
 /* Exports */
 
-export { normalizeWordPressData }
+export {
+  normalizeWordPressData,
+  normalizeWordPressMenuItems,
+  normalizeWordPressMenus
+}

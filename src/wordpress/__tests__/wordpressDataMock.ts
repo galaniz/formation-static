@@ -90,11 +90,39 @@ const mockWordPressFetch = vi.fn(async (
     /* Posts sample data */
 
     if (route === 'posts') {
-      data = await import('./data/posts.json').then((res) => res.default) as WordPressDataItem[]
+      const posts = await import('../../../tests/data/wordpress/posts.json').then((res) => res.default) as WordPressDataItem[]
+
+      if (id === '1') {
+        data = posts.find((post) => post.id === 1) as WordPressDataItem
+      }
+
+      if (id == null) {
+        data = posts
+      }
     }
 
     if (route === 'pages') {
-      data = await import('./data/pages.json').then((res) => res.default) as WordPressDataItem[]
+      data = await import('../../../tests/data/wordpress/pages.json').then((res) => res.default) as WordPressDataItem[]
+    }
+
+    if (route === 'menus') {
+      data = await import('../../../tests/data/wordpress/menus.json').then((res) => res.default) as WordPressDataItem[]
+    }
+
+    if (route === 'menu-items') {
+      data = await import('../../../tests/data/wordpress/menu-items.json').then((res) => res.default) as WordPressDataItem[]
+    }
+
+    if (route === 'categories') {
+      data = await import('../../../tests/data/wordpress/categories.json').then((res) => res.default) as WordPressDataItem[]
+    }
+
+    if (route === 'tags') {
+      data = await import('../../../tests/data/wordpress/tags.json').then((res) => res.default) as WordPressDataItem[]
+    }
+
+    if (route === 'media') {
+      data = await import('../../../tests/data/wordpress/media.json').then((res) => res.default) as WordPressDataItem[]
     }
 
     if (route === 'empty') {

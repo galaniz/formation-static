@@ -24,12 +24,12 @@ export interface NavigationProps {
  * @typedef Navigation
  * @type {Generic}
  * @prop {string} title
- * @prop {string} location
+ * @prop {string|string[]} location
  * @prop {NavigationItem[]} items
  */
 export interface Navigation extends Generic {
   title: string
-  location: string
+  location: string | string[]
   items: NavigationItem[]
 }
 
@@ -51,8 +51,8 @@ export type NavigationByLocation = Map<string, NavigationByLocationItem>
 /**
  * @typedef NavigationItem
  * @type {Generic}
- * @prop {string} [id]
- * @prop {string} [title]
+ * @prop {string} id
+ * @prop {string} title
  * @prop {string} [link]
  * @prop {InternalLink} [internalLink]
  * @prop {string} [externalLink]
@@ -63,7 +63,7 @@ export type NavigationByLocation = Map<string, NavigationByLocationItem>
  * @prop {boolean} [archiveCurrent]
  */
 export interface NavigationItem extends Generic {
-  id?: string
+  id: string
   title: string
   link?: string
   internalLink?: InternalLink

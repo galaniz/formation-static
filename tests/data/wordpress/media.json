@@ -1,0 +1,142 @@
+[
+  {
+    "id": 12,
+    "date": "2024-12-14T20:33:50",
+    "date_gmt": "2024-12-14T20:33:50",
+    "guid": {
+      "rendered": "http://wp.com/wp-content/uploads/2024/12/screenshot.png"
+    },
+    "modified": "2024-12-14T20:33:50",
+    "modified_gmt": "2024-12-14T20:33:50",
+    "slug": "screenshot",
+    "status": "inherit",
+    "type": "attachment",
+    "link": "http://wp.com/screenshot/",
+    "title": {
+      "rendered": "screenshot"
+    },
+    "author": 1,
+    "featured_media": 0,
+    "comment_status": "open",
+    "ping_status": "closed",
+    "template": "",
+    "meta": [],
+    "class_list": [
+      "post-12",
+      "attachment",
+      "type-attachment",
+      "status-inherit",
+      "hentry"
+    ],
+    "description": {
+      "rendered": "<p class=\"attachment\"><a href='http://wp.com/wp-content/uploads/2024/12/screenshot.png'><img loading=\"lazy\" decoding=\"async\" width=\"300\" height=\"225\" src=\"http://wp.com/wp-content/uploads/2024/12/screenshot-300x225.png\" class=\"attachment-medium size-medium\" alt=\"\" srcset=\"http://wp.com/wp-content/uploads/2024/12/screenshot-300x225.png 300w, http://wp.com/wp-content/uploads/2024/12/screenshot-1024x768.png 1024w, http://wp.com/wp-content/uploads/2024/12/screenshot-768x576.png 768w, http://wp.com/wp-content/uploads/2024/12/screenshot.png 1200w\" sizes=\"auto, (max-width: 300px) 100vw, 300px\" /></a></p>\n"
+    },
+    "caption": {
+      "rendered": ""
+    },
+    "alt_text": "",
+    "media_type": "image",
+    "mime_type": "image/png",
+    "media_details": {
+      "width": 1200,
+      "height": 900,
+      "file": "2024/12/screenshot.png",
+      "filesize": 15020,
+      "sizes": {
+        "medium": {
+          "file": "screenshot-300x225.png",
+          "width": 300,
+          "height": 225,
+          "filesize": 5612,
+          "mime_type": "image/png",
+          "source_url": "http://wp.com/wp-content/uploads/2024/12/screenshot-300x225.png"
+        },
+        "large": {
+          "file": "screenshot-1024x768.png",
+          "width": 1024,
+          "height": 768,
+          "filesize": 21359,
+          "mime_type": "image/png",
+          "source_url": "http://wp.com/wp-content/uploads/2024/12/screenshot-1024x768.png"
+        },
+        "thumbnail": {
+          "file": "screenshot-150x150.png",
+          "width": 150,
+          "height": 150,
+          "filesize": 2037,
+          "mime_type": "image/png",
+          "source_url": "http://wp.com/wp-content/uploads/2024/12/screenshot-150x150.png"
+        },
+        "medium_large": {
+          "file": "screenshot-768x576.png",
+          "width": 768,
+          "height": 576,
+          "filesize": 15564,
+          "mime_type": "image/png",
+          "source_url": "http://wp.com/wp-content/uploads/2024/12/screenshot-768x576.png"
+        },
+        "full": {
+          "file": "screenshot.png",
+          "width": 1200,
+          "height": 900,
+          "mime_type": "image/png",
+          "source_url": "http://wp.com/wp-content/uploads/2024/12/screenshot.png"
+        }
+      },
+      "image_meta": {
+        "aperture": "0",
+        "credit": "",
+        "camera": "",
+        "caption": "",
+        "created_timestamp": "0",
+        "copyright": "",
+        "focal_length": "0",
+        "iso": "0",
+        "shutter_speed": "0",
+        "title": "",
+        "orientation": "0",
+        "keywords": []
+      }
+    },
+    "post": null,
+    "source_url": "http://wp.com/wp-content/uploads/2024/12/screenshot.png",
+    "_links": {
+      "self": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/media/12",
+          "targetHints": {
+            "allow": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/media"
+        }
+      ],
+      "about": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/types/attachment"
+        }
+      ],
+      "author": [
+        {
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/users/1"
+        }
+      ],
+      "replies": [
+        {
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/comments?post=12"
+        }
+      ]
+    }
+  }
+]

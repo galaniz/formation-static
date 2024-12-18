@@ -11,7 +11,6 @@ import { createWriteStream } from 'node:fs'
 import { config } from '../../config/config.js'
 import { isStringStrict } from '../string/string.js'
 import { isArrayStrict } from '../array/array.js'
-import { print } from '../print/print.js'
 
 /**
  * Promisify write function
@@ -40,58 +39,48 @@ const createFile = async (path: string, buffer: Buffer): Promise<void> => {
  * @return {Promise<PromiseSettledResult<void>[]>}
  */
 const getRemoteImages = async (images: ImageRemote[]): Promise<Array<PromiseSettledResult<void>>> => {
-  try {
-    /* Input directory required */
+  /* Input directory required */
 
-    const inputDir = config.image.inputDir
+  const inputDir = config.image.inputDir
 
-    if (!isStringStrict(inputDir)) {
-      throw new Error('No input directory')
-    }
-
-    /* Array of image objects required */
-
-    if (!isArrayStrict(images)) {
-      throw new Error('No images array')
-    }
-
-    /* Fetch and write images */
-
-    return await Promise.allSettled(
-      images.map(async (image) => {
-        const { path, url, ext = 'jpg' } = image
-
-        if (!isStringStrict(path) || !isStringStrict(url) || !isStringStrict(ext)) {
-          return
-        }
-
-        const resp = await fetch(url)
-
-        if (resp.ok) {
-          const buffer = await resp.arrayBuffer()
-          const fullPath = `${inputDir}/${path}.${ext}`
-          const folders = fullPath.split('/')
-
-          folders.pop()
-
-          await mkdir(resolve(folders.join('/')), { recursive: true })
-
-          return await createFile(
-            resolve(fullPath),
-            Buffer.from(buffer)
-          )
-        }
-      })
-    )
-  } catch (error) {
-    if (config.throwError) {
-      throw error
-    }
-
-    print('[SSF] Error downloading remote images', error)
+  if (!isStringStrict(inputDir)) {
+    throw new Error('No input directory')
   }
 
-  return []
+  /* Array of image objects required */
+
+  if (!isArrayStrict(images)) {
+    throw new Error('No images array')
+  }
+
+  /* Fetch and write images */
+
+  return await Promise.allSettled(
+    images.map(async (image) => {
+      const { path, url, ext = 'jpg' } = image
+
+      if (!isStringStrict(path) || !isStringStrict(url) || !isStringStrict(ext)) {
+        return
+      }
+
+      const resp = await fetch(url)
+
+      if (resp.ok) {
+        const buffer = await resp.arrayBuffer()
+        const fullPath = `${inputDir}/${path}.${ext}`
+        const folders = fullPath.split('/')
+
+        folders.pop()
+
+        await mkdir(resolve(folders.join('/')), { recursive: true })
+
+        return await createFile(
+          resolve(fullPath),
+          Buffer.from(buffer)
+        )
+      }
+    })
+  )
 }
 
 /* Exports */

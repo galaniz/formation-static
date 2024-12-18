@@ -1,0 +1,50 @@
+[
+  {
+    "id": 4,
+    "count": 0,
+    "description": "",
+    "link": "http://wp.com/tag/sample/",
+    "name": "Sample",
+    "slug": "sample",
+    "taxonomy": "post_tag",
+    "meta": [],
+    "_links": {
+      "self": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/tags/4",
+          "targetHints": {
+            "allow": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/tags"
+        }
+      ],
+      "about": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/taxonomies/post_tag"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/posts?tags=4"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  }
+]

@@ -5,6 +5,7 @@
 /* Imports */
 
 import type { Generic, GenericStrings } from '../global/globalTypes.js'
+import type { NavigationItem } from '../components/Navigation/NavigationTypes.js'
 import type {
   RenderServerlessData,
   RenderPreviewData,
@@ -60,6 +61,35 @@ export interface WordPressDataRendered {
 export interface WordPressDataRenderedProtected {
   rendered: string
   protected: boolean
+}
+
+/**
+ * @typedef WordPressDataMenuChild
+ * @type {NavigationItem}
+ * @prop {number} menuOrder
+ */
+export interface WordPressDataMenuChild extends NavigationItem {
+  menuOrder: number
+}
+
+/**
+ * @typedef WordPressDataMenuItem
+ * @type {RenderItem}
+ * @prop {WordPressDataMenuChild[]} [children]
+ */
+export interface WordPressDataMenuItem extends RenderItem {
+  children?: WordPressDataMenuChild[]
+}
+
+/**
+ * @typedef WordPressDataMenu
+ * @type {RenderItem}
+ * @prop {string} [name]
+ * @prop {string[]} [locations]
+ */
+export interface WordPressDataMenu extends RenderItem {
+  name?: string
+  locations?: string[]
 }
 
 /**

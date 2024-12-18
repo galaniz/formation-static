@@ -1,0 +1,57 @@
+[
+  {
+    "id": 3,
+    "description": "",
+    "name": "Main",
+    "slug": "main",
+    "meta": [],
+    "locations": [
+      "primary"
+    ],
+    "auto_add": false,
+    "_links": {
+      "self": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/menus/3",
+          "targetHints": {
+            "allow": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/menus"
+        }
+      ],
+      "about": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/taxonomies/nav_menu"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/menu-items?menus=3"
+        }
+      ],
+      "wp:menu-location": [
+        {
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/menu-locations/primary"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  }
+]

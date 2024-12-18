@@ -17,7 +17,15 @@ export const pages = [
         contentType: 'core/paragraph',
         renderType: 'richText',
         tag: 'p',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque et gravida neque. Nulla commodo eleifend turpis, vel bibendum urna euismod et. Maecenas consectetur dolor in justo congue, vel accumsan augue venenatis. Duis malesuada id turpis id cursus. Ut mollis, sem lacinia scelerisque tristique, ante ante dignissim ante, non viverra massa enim quis velit. Etiam in est in tortor porta volutpat. Pellentesque venenatis sit amet mi ac venenatis. Quisque scelerisque gravida est, ac pellentesque mauris pellentesque non. Sed vitae diam eget ante gravida accumsan eu id ipsum. Vestibulum mollis malesuada dui vel viverra. Integer non commodo ex. Morbi iaculis consequat dui.'
+        content: [
+          {
+            tag: '',
+            content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque et gravida neque. Nulla commodo eleifend turpis, vel bibendum urna euismod et. Maecenas consectetur dolor in justo congue, vel accumsan augue venenatis. Duis malesuada id turpis id cursus. Ut mollis, sem lacinia scelerisque tristique, ante ante dignissim ante, non viverra massa enim quis velit. Etiam in est in tortor porta volutpat. Pellentesque venenatis sit amet mi ac venenatis. Quisque scelerisque gravida est, ac pellentesque mauris pellentesque non. Sed vitae diam eget ante gravida accumsan eu id ipsum. Vestibulum mollis malesuada dui vel viverra. Integer non commodo ex. Morbi iaculis consequat dui.'
+          }
+        ]
+      },
+      {
+        contentType: 'frm/test'
       }
     ],
     excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque et gravida neque. Nulla commodo eleifend turpis, vel bibendum urna euismod et. Maecenas consectetur dolor in justo congue, vel accumsan augue venenatis. Duis malesuada id turpis id cursus. Ut mollis, sem lacinia scelerisque tristique, ante ante dignissim ante, non viverra massa enim quis velit. Etiam in',
@@ -121,7 +129,6 @@ export const pages = [
           format: 'png',
           type: 'image/png',
           sizes: {
-            150: 'http://wp.com/wp-content/uploads/2024/12/screenshot-150x150.png',
             300: 'http://wp.com/wp-content/uploads/2024/12/screenshot-300x225.png',
             768: 'http://wp.com/wp-content/uploads/2024/12/screenshot-768x576.png',
             1024: 'http://wp.com/wp-content/uploads/2024/12/screenshot-1024x768.png',
@@ -139,8 +146,10 @@ export const pages = [
           },
           {
             tag: 'a',
-            href: '#',
-            content: 'your dashboard'
+            attr: 'data-test="test"',
+            attrs: undefined,
+            content: 'your dashboard',
+            link: '#'
           },
           {
             content: ' to delete this page and create new pages for your content. Have fun!'
