@@ -9,7 +9,6 @@ import type { NavigationItem } from '../components/Navigation/NavigationTypes.js
 import type {
   RenderServerlessData,
   RenderPreviewData,
-  RenderAllData,
   RenderItem
 } from '../render/renderTypes.js'
 
@@ -118,6 +117,40 @@ export interface WordPressDataAuthor {
 }
 
 /**
+ * @typedef {object} WordPressDataMediaDetails
+ * @prop {number} width
+ * @prop {number} height
+ * @prop {number} filesize
+ * @prop {string} file
+ * @prop {Object<string, WordPressDataMediaSize>} sizes
+ */
+export interface WordPressDataMediaDetails {
+  width: number
+  height: number
+  filesize: number
+  file: string
+  sizes: Record<string, WordPressDataMediaSize>
+}
+
+/**
+ * @typedef {object} WordPressDataMediaSize
+ * @prop {string} source_url
+ * @prop {string} [mime_type]
+ * @prop {string} [file]
+ * @prop {number} [filesize]
+ * @prop {number} width
+ * @prop {number} height
+ */
+export interface WordPressDataMediaSize {
+  source_url: string
+  mime_type?: string
+  file?: string
+  filesize?: number
+  width: number
+  height: number
+}
+
+/**
  * @typedef {object} WordPressDataFeaturedMedia
  * @prop {number} id
  * @prop {string} source_url
@@ -125,12 +158,7 @@ export interface WordPressDataAuthor {
  * @prop {WordPressDataRendered} caption
  * @prop {string} media_type
  * @prop {string} mime_type
- * @prop {object} media_details
- * @prop {number} media_details.width
- * @prop {number} media_details.height
- * @prop {number} media_details.filesize
- * @prop {string} media_details.file
- * @prop {Object<string, WordPressDataMediaSize>} media_details.sizes
+ * @prop {WordPressDataMediaDetails} media_details
  */
 export interface WordPressDataFeaturedMedia {
   id: number
@@ -139,25 +167,7 @@ export interface WordPressDataFeaturedMedia {
   caption: WordPressDataRendered
   media_type: string
   mime_type: string
-  media_details: {
-    width: number
-    height: number
-    filesize: number
-    file: string
-    sizes: Record<string, WordPressDataMediaSize>
-  }
-}
-
-/**
- * @typedef {object} WordPressDataMediaSize
- * @prop {string} source_url
- * @prop {number} width
- * @prop {number} height
- */
-export interface WordPressDataMediaSize {
-  source_url: string
-  width: number
-  height: number
+  media_details: WordPressDataMediaDetails
 }
 
 /**
@@ -202,6 +212,8 @@ export interface WordPressDataAttachment {
  * @prop {string} link
  * @prop {number} author
  * @prop {number} featured_media
+ * @prop {string} [name]
+ * @prop {string} [taxonomy]
  */
 export interface WordPressDataParent {
   id: number
@@ -212,6 +224,8 @@ export interface WordPressDataParent {
   link: string
   author: number
   featured_media: number
+  name?: string
+  taxonomy?: string
 }
 
 /**
@@ -392,10 +406,12 @@ export interface WordPressDataFile {
  * @prop {number[]} [categories]
  * @prop {number[]} [tags]
  * @prop {string[]} [class_list]
+ * @prop {string} [taxonomy]
+ * @prop {string} [string]
  * @prop {WordPressDataLinks} [_links]
  * @prop {WordPressDataEmbedded} [_embedded]
  */
-export interface WordPressDataItem extends Generic {
+export interface WordPressDataItem extends Partial<WordPressDataFeaturedMedia>, Generic {
   id?: number
   date?: string
   date_gmt?: string
@@ -424,6 +440,8 @@ export interface WordPressDataItem extends Generic {
   categories?: number[]
   tags?: number[]
   class_list?: string[]
+  taxonomy?: string
+  name?: string
   _links?: WordPressDataLinks
   _embedded?: WordPressDataEmbedded
 }
@@ -432,20 +450,8 @@ export interface WordPressDataItem extends Generic {
  * @typedef {object} AllWordPressDataArgs
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]
- * @prop {function} [filterData]
- * @prop {function} [filterAllData]
  */
 export interface AllWordPressDataArgs {
   serverlessData?: RenderServerlessData
   previewData?: RenderPreviewData
-  filterData?: (
-    data: RenderItem[],
-    serverlessData?: RenderServerlessData,
-    previewData?: RenderPreviewData
-  ) => RenderItem[]
-  filterAllData?: (
-    allData: RenderAllData,
-    serverlessData?: RenderServerlessData,
-    previewData?: RenderPreviewData
-  ) => RenderAllData
 }

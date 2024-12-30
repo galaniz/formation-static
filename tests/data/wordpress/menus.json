@@ -52,6 +52,48 @@
           "templated": true
         }
       ]
+    },
+    "_embedded": {
+      "wp:menu-location": [
+        {
+          "name": "primary",
+          "description": "Desktop Horizontal Menu",
+          "menu": 3,
+          "_links": {
+            "self": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/menu-locations/primary",
+                "targetHints": {
+                  "allow": [
+                    "GET"
+                  ]
+                }
+              }
+            ],
+            "collection": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/menu-locations"
+              }
+            ],
+            "wp:menu": [
+              {
+                "embeddable": true,
+                "href": "http://wp.com/wp-json/wp/v2/menus/3"
+              }
+            ],
+            "curies": [
+              {
+                "name": "wp",
+                "href": "https://api.w.org/{rel}",
+                "templated": true
+              }
+            ]
+          }
+        }
+      ]
     }
+  },
+  {
+    "id": 4
   }
 ]

@@ -4,15 +4,15 @@
 
 /* Imports */
 
-import { it, expect, describe, beforeAll, afterAll } from 'vitest'
-import { getArchiveInfo, getTaxonomyInfo, getArchiveLink } from '../archive.js'
-import { store } from '../../../store/store.js'
+import { it, expect, describe, beforeEach, afterEach, beforeAll, afterAll } from 'vitest'
+import { getArchiveInfo, getTaxonomyInfo, getArchiveLink, getArchiveLabels } from '../archive.js'
+import { setStoreItem } from '../../../store/store.js'
 
 /* Test getArchiveInfo */
 
 describe('getArchiveInfo()', () => {
   beforeAll(() => {
-    store.archiveMeta = {
+    setStoreItem('archiveMeta', {
       post: {
         id: '123',
         slug: 'posts',
@@ -29,11 +29,11 @@ describe('getArchiveInfo()', () => {
         // @ts-expect-error
         contentType: null
       }
-    }
+    })
   })
 
   afterAll(() => {
-    store.archiveMeta = {}
+    setStoreItem('archiveMeta', {})
   })
 
   it('should return object with empty values if no content type is provided', () => {
@@ -108,8 +108,9 @@ describe('getTaxonomyInfo()', () => {
       id: '',
       slug: '',
       title: '',
-      contentType: '',
-      useContentTypeSlug: true,
+      contentTypes: [],
+      primaryContentType: '',
+      usePrimaryContentTypeSlug: true,
       isPage: false
     }
 
@@ -129,8 +130,9 @@ describe('getTaxonomyInfo()', () => {
       id: '',
       slug: '',
       title: '',
-      contentType: '',
-      useContentTypeSlug: true,
+      contentTypes: [],
+      primaryContentType: '',
+      usePrimaryContentTypeSlug: true,
       isPage: false
     }
 
@@ -142,8 +144,8 @@ describe('getTaxonomyInfo()', () => {
       id: '123',
       title: 'Test',
       slug: 'test',
-      contentType: 'post',
-      useContentTypeSlug: false,
+      contentTypes: ['post'],
+      usePrimaryContentTypeSlug: false,
       isPage: true
     })
 
@@ -151,8 +153,9 @@ describe('getTaxonomyInfo()', () => {
       id: '123',
       slug: 'test',
       title: 'Test',
-      contentType: 'post',
-      useContentTypeSlug: false,
+      contentTypes: ['post'],
+      primaryContentType: 'post',
+      usePrimaryContentTypeSlug: false,
       isPage: true
     }
 
@@ -172,7 +175,7 @@ describe('getTaxonomyInfo()', () => {
         // @ts-expect-error
         title: null,
         // @ts-expect-error
-        contentType: null
+        contentTypes: null
       }
     })
 
@@ -180,8 +183,9 @@ describe('getTaxonomyInfo()', () => {
       id: '',
       slug: '',
       title: '',
-      contentType: '',
-      useContentTypeSlug: true,
+      contentTypes: [],
+      primaryContentType: '',
+      usePrimaryContentTypeSlug: true,
       isPage: false
     }
 
@@ -197,7 +201,7 @@ describe('getTaxonomyInfo()', () => {
         id: '123',
         slug: 'test',
         title: 'Test',
-        contentType: 'post'
+        contentTypes: ['post', 'test']
       }
     })
 
@@ -205,8 +209,9 @@ describe('getTaxonomyInfo()', () => {
       id: '123',
       slug: 'test',
       title: 'Test',
-      contentType: 'post',
-      useContentTypeSlug: true,
+      contentTypes: ['post', 'test'],
+      primaryContentType: 'post',
+      usePrimaryContentTypeSlug: true,
       isPage: false
     }
 
@@ -218,7 +223,7 @@ describe('getTaxonomyInfo()', () => {
 
 describe('getArchiveLink()', () => {
   beforeAll(() => {
-    store.archiveMeta = {
+    setStoreItem('archiveMeta', {
       post: {
         id: '789',
         slug: 'blog',
@@ -232,11 +237,11 @@ describe('getArchiveLink()', () => {
         contentType: 'page',
         plural: 'Tests'
       }
-    }
+    })
   })
 
   afterAll(() => {
-    store.archiveMeta = {}
+    setStoreItem('archiveMeta', {})
   })
 
   it('should return object with empty values if no content type is provided', () => {
@@ -255,8 +260,8 @@ describe('getArchiveLink()', () => {
       id: '123',
       slug: 'test',
       title: 'Test',
-      contentType: 'post',
-      useContentTypeSlug: false
+      contentTypes: ['post'],
+      usePrimaryContentTypeSlug: false
     })
 
     const expectedResult = {
@@ -272,8 +277,8 @@ describe('getArchiveLink()', () => {
       id: '123',
       slug: 'test',
       title: 'Test',
-      contentType: 'post',
-      useContentTypeSlug: true,
+      contentTypes: ['post'],
+      usePrimaryContentTypeSlug: true,
       isPage: true
     })
 
@@ -294,8 +299,8 @@ describe('getArchiveLink()', () => {
         id: '123',
         slug: 'test',
         title: 'Test',
-        contentType: 'post',
-        useContentTypeSlug: false
+        contentTypes: ['post'],
+        usePrimaryContentTypeSlug: false
       }
     })
 
@@ -316,8 +321,8 @@ describe('getArchiveLink()', () => {
         id: '123',
         slug: 'test',
         title: 'Test',
-        contentType: 'post',
-        useContentTypeSlug: true
+        contentTypes: ['post'],
+        usePrimaryContentTypeSlug: true
       }
     })
 
@@ -338,8 +343,8 @@ describe('getArchiveLink()', () => {
         id: '123',
         slug: 'test',
         title: 'Test',
-        contentType: 'post',
-        useContentTypeSlug: true,
+        contentTypes: ['post'],
+        usePrimaryContentTypeSlug: true,
         isPage: true
       }
     })
@@ -361,14 +366,117 @@ describe('getArchiveLink()', () => {
         id: '123',
         slug: 'test',
         title: 'Test',
-        contentType: 'test',
-        useContentTypeSlug: true
+        contentTypes: ['test', 'post'],
+        usePrimaryContentTypeSlug: true
       }
     })
 
     const expectedResult = {
       title: 'Tests',
       link: '/test/'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+})
+
+/* Test getArchiveLabels */
+
+describe('getArchiveLabels()', () => {
+  beforeEach(() => {
+    setStoreItem('archiveMeta', {
+      testEmptyContentType: {},
+      testContentType: {
+        singular: 'Test Content Type',
+        plural: 'Test Content Types'
+      }
+    })
+  })
+
+  afterEach(() => {
+    setStoreItem('archiveMeta', {})
+  })
+
+  it('should return default labels if content type is null', () => {
+    // @ts-expect-error
+    const result = getArchiveLabels(null)
+    const expectedResult = {
+      singular: 'Post',
+      plural: 'Posts'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return default labels if content type is empty string', () => {
+    const result = getArchiveLabels('')
+    const expectedResult = {
+      singular: 'Post',
+      plural: 'Posts'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return default labels if content type has empty archive meta', () => {
+    const result = getArchiveLabels('testEmptyContentType')
+    const expectedResult = {
+      singular: 'Post',
+      plural: 'Posts'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return archive meta labels if content type has labels', () => {
+    const result = getArchiveLabels('testContentType')
+    const expectedResult = {
+      singular: 'Test Content Type',
+      plural: 'Test Content Types'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return default labels if taxonomy content type is null', () => {
+    const result = getArchiveLabels('taxonomy', {
+      // @ts-expect-error
+      contentType: null
+    })
+
+    const expectedResult = {
+      singular: 'Post',
+      plural: 'Posts'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return default labels if taxonomy content type does not have archive meta', () => {
+    const result = getArchiveLabels('taxonomy', {
+      id: '123',
+      title: 'Title',
+      contentTypes: ['doesNotExist']
+    })
+
+    const expectedResult = {
+      singular: 'Post',
+      plural: 'Posts'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return archive meta labels if taxonomy content type has labels', () => {
+    const result = getArchiveLabels('taxonomy', {
+      id: '123',
+      title: 'Title',
+      contentTypes: ['testContentType']
+    })
+
+    const expectedResult = {
+      singular: 'Test Content Type',
+      plural: 'Test Content Types'
     }
 
     expect(result).toEqual(expectedResult)

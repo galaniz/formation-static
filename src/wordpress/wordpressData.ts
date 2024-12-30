@@ -11,17 +11,12 @@ import type {
   AllWordPressDataArgs
 } from './wordpressDataTypes.js'
 import type { RenderAllData, RenderItem } from '../render/renderTypes.js'
-import {
-  normalizeWordPressData,
-  normalizeWordPressMenuItems,
-  normalizeWordPressMenus
-} from './wordpressDataNormal.js'
+import type { DataFilterArgs } from '../utils/filter/filterTypes.js'
+import { normalizeWordPressData } from './wordpressDataNormal.js'
 import { applyFilters } from '../utils/filter/filter.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
 import { isArray } from '../utils/array/array.js'
-import { isFunction } from '../utils/function/function.js'
-import { isNumber } from '../utils/number/number.js'
 import { fetchStoreItem } from '../store/store.js'
 import { config } from '../config/config.js'
 
@@ -130,17 +125,17 @@ const getWordPressData = async (
   let url = `${ssl ? 'https' : 'http'}://${host}/wp-json/wp/v2/${route}?_embed&status=${status}`
   let loop = false
 
-  params = isObjectStrict(params) ? params : {}
+  if (isObjectStrict(params)) {
+    for (const [key, value] of Object.entries(params)) {
+      let val = value
 
-  for (const [key, value] of Object.entries(params)) {
-    let val = value
+      if (key === 'per_page' && value === -1) {
+        val = 100
+        loop = true
+      }
 
-    if (key === 'per_page' && value === -1) {
-      val = 100
-      loop = true
+      url += `&${key}=${val.toString()}`
     }
-
-    url += `&${key}=${val.toString()}`
   }
 
   if (loop) {
@@ -154,31 +149,25 @@ const getWordPressData = async (
 
   const resp = await fetch(url, { headers })
   const data: WordPressDataError | WordPressDataItem | WordPressDataItem[] = await resp.json()
-  const isObj = isObjectStrict(data)
 
   /* Check if error */
 
-  const isErr = isObj && data.message != null
+  const isErr = isObjectStrict(data) && isStringStrict(data.message)
+  const message = isErr ? data.message : 'Bad fetch response'
 
   if (!resp.ok || isErr) {
-    const message = isObj ? data.message : ''
-
-    throw new Error(isStringStrict(message) ? message : 'Bad fetch response', {
-      cause: data
-    })
+    throw new Error(message as string, { cause: data })
   }
 
   /* Total */
 
   const total = resp.headers.get('X-WP-TotalPages')
-  const totalNum = isStringStrict(total) ? parseInt(total, 10) : 1
-  const totalPages = isNumber(totalNum) ? totalNum : 1
+  const totalPages = isStringStrict(total) ? parseInt(total, 10) : 1
 
   /* Normalize */
 
   const dataItems = isArray(data) ? data : [data] as WordPressDataItem[]
-
-  let newData = normalizeWordPressData(dataItems)
+  let newData = normalizeWordPressData(dataItems, route)
 
   if (loop && _page < totalPages) {
     const pagData = await getWordPressData(key, route, {
@@ -223,9 +212,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
 
   const {
     serverlessData,
-    previewData,
-    filterData,
-    filterAllData
+    previewData
   } = argsObj
 
   /* All data */
@@ -242,6 +229,10 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
 
   const isServerless = serverlessData != null
   const isPreview = previewData != null
+  const wordpressDataFilterArgs: DataFilterArgs = {
+    serverlessData,
+    previewData
+  }
 
   /* Get single entry data if serverless or preview data */
 
@@ -292,17 +283,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
         per_page: -1
       })
 
-      if (contentType === 'navigationItem') {
-        data = normalizeWordPressMenuItems(data)
-      }
-
-      if (contentType === 'navigation') {
-        data = normalizeWordPressMenus(data)
-      }
-
-      if (isFunction(filterData)) {
-        data = filterData(data, serverlessData, previewData)
-      }
+      data = applyFilters('wordpressData', data, wordpressDataFilterArgs)
 
       if (isArray(data)) {
         allData[contentType] = data
@@ -324,9 +305,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
         per_page: -1
       })
 
-      if (isFunction(filterData)) {
-        data = filterData(data, serverlessData, previewData)
-      }
+      data = applyFilters('wordpressData', data, wordpressDataFilterArgs)
 
       if (isArray(data)) {
         allData.content[contentType] = data
@@ -336,9 +315,11 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
 
   /* Filter all data */
 
-  if (isFunction(filterAllData)) {
-    allData = filterAllData(allData, serverlessData, previewData)
-  }
+  allData = applyFilters('allData', allData, {
+    type: 'wordpress',
+    serverlessData,
+    previewData
+  })
 
   /* Output */
 

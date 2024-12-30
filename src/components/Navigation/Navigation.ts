@@ -50,11 +50,11 @@ class Navigation {
   currentLink: string = ''
 
   /**
-   * Current content type to compare against
+   * Current content type(s) to compare against
    *
-   * @type {string}
+   * @type {string[]}
    */
-  currentType: string = ''
+  currentType: string[] = []
 
   /**
    * Initialize success
@@ -122,7 +122,10 @@ class Navigation {
     this.navigations = navigations
     this.items = items
     this.currentLink = currentLink
-    this.currentType = normalizeContentType(currentType)
+
+    const typesArr = isArrayStrict(currentType) ? currentType : [currentType]
+
+    this.currentType = typesArr.map(type => normalizeContentType(type))
 
     /* Items by id */
 
@@ -207,7 +210,18 @@ class Navigation {
     const internalId = internalLink?.id
 
     if (isStringStrict(internalId)) {
-      props.archiveCurrent = internalId === getStoreItem('archiveMeta')[this.currentType]?.id
+      let isArchiveCurrent = false
+
+      for (const type of this.currentType) {
+        const hasArchive = internalId === getStoreItem('archiveMeta')[type]?.id
+
+        if (hasArchive) {
+          isArchiveCurrent = true
+          break
+        }
+      }
+
+      props.archiveCurrent = isArchiveCurrent
     }
 
     let descendentCurrent = false
@@ -235,12 +249,12 @@ class Navigation {
    *
    * @private
    * @param {NavigationItem[]} children
-   * @param {NavigationItem[]} store
+   * @param {NavigationItem[]} output
    * @return {boolean}
    */
   #recurseItemChildren (
     children: NavigationItem[] = [],
-    store: NavigationItem[] = []
+    output: NavigationItem[] = []
   ): boolean {
     let childCurrent = false
 
@@ -266,7 +280,7 @@ class Navigation {
         childCurrent = true
       }
 
-      store.push(info)
+      output.push(info)
     })
 
     return childCurrent
@@ -313,11 +327,9 @@ class Navigation {
     items: NavigationItem[] = [],
     output: HtmlString,
     args: NavigationOutputArgs,
-    depth: number = -1,
+    depth: number = 0,
     maxDepth?: number
   ): void => {
-    depth += 1
-
     if (isNumber(maxDepth) && depth > maxDepth) {
       return
     }
@@ -436,7 +448,7 @@ class Navigation {
       /* Nested content */
 
       if (children.length > 0) {
-        this.#recurseOutput(children, output, args, depth, maxDepth)
+        this.#recurseOutput(children, output, args, depth + 1, maxDepth)
       }
 
       /* Item end */
@@ -501,7 +513,7 @@ class Navigation {
 
     const output = { html: '' }
 
-    this.#recurseOutput(normalizedItems, output, args, -1, maxDepth)
+    this.#recurseOutput(normalizedItems, output, args, 0, maxDepth)
 
     return output.html
   }

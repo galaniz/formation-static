@@ -6,6 +6,7 @@
 
 import type { LocalData, LocalDataParams, AllLocalDataArgs } from './localDataTypes.js'
 import type { RenderItem, RenderAllData } from '../render/renderTypes.js'
+import type { AllDataFilterArgs } from '../utils/filter/filterTypes.js'
 import type { Generic } from '../global/globalTypes.js'
 import { readdir, readFile } from 'node:fs/promises'
 import { extname, basename, resolve } from 'node:path'
@@ -13,7 +14,6 @@ import { applyFilters } from '../utils/filter/filter.js'
 import { fetchStoreItem, getStoreItem } from '../store/store.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
-import { isFunction } from '../utils/function/function.js'
 import { isArray } from '../utils/array/array.js'
 import { getJson } from '../utils/json/json.js'
 import { config } from '../config/config.js'
@@ -144,9 +144,7 @@ const getAllLocalData = async (
         posts: ['content'],
         terms: ['content']
       }
-    },
-    filterData,
-    filterAllData
+    }
   } = args
 
   /* Get data */
@@ -214,9 +212,7 @@ const getAllLocalData = async (
 
   /* Filter data */
 
-  if (isFunction(filterData)) {
-    data = filterData(data)
-  }
+  data = applyFilters('localData', data)
 
   /* Empty archive data */
 
@@ -315,9 +311,11 @@ const getAllLocalData = async (
 
   /* Filter all data */
 
-  if (isFunction(filterAllData)) {
-    allData = filterAllData(allData)
+  const allDataFilterArgs: AllDataFilterArgs = {
+    type: 'local'
   }
+
+  allData = applyFilters('allData', allData, allDataFilterArgs)
 
   /* Output */
 

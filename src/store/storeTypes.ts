@@ -5,7 +5,6 @@
 /* Imports */
 
 import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes.js'
-import type { RenderAllData } from '../render/renderTypes.js'
 import type { ImageProps } from '../utils/image/imageTypes.js'
 import type { FormMeta } from '../objects/Form/FormTypes.js'
 import type { Generic } from '../global/globalTypes.js'
@@ -25,13 +24,11 @@ export interface StoreSlug {
  * @prop {string} id
  * @prop {string} slug
  * @prop {string} title
- * @prop {string} contentType
  */
 export interface StoreParent {
   id: string
   slug: string
   title: string
-  contentType: string
 }
 
 /**
@@ -62,7 +59,7 @@ export interface StoreArchiveMeta {
  * @typedef Store
  * @type {Generic}
  * @prop {Object<string, RenderSlug>} slugs
- * @prop {Object<string, StoreParent>} parents
+ * @prop {Object<string, Object<string, StoreParent>>} parents
  * @prop {Object<string, StoreArchiveMeta>} archiveMeta
  * @prop {Object<string, FormMeta>} formMeta
  * @prop {Object<string, ImageProps>} imageMeta
@@ -71,24 +68,10 @@ export interface StoreArchiveMeta {
  */
 export interface Store extends Generic {
   slugs: Record<string, StoreSlug>
-  parents: Record<string, StoreParent>
+  parents: Record<string, Record<string, StoreParent>>
   archiveMeta: Record<string, StoreArchiveMeta>
   formMeta: Record<string, FormMeta>
   imageMeta: Record<string, ImageProps>
   navigations: Navigation[]
   navigationItems: NavigationItem[]
-}
-
-/**
- * @typedef {object} StoreDataArgs
- * @prop {Navigation[]} [navigation]
- * @prop {NavigationItem[]} [navigationItem]
- * @prop {Object<string, RenderItem[]>} [content]
- * @prop {boolean} serverless
- */
-export interface StoreDataArgs {
-  navigation?: Navigation[]
-  navigationItem?: NavigationItem[]
-  content?: RenderAllData['content']
-  serverless: boolean
 }

@@ -6,22 +6,25 @@
 
 import { it, expect, describe, beforeEach, afterEach } from 'vitest'
 import { getSlug, getLink, getPermalink } from '../link.js'
+import { setStoreItem } from '../../../store/store.js'
 import { config } from '../../../config/config.js'
-import { store } from '../../../store/store.js'
 
 /* Test getSlug */
 
 describe('getSlug()', () => {
   beforeEach(() => {
-    config.localesInSlug = ['en', 'es']
+    config.localeInSlug = {
+      'en-CA': 'en',
+      'es-CL': 'es'
+    }
   })
 
   afterEach(() => {
+    setStoreItem('archiveMeta', {})
+    setStoreItem('parents', {})
     config.hierarchicalTypes = []
-    config.localesInSlug = []
-    config.typesInSlug = {}
-    store.archiveMeta = {}
-    store.parents = {}
+    config.localeInSlug = {}
+    config.typeInSlug = {}
   })
 
   it('should return empty string if args are null', () => {
@@ -44,7 +47,7 @@ describe('getSlug()', () => {
     const result = getSlug({
       slug: 'index',
       pageData: {
-        locale: 'en'
+        locale: 'en-CA'
       }
     }, true)
 
@@ -57,7 +60,7 @@ describe('getSlug()', () => {
   })
 
   it('should return config type slug and slug', () => {
-    config.typesInSlug = {
+    config.typeInSlug = {
       color: 'hue'
     }
 
@@ -75,7 +78,7 @@ describe('getSlug()', () => {
   })
 
   it('should return localized type slug and slug', () => {
-    config.typesInSlug = {
+    config.typeInSlug = {
       color: {
         es: 'colores'
       }
@@ -85,7 +88,7 @@ describe('getSlug()', () => {
       slug: 'purple',
       contentType: 'color',
       pageData: {
-        locale: 'es'
+        locale: 'es-CL'
       }
     }, true)
 
@@ -99,20 +102,21 @@ describe('getSlug()', () => {
 
   it('should return parent slugs and slug', () => {
     config.hierarchicalTypes = ['hierarchical']
-    store.parents = {
-      123: {
-        id: '456',
-        slug: 'colors',
-        title: 'Colors',
-        contentType: 'hierarchical'
-      },
-      456: {
-        id: '789',
-        slug: 'design',
-        title: 'Design',
-        contentType: 'hierarchical'
+
+    setStoreItem('parents', {
+      hierarchical: {
+        123: {
+          id: '456',
+          slug: 'colors',
+          title: 'Colors'
+        },
+        456: {
+          id: '789',
+          slug: 'design',
+          title: 'Design'
+        }
       }
-    }
+    })
 
     const result = getSlug({
       id: '123',
@@ -142,12 +146,14 @@ describe('getSlug()', () => {
   })
 
   it('should return archive slug and slug', () => {
-    store.archiveMeta.color = {
-      id: '123',
-      slug: 'colors',
-      title: 'Colors',
-      contentType: 'page'
-    }
+    setStoreItem('archiveMeta', {
+      color: {
+        id: '123',
+        slug: 'colors',
+        title: 'Colors',
+        contentType: 'page'
+      }
+    })
 
     const result = getSlug({
       slug: 'purple',
@@ -170,19 +176,24 @@ describe('getSlug()', () => {
   })
 
   it('should return parent, archive slug and slug', () => {
-    store.parents['123'] = {
-      id: '456',
-      slug: 'art',
-      title: 'Art',
-      contentType: 'page'
-    }
+    setStoreItem('parents', {
+      page: {
+        123: {
+          id: '456',
+          slug: 'art',
+          title: 'Art'
+        }
+      }
+    })
 
-    store.archiveMeta.color = {
-      id: '123',
-      slug: 'colors',
-      title: 'Colors',
-      contentType: 'page'
-    }
+    setStoreItem('archiveMeta', {
+      color: {
+        id: '123',
+        slug: 'colors',
+        title: 'Colors',
+        contentType: 'page'
+      }
+    })
 
     const result = getSlug({
       slug: 'purple',
@@ -211,18 +222,20 @@ describe('getSlug()', () => {
   })
 
   it('should return locale, archive slug and slug', () => {
-    store.archiveMeta.color = {
-      id: '123',
-      slug: 'colors',
-      title: 'Colors',
-      contentType: 'page'
-    }
+    setStoreItem('archiveMeta', {
+      color: {
+        id: '123',
+        slug: 'colors',
+        title: 'Colors',
+        contentType: 'page'
+      }
+    })
 
     const result = getSlug({
       slug: 'purple',
       contentType: 'color',
       pageData: {
-        locale: 'en'
+        locale: 'en-CA'
       }
     }, true)
 
@@ -242,12 +255,14 @@ describe('getSlug()', () => {
   })
 
   it('should return taxonomy slug', () => {
-    store.archiveMeta.color = {
-      id: '123',
-      slug: 'colors',
-      title: 'Colors',
-      contentType: 'page'
-    }
+    setStoreItem('archiveMeta', {
+      color: {
+        id: '123',
+        slug: 'colors',
+        title: 'Colors',
+        contentType: 'page'
+      }
+    })
 
     const result = getSlug({
       id: '456',
@@ -257,8 +272,8 @@ describe('getSlug()', () => {
         id: '789',
         slug: 'types',
         title: 'Color Types',
-        contentType: 'color',
-        useContentTypeSlug: false
+        contentTypes: ['color'],
+        usePrimaryContentTypeSlug: false
       }
     }, true)
 
@@ -271,12 +286,14 @@ describe('getSlug()', () => {
   })
 
   it('should return archive slug and taxonomy slug', () => {
-    store.archiveMeta.color = {
-      id: '123',
-      slug: 'colors',
-      title: 'Colors',
-      contentType: 'page'
-    }
+    setStoreItem('archiveMeta', {
+      color: {
+        id: '123',
+        slug: 'colors',
+        title: 'Colors',
+        contentType: 'page'
+      }
+    })
 
     const result = getSlug({
       id: '456',
@@ -286,8 +303,8 @@ describe('getSlug()', () => {
         id: '789',
         slug: 'types',
         title: 'Color Types',
-        contentType: 'color',
-        useContentTypeSlug: true
+        contentTypes: ['color'],
+        usePrimaryContentTypeSlug: true
       }
     }, true)
 
@@ -307,12 +324,14 @@ describe('getSlug()', () => {
   })
 
   it('should return locale, archive slug and taxonomy slug', () => {
-    store.archiveMeta.color = {
-      id: '123',
-      slug: 'colors',
-      title: 'Colors',
-      contentType: 'page'
-    }
+    setStoreItem('archiveMeta', {
+      color: {
+        id: '123',
+        slug: 'colors',
+        title: 'Colors',
+        contentType: 'page'
+      }
+    })
 
     const result = getSlug({
       id: '456',
@@ -322,9 +341,9 @@ describe('getSlug()', () => {
         id: '789',
         slug: 'types',
         title: 'Color Types',
-        contentType: 'color',
-        useContentTypeSlug: true,
-        locale: 'en'
+        contentTypes: ['color'],
+        usePrimaryContentTypeSlug: true,
+        locale: 'en-CA'
       }
     }, true)
 
@@ -343,28 +362,30 @@ describe('getSlug()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return locale, archive slug and taxonomy slug', () => {
-    store.parents = {
-      123: {
-        id: '456',
-        slug: 'art',
-        title: 'Art',
-        contentType: 'page'
-      },
-      456: {
-        id: '789',
-        slug: 'all',
-        title: 'All',
+  it('should return locale, parent slug, archive slug and taxonomy slug', () => {
+    setStoreItem('parents', {
+      page: {
+        123: {
+          id: '456',
+          slug: 'art',
+          title: 'Art'
+        },
+        456: {
+          id: '789',
+          slug: 'all',
+          title: 'All'
+        }
+      }
+    })
+
+    setStoreItem('archiveMeta', {
+      color: {
+        id: '123',
+        slug: 'colors',
+        title: 'Colors',
         contentType: 'page'
       }
-    }
-
-    store.archiveMeta.color = {
-      id: '123',
-      slug: 'colors',
-      title: 'Colors',
-      contentType: 'page'
-    }
+    })
 
     const result = getSlug({
       id: '456',
@@ -374,9 +395,9 @@ describe('getSlug()', () => {
         id: '789',
         slug: 'types',
         title: 'Color Types',
-        contentType: 'color',
-        useContentTypeSlug: true,
-        locale: 'en'
+        contentTypes: ['color'],
+        usePrimaryContentTypeSlug: true,
+        locale: 'en-CA'
       }
     }, true)
 
@@ -408,12 +429,14 @@ describe('getSlug()', () => {
   })
 
   it('should return taxonomy slug and term slug', () => {
-    store.archiveMeta.color = {
-      id: '123',
-      slug: 'colors',
-      title: 'Colors',
-      contentType: 'page'
-    }
+    setStoreItem('archiveMeta', {
+      color: {
+        id: '123',
+        slug: 'colors',
+        title: 'Colors',
+        contentType: 'page'
+      }
+    })
 
     const result = getSlug({
       slug: 'cold',
@@ -423,8 +446,8 @@ describe('getSlug()', () => {
           id: '456',
           slug: 'types',
           title: 'Color Types',
-          contentType: 'color',
-          useContentTypeSlug: false
+          contentTypes: ['color'],
+          usePrimaryContentTypeSlug: false
         }
       }
     }, true)
@@ -438,12 +461,14 @@ describe('getSlug()', () => {
   })
 
   it('should return archive, taxonomy and term slug', () => {
-    store.archiveMeta.color = {
-      id: '123',
-      slug: 'colors',
-      title: 'Colors',
-      contentType: 'page'
-    }
+    setStoreItem('archiveMeta', {
+      color: {
+        id: '123',
+        slug: 'colors',
+        title: 'Colors',
+        contentType: 'page'
+      }
+    })
 
     const result = getSlug({
       slug: 'cold',
@@ -453,8 +478,8 @@ describe('getSlug()', () => {
           id: '456',
           slug: 'types',
           title: 'Color Types',
-          contentType: 'color',
-          useContentTypeSlug: true,
+          contentTypes: ['color'],
+          usePrimaryContentTypeSlug: true,
           isPage: true
         }
       }
@@ -493,7 +518,7 @@ describe('getSlug()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  // TODO: Test filters
+  // TODO: Test filters AND TERM PARENT
 })
 
 /* Test getPermalink */
@@ -577,7 +602,7 @@ describe('getPermalink()', () => {
 
 describe('getLink()', () => {
   afterEach(() => {
-    config.localesInSlug = []
+    config.localeInSlug = {}
     config.env.prod = false
     config.env.prodUrl = ''
   })
@@ -612,12 +637,14 @@ describe('getLink()', () => {
   it('should return internal link as prod permalink', () => {
     config.env.prod = true
     config.env.prodUrl = 'https://test.com/'
-    config.localesInSlug = ['es']
+    config.localeInSlug = {
+      'es-ES': 'es'
+    }
 
     const result = getLink({
       id: '123',
       slug: 'test',
-      locale: 'es',
+      locale: 'es-ES',
       contentType: 'page'
     })
 

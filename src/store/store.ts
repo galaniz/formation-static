@@ -4,7 +4,8 @@
 
 /* Imports */
 
-import type { Store, StoreDataArgs } from './storeTypes.js'
+import type { Store } from './storeTypes.js'
+import type { RenderAllData, RenderItem } from '../render/renderTypes.js'
 import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
@@ -83,26 +84,14 @@ const setStoreItem = <T extends Store, K extends keyof T, V extends keyof T[K] |
 /**
  * Set serverless or build time data (navigations, archive meta, parents)
  *
- * @param {StoreDataArgs} args
+ * @param {RenderAllData} allData
+ * @param {boolean} [isServerless]
  * @return {Promise<boolean>}
  */
-const setStoreData = async (args: StoreDataArgs): Promise<boolean> => {
-  /* Args must be object */
-
-  if (!isObjectStrict(args)) {
-    return false
-  }
-
-  const {
-    navigation,
-    navigationItem,
-    content,
-    serverless
-  } = args
-
+const setStoreData = async (allData: RenderAllData, isServerless: boolean = false): Promise<boolean> => {
   /* Serverless all data */
 
-  if (serverless) {
+  if (isServerless) {
     for (const key of Object.keys(store)) {
       if (key === 'slugs') { // Skip slugs as set in data fetch
         continue
@@ -118,6 +107,18 @@ const setStoreData = async (args: StoreDataArgs): Promise<boolean> => {
     return true
   }
 
+  /* Data must be object */
+
+  if (!isObjectStrict(allData)) {
+    return false
+  }
+
+  const {
+    navigation,
+    navigationItem,
+    content
+  } = allData
+
   /* Build time navigation data */
 
   store.navigations = isArrayStrict(navigation) ? navigation : []
@@ -125,8 +126,13 @@ const setStoreData = async (args: StoreDataArgs): Promise<boolean> => {
 
   /* Build time archive meta and parent data */
 
+  const data = {
+    ...allData,
+    ...content
+  }
+
   config.hierarchicalTypes.forEach(type => {
-    const items = content?.[type]
+    const items = data?.[type]
 
     if (!isArrayStrict(items)) {
       return
@@ -137,32 +143,34 @@ const setStoreData = async (args: StoreDataArgs): Promise<boolean> => {
         return
       }
 
-      /* Id required */
+      /* Props */
 
-      const id = item.id
+      const {
+        id,
+        parent,
+        archive,
+        slug,
+        title
+      } = item as RenderItem
+
+      /* Id required */
 
       if (!isStringStrict(id)) {
         return
       }
-
-      /* Parent and archive */
-
-      const { parent, archive } = item
 
       /* Archive */
 
       const archiveType = normalizeContentType(archive)
 
       if (isStringStrict(archiveType)) {
-        const archiveSlug = item.slug
-        const archiveTitle = item.title
         const archiveObj =
           isObjectStrict(store.archiveMeta[archiveType]) ? store.archiveMeta[archiveType] : {}
 
         store.archiveMeta[archiveType] = {
           id,
-          slug: archiveSlug,
-          title: archiveTitle,
+          slug,
+          title,
           contentType: type,
           ...archiveObj
         }
@@ -176,11 +184,14 @@ const setStoreData = async (args: StoreDataArgs): Promise<boolean> => {
         const parentId = parent.id
 
         if (isStringStrict(parentSlug) && isStringStrict(parentTitle) && isStringStrict(parentId)) {
-          store.parents[id] = {
+          if (store.parents[type] == null) {
+            store.parents[type] = {}
+          }
+
+          store.parents[type][id] = {
             id: parentId,
             slug: parentSlug,
-            title: parentTitle,
-            contentType: type
+            title: parentTitle
           }
         }
       }

@@ -23,7 +23,6 @@ import type {
   RenderNavigations
 } from './renderTypes.js'
 import type { GenericStrings, ParentArgs, HtmlString } from '../global/globalTypes.js'
-import type { PaginationData } from '../components/Pagination/PaginationTypes.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
 import { doActions } from '../utils/action/action.js'
 import { applyFilters } from '../utils/filter/filter.js'
@@ -282,7 +281,7 @@ const renderContent = async (
 
   let {
     parents = [],
-    headingsIndex = 0,
+    headingsIndex = -1,
     depth = 0
   } = args
 
@@ -305,6 +304,7 @@ const renderContent = async (
 
     const props = structuredClone(item)
     const renderType = isString(props.renderType) ? props.renderType : ''
+    const isRichText = renderType === 'richText'
 
     /* Check for nested content */
 
@@ -319,12 +319,23 @@ const renderContent = async (
       children = templates
     }
 
-    /* Children array check */
+    /* Children check */
 
     let childrenArr
+    let childrenStr = ''
 
-    if (isArrayStrict(children) && renderType !== 'richText') {
+    if (isArrayStrict(children) && !isRichText) {
       childrenArr = children
+    }
+
+    if (isStringStrict(children) && !isRichText) {
+      childrenStr = children
+    }
+
+    /* Rich text area headings */
+
+    if (renderType === 'content' && depth === 0) {
+      headingsIndex = pageHeadings.push([]) - 1
     }
 
     /* Render output */
@@ -405,7 +416,7 @@ const renderContent = async (
 
     /* Add to output object */
 
-    _output.html += renderStart
+    _output.html += renderStart + childrenStr
 
     /* Recurse through children */
 
@@ -431,19 +442,13 @@ const renderContent = async (
           pageHeadings,
           navigations,
           headingsIndex,
-          depth: depth += 1
+          depth: depth + 1
         },
         _output
       )
     }
 
     _output.html += renderEnd
-
-    /* Additional rich text areas */
-
-    if (renderType === 'content' && depth === 0) {
-      headingsIndex = pageHeadings.push([])
-    }
   }
 
   /* Output */
@@ -455,11 +460,11 @@ const renderContent = async (
  * Output single post or page
  *
  * @param {RenderItemArgs} args
- * @return {Promise<RenderItemReturn>}
+ * @return {Promise<RenderItemReturn|null>}
  */
-const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
+const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn | null> => {
   if (!isObjectStrict(args)) {
-    return {}
+    return null
   }
 
   const {
@@ -471,13 +476,13 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
   /* Item must be object */
 
   if (!isObjectStrict(item)) {
-    return {}
+    return null
   }
 
   /* Taxonomy not page */
 
   if (contentType === 'taxonomy' && item.isPage !== true) {
-    return {}
+    return null
   }
 
   /* Item id required */
@@ -485,13 +490,13 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
   const id = item.id
 
   if (!isStringStrict(id)) {
-    return {}
+    return null
   }
 
   /* Slug required */
 
   if (!isStringStrict(item.slug)) {
-    return {}
+    return null
   }
 
   /* Serverless render check */
@@ -504,16 +509,16 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   /* Rich text headings in page */
 
-  const pageHeadings: RichTextHeading[][] = [[]]
+  const pageHeadings: RichTextHeading[][] = []
 
   /* Start action */
 
   const renderItemStartArgs: RenderItemStartActionArgs = {
     id,
-    pageData: item,
+    pageData: { ...item },
     contentType,
-    pageContains,
-    pageHeadings,
+    pageContains: [],
+    pageHeadings: [],
     serverlessData
   }
 
@@ -561,7 +566,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   /* Term taxonomy */
 
-  const taxonomy = item.taxonomy
+  const taxonomy = contentType === 'term' ? item.taxonomy : contentType === 'taxonomy' ? item : {}
 
   /* Permalink */
 
@@ -576,10 +581,11 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   const s = getSlug(slugArgs, true)
   const slug = s.slug
-  const permalink = getPermalink(slug)
+  const slugIsHtml = slug.includes('.html')
+  const permalink = getPermalink(slug, !slugIsHtml)
   const parents = s.parents
 
-  item.basePermalink = getPermalink(slug)
+  item.basePermalink = permalink
   meta.url = permalink
   meta.canonical = permalink
 
@@ -587,7 +593,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   let formattedSlug = slug !== 'index' && slug !== '' ? `/${slug}/` : '/'
 
-  if (slug.includes('.html')) {
+  if (slugIsHtml) {
     formattedSlug = slug
   }
 
@@ -604,10 +610,10 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
   let navigations: GenericStrings = {}
 
   if (isFunction(renderNavigations)) {
-    let currentType = contentType
+    let currentType: string | string[] = contentType
 
-    if (isObjectStrict(taxonomy)) {
-      currentType = isStringStrict(taxonomy.contentType) ? taxonomy.contentType : contentType
+    if (isObjectStrict(taxonomy) && isArrayStrict(taxonomy.contentTypes)) {
+      currentType = taxonomy.contentTypes
     }
 
     navigations = await renderNavigations({
@@ -651,6 +657,10 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   const contentData = item.content
 
+  if (isStringStrict(contentData)) {
+    contentOutput = contentData
+  }
+
   if (isArrayStrict(contentData)) {
     contentOutput = await renderContent({
       content: contentData,
@@ -667,33 +677,32 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
 
   /* Pagination variables for meta object */
 
-  const pag = pageData.pagination as PaginationData
+  const pag = pageData.pagination
 
   if (isObjectStrict(pag)) {
     const {
       current = 0,
+      total = 1,
       currentFilters,
       prevFilters,
       nextFilters
     } = pag
 
-    slugArgs.page = current > 1 ? current : 0
-
-    const s = getSlug(slugArgs, true)
-    meta.canonical = `${getPermalink(s.slug, current === 1)}${isString(currentFilters) ? currentFilters : ''}`
+    meta.canonicalParams =
+      `${current > 1 ? `?page=${current}` : ''}${isString(currentFilters) ? currentFilters : ''}`
 
     if (isStringStrict(pag.title)) {
       meta.paginationTitle = pag.title
     }
 
-    if (isNumber(pag.prev)) {
-      slugArgs.page = pag.prev > 1 ? pag.prev : 0
+    if (isNumber(pag.prev) && pag.prev >= 1) {
+      slugArgs.page = pag.prev
 
       const p = getSlug(slugArgs, true)
       meta.prev = `${getPermalink(p.slug, pag.prev === 1)}${isString(prevFilters) ? prevFilters : ''}`
     }
 
-    if (isNumber(pag.next) && pag.next > 1) {
+    if (isNumber(pag.next) && pag.next > 1 && pag.next < total) {
       slugArgs.page = pag.next
 
       const n = getSlug(slugArgs, true)
@@ -771,17 +780,10 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn> => {
  * @return {Promise<RenderReturn[]|RenderReturn>}
  */
 const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> => {
-  /* Fallback output */
-
-  const fallback = [{
-    slug: '',
-    output: ''
-  }]
-
   /* Props must be object */
 
   if (!isObjectStrict(args)) {
-    return fallback
+    return []
   }
 
   const {
@@ -810,15 +812,10 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
   /* Data */
 
   if (!isObjectStrict(allData)) {
-    return fallback
+    return []
   }
 
-  const {
-    navigation,
-    navigationItem,
-    redirect,
-    content
-  } = allData
+  const { redirect, content } = allData
 
   /* Content data */
 
@@ -826,12 +823,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
 
   /* Store data */
 
-  await setStoreData({
-    navigation,
-    navigationItem,
-    content,
-    serverless: isServerless
-  })
+  await setStoreData(allData, isServerless)
 
   /* Redirects data */
 
@@ -854,6 +846,10 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
         contentType,
         serverlessData
       })
+
+      if (item == null) {
+        continue
+      }
 
       const {
         serverlessRender = false,

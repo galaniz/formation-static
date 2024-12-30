@@ -8,7 +8,6 @@ import type { Generic } from '../global/globalTypes.js'
 import type {
   RenderServerlessData,
   RenderPreviewData,
-  RenderAllData,
   RenderItem
 } from '../render/renderTypes.js'
 
@@ -155,20 +154,8 @@ export interface ContentfulDataReturn extends Generic {
  * @typedef {object} AllContentfulDataArgs
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]
- * @prop {function} [filterData]
- * @prop {function} [filterAllData]
  */
 export interface AllContentfulDataArgs {
   serverlessData?: RenderServerlessData
   previewData?: RenderPreviewData
-  filterData?: (
-    data: RenderItem[],
-    serverlessData?: RenderServerlessData,
-    previewData?: RenderPreviewData
-  ) => RenderItem[]
-  filterAllData?: (
-    allData: RenderAllData,
-    serverlessData?: RenderServerlessData,
-    previewData?: RenderPreviewData
-  ) => RenderAllData
 }

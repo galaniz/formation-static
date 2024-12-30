@@ -4,32 +4,33 @@
 
 /* Imports */
 
-import type { LinkSlugArgs, LinkSlugReturnType } from './linkTypes.js'
+import type { LinkSlugArgs, LinkSlugParent, LinkSlugReturnType } from './linkTypes.js'
 import type { InternalLink } from '../../global/globalTypes.js'
-import type { StoreParent } from '../../store/storeTypes.js'
-import { config } from '../../config/config.js'
 import { isNumber } from '../number/number.js'
 import { isObjectStrict } from '../object/object.js'
 import { isString, isStringStrict } from '../string/string.js'
 import { applyFilters } from '../filter/filter.js'
 import { getArchiveInfo, getTaxonomyInfo } from '../archive/archive.js'
 import { getStoreItem } from '../../store/store.js'
+import { config } from '../../config/config.js'
 
 /**
  * Recurse to get ascendents
  *
  * @private
  * @param {string} id
- * @param {StoreParent[]} parents
+ * @param {string} contentType
+ * @param {LinkSlugParent[]} parents
  * @return {void}
  */
-const getParentSlug = (id: string = '', parents: StoreParent[] = []): void => {
+const getParentSlug = (id: string, contentType: string, parents: LinkSlugParent[]): void => {
   const storeParents = getStoreItem('parents')
+  const parent = storeParents[contentType]?.[id]
 
-  if (storeParents[id] != null) {
-    parents.unshift(storeParents[id])
+  if (parent != null) {
+    parents.unshift({ ...parent, contentType })
 
-    getParentSlug(storeParents[id].id, parents)
+    getParentSlug(parent.id, contentType, parents)
   }
 }
 
@@ -59,16 +60,17 @@ const getSlug = <T extends boolean = false>(
 
   const {
     hierarchicalTypes,
-    typesInSlug,
-    localesInSlug
+    typeInSlug,
+    localeInSlug
   } = config
 
   /* Locale */
 
-  const locale = pageData?.locale
+  const pageLocale = pageData?.locale
+  const locale = isStringStrict(pageLocale) ? localeInSlug[pageLocale] : ''
   const hasLocale = isStringStrict(locale)
 
-  if (hasLocale && localesInSlug.includes(locale)) {
+  if (hasLocale) {
     parts.push(locale)
   }
 
@@ -90,8 +92,8 @@ const getSlug = <T extends boolean = false>(
     id: taxonomyId,
     slug: taxonomySlug,
     title: taxonomyTitle,
-    contentType: taxonomyType,
-    useContentTypeSlug: taxonomyUseTypeSlug,
+    primaryContentType: taxonomyType,
+    usePrimaryContentTypeSlug: taxonomyUseTypeSlug,
     isPage: taxonomyIsPage
   } = taxonomyInfo
 
@@ -109,7 +111,7 @@ const getSlug = <T extends boolean = false>(
 
   /* Archive and/or taxonomy parent */
 
-  let archiveParents: StoreParent[] = []
+  let archiveParents: LinkSlugParent[] = []
   let archiveParts: string[] = []
 
   if (archiveSlug !== '' && archiveId !== '') {
@@ -143,9 +145,13 @@ const getSlug = <T extends boolean = false>(
   /* Page parents */
 
   const isHierarchical = hierarchicalTypes.includes(contentType)
-  let parents: StoreParent[] = []
+  let parents: LinkSlugParent[] = []
 
-  getParentSlug(isHierarchical ? id : archiveId, parents)
+  getParentSlug(
+    isHierarchical ? id : archiveId,
+    isHierarchical ? contentType : archiveContentType,
+    parents
+  )
 
   if (parents.length > 0) {
     parts.push(`${parents.map(({ slug }) => slug).join('/')}`)
@@ -156,14 +162,14 @@ const getSlug = <T extends boolean = false>(
 
   /* Content type */
 
-  const typeInSlug = typesInSlug[contentType]
+  const contentTypeInSlug = typeInSlug[contentType]
 
-  if (isString(typeInSlug)) {
-    parts.push(typeInSlug)
+  if (isString(contentTypeInSlug)) {
+    parts.push(contentTypeInSlug)
   }
 
-  if (isObjectStrict(typeInSlug) && hasLocale) {
-    const localizedTypeSlug = typeInSlug[locale]
+  if (isObjectStrict(contentTypeInSlug) && hasLocale) {
+    const localizedTypeSlug = contentTypeInSlug[locale]
 
     if (isString(localizedTypeSlug)) {
       parts.push(localizedTypeSlug)
@@ -180,7 +186,7 @@ const getSlug = <T extends boolean = false>(
     parts.push(slug)
   }
 
-  let fullSlug = `${parts.length > 0 ? parts.join('/') : ''}${isNumber(page) && page > 0 ? `/?page=${page}` : ''}`
+  let fullSlug = `${parts.length > 0 ? parts.join('/') : ''}${isNumber(page) && page > 1 ? `/?page=${page}` : ''}`
 
   fullSlug = applyFilters('slug', fullSlug, args)
 

@@ -2,6 +2,10 @@
  * Utils - Archive Types
  */
 
+/* Imports */
+
+import type { Taxonomy } from '../../global/globalTypes.js'
+
 /**
  * @typedef {object} ArchiveInfo
  * @prop {string} id
@@ -17,11 +21,30 @@ export interface ArchiveInfo {
 }
 
 /**
- * @typedef {object} ArchiveLinkReturn
+ * @typedef ArchiveTaxonomy
+ * @type {Taxonomy}
+ * @prop {string} primaryContentType
+ */
+export interface ArchiveTaxonomy extends Required<Taxonomy> {
+  primaryContentType: string
+}
+
+/**
+ * @typedef {object} ArchiveLink
  * @prop {string} title
  * @prop {string} link
  */
-export interface ArchiveLinkReturn {
+export interface ArchiveLink {
   title: string
   link: string
+}
+
+/**
+ * @typedef {object} ArchiveLabels
+ * @prop {string} singular
+ * @prop {string} plural
+ */
+export interface ArchiveLabels {
+  singular: string
+  plural: string
 }

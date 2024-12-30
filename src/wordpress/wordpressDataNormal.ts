@@ -5,6 +5,7 @@
 /* Imports */
 
 import type { Block } from '@wordpress/block-serialization-spec-parser'
+import type { InternalLink, Taxonomy } from '../global/globalTypes.js'
 import type {
   WordPressDataFile,
   WordPressDataItem,
@@ -16,7 +17,8 @@ import type {
   WordPressDataRichText,
   WordPressDataMenuItem,
   WordPressDataMenuChild,
-  WordPressDataMenu
+  WordPressDataMenu,
+  WordPressDataMediaDetails
 } from './wordpressDataTypes.js'
 import type { RenderItem, RenderFile } from '../render/renderTypes.js'
 import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes.js'
@@ -45,8 +47,26 @@ const camelCaseKeys: Record<string, string> = {
   class_list: 'classList',
   attr_title: 'attrTitle',
   type_label: 'typeLabel',
-  object_id: 'objectId'
+  object_id: 'objectId',
+  alt_text: 'altText',
+  media_type: 'mediaType',
+  media_details: 'details',
+  mime_type: 'mimeType',
+  source_url: 'sourceUrl'
 }
+
+/**
+ * Properties to exclude fro item
+ *
+ * @private
+ * @type {string[]}
+ */
+const excludeProps: string[] = [
+  '_links',
+  'auto_add',
+  'rest_base',
+  'rest_namespace'
+]
 
 /**
  * Menu items grouped by menu id
@@ -55,6 +75,38 @@ const camelCaseKeys: Record<string, string> = {
  * @type {Map<string, WordPressDataMenuChild[]>}
  */
 const menusById: Map<string, WordPressDataMenuChild[]> = new Map()
+
+/**
+ * Taxonomies grouped by id
+ *
+ * @type {Map<string, RenderItem>}
+ */
+const taxonomiesById: Map<string, RenderItem> = new Map()
+
+/**
+ * Taxonomy from taxonomies given id
+ *
+ * @private
+ * @param {string} id
+ * @return {Taxonomy}
+ */
+const getTaxonomy = (id: string): Taxonomy => {
+  const taxonomy = taxonomiesById.get(id)
+
+  const {
+    title = '',
+    slug = '',
+    contentTypes = []
+  } = isObjectStrict(taxonomy) ? taxonomy : {}
+
+  return {
+    id,
+    title,
+    slug,
+    contentTypes
+    // usePrimaryContentTypeSlug
+  }
+}
 
 /**
  * Remove #text tags and set attr
@@ -219,9 +271,10 @@ const normalizeEmbedded = (
 
         const {
           id,
-          link,
-          title,
+          title: parentTitle,
+          name,
           type,
+          taxonomy,
           slug
         } = embed as WordPressDataParent
 
@@ -229,12 +282,21 @@ const normalizeEmbedded = (
           return
         }
 
+        let title = ''
+
+        if (isString(parentTitle?.rendered)) {
+          title = parentTitle.rendered
+        }
+
+        if (isString(name)) {
+          title = name
+        }
+
         newItem.parent = {
           id: id.toString(),
-          contentType: type,
-          title: isString(title.rendered) ? title.rendered : '',
-          slug,
-          link
+          contentType: isString(taxonomy) ? 'term' : type,
+          title,
+          slug
         }
       })
     }
@@ -324,15 +386,16 @@ const normalizeEmbedded = (
 
           newItem[taxonomyLookup] = itemTaxonomy.map((taxonomyId) => {
             if (taxonomyId !== id) {
-              return null
+              return taxonomyId
             }
 
             return {
               id: id.toString(),
               link,
-              name,
+              title: name,
               slug,
-              taxonomy
+              contentType: 'term',
+              taxonomy: getTaxonomy(taxonomy)
             }
           })
         })
@@ -348,23 +411,17 @@ const normalizeEmbedded = (
  * @param {Block[]} blocks
  * @return {RenderItem[]}
  */
-const normalizeBlocks = (blocks?: readonly Block[]): RenderItem[] => {
+const normalizeBlocks = (blocks: readonly Block[]): RenderItem[] => {
   const newItems: RenderItem[] = []
-
-  /* Blocks must be array */
-
-  if (!isArrayStrict(blocks)) {
-    return []
-  }
 
   /* Recurse */
 
   blocks.forEach((block) => {
     const {
-      blockName = '',
-      attrs = null,
-      innerBlocks = null
-    } = isObjectStrict(block) ? block : {}
+      blockName,
+      attrs,
+      innerBlocks
+    } = block
 
     const contentType = blockName
 
@@ -372,17 +429,15 @@ const normalizeBlocks = (blocks?: readonly Block[]): RenderItem[] => {
       return
     }
 
-    const attributes = isObjectStrict(attrs) ? attrs : {}
-
     const {
       contentIsAttribute,
       attributeIsItem
-    } = attributes
+    } = attrs
 
     const attrItemArr = (isStringStrict(attributeIsItem) ? attributeIsItem : '').split(',')
     const attrItemExists = attrItemArr.length > 0
 
-    for (const [key, value] of Object.entries(attributes)) {
+    for (const [key, value] of Object.entries(attrs)) {
       if (!isObjectStrict(value)) {
         continue
       }
@@ -390,17 +445,17 @@ const normalizeBlocks = (blocks?: readonly Block[]): RenderItem[] => {
       if (attrItemExists && attrItemArr.includes(key)) {
         const itemValue = normalizeItem(value)
         itemValue.content = undefined
-        attributes[key] = itemValue
+        attrs[key] = itemValue
       }
 
       if (isStringStrict(value.mime)) {
-        attributes[key] = normalizeFile(value)
+        attrs[key] = normalizeFile(value)
       }
     }
 
     let newItem: RenderItem = {
       contentType,
-      ...attributes
+      ...attrs
     }
 
     const renderType = config.renderTypes[contentType]
@@ -439,17 +494,24 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
   /* Loop item */
 
   for (const [key, value] of Object.entries(item)) {
+    /* Skip prop */
+
+    if (excludeProps.includes(key)) {
+      continue
+    }
+
     /* Value */
 
     let val = value
 
     /* Key */
 
-    const k = camelCaseKeys[key] != null ? camelCaseKeys[key] : key
+    let k = camelCaseKeys[key] != null ? camelCaseKeys[key] : key
 
     /* Check types */
 
     const isObj = isObjectStrict(value)
+    const isStr = isStringStrict(value)
 
     /* Id */
 
@@ -459,7 +521,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 
     /* Content type */
 
-    if (key === 'type' && isStringStrict(value)) {
+    if (key === 'type' && isStr) {
       newItem.contentType = value
 
       if (isString(config.renderTypes[value])) {
@@ -467,6 +529,10 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
       }
 
       continue
+    }
+
+    if (key === 'types') {
+      k = 'contentTypes'
     }
 
     /* Flatten rendered */
@@ -479,23 +545,10 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
       }
     }
 
-    /* Excerpt */
+    /* Name as title */
 
-    if (key === 'excerpt' && isString(val)) {
-      val = val.replace(/<[^>]*>|\[.*?\]/g, '').trim()
-    }
-
-    /* Content */
-
-    if (key === 'content' && isStringStrict(val)) {
-      const normalVal = normalizeBlocks(parse(val))
-      val = normalVal.length > 0 ? normalVal : val
-    }
-
-    /* Links */
-
-    if (key === '_links' || key === 'auto_add') {
-      continue
+    if (key === 'name') {
+      k = 'title'
     }
 
     /* Embedded */
@@ -503,6 +556,44 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
     if (key === '_embedded' && isObj) {
       normalizeEmbedded(value, item, newItem)
       continue
+    }
+
+    /* Excerpt, content and taxonomy */
+
+    if (isStringStrict(val)) {
+      if (key === 'excerpt') {
+        val = val.replace(/<[^>]*>|\[.*?\]/g, '').trim()
+      }
+
+      if (key === 'content') {
+        const normalVal = normalizeBlocks(parse(val as string))
+        val = normalVal.length > 0 ? normalVal : val
+      }
+
+      if (key === 'taxonomy') {
+        newItem.contentType = 'term'
+
+        val = getTaxonomy(val as string)
+      }
+    }
+
+    /* Media details */
+
+    if (k === 'details' && isObj) {
+      const valObj = val as WordPressDataMediaDetails
+      const valFull = valObj.sizes.full
+
+      val = normalizeFile({
+        url: item?.source_url,
+        filename: item?.source_url?.split('/').pop(),
+        alt: item?.alt_text,
+        width: valFull?.width,
+        height: valFull?.height,
+        filesizeInBytes: valObj?.filesize,
+        subtype: item?.mime_type?.split('/')[1],
+        mime: item?.mime_type,
+        sizes: valObj.sizes
+      })
     }
 
     /* Set value */
@@ -516,35 +607,9 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 }
 
 /**
- * Transform wordpress data into simpler objects
- *
- * @param {WordPressDataItem[]} data
- * @param {RenderItem[]} [_newData]
- * @return {RenderItem[]}
- */
-const normalizeWordPressData = (data: WordPressDataItem[], _newData: RenderItem[] = []): RenderItem[] => {
-  if (!isArrayStrict(data)) {
-    return []
-  }
-
-  /* Recurse data */
-
-  data.forEach((item) => {
-    if (!isObjectStrict(item)) {
-      return
-    }
-
-    _newData.push(normalizeItem(item))
-  })
-
-  /* Output */
-
-  return _newData
-}
-
-/**
  * Transform wordpress menu items into navigation item objects
  *
+ * @private
  * @param {WordPressDataMenuItem[]} items
  * @return {NavigationItem[]}
  */
@@ -558,10 +623,10 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
       id = '',
       title = '',
       menuOrder = 0,
-      menus = 0
-    } = item
+      menus = 0,
+      parent
+    } = item as WordPressDataMenuItem & { parent: number }
 
-    const parent = isNumber(item.parent) ? item.parent : 0
     const hasMenuOrder = isNumber(menuOrder)
 
     if (hasMenuOrder && isObjectStrict(itemsObj[parent])) {
@@ -587,6 +652,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
 
   for (const [id, obj] of Object.entries(itemsObj)) {
     const {
+      url = '',
       title = '',
       attrTitle = '',
       description = '',
@@ -600,7 +666,10 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
       meta = []
     } = obj
 
-    const url = isString(obj.url) ? obj.url : ''
+    if (!isStringStrict(url)) {
+      continue
+    }
+
     const isCustom = contentType === 'custom'
     const newItem: NavigationItem = {
       id,
@@ -616,13 +685,19 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
 
     if (!isCustom && isStringStrict(object) && isStringStrict(objectId)) {
       const slug = url.split('/').filter(Boolean).pop()
-
-      newItem.link = url
-      newItem.internalLink = {
-        contentType: object,
+      const isTerm = contentType === 'taxonomy'
+      const internalLink: InternalLink = {
+        contentType: isTerm ? 'term' : object,
         id: objectId,
         slug
       }
+
+      if (isTerm) {
+        internalLink.taxonomy = getTaxonomy(object)
+      }
+
+      newItem.link = url
+      newItem.internalLink = internalLink
     }
 
     if (isCustom) {
@@ -647,6 +722,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
 /**
  * Transform wordpress menus into navigation item objects
  *
+ * @private
  * @param {WordPressDataMenu[]} menus
  * @return {Navigation[]}
  */
@@ -656,7 +732,7 @@ const normalizeWordPressMenus = (menus: WordPressDataMenu[]): Navigation[] => {
   menus.forEach((menu) => {
     const {
       id = '',
-      name = '',
+      title = '',
       description = '',
       locations = [],
       meta = []
@@ -664,7 +740,7 @@ const normalizeWordPressMenus = (menus: WordPressDataMenu[]): Navigation[] => {
 
     const newMenu: Navigation = {
       id,
-      title: name,
+      title,
       description,
       meta,
       location: locations,
@@ -677,10 +753,71 @@ const normalizeWordPressMenus = (menus: WordPressDataMenu[]): Navigation[] => {
   return newMenus
 }
 
+/**
+ * Transform wordpress data into simpler objects
+ *
+ * @param {WordPressDataItem[]} data
+ * @param {string} [route]
+ * @param {RenderItem[]} [_newData]
+ * @return {RenderItem[]}
+ */
+const normalizeWordPressData = (
+  data: WordPressDataItem[],
+  route: string = '',
+  _newData: RenderItem[] = []): RenderItem[] => {
+  /* Data must be array */
+
+  if (!isArrayStrict(data)) {
+    return []
+  }
+
+  /* Taxonomies */
+
+  if (route === 'taxonomies') {
+    data = Object.entries(data[0] as Record<string, WordPressDataItem>).map(([key, value]) => ({
+      id: key,
+      type: 'taxonomy',
+      ...value
+    })) as WordPressDataItem[]
+  }
+
+  /* Recurse data */
+
+  data.forEach((item) => {
+    if (!isObjectStrict(item)) {
+      return
+    }
+
+    _newData.push(normalizeItem(item))
+  })
+
+  /* Customize by route */
+
+  if (route === 'menu-items') {
+    _newData = normalizeWordPressMenuItems(_newData)
+  }
+
+  if (route === 'menus') {
+    _newData = normalizeWordPressMenus(_newData)
+  }
+
+  if (route === 'taxonomies') {
+    taxonomiesById.clear()
+
+    _newData.forEach(item => {
+      const { id = '' } = item
+      taxonomiesById.set(id, item)
+    })
+  }
+
+  /* Output */
+
+  return _newData
+}
+
 /* Exports */
 
 export {
   normalizeWordPressData,
-  normalizeWordPressMenuItems,
-  normalizeWordPressMenus
+  taxonomiesById
 }

@@ -1,5 +1,158 @@
 [
   {
+    "id": 21,
+    "date": "2024-12-20T16:22:06",
+    "date_gmt": "2024-12-20T16:22:06",
+    "guid": {
+      "rendered": "http://wp.com/wp-content/uploads/2024/12/test.pdf"
+    },
+    "modified": "2024-12-20T16:22:06",
+    "modified_gmt": "2024-12-20T16:22:06",
+    "slug": "test",
+    "status": "inherit",
+    "type": "attachment",
+    "link": "http://wp.com/test/",
+    "title": {
+      "rendered": "test"
+    },
+    "author": 1,
+    "featured_media": 0,
+    "comment_status": "open",
+    "ping_status": "closed",
+    "template": "",
+    "meta": [],
+    "class_list": [
+      "post-21",
+      "attachment",
+      "type-attachment",
+      "status-inherit",
+      "hentry"
+    ],
+    "description": {
+      "rendered": "<p class=\"attachment\"><a href='http://wp.com/wp-content/uploads/2024/12/test.pdf'><img loading=\"lazy\" decoding=\"async\" width=\"300\" height=\"232\" src=\"http://wp.com/wp-content/uploads/2024/12/test-pdf-300x232.jpg\" class=\"attachment-medium size-medium\" alt=\"\" /></a></p>\n"
+    },
+    "caption": {
+      "rendered": ""
+    },
+    "alt_text": "",
+    "media_type": "file",
+    "mime_type": "application/pdf",
+    "media_details": {
+      "sizes": {
+        "full": {
+          "file": "test-pdf.jpg",
+          "width": 1344,
+          "height": 1039,
+          "mime_type": "application/pdf",
+          "source_url": "http://wp.com/wp-content/uploads/2024/12/test-pdf.jpg"
+        },
+        "medium": {
+          "file": "test-pdf-300x232.jpg",
+          "width": 300,
+          "height": 232,
+          "filesize": 12264,
+          "mime_type": "image/jpeg",
+          "source_url": "http://wp.com/wp-content/uploads/2024/12/test-pdf-300x232.jpg"
+        },
+        "large": {
+          "file": "test-pdf-1024x792.jpg",
+          "width": 1024,
+          "height": 792,
+          "filesize": 51720,
+          "mime_type": "image/jpeg",
+          "source_url": "http://wp.com/wp-content/uploads/2024/12/test-pdf-1024x792.jpg"
+        },
+        "thumbnail": {
+          "file": "test-pdf-150x116.jpg",
+          "width": 150,
+          "height": 116,
+          "filesize": 6721,
+          "mime_type": "image/jpeg",
+          "source_url": "http://wp.com/wp-content/uploads/2024/12/test-pdf-150x116.jpg"
+        }
+      },
+      "filesize": 327009
+    },
+    "post": null,
+    "source_url": "http://wp.com/wp-content/uploads/2024/12/test.pdf",
+    "_links": {
+      "self": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/media/21",
+          "targetHints": {
+            "allow": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/media"
+        }
+      ],
+      "about": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/types/attachment"
+        }
+      ],
+      "author": [
+        {
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/users/1"
+        }
+      ],
+      "replies": [
+        {
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/comments?post=21"
+        }
+      ]
+    },
+    "_embedded": {
+      "author": [
+        {
+          "id": 1,
+          "name": "demo",
+          "url": "http://wp.com",
+          "description": "",
+          "link": "http://wp.com/author/demo/",
+          "slug": "demo",
+          "avatar_urls": {
+            "24": "https://secure.gravatar.com/avatar/729ae85bf62b9917e93538db2f2688ca?s=24&d=mm&r=g",
+            "48": "https://secure.gravatar.com/avatar/729ae85bf62b9917e93538db2f2688ca?s=48&d=mm&r=g",
+            "96": "https://secure.gravatar.com/avatar/729ae85bf62b9917e93538db2f2688ca?s=96&d=mm&r=g"
+          },
+          "_links": {
+            "self": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/users/1",
+                "targetHints": {
+                  "allow": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "PATCH",
+                    "DELETE"
+                  ]
+                }
+              }
+            ],
+            "collection": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/users"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
     "id": 12,
     "date": "2024-12-14T20:33:50",
     "date_gmt": "2024-12-14T20:33:50",
@@ -34,7 +187,7 @@
     "caption": {
       "rendered": ""
     },
-    "alt_text": "",
+    "alt_text": "test",
     "media_type": "image",
     "mime_type": "image/png",
     "media_details": {
@@ -106,11 +259,7 @@
           "href": "http://wp.com/wp-json/wp/v2/media/12",
           "targetHints": {
             "allow": [
-              "GET",
-              "POST",
-              "PUT",
-              "PATCH",
-              "DELETE"
+              "GET"
             ]
           }
         }
@@ -135,6 +284,40 @@
         {
           "embeddable": true,
           "href": "http://wp.com/wp-json/wp/v2/comments?post=12"
+        }
+      ]
+    },
+    "_embedded": {
+      "author": [
+        {
+          "id": 1,
+          "name": "demo",
+          "url": "http://wp.com",
+          "description": "",
+          "link": "http://wp.com/author/demo/",
+          "slug": "demo",
+          "avatar_urls": {
+            "24": "https://secure.gravatar.com/avatar/729ae85bf62b9917e93538db2f2688ca?s=24&d=mm&r=g",
+            "48": "https://secure.gravatar.com/avatar/729ae85bf62b9917e93538db2f2688ca?s=48&d=mm&r=g",
+            "96": "https://secure.gravatar.com/avatar/729ae85bf62b9917e93538db2f2688ca?s=96&d=mm&r=g"
+          },
+          "_links": {
+            "self": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/users/1",
+                "targetHints": {
+                  "allow": [
+                    "GET"
+                  ]
+                }
+              }
+            ],
+            "collection": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/users"
+              }
+            ]
+          }
         }
       ]
     }

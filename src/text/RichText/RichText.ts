@@ -302,7 +302,7 @@ const RichText = (props: RichTextProps): string => {
       .toLowerCase()
 
     if (headingContents !== '' && id !== '') {
-      attrs.push(`id=${id}`)
+      attrs.push(`id="${id}"`)
 
       if (isArray(props.headings)) {
         props.headings.push({

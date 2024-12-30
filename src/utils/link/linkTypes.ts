@@ -24,13 +24,22 @@ export interface LinkSlugArgs {
 }
 
 /**
+ * @typedef LinkSlugParent
+ * @type {StoreParent}
+ * @prop {string} contentType
+ */
+export interface LinkSlugParent extends StoreParent {
+  contentType: string
+}
+
+/**
  * @typedef {object} LinkSlugReturn
  * @prop {string} slug
  * @prop {StoreParent[]} parents
  */
 export interface LinkSlugReturn {
   slug: string
-  parents: StoreParent[]
+  parents: LinkSlugParent[]
 }
 
 /**

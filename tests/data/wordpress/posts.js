@@ -28,15 +28,22 @@ export const posts = [
     template: '',
     format: 'standard',
     meta: {
+      customMeta: 'Meta test',
       footnotes: ''
     },
     categories: [
       {
         id: '1',
         link: 'http://wp.com/category/uncategorized/',
-        name: 'Uncategorized',
+        title: 'Uncategorized',
         slug: 'uncategorized',
-        taxonomy: 'category'
+        contentType: 'term',
+        taxonomy: {
+          id: 'category',
+          title: '',
+          slug: '',
+          contentTypes: []
+        }
       }
     ],
     tags: [],
@@ -64,14 +71,7 @@ export const posts = [
     title: 'Hello world!',
     content: '\n<p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p>\n',
     excerpt: 'Welcome to WordPress. This is your first post. Edit or delete it, then start writing!',
-    author: {
-      id: '1',
-      name: 'demo',
-      url: 'http://wp.com',
-      description: '',
-      link: 'http://wp.com/author/demo/',
-      slug: 'demo'
-    },
+    author: 1,
     featuredMedia: 0,
     commentStatus: 'open',
     pingStatus: 'open',
@@ -79,25 +79,38 @@ export const posts = [
     template: '',
     format: 'standard',
     meta: {
+      customMeta: '',
       footnotes: ''
     },
     categories: [
       {
         id: '1',
         link: 'http://wp.com/category/uncategorized/',
-        name: 'Uncategorized',
+        title: 'Uncategorized',
         slug: 'uncategorized',
-        taxonomy: 'category'
+        contentType: 'term',
+        taxonomy: {
+          id: 'category',
+          title: '',
+          slug: '',
+          contentTypes: []
+        }
       },
-      null
+      2
     ],
     tags: [
       {
         id: '4',
         link: 'http://wp.com/tag/sample/',
-        name: 'Sample',
+        title: 'Sample',
         slug: 'sample',
-        taxonomy: 'post_tag'
+        contentType: 'term',
+        taxonomy: {
+          id: 'post_tag',
+          title: '',
+          slug: '',
+          contentTypes: []
+        }
       }
     ],
     classList: [

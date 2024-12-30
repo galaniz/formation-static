@@ -11,6 +11,7 @@ import type { FieldPropsFilter } from '../../objects/Field/FieldTypes.js'
 import type { FormPropsFilter } from '../../objects/Form/FormTypes.js'
 import type { AjaxResultFilter } from '../../serverless/Ajax/AjaxTypes.js'
 import type { LinkSlugPartsFilter, LinkSlugFilter } from '../link/linkTypes.js'
+import type { LocalData } from '../../local/localDataTypes.js'
 import type {
   RichTextPropsFilter,
   RichTextOutputFilter,
@@ -21,8 +22,64 @@ import type {
 import type {
   RenderItem,
   RenderItemFilter,
-  RenderContentFilter
+  RenderContentFilter,
+  RenderServerlessData,
+  RenderPreviewData,
+  RenderAllData
 } from '../../render/renderTypes.js'
+
+/**
+ * @typedef {object} DataFilterArgs
+ * @prop {RenderServerlessData} [serverlessData]
+ * @prop {RenderPreviewData} [previewData]
+ */
+export interface DataFilterArgs {
+  serverlessData?: RenderServerlessData
+  previewData?: RenderPreviewData
+}
+
+/**
+ * @typedef {object} AllDataFilterArgs
+ * @prop {string} type
+ * @prop {RenderServerlessData} [serverlessData]
+ * @prop {RenderPreviewData} [previewData]
+ */
+export interface AllDataFilterArgs {
+  type: 'contentful' | 'wordpress' | 'local'
+  serverlessData?: RenderServerlessData
+  previewData?: RenderPreviewData
+}
+
+/**
+ * @typedef {function} ContentfulDataFilter
+ * @param {RenderItem[]} data
+ * @param {DataFilterArgs} args
+ * @return {RenderItem[]}
+ */
+export type ContentfulDataFilter = (data: RenderItem[], args: DataFilterArgs) => RenderItem[]
+
+/**
+ * @typedef {function} WordpressDataFilter
+ * @param {RenderItem[]} data
+ * @param {DataFilterArgs} args
+ * @return {RenderItem[]}
+ */
+export type WordpressDataFilter = (data: RenderItem[], args: DataFilterArgs) => RenderItem[]
+
+/**
+ * @typedef {function} LocalDataFilter
+ * @param {LocalData} data
+ * @return {LocalData}
+ */
+export type LocalDataFilter = (data: LocalData) => LocalData
+
+/**
+ * @typedef {function} AllDataFilter
+ * @param {RenderAllData} allData
+ * @param {AllDataFilterArgs} args
+ * @return {RenderAllData}
+ */
+export type AllDataFilter = (allData: RenderAllData, args: AllDataFilterArgs) => RenderAllData
 
 /**
  * @typedef {object} CacheDataFilterArgs
@@ -74,6 +131,10 @@ export type StoreDataFilter = (
  * @prop {AjaxResultFilter} ajaxResult
  * @prop {CacheDataFilter} cacheData
  * @prop {StoreDataFilter} storeData
+ * @prop {ContentfulDataFilter} contentfulData
+ * @prop {WordpressDataFilter} wordpressData
+ * @prop {LocalDataFilter} localData
+ * @prop {AllDataFilter} allData
  * @prop {LinkSlugPartsFilter} slugParts
  * @prop {LinkSlugFilter} slug
  */
@@ -92,6 +153,10 @@ export interface Filters extends GenericFunctions {
   ajaxResult: AjaxResultFilter
   cacheData: CacheDataFilter
   storeData: StoreDataFilter
+  contentfulData: ContentfulDataFilter
+  wordpressData: WordpressDataFilter
+  localData: LocalDataFilter
+  allData: AllDataFilter
   slugParts: LinkSlugPartsFilter
   slug: LinkSlugFilter
 }
@@ -113,6 +178,10 @@ export interface Filters extends GenericFunctions {
  * @prop {Set<AjaxResultFilter>} ajaxResult
  * @prop {Set<CacheDataFilter>} cacheData
  * @prop {Set<StoreDataFilter>} storeData
+ * @prop {Set<ContentfulDataFilter>} contentfulData
+ * @prop {Set<WordpressDataFilter>} wordpressData
+ * @prop {Set<LocalDataFilter>} localData
+ * @prop {Set<AllDataFilter>} allData
  * @prop {Set<LinkSlugPartsFilter>} slugParts
  * @prop {Set<LinkSlugFilter>} slug
  */
@@ -131,6 +200,10 @@ export type FilterMap = Map<string, Set<Function>> & Map<
 'ajaxResult' |
 'cacheData' |
 'storeData' |
+'contentfulData' |
+'wordpressData' |
+'localData' |
+'allData' |
 'slugParts' |
 'slug',
 Set<
@@ -148,6 +221,10 @@ RenderContentFilter |
 AjaxResultFilter |
 CacheDataFilter |
 StoreDataFilter |
+ContentfulDataFilter |
+WordpressDataFilter |
+LocalDataFilter |
+AllDataFilter |
 LinkSlugPartsFilter |
 LinkSlugFilter
 >

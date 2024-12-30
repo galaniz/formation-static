@@ -18,6 +18,7 @@ import type {
 } from '../components/Navigation/NavigationTypes.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
 import type { StoreParent } from '../store/storeTypes.js'
+import { PaginationData } from '../components/Pagination/PaginationTypes.js'
 
 /**
  * @typedef {object} RenderMeta
@@ -27,6 +28,7 @@ import type { StoreParent } from '../store/storeTypes.js'
  * @prop {string} [url]
  * @prop {string} [image]
  * @prop {string} [canonical]
+ * @prop {string} [canonicalParams]
  * @prop {string} [prev]
  * @prop {string} [next]
  * @prop {boolean} [noIndex]
@@ -39,6 +41,7 @@ export interface RenderMeta {
   url?: string
   image?: string
   canonical?: string
+  canonicalParams?: string
   prev?: string
   next?: string
   noIndex?: boolean
@@ -245,15 +248,8 @@ export interface RenderContentArgs extends RenderCommon {
 }
 
 /**
- * @typedef RenderItemBase
- * @type {Generic}
- * @type {Taxonomy}
- */
-type RenderItemBase = Generic & Partial<Taxonomy>
-
-/**
  * @typedef RenderItem
- * @type {RenderItemBase}
+ * @type {Generic|Taxonomy}
  * @prop {string} [id]
  * @prop {string} [contentType]
  * @prop {string} [renderType]
@@ -266,8 +262,9 @@ type RenderItemBase = Generic & Partial<Taxonomy>
  * @prop {RenderItem} [parent]
  * @prop {Taxonomy} [taxonomy]
  * @prop {RenderMetaTags} [metadata]
+ * @prop {PaginationData} [pagination]
  */
-export interface RenderItem extends RenderItemBase {
+export interface RenderItem extends Generic, Partial<Taxonomy> {
   id?: string
   contentType?: string
   renderType?: string
@@ -283,6 +280,7 @@ export interface RenderItem extends RenderItemBase {
   parent?: RenderItem
   taxonomy?: Taxonomy
   metadata?: RenderMetaTags
+  pagination?: PaginationData
 }
 
 /**
@@ -429,9 +427,9 @@ export interface RenderReturn {
  * @typedef {function} RenderContentFilter
  * @param {string[]} content
  * @param {ParentArgs}
- * @return {Promise<string>}
+ * @return {Promise<string[]>}
  */
-export type RenderContentFilter = (content: string[], args: ParentArgs) => Promise<string>
+export type RenderContentFilter = (content: string[], args: ParentArgs) => Promise<string[]>
 
 /**
  * @typedef {function} RenderItemFilter

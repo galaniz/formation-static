@@ -26,6 +26,14 @@ export const pages = [
       },
       {
         contentType: 'frm/test'
+      },
+      {
+        contentType: 'frm/parent',
+        content: [
+          {
+            contentType: 'frm/child'
+          }
+        ]
       }
     ],
     excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque et gravida neque. Nulla commodo eleifend turpis, vel bibendum urna euismod et. Maecenas consectetur dolor in justo congue, vel accumsan augue venenatis. Duis malesuada id turpis id cursus. Ut mollis, sem lacinia scelerisque tristique, ante ante dignissim ante, non viverra massa enim quis velit. Etiam in',
@@ -120,19 +128,19 @@ export const pages = [
           }
         ],
         image: {
-          url: 'http://wp.com/wp-content/uploads/2024/12/screenshot.png',
-          name: 'screenshot.png',
+          url: '',
+          name: '',
           alt: '',
-          width: 1200,
-          height: 900,
-          size: 15020,
-          format: 'png',
-          type: 'image/png',
+          width: 0,
+          height: 0,
+          size: 0,
+          format: 'jpg',
+          type: 'image/jpeg',
           sizes: {
-            300: 'http://wp.com/wp-content/uploads/2024/12/screenshot-300x225.png',
-            768: 'http://wp.com/wp-content/uploads/2024/12/screenshot-768x576.png',
-            1024: 'http://wp.com/wp-content/uploads/2024/12/screenshot-1024x768.png',
-            1200: 'http://wp.com/wp-content/uploads/2024/12/screenshot.png'
+            300: 'http://wp.com/wp-content/uploads/2024/12/screenshot-300x225.jpg',
+            768: 'http://wp.com/wp-content/uploads/2024/12/screenshot-768x576.jpg',
+            1024: 'http://wp.com/wp-content/uploads/2024/12/screenshot-1024x768.jpg',
+            1200: 'http://wp.com/wp-content/uploads/2024/12/screenshot.jpg'
           }
         }
       },
@@ -171,8 +179,7 @@ export const pages = [
       id: '7',
       contentType: 'page',
       title: 'Home',
-      slug: 'home',
-      link: 'http://wp.com/home/'
+      slug: 'home'
     },
     menuOrder: 0,
     commentStatus: 'closed',

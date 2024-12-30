@@ -92,6 +92,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
 
   const data: PaginationData = {
     current,
+    total,
     nextFilters,
     currentFilters
   }

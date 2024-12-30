@@ -61,6 +61,7 @@ export interface PaginationArgs {
 /**
  * @typedef {object} PaginationData
  * @prop {number} [current]
+ * @prop {number} [total]
  * @prop {string} [title]
  * @prop {number} [next]
  * @prop {number} [prev]
@@ -70,6 +71,7 @@ export interface PaginationArgs {
  */
 export interface PaginationData {
   current?: number
+  total?: number
   title?: string
   next?: number
   prev?: number

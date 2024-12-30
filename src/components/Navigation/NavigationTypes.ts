@@ -11,13 +11,13 @@ import type { InternalLink, Generic, HtmlString } from '../../global/globalTypes
  * @prop {Navigation[]} navigations
  * @prop {NavigationItem[]} items
  * @prop {string} [currentLink]
- * @prop {string} [currentType]
+ * @prop {string|string[]} [currentType]
  */
 export interface NavigationProps {
   navigations: Navigation[]
   items: NavigationItem[]
   currentLink?: string
-  currentType?: string
+  currentType?: string | string[]
 }
 
 /**

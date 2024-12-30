@@ -8,10 +8,10 @@ import type { ImageLocal, ImageProps } from './imageTypes.js'
 import { extname, resolve, basename, dirname } from 'node:path'
 import { mkdir, stat } from 'node:fs/promises'
 import sharp from 'sharp'
-import { config } from '../../config/config.js'
 import { getFilePaths } from '../file/filePath.js'
 import { isStringStrict } from '../string/string.js'
 import { setStoreItem } from '../../store/store.js'
+import { config } from '../../config/config.js'
 
 /**
  * Get and transform local images (quality and sizes)

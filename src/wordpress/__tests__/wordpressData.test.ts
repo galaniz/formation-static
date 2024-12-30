@@ -4,18 +4,23 @@
 
 /* Imports */
 
-import { inspect } from 'node:util'
 import type { RenderItem } from '../../render/renderTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest'
 import { getWordPressData, getAllWordPressData } from '../wordpressData.js'
+import { taxonomiesById } from '../wordpressDataNormal.js'
 import { mockFetchErrorMessage } from '../../../tests/types.js'
 import { mockWordPressFetch } from './wordpressDataMock.js'
-import { filters, addFilter } from '../../utils/filter/filter.js'
+import { addFilter, resetFilters } from '../../utils/filter/filter.js'
+import { setStoreItem } from '../../store/store.js'
 import { config } from '../../config/config.js'
 import { posts } from '../../../tests/data/wordpress/posts.js'
 import { pages } from '../../../tests/data/wordpress/pages.js'
 import { menus } from '../../../tests/data/wordpress/menus.js'
 import { menuItems } from '../../../tests/data/wordpress/menu-items.js'
+import { categories } from '../../../tests/data/wordpress/categories.js'
+import { tags } from '../../../tests/data/wordpress/tags.js'
+import { media } from '../../../tests/data/wordpress/media.js'
+import { taxonomies } from '../../../tests/data/wordpress/taxonomies.js'
 
 /* Mock fetch */
 
@@ -44,10 +49,11 @@ describe('getWordPressData()', () => {
   })
 
   afterEach(() => {
-    filters.set('cacheData', new Set())
     config.renderTypes = {}
     config.env.prod = false
     config.env.cache = false
+    taxonomiesById.clear()
+    resetFilters()
   })
 
   it('should throw an error if no arguments are provided', async () => {
@@ -57,7 +63,7 @@ describe('getWordPressData()', () => {
 
   it('should throw an error only key is provided', async () => {
     // @ts-expect-error
-    await expect(async () => await getWordPressData('key')).rejects.toThrowError('No route')
+    await expect(async () => await getWordPressData('key1')).rejects.toThrowError('No route')
   })
 
   it('should throw an error if no config credentials', async () => {
@@ -72,39 +78,39 @@ describe('getWordPressData()', () => {
       prodHost: ''
     }
 
-    await expect(async () => await getWordPressData('key', 'route')).rejects.toThrowError('No credentials')
+    await expect(async () => await getWordPressData('key2', 'route')).rejects.toThrowError('No credentials')
   })
 
   it('should throw an error if host is invalid', async () => {
     config.cms.devHost = 'wp'
 
-    await expect(async () => await getWordPressData('key', 'route')).rejects.toThrowError(mockFetchErrorMessage.url)
+    await expect(async () => await getWordPressData('key3', 'route')).rejects.toThrowError(mockFetchErrorMessage.url)
   })
 
   it('should throw an error if invalid credentials', async () => {
     config.cms.devUser = 'user1'
     config.cms.devCredential = 'pass1'
 
-    await expect(async () => await getWordPressData('key', 'route')).rejects.toThrowError(mockFetchErrorMessage.auth)
+    await expect(async () => await getWordPressData('key4', 'route')).rejects.toThrowError(mockFetchErrorMessage.auth)
   })
 
   it('should throw an error if route does not exist', async () => {
-    await expect(async () => await getWordPressData('key', 'does-not-exist')).rejects.toThrowError(mockFetchErrorMessage.route)
+    await expect(async () => await getWordPressData('key5', 'does-not-exist')).rejects.toThrowError(mockFetchErrorMessage.route)
   })
 
   it('should throw an error if id does not exist', async () => {
-    await expect(async () => await getWordPressData('posts', 'posts/0')).rejects.toThrowError(mockFetchErrorMessage.data)
+    await expect(async () => await getWordPressData('postsKey1', 'posts/0')).rejects.toThrowError(mockFetchErrorMessage.data)
   })
 
   it('should return empty array if data is empty array', async () => {
-    const result = await getWordPressData('empty', 'empty')
+    const result = await getWordPressData('emptyKey', 'empty')
     const expectedResult = []
 
     expect(result).toEqual(expectedResult)
   })
 
   it('should return empty array if data is array of null', async () => {
-    const result = await getWordPressData('null', 'null')
+    const result = await getWordPressData('nullKey', 'null')
     const expectedResult = []
 
     expect(result).toEqual(expectedResult)
@@ -117,12 +123,12 @@ describe('getWordPressData()', () => {
     addFilter('cacheData', async (data, args): Promise<undefined> => {
       const { key, type } = args
 
-      if (key === 'posts' && type === 'set') {
+      if (key === 'postsKey2' && type === 'set') {
         cacheSet(data)
       }
     })
 
-    const result = await getWordPressData('posts', 'posts')
+    const result = await getWordPressData('postsKey2', 'posts')
 
     expect(cacheSet).toHaveBeenCalledTimes(1)
     expect(cacheSet).toHaveBeenCalledWith(posts)
@@ -136,7 +142,7 @@ describe('getWordPressData()', () => {
     addFilter('cacheData', async (data, args): Promise<RenderItem[] | undefined> => {
       const { key, type } = args
 
-      if (key === 'posts' && type === 'get') {
+      if (key === 'postsKey3' && type === 'get') {
         cacheGet(data)
         return posts as RenderItem[]
       }
@@ -144,7 +150,7 @@ describe('getWordPressData()', () => {
       return data
     })
 
-    const result = await getWordPressData('posts', 'posts')
+    const result = await getWordPressData('postsKey3', 'posts')
 
     expect(cacheGet).toHaveBeenCalledTimes(1)
     expect(cacheGet).toHaveBeenCalledWith([])
@@ -159,23 +165,122 @@ describe('getWordPressData()', () => {
       'frm/custom': 'custom'
     }
 
-    const result = await getWordPressData('pages', 'pages')
+    const result = await getWordPressData('pagesKey', 'pages')
 
     expect(result).toEqual(pages)
   })
 
-  it('should return post object with id 1', async () => {
-    const result = await getWordPressData('posts', 'posts/1')
+  it('should return array of one post with id 1', async () => {
+    const result = await getWordPressData('postsKey4', 'posts/1')
 
     expect(result).toEqual([posts.find((post) => post.id === '1')])
+  })
+
+  it('should return array of categories', async () => {
+    const result = await getWordPressData('categoriesKey1', 'categories')
+
+    expect(result).toEqual(categories)
+  })
+
+  it('should return array of tags', async () => {
+    const result = await getWordPressData('tagsKey', 'tags')
+
+    expect(result).toEqual(tags)
+  })
+
+  it('should return array of media', async () => {
+    const result = await getWordPressData('mediaKey', 'media')
+
+    expect(result).toEqual(media)
+  })
+
+  it('should return array of taxonomies', async () => {
+    const result = await getWordPressData('taxonomiesKey1', 'taxonomies')
+
+    expect(result).toEqual(taxonomies)
+  })
+
+  it('should return categories and posts with taxonomies linked', async () => {
+    await getWordPressData('taxonomiesKey2', 'taxonomies')
+
+    const categoriesResult = await getWordPressData('categoriesKey2', 'categories')
+    const postsResult = await getWordPressData('postsKey5', 'posts')
+    const uncategorized = {
+      id: 'category',
+      title: 'Categories',
+      slug: 'category',
+      contentTypes: [
+        'post'
+      ]
+    }
+
+    expect(categoriesResult).toEqual(categories.map(category => {
+      return {
+        ...category,
+        taxonomy: uncategorized
+      }
+    }))
+
+    expect(postsResult).toEqual(posts.map(post => {
+      const postCategories: Array<number | object> = [
+        {
+          id: '1',
+          link: 'http://wp.com/category/uncategorized/',
+          title: 'Uncategorized',
+          slug: 'uncategorized',
+          contentType: 'term',
+          taxonomy: uncategorized
+        }
+      ]
+
+      const postTags: object[] = []
+
+      if (post.id === '1') {
+        postCategories.push(2)
+        postTags.push({
+          id: '4',
+          link: 'http://wp.com/tag/sample/',
+          title: 'Sample',
+          slug: 'sample',
+          contentType: 'term',
+          taxonomy: {
+            id: 'post_tag',
+            title: 'Tags',
+            slug: 'tag',
+            contentTypes: ['post']
+          }
+        })
+      }
+
+      return {
+        ...post,
+        categories: postCategories,
+        tags: postTags
+      }
+    }))
   })
 })
 
 /* Test getAllWordPressData */
 
 describe('getAllWordPressData()', () => {
+  beforeEach(() => {
+    config.renderTypes = {
+      page: 'p',
+      'core/paragraph': 'richText',
+      'frm/custom': 'custom'
+    }
+  })
+
   afterEach(() => {
+    resetFilters()
+    taxonomiesById.clear()
+    setStoreItem('slugs', {})
+    config.cms.ssl = true
+    config.cms.prodHost = ''
+    config.env.prod = false
     config.renderTypes = {}
+    config.wholeTypes = ['page']
     config.partialTypes = [
       'navigationItem',
       'navigation'
@@ -192,19 +297,164 @@ describe('getAllWordPressData()', () => {
     await expect(async () => await getAllWordPressData()).rejects.toThrowError(mockFetchErrorMessage.route)
   })
 
-  it('should return navigation items, navigation and content', async () => {
-    config.renderTypes = {
-      page: 'p',
-      'core/paragraph': 'richText',
-      'frm/custom': 'custom'
-    }
+  it('should return menu items, menus, pages and posts data', async () => {
+    config.cms.ssl = false
+    config.env.prod = true
+    config.cms.prodHost = 'wp.com'
+    config.wholeTypes = ['page', 'post']
 
     const result = await getAllWordPressData()
     const expectedResult = {
       navigationItem: menuItems,
       navigation: menus,
       content: {
-        page: pages
+        page: pages,
+        post: posts
+      }
+    }
+
+    expect(result?.navigationItem).toEqual(expectedResult.navigationItem)
+  })
+
+  it('should return menu items, menus and one post with id 1 from preview data', async () => {
+    const result = await getAllWordPressData({
+      previewData: {
+        id: '1',
+        contentType: 'post'
+      }
+    })
+
+    const expectedResult = {
+      navigationItem: menuItems,
+      navigation: menus,
+      content: {
+        page: [],
+        post: [posts.find((post) => post.id === '1')]
+      }
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return menu items, menus and one post with id 1 from serverless data', async () => {
+    setStoreItem('slugs', {
+      'posts/1': {
+        id: '1',
+        contentType: 'post'
+      }
+    })
+
+    const result = await getAllWordPressData({
+      serverlessData: {
+        path: 'posts/1',
+        query: {}
+      }
+    })
+
+    const expectedResult = {
+      navigationItem: [],
+      navigation: [],
+      content: {
+        page: [],
+        post: [posts.find((post) => post.id === '1')]
+      }
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return menu items, menus and skip serverless data with all posts', async () => {
+    config.wholeTypes = ['post']
+
+    setStoreItem('slugs', {
+      'posts/5': {
+        // @ts-expect-error
+        id: null,
+        // @ts-expect-error
+        contentType: null
+      }
+    })
+
+    const result = await getAllWordPressData({
+      serverlessData: {
+        path: 'posts/5',
+        query: {}
+      }
+    })
+
+    const expectedResult = {
+      navigationItem: menuItems,
+      navigation: menus,
+      content: {
+        page: [],
+        post: posts
+      }
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should run filter on data to include test attribute', async () => {
+    addFilter('wordpressData', (data) => {
+      return data.map((item) => {
+        return {
+          ...item,
+          test: 'test'
+        }
+      })
+    })
+
+    const result = await getAllWordPressData()
+    const expectedResult = {
+      navigationItem: menuItems.map(item => {
+        return {
+          ...item,
+          test: 'test'
+        }
+      }),
+      navigation: menus.map(menu => {
+        return {
+          ...menu,
+          test: 'test'
+        }
+      }),
+      content: {
+        page: pages.map(page => {
+          return {
+            ...page,
+            test: 'test'
+          }
+        })
+      }
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should run filter on all data to include test array', async () => {
+    addFilter('allData', (data, args) => {
+      const { type } = args
+
+      if (type !== 'wordpress') {
+        return data
+      }
+
+      return {
+        ...data,
+        content: {
+          ...data.content,
+          test: []
+        }
+      }
+    })
+
+    const result = await getAllWordPressData()
+    const expectedResult = {
+      navigationItem: menuItems,
+      navigation: menus,
+      content: {
+        page: pages,
+        test: []
       }
     }
 

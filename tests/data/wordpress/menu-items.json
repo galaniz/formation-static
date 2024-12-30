@@ -70,6 +70,147 @@
           "templated": true
         }
       ]
+    },
+    "_embedded": {
+      "wp:term": [
+        [
+          {
+            "id": 3,
+            "name": "Main",
+            "slug": "main",
+            "_links": {
+              "self": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menus/3",
+                  "targetHints": {
+                    "allow": [
+                      "GET",
+                      "POST",
+                      "PUT",
+                      "PATCH",
+                      "DELETE"
+                    ]
+                  }
+                }
+              ],
+              "collection": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menus"
+                }
+              ],
+              "about": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/taxonomies/nav_menu"
+                }
+              ],
+              "wp:post_type": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menu-items?menus=3"
+                }
+              ],
+              "wp:menu-location": [
+                {
+                  "embeddable": true,
+                  "href": "http://wp.com/wp-json/wp/v2/menu-locations/primary"
+                }
+              ],
+              "curies": [
+                {
+                  "name": "wp",
+                  "href": "https://api.w.org/{rel}",
+                  "templated": true
+                }
+              ]
+            }
+          }
+        ]
+      ],
+      "wp:menu-item-object": [
+        {
+          "id": 7,
+          "date": "2024-12-14T20:04:27",
+          "slug": "home",
+          "type": "page",
+          "link": "http://wp.com/home/",
+          "title": {
+            "rendered": "Home"
+          },
+          "excerpt": {
+            "rendered": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque et gravida neque. Nulla commodo eleifend turpis, vel bibendum urna euismod et. Maecenas consectetur dolor in justo congue, vel accumsan augue venenatis. Duis malesuada id turpis id cursus. Ut mollis, sem lacinia scelerisque tristique, ante ante dignissim ante, non viverra massa enim quis velit. Etiam in [&hellip;]</p>\n",
+            "protected": false
+          },
+          "author": 1,
+          "featured_media": 12,
+          "_links": {
+            "self": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/pages/7",
+                "targetHints": {
+                  "allow": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "PATCH",
+                    "DELETE"
+                  ]
+                }
+              }
+            ],
+            "collection": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/pages"
+              }
+            ],
+            "about": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/types/page"
+              }
+            ],
+            "author": [
+              {
+                "embeddable": true,
+                "href": "http://wp.com/wp-json/wp/v2/users/1"
+              }
+            ],
+            "replies": [
+              {
+                "embeddable": true,
+                "href": "http://wp.com/wp-json/wp/v2/comments?post=7"
+              }
+            ],
+            "version-history": [
+              {
+                "count": 2,
+                "href": "http://wp.com/wp-json/wp/v2/pages/7/revisions"
+              }
+            ],
+            "predecessor-version": [
+              {
+                "id": 14,
+                "href": "http://wp.com/wp-json/wp/v2/pages/7/revisions/14"
+              }
+            ],
+            "wp:featuredmedia": [
+              {
+                "embeddable": true,
+                "href": "http://wp.com/wp-json/wp/v2/media/12"
+              }
+            ],
+            "wp:attachment": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/media?parent=7"
+              }
+            ],
+            "curies": [
+              {
+                "name": "wp",
+                "href": "https://api.w.org/{rel}",
+                "templated": true
+              }
+            ]
+          }
+        }
+      ]
     }
   },
   {
@@ -141,6 +282,147 @@
           "name": "wp",
           "href": "https://api.w.org/{rel}",
           "templated": true
+        }
+      ]
+    },
+    "_embedded": {
+      "wp:term": [
+        [
+          {
+            "id": 3,
+            "name": "Main",
+            "slug": "main",
+            "_links": {
+              "self": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menus/3",
+                  "targetHints": {
+                    "allow": [
+                      "GET",
+                      "POST",
+                      "PUT",
+                      "PATCH",
+                      "DELETE"
+                    ]
+                  }
+                }
+              ],
+              "collection": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menus"
+                }
+              ],
+              "about": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/taxonomies/nav_menu"
+                }
+              ],
+              "wp:post_type": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menu-items?menus=3"
+                }
+              ],
+              "wp:menu-location": [
+                {
+                  "embeddable": true,
+                  "href": "http://wp.com/wp-json/wp/v2/menu-locations/primary"
+                }
+              ],
+              "curies": [
+                {
+                  "name": "wp",
+                  "href": "https://api.w.org/{rel}",
+                  "templated": true
+                }
+              ]
+            }
+          }
+        ]
+      ],
+      "wp:menu-item-object": [
+        {
+          "id": 2,
+          "date": "2024-12-14T19:58:13",
+          "slug": "sample-page",
+          "type": "page",
+          "link": "http://wp.com/home/sample-page/",
+          "title": {
+            "rendered": "Sample Page"
+          },
+          "excerpt": {
+            "rendered": "<p>This is an example page. It&#8217;s different from a blog post because it will stay in one place and will show up in your site navigation (in most themes). Most people start with an About page that introduces them to potential site visitors. It might say something like this: Hi there! I&#8217;m a bike messenger [&hellip;]</p>\n",
+            "protected": false
+          },
+          "author": 1,
+          "featured_media": 0,
+          "_links": {
+            "self": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/pages/2",
+                "targetHints": {
+                  "allow": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "PATCH",
+                    "DELETE"
+                  ]
+                }
+              }
+            ],
+            "collection": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/pages"
+              }
+            ],
+            "about": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/types/page"
+              }
+            ],
+            "author": [
+              {
+                "embeddable": true,
+                "href": "http://wp.com/wp-json/wp/v2/users/1"
+              }
+            ],
+            "replies": [
+              {
+                "embeddable": true,
+                "href": "http://wp.com/wp-json/wp/v2/comments?post=2"
+              }
+            ],
+            "version-history": [
+              {
+                "count": 1,
+                "href": "http://wp.com/wp-json/wp/v2/pages/2/revisions"
+              }
+            ],
+            "predecessor-version": [
+              {
+                "id": 9,
+                "href": "http://wp.com/wp-json/wp/v2/pages/2/revisions/9"
+              }
+            ],
+            "up": [
+              {
+                "embeddable": true,
+                "href": "http://wp.com/wp-json/wp/v2/pages/7"
+              }
+            ],
+            "wp:attachment": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/media?parent=2"
+              }
+            ],
+            "curies": [
+              {
+                "name": "wp",
+                "href": "https://api.w.org/{rel}",
+                "templated": true
+              }
+            ]
+          }
         }
       ]
     }
@@ -216,6 +498,107 @@
           "templated": true
         }
       ]
+    },
+    "_embedded": {
+      "wp:term": [
+        [
+          {
+            "id": 3,
+            "name": "Main",
+            "slug": "main",
+            "_links": {
+              "self": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menus/3",
+                  "targetHints": {
+                    "allow": [
+                      "GET",
+                      "POST",
+                      "PUT",
+                      "PATCH",
+                      "DELETE"
+                    ]
+                  }
+                }
+              ],
+              "collection": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menus"
+                }
+              ],
+              "about": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/taxonomies/nav_menu"
+                }
+              ],
+              "wp:post_type": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menu-items?menus=3"
+                }
+              ],
+              "wp:menu-location": [
+                {
+                  "embeddable": true,
+                  "href": "http://wp.com/wp-json/wp/v2/menu-locations/primary"
+                }
+              ],
+              "curies": [
+                {
+                  "name": "wp",
+                  "href": "https://api.w.org/{rel}",
+                  "templated": true
+                }
+              ]
+            }
+          }
+        ]
+      ],
+      "wp:menu-item-object": [
+        {
+          "id": 1,
+          "link": "http://wp.com/category/uncategorized/",
+          "name": "Uncategorized",
+          "slug": "uncategorized",
+          "taxonomy": "category",
+          "_links": {
+            "self": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/categories/1",
+                "targetHints": {
+                  "allow": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "PATCH"
+                  ]
+                }
+              }
+            ],
+            "collection": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/categories"
+              }
+            ],
+            "about": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/taxonomies/category"
+              }
+            ],
+            "wp:post_type": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/posts?categories=1"
+              }
+            ],
+            "curies": [
+              {
+                "name": "wp",
+                "href": "https://api.w.org/{rel}",
+                "templated": true
+              }
+            ]
+          }
+        }
+      ]
     }
   },
   {
@@ -282,6 +665,64 @@
           "templated": true
         }
       ]
+    },
+    "_embedded": {
+      "wp:term": [
+        [
+          {
+            "id": 3,
+            "name": "Main",
+            "slug": "main",
+            "_links": {
+              "self": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menus/3",
+                  "targetHints": {
+                    "allow": [
+                      "GET",
+                      "POST",
+                      "PUT",
+                      "PATCH",
+                      "DELETE"
+                    ]
+                  }
+                }
+              ],
+              "collection": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menus"
+                }
+              ],
+              "about": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/taxonomies/nav_menu"
+                }
+              ],
+              "wp:post_type": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menu-items?menus=3"
+                }
+              ],
+              "wp:menu-location": [
+                {
+                  "embeddable": true,
+                  "href": "http://wp.com/wp-json/wp/v2/menu-locations/primary"
+                }
+              ],
+              "curies": [
+                {
+                  "name": "wp",
+                  "href": "https://api.w.org/{rel}",
+                  "templated": true
+                }
+              ]
+            }
+          }
+        ]
+      ]
     }
+  },
+  {
+    "id": 20
   }
 ]

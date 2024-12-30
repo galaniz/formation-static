@@ -2,11 +2,6 @@
  * Utils - Image Local Test
  */
 
-/* Use temporary fs instead of memfs */
-
-vi.unmock('node:fs')
-vi.unmock('node:fs/promises')
-
 /* Imports */
 
 import { it, expect, describe, vi, beforeEach, beforeAll, afterAll } from 'vitest'
@@ -15,8 +10,13 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import sharp from 'sharp'
 import { setLocalImages } from '../imageLocal.js'
+import { setStoreItem, getStoreItem } from '../../../store/store.js'
 import { config } from '../../../config/config.js'
-import { store } from '../../../store/store.js'
+
+/* Use temporary fs instead of memfs */
+
+vi.unmock('node:fs')
+vi.unmock('node:fs/promises')
 
 /* Tests */
 
@@ -48,15 +48,15 @@ describe('setLocalImages()', () => {
   })
 
   afterAll(async () => {
-    if (tempDir) {
+    if (tempDir != null) {
       await rm(tempDir, { recursive: true, force: true })
     }
   })
 
   beforeEach(() => {
+    setStoreItem('imageMeta', {})
     config.image.inputDir = inputDir
     config.image.outputDir = outputDir
-    store.imageMeta = {}
   })
 
   it('should throw anerror if no input or output directories', async () => {
@@ -93,7 +93,7 @@ describe('setLocalImages()', () => {
       }
     ]
 
-    const meta = store.imageMeta
+    const meta = getStoreItem('imageMeta')
     const expectedMeta = {
       test: {
         path: 'test',

@@ -5,7 +5,7 @@
 
 /* Imports */
 
-import type { RenderItem, RenderAllData } from '../render/renderTypes.js'
+import type { RenderItem } from '../render/renderTypes.js'
 
 /**
  * @typedef {Object<string, RenderItem>} LocalData
@@ -23,20 +23,6 @@ export interface LocalDataParams {
 }
 
 /**
- * @typedef {function} LocalDataFilter
- * @param {LocalData} data
- * @return {LocalData}
- */
-export type LocalDataFilter = (data: LocalData) => LocalData
-
-/**
- * @typedef {function} LocalAllDataFilter
- * @param {RenderAllData} data
- * @return {RenderAllData}
- */
-export type LocalAllDataFilter = (args: RenderAllData) => RenderAllData
-
-/**
  * @typedef {object} AllLocalDataArgs
  * @prop {object} [resolveProps]
  * @prop {string[]} resolveProps.image
@@ -46,8 +32,6 @@ export type LocalAllDataFilter = (args: RenderAllData) => RenderAllData
  * @prop {object} excludeProps.archive
  * @prop {string[]} excludeProps.archive.posts
  * @prop {string[]} excludeProps.archive.terms
- * @prop {LocalDataFilter} [filterData]
- * @prop {LocalAllDataFilter} [filterAllData]
  */
 export interface AllLocalDataArgs {
   resolveProps?: {
@@ -61,6 +45,4 @@ export interface AllLocalDataArgs {
       terms: string[]
     }
   }
-  filterData?: LocalDataFilter
-  filterAllData?: LocalAllDataFilter
 }

@@ -30,6 +30,10 @@ let filters: FilterMap = new Map([
   ['ajaxResult', new Set()],
   ['cacheData', new Set()],
   ['storeData', new Set()],
+  ['contentfulData', new Set()],
+  ['wordpressData', new Set()],
+  ['localData', new Set()],
+  ['allData', new Set()],
   ['slugParts', new Set()],
   ['slug', new Set()]
 ])
@@ -158,6 +162,10 @@ const resetFilters = (): void => {
     ['ajaxResult', new Set()],
     ['cacheData', new Set()],
     ['storeData', new Set()],
+    ['contentfulData', new Set()],
+    ['wordpressData', new Set()],
+    ['localData', new Set()],
+    ['allData', new Set()],
     ['slugParts', new Set()],
     ['slug', new Set()]
   ])

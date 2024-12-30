@@ -43,7 +43,7 @@ describe('getImage()', () => {
         height: 100,
         format: 'png'
       },
-      source: 'local',
+      source: 'local'
     }, true)
 
     const expectedResult = {
@@ -212,7 +212,7 @@ describe('getImage()', () => {
         height: 900,
         format: 'jpg',
         alt: 'Test'
-      },
+      }
     }, true)
 
     result.output = testMinify(result.output)
@@ -268,7 +268,7 @@ describe('getImage()', () => {
         height: 600,
         format: 'png',
         alt: 'Test'
-      },
+      }
     }, true)
 
     result.output = testMinify(result.output)
@@ -323,7 +323,7 @@ describe('getImage()', () => {
           800: 'https://wp.com/test-800x80.png',
           1000: 'https://wp.com/test-1000x100.png'
         }
-      },
+      }
     }, true)
 
     result.output = testMinify(result.output)
@@ -360,7 +360,7 @@ describe('getImage()', () => {
 
     expect(result).toEqual(expectedResult)
   })
-  
+
   it('should return wordpress image output', () => {
     config.cms.name = 'wordpress'
 
@@ -380,9 +380,9 @@ describe('getImage()', () => {
           200: 'https://wp.com/test-200x100.png',
           400: 'https://wp.com/test-400x200.png',
           600: 'https://wp.com/test-600x300.png',
-          800: 'https://wp.com/test-800x400.png',
+          800: 'https://wp.com/test-800x400.png'
         }
-      },
+      }
     })
 
     const expectedResult = testMinify(`
@@ -422,7 +422,7 @@ describe('getImage()', () => {
         sizes: {
           200: 'https://wp.com/test-200x200.gif'
         }
-      },
+      }
     })
 
     const expectedResult = testMinify(`
@@ -502,7 +502,7 @@ describe('getImageMaxWidth()', () => {
   const maxWidths = {
     container: 1200
   }
-  
+
   const breakpoints = [
     0,
     600,

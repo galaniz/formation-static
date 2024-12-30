@@ -118,8 +118,8 @@ export type ConfigFilter = (
  * @prop {GenericStrings} renderTypes
  * @prop {GenericStrings} normalTypes
  * @prop {string[]} hierarchicalTypes
- * @prop {string[]} localesInSlug
- * @prop {Object<string, string|Object<string, string>>} typesInSlug
+ * @prop {Object<string, string>} localeInSlug
+ * @prop {Object<string, string|Object<string, string>>} typeInSlug
  * @prop {ConfigEnv} env
  * @prop {ConfigCms} cms
  * @prop {ConfigLocal} local
@@ -138,8 +138,8 @@ export interface Config {
   renderTypes: GenericStrings
   normalTypes: GenericStrings
   hierarchicalTypes: string[]
-  localesInSlug: string[]
-  typesInSlug: Record<string, string | Record<string, string>>
+  localeInSlug: Record<string, string>
+  typeInSlug: Record<string, string | Record<string, string>>
   env: ConfigEnv
   cms: ConfigCms
   local: ConfigLocal

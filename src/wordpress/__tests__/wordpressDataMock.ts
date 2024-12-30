@@ -84,8 +84,11 @@ const mockWordPressFetch = vi.fn(async (
 
     /* Headers */
 
-    headers.set('X-WP-TotalPages', '1')
-    headers.set('X-WP-Total', '1')
+    const page = urlObj.searchParams.get('page')
+    const allPages = page != null && route === 'pages'
+
+    headers.set('X-WP-TotalPages', allPages ? '2' : '')
+    headers.set('X-WP-Total', allPages ? '2' : '')
 
     /* Posts sample data */
 
@@ -102,7 +105,17 @@ const mockWordPressFetch = vi.fn(async (
     }
 
     if (route === 'pages') {
-      data = await import('../../../tests/data/wordpress/pages.json').then((res) => res.default) as WordPressDataItem[]
+      const pages = await import('../../../tests/data/wordpress/pages.json').then((res) => res.default) as WordPressDataItem[]
+
+      let pageIndex = 0
+
+      if (allPages) {
+        const pageNum = parseInt(page, 10)
+
+        pageIndex = typeof pageNum === 'number' ? pageNum - 1 : 0
+      }
+
+      data = allPages ? pages[pageIndex] as WordPressDataItem : pages
     }
 
     if (route === 'menus') {
@@ -123,6 +136,10 @@ const mockWordPressFetch = vi.fn(async (
 
     if (route === 'media') {
       data = await import('../../../tests/data/wordpress/media.json').then((res) => res.default) as WordPressDataItem[]
+    }
+
+    if (route === 'taxonomies') {
+      data = await import('../../../tests/data/wordpress/taxonomies.json').then((res) => res.default) as Record<string, WordPressDataItem>
     }
 
     if (route === 'empty') {

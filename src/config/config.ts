@@ -21,8 +21,7 @@ let config: Config = {
   },
   partialTypes: [
     'navigationItem',
-    'navigation',
-    'redirect'
+    'navigation'
   ],
   wholeTypes: [
     'page'
@@ -30,8 +29,8 @@ let config: Config = {
   hierarchicalTypes: [
     'page'
   ],
-  localesInSlug: [],
-  typesInSlug: {},
+  localeInSlug: {},
+  typeInSlug: {},
   normalTypes: {},
   renderTypes: {},
   env: {

@@ -56,9 +56,15 @@ export const menuItems = [
     description: '',
     contentType: 'navigationItem',
     internalLink: {
-      contentType: 'category',
+      contentType: 'term',
       slug: 'uncategorized',
-      id: '1'
+      id: '1',
+      taxonomy: {
+        id: 'category',
+        title: '',
+        slug: '',
+        contentTypes: []
+      }
     },
     target: '',
     classes: [

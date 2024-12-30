@@ -10,12 +10,12 @@ import type {
   AllContentfulDataArgs
 } from './contentfulDataTypes.js'
 import type { RenderAllData, RenderItem } from '../render/renderTypes.js'
+import type { DataFilterArgs } from '../utils/filter/filterTypes.js'
 import resolveResponse from 'contentful-resolve-response'
 import { ResponseError } from '../utils/ResponseError/ResponseError.js'
 import { applyFilters } from '../utils/filter/filter.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
-import { isFunction } from '../utils/function/function.js'
 import { isArray } from '../utils/array/array.js'
 import { config } from '../config/config.js'
 import { fetchStoreItem } from '../store/store.js'
@@ -127,9 +127,7 @@ const getAllContentfulData = async (
 
   const {
     serverlessData,
-    previewData,
-    filterData,
-    filterAllData
+    previewData
   } = args
 
   let allData: RenderAllData = {
@@ -145,6 +143,10 @@ const getAllContentfulData = async (
 
   const isServerless = serverlessData != null
   const isPreview = previewData != null
+  const contentfulDataFilterArgs: DataFilterArgs = {
+    serverlessData,
+    previewData
+  }
 
   /* Get single entry data if serverless or preview data */
 
@@ -201,9 +203,7 @@ const getAllContentfulData = async (
 
       let data = await getContentfulData(key, params)
 
-      if (isFunction(filterData)) {
-        data = filterData(data, serverlessData, previewData)
-      }
+      data = applyFilters('contentfulData', data, contentfulDataFilterArgs)
 
       if (isArray(data)) {
         allData[contentType] = data
@@ -227,9 +227,7 @@ const getAllContentfulData = async (
 
       let data = await getContentfulData(key, params)
 
-      if (isFunction(filterData)) {
-        data = filterData(data, serverlessData, previewData)
-      }
+      data = applyFilters('contentfulData', data, contentfulDataFilterArgs)
 
       if (isArray(data)) {
         allData.content[contentType] = data
@@ -239,9 +237,11 @@ const getAllContentfulData = async (
 
   /* Filter all data */
 
-  if (isFunction(filterAllData)) {
-    allData = filterAllData(allData, serverlessData, previewData)
-  }
+  allData = applyFilters('allData', allData, {
+    type: 'contentful',
+    serverlessData,
+    previewData
+  })
 
   /* Output */
 

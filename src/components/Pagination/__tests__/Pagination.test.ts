@@ -114,6 +114,7 @@ describe('Pagination()', () => {
 
     const expectedData = {
       current: 1,
+      total: 5,
       nextFilters: '',
       currentFilters: '',
       next: 2
@@ -178,6 +179,7 @@ describe('Pagination()', () => {
 
     const expectedData = {
       current: 2,
+      total: 5,
       prevFilters: '',
       nextFilters: '',
       currentFilters: '',
@@ -246,6 +248,7 @@ describe('Pagination()', () => {
 
     const expectedData = {
       current: 3,
+      total: 5,
       prevFilters: '',
       nextFilters: '',
       currentFilters: '',

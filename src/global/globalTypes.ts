@@ -6,18 +6,18 @@
  * @typedef {object} Taxonomy
  * @prop {string} id
  * @prop {string} title
- * @prop {string} contentType
+ * @prop {string[]} contentTypes
  * @prop {string} [slug]
  * @prop {boolean} [isPage]
- * @prop {boolean} [useContentTypeSlug=true]
+ * @prop {boolean} [usePrimaryContentTypeSlug=true]
  */
 export interface Taxonomy {
   id: string
   title: string
-  contentType: string
+  contentTypes: string[]
   slug?: string
   isPage?: boolean
-  useContentTypeSlug?: boolean
+  usePrimaryContentTypeSlug?: boolean
 }
 
 /**
@@ -38,9 +38,9 @@ export interface InternalLinkBase {
 
 /**
  * @typedef InternalLink
- * @type {InternalLinkBase|Generic}
+ * @type {InternalLinkBase|Taxonomy|Generic}
  */
-export interface InternalLink extends InternalLinkBase {
+export interface InternalLink extends InternalLinkBase, Partial<Taxonomy> {
   [key: string]: unknown
 }
 

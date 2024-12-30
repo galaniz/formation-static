@@ -31,44 +31,20 @@ const testNameTwo: string = 'testNameTwo'
 /* Test filters */
 
 describe('filters', () => {
-  it('should be map containing 16 empty sets', () => {
-    const columnProps = filters.get('columnProps')
-    const containerProps = filters.get('containerProps')
-    const fieldProps = filters.get('fieldProps')
-    const formProps = filters.get('formProps')
-    const richTextProps = filters.get('richTextProps')
-    const richTextOutput = filters.get('richTextOutput')
-    const richTextContentItem = filters.get('richTextContentItem')
-    const richTextContent = filters.get('richTextContent')
-    const richTextContentOutput = filters.get('richTextContentOutput')
-    const renderItem = filters.get('renderItem')
-    const renderContent = filters.get('renderContent')
-    const ajaxResult = filters.get('ajaxResult')
-    const cacheData = filters.get('cacheData')
-    const storeData = filters.get('storeData')
-    const slugParts = filters.get('slugParts')
-    const slug = filters.get('slug')
+  it('should be map containing 20 empty sets', () => {
+    let allEmpty = true
+
+    for (const [, value] of filters) {
+      if (value.size !== 0) {
+        allEmpty = false
+        break
+      }
+    }
+
     const size = filters.size
+    const expectedSize = 20
 
-    const expectResult = new Set()
-    const expectedSize = 16
-
-    expect(columnProps).toEqual(expectResult)
-    expect(containerProps).toEqual(expectResult)
-    expect(fieldProps).toEqual(expectResult)
-    expect(formProps).toEqual(expectResult)
-    expect(richTextProps).toEqual(expectResult)
-    expect(richTextOutput).toEqual(expectResult)
-    expect(richTextContentItem).toEqual(expectResult)
-    expect(richTextContent).toEqual(expectResult)
-    expect(richTextContentOutput).toEqual(expectResult)
-    expect(renderItem).toEqual(expectResult)
-    expect(renderContent).toEqual(expectResult)
-    expect(ajaxResult).toEqual(expectResult)
-    expect(cacheData).toEqual(expectResult)
-    expect(storeData).toEqual(expectResult)
-    expect(slugParts).toEqual(expectResult)
-    expect(slug).toEqual(expectResult)
+    expect(allEmpty).toEqual(true)
     expect(size).toBe(expectedSize)
   })
 })
@@ -306,48 +282,24 @@ describe('resetFilters()', () => {
     filters.delete(testNameOne)
   })
 
-  it('should reset map to initial 16 empty sets', () => {
+  it('should reset map to initial 20 empty sets', () => {
     addFilter(testNameOne, () => false)
     addFilter('richTextOutput', () => '')
     resetFilters()
 
-    const columnProps = filters.get('columnProps')
-    const containerProps = filters.get('containerProps')
-    const fieldProps = filters.get('fieldProps')
-    const formProps = filters.get('formProps')
-    const richTextProps = filters.get('richTextProps')
-    const richTextOutput = filters.get('richTextOutput')
-    const richTextContentItem = filters.get('richTextContentItem')
-    const richTextContent = filters.get('richTextContent')
-    const richTextContentOutput = filters.get('richTextContentOutput')
-    const renderItem = filters.get('renderItem')
-    const renderContent = filters.get('renderContent')
-    const ajaxResult = filters.get('ajaxResult')
-    const cacheData = filters.get('cacheData')
-    const storeData = filters.get('storeData')
-    const slugParts = filters.get('slugParts')
-    const slug = filters.get('slug')
+    let allEmpty = true
+
+    for (const [, value] of filters) {
+      if (value.size !== 0) {
+        allEmpty = false
+        break
+      }
+    }
+
     const size = filters.size
+    const expectedSize = 20
 
-    const expectResult = new Set()
-    const expectedSize = 16
-
-    expect(columnProps).toEqual(expectResult)
-    expect(containerProps).toEqual(expectResult)
-    expect(fieldProps).toEqual(expectResult)
-    expect(formProps).toEqual(expectResult)
-    expect(richTextProps).toEqual(expectResult)
-    expect(richTextOutput).toEqual(expectResult)
-    expect(richTextContentItem).toEqual(expectResult)
-    expect(richTextContent).toEqual(expectResult)
-    expect(richTextContentOutput).toEqual(expectResult)
-    expect(renderItem).toEqual(expectResult)
-    expect(renderContent).toEqual(expectResult)
-    expect(ajaxResult).toEqual(expectResult)
-    expect(cacheData).toEqual(expectResult)
-    expect(storeData).toEqual(expectResult)
-    expect(slugParts).toEqual(expectResult)
-    expect(slug).toEqual(expectResult)
+    expect(allEmpty).toEqual(true)
     expect(size).toBe(expectedSize)
   })
 })

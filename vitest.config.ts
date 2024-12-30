@@ -18,6 +18,10 @@ export default defineConfig({
       './tests/setup.ts'
     ],
     coverage: {
+      reporter: [
+        'text',
+        'html'
+      ],
       include: [
         'src/**/*.ts'
       ],

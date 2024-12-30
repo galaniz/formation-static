@@ -31,6 +31,7 @@
     "template": "",
     "format": "standard",
     "meta": {
+      "customMeta": "Meta test",
       "footnotes": ""
     },
     "categories": [
@@ -229,6 +230,7 @@
     "template": "",
     "format": "standard",
     "meta": {
+      "customMeta": "",
       "footnotes": ""
     },
     "categories": [
@@ -313,36 +315,6 @@
     },
     "_embedded": {
       "author": [
-        {
-          "id": 1,
-          "name": "demo",
-          "url": "http://wp.com",
-          "description": "",
-          "link": "http://wp.com/author/demo/",
-          "slug": "demo",
-          "avatar_urls": {
-            "24": "https://secure.gravatar.com/avatar/729ae85bf62b9917e93538db2f2688ca?s=24&d=mm&r=g",
-            "48": "https://secure.gravatar.com/avatar/729ae85bf62b9917e93538db2f2688ca?s=48&d=mm&r=g",
-            "96": "https://secure.gravatar.com/avatar/729ae85bf62b9917e93538db2f2688ca?s=96&d=mm&r=g"
-          },
-          "_links": {
-            "self": [
-              {
-                "href": "http://wp.com/wp-json/wp/v2/users/1",
-                "targetHints": {
-                  "allow": [
-                    "GET"
-                  ]
-                }
-              }
-            ],
-            "collection": [
-              {
-                "href": "http://wp.com/wp-json/wp/v2/users"
-              }
-            ]
-          }
-        },
         {},
         null
       ],
