@@ -2,7 +2,7 @@ export const menus = [
   {
     id: '3',
     description: '',
-    title: 'Main',
+    title: 'Primary',
     location: [
       'primary'
     ],

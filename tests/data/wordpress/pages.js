@@ -67,9 +67,7 @@ export const pages = [
     commentStatus: 'closed',
     pingStatus: 'closed',
     template: '',
-    meta: {
-      footnotes: ''
-    },
+    footnotes: '',
     classList: [
       'post-7',
       'page',
@@ -185,9 +183,7 @@ export const pages = [
     commentStatus: 'closed',
     pingStatus: 'closed',
     template: '',
-    meta: {
-      footnotes: ''
-    },
+    footnotes: '',
     classList: [
       'post-2',
       'page',

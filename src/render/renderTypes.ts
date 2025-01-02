@@ -231,6 +231,20 @@ export type RenderFunction<T = any, R = RenderItem> = (
 export type RenderFunctions<T = any, R = RenderItem> = Record<string, RenderFunction<T, R>>
 
 /**
+ * @typedef {object} RenderFunctionsArgs
+ * @prop {RenderFunctions} functions
+ * @prop {RenderLayout} layout
+ * @prop {RenderNavigations} [navigations]
+ * @prop {RenderHttpError} [httpError]
+ */
+export interface RenderFunctionsArgs {
+  functions: RenderFunctions
+  layout: RenderLayout
+  navigations?: RenderNavigations
+  httpError?: RenderHttpError
+}
+
+/**
  * @typedef RenderContentArgs
  * @type {RenderCommon}
  * @prop {RenderItem[]} content

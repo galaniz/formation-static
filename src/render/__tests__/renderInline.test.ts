@@ -1,0 +1,117 @@
+/**
+ * Render - Inline Test
+ */
+
+/* Imports */
+
+import { it, expect, describe, afterEach, beforeEach } from 'vitest'
+import { setRenderFunctions } from '../render.js'
+import { renderInlineContent, renderInlineItem } from '../renderInline.js'
+
+/**
+ * Reset render functions to default
+ *
+ * @return {void}
+ */
+const resetRenderFunctions = (): void => {
+  setRenderFunctions({
+    functions: {},
+    layout: () => '',
+    navigations: () => ({}),
+    httpError: () => ''
+  })
+}
+
+/* Test renderInlineContent */
+
+describe('renderInlineContent()', () => {
+  it('should return empty string if no items', async () => {
+    // @ts-expect-error
+    const result = await renderInlineContent()
+    const expectedResult = ''
+
+    expect(result).toBe(expectedResult)
+  })
+
+  it('should return div wrapped rich text item', async () => {
+    const result = await renderInlineContent([
+      {
+        renderType: 'container',
+        content: [
+          {
+            renderType: 'richText',
+            tag: 'p',
+            content: 'test'
+          }
+        ]
+      }
+    ])
+
+    const expectedResult = '<div><p data-rich="p">test</p></div>'
+
+    expect(result).toBe(expectedResult)
+  })
+})
+
+/* Test renderInlineItem */
+
+describe('renderInlineItem()', () => {
+  beforeEach(() => {
+    setRenderFunctions({
+      functions: {},
+      layout: ({ content }) => content,
+      navigations: () => ({}),
+      httpError: () => ''
+    })
+  })
+
+  afterEach(() => {
+    resetRenderFunctions()
+  })
+
+  it('should return empty string if no args', async () => {
+    // @ts-expect-error
+    const result = await renderInlineItem()
+    const expectedResult = ''
+
+    expect(result).toBe(expectedResult)
+  })
+
+  it('should return empty string if incomplete args', async () => {
+    // @ts-expect-error
+    const result = await renderInlineItem({
+      id: '1',
+      contentType: 'page',
+      title: 'Test'
+    })
+
+    const expectedResult = ''
+
+    expect(result).toBe(expectedResult)
+  })
+
+  it('should return div wrapped rich text item', async () => {
+    const result = await renderInlineItem({
+      id: '1',
+      contentType: 'page',
+      title: 'Test',
+      slug: 'test',
+      content: [
+        {
+          renderType: 'container',
+          content: [
+            {
+              renderType: 'richText',
+              tag: 'p',
+              content: 'test'
+            }
+          ]
+        }
+      ]
+    })
+
+    const expectedResult = '<div><p data-rich="p">test</p></div>'
+
+    expect(result).toBe(expectedResult)
+  })
+})

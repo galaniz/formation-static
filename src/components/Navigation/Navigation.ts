@@ -399,8 +399,9 @@ class Navigation {
         linkClassesArr.push(args.internalLinkClass)
       }
 
+      const hasLink = isStringStrict(link)
       const linkClasses = (linkClassesArr.length > 0) ? ` class="${linkClassesArr.join(' ')}"` : ''
-      const linkAttrsArr = [link !== '' ? `href="${link}"` : 'type="button"']
+      const linkAttrsArr = [hasLink ? `href="${link}"` : 'type="button"']
 
       if (isStringStrict(args.linkAttr)) {
         linkAttrsArr.push(args.linkAttr)
@@ -409,7 +410,7 @@ class Navigation {
       if (current) {
         linkAttrsArr.push('data-nav-current')
 
-        if (link !== '') {
+        if (hasLink) {
           linkAttrsArr.push('aria-current="page"')
         }
       }
@@ -423,7 +424,7 @@ class Navigation {
       }
 
       const linkAttrs = ` ${linkAttrsArr.join(' ')}`
-      const linkTag = link !== '' ? 'a' : 'button'
+      const linkTag = hasLink ? 'a' : 'button'
 
       output.html += `<${linkTag} data-nav-depth="${depth}"${linkClasses}${linkAttrs}>`
 

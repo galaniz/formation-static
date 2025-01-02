@@ -559,40 +559,40 @@ describe('getPermalink()', () => {
 
   it('should return index prod url if no slug provided', () => {
     config.env.prod = true
-    config.env.prodUrl = 'https://test.com/'
+    config.env.prodUrl = 'http://test.com/'
 
     const result = getPermalink()
-    const expectedResult = 'https://test.com/'
+    const expectedResult = 'http://test.com/'
 
     expect(result).toBe(expectedResult)
   })
 
   it('should return index prod url if slug is slash', () => {
     config.env.prod = true
-    config.env.prodUrl = 'https://test.com/'
+    config.env.prodUrl = 'http://test.com/'
 
     const result = getPermalink('/')
-    const expectedResult = 'https://test.com/'
+    const expectedResult = 'http://test.com/'
 
     expect(result).toBe(expectedResult)
   })
 
   it('should return prod url with trailing slash', () => {
     config.env.prod = true
-    config.env.prodUrl = 'https://test.com/'
+    config.env.prodUrl = 'http://test.com/'
 
     const result = getPermalink('test')
-    const expectedResult = 'https://test.com/test/'
+    const expectedResult = 'http://test.com/test/'
 
     expect(result).toBe(expectedResult)
   })
 
   it('should return prod url without trailing slash', () => {
     config.env.prod = true
-    config.env.prodUrl = 'https://test.com/'
+    config.env.prodUrl = 'http://test.com/'
 
     const result = getPermalink('test', false)
-    const expectedResult = 'https://test.com/test'
+    const expectedResult = 'http://test.com/test'
 
     expect(result).toBe(expectedResult)
   })
@@ -616,8 +616,8 @@ describe('getLink()', () => {
 
   it('should return external link', () => {
     // @ts-expect-error
-    const result = getLink(null, 'https://external.com/')
-    const expectedResult = 'https://external.com/'
+    const result = getLink(null, 'http://external.com/')
+    const expectedResult = 'http://external.com/'
 
     expect(result).toBe(expectedResult)
   })
@@ -636,7 +636,7 @@ describe('getLink()', () => {
 
   it('should return internal link as prod permalink', () => {
     config.env.prod = true
-    config.env.prodUrl = 'https://test.com/'
+    config.env.prodUrl = 'http://test.com/'
     config.localeInSlug = {
       'es-ES': 'es'
     }
@@ -648,7 +648,7 @@ describe('getLink()', () => {
       contentType: 'page'
     })
 
-    const expectedResult = 'https://test.com/es/test/'
+    const expectedResult = 'http://test.com/es/test/'
 
     expect(result).toBe(expectedResult)
   })

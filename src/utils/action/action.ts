@@ -87,13 +87,13 @@ const doSequentially = async <T>(callbacks: Function[], args: T): Promise<void> 
  *
  * @param {string} name
  * @param {*} [args]
- * @param {boolean} [isAwait]
+ * @param {boolean} [isAsync]
  * @return {*}
  */
 const doActions = <T, V extends boolean = false>(
   name: string,
   args?: T,
-  isAwait: V = false as V
+  isAsync: V = false as V
 ): ActionReturnType<V> => {
   const actionSet = actions.get(name)
 
@@ -104,14 +104,14 @@ const doActions = <T, V extends boolean = false>(
   const callbacks: Function[] = []
 
   for (const callback of actionSet.values()) {
-    if (isAwait) {
+    if (isAsync) {
       callbacks.push(callback)
     } else {
       callback(args)
     }
   }
 
-  if (isAwait) {
+  if (isAsync) {
     doSequentially(callbacks, args)
       .then(result => result)
       .catch(() => false)

@@ -21,11 +21,11 @@ import { config } from '../config/config.js'
 let storeDir: string = 'lib/store'
 
 /**
- * Store options
+ * Default store object
  *
  * @type {Store}
  */
-let store: Store = {
+const defaultStore: Store = {
   slugs: {},
   parents: {},
   navigations: [],
@@ -33,6 +33,15 @@ let store: Store = {
   formMeta: {},
   archiveMeta: {},
   imageMeta: {}
+}
+
+/**
+ * Store options
+ *
+ * @type {Store}
+ */
+let store: Store = {
+  ...defaultStore
 }
 
 /**
@@ -46,7 +55,11 @@ const setStore = <T extends object>(
   args: T,
   dir: string = 'lib/store'
 ): Store & T => {
-  store = Object.assign(store, args)
+  if (!isObjectStrict(args)) {
+    return store as Store & T
+  }
+
+  store = { ...defaultStore, ...args }
 
   if (isStringStrict(dir)) {
     storeDir = dir

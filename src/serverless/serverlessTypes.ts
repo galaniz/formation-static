@@ -19,10 +19,8 @@ export interface ServerlessRoute {
 
 /**
  * @typedef {Object<string, ServerlessRoute[]>} ServerlessRoutes
- * @prop {ServerlessRoute[]} reload
  */
 export interface ServerlessRoutes {
-  reload: ServerlessRoute[]
   [key: string]: ServerlessRoute[]
 }
 
@@ -104,15 +102,6 @@ export type ServerlessAction = (
 export type ServerlessActions = Record<string, ServerlessAction>
 
 /**
- * @typedef ServerlessApiKeys
- * @type {GenericStrings}
- * @prop {string} smtp2go
- */
-export interface ServerlessApiKeys extends GenericStrings {
-  smtp2go: string
-}
-
-/**
  * @typedef {object} ServerlessFilesArgs
  * @prop {string} [dataExport=getAllContentfulData]
  * @prop {string} [dataExportFile=@alanizcreative/static-site-formation/contentful/contentfulData.js]
@@ -141,12 +130,12 @@ export interface ServerlessFilesArgs {
 
 /**
  * @typedef {object} ServerlessArgs
- * @prop {ServerlessActions} actions
+ * @prop {ServerlessActions} [actions]
  * @prop {ServerlessRoutes} [routes]
- * @prop {ServerlessApiKeys} [apiKeys]
+ * @prop {GenericStrings} [apiKeys]
  */
 export interface ServerlessArgs {
-  actions: ServerlessActions
+  actions?: ServerlessActions
   routes?: ServerlessRoutes
-  apiKeys?: ServerlessApiKeys
+  apiKeys?: GenericStrings
 }

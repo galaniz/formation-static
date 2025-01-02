@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import { it, expect, describe, vi } from 'vitest'
+import { it, expect, describe, vi, afterAll } from 'vitest'
 import { print } from '../print.js'
 
 /* Tests */
@@ -13,6 +13,10 @@ describe('print()', () => {
   const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
   const mockConsoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
   const mockConsoleInfo = vi.spyOn(console, 'info').mockImplementation(() => undefined)
+
+  afterAll(() => {
+    vi.restoreAllMocks()
+  })
 
   it('should print an empty error message on two lines', () => {
     // @ts-expect-error

@@ -19,6 +19,7 @@ import { serverlessDir, serverlessRoutes } from './serverless.js'
 /**
  * Minify template strings
  *
+ * @private
  * @param {string} str
  * @return {string}
  */
@@ -73,10 +74,6 @@ const createServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> 
   } = Object.assign(defaults, isObjectStrict(args) ? args : {})
 
   /* Serverless folder required */
-
-  if (!isStringStrict(serverlessDir)) {
-    throw new Error('No serverless directory')
-  }
 
   await mkdir(resolve(serverlessDir), { recursive: true })
 

@@ -107,14 +107,14 @@ const applySequentially = async <T, U>(callbacks: Function[], value: T, args: U)
  * @param {string} name
  * @param {*} value
  * @param {*} [args]
- * @param {boolean} [isAwait]
+ * @param {boolean} [isAsync]
  * @return {*}
  */
 const applyFilters = <T, U, V extends boolean = false>(
   name: string,
   value: T,
   args?: U,
-  isAwait: V = false as V
+  isAsync: V = false as V
 ): FilterReturnType<T, V> => {
   const filterSet = filters.get(name)
 
@@ -125,14 +125,14 @@ const applyFilters = <T, U, V extends boolean = false>(
   const callbacks: Function[] = []
 
   for (const callback of filterSet.values()) {
-    if (isAwait) {
+    if (isAsync) {
       callbacks.push(callback)
     } else {
       value = callback(value, args)
     }
   }
 
-  if (isAwait) {
+  if (isAsync) {
     return applySequentially(callbacks, value, args)
       .then(newValue => newValue)
       .catch(() => value) as FilterReturnType<T, V>

@@ -338,11 +338,9 @@ describe('getAllWordPressData()', () => {
 
   it('should return menu items, menus and one post with id 1 from serverless data', async () => {
     setStoreItem('slugs', {
-      'posts/1': {
-        id: '1',
-        contentType: 'post'
-      }
-    })
+      id: '1',
+      contentType: 'post'
+    }, 'posts/1')
 
     const result = await getAllWordPressData({
       serverlessData: {
@@ -367,13 +365,11 @@ describe('getAllWordPressData()', () => {
     config.wholeTypes = ['post']
 
     setStoreItem('slugs', {
-      'posts/5': {
-        // @ts-expect-error
-        id: null,
-        // @ts-expect-error
-        contentType: null
-      }
-    })
+      // @ts-expect-error
+      id: null,
+      // @ts-expect-error
+      contentType: null
+    }, 'posts/5')
 
     const result = await getAllWordPressData({
       serverlessData: {

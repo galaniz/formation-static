@@ -68,8 +68,6 @@ const getTaxonomyInfo = (contentType: string, pageData?: RenderItem): ArchiveTax
     isPage: false
   }
 
-  contentType = normalizeContentType(contentType)
-
   const taxObj = contentType === 'taxonomy' ? pageData : pageData?.taxonomy
 
   if (!isObjectStrict(taxObj)) {

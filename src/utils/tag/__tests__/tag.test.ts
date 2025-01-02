@@ -10,7 +10,7 @@ import { getTag, tagExists } from '../tag.js'
 /* Test getTag */
 
 describe('getTag()', () => {
-  it('should return undefined if no params are passed', () => {
+  it('should return undefined if no params', () => {
     // @ts-expect-error
     const result = getTag()
     const expectedResult = undefined
@@ -110,7 +110,7 @@ describe('getTag()', () => {
 /* Test tagExists */
 
 describe('tagExists()', () => {
-  it('should return false if no params are passed', () => {
+  it('should return false if no params', () => {
     // @ts-expect-error
     const result = tagExists()
     const expectedResult = false

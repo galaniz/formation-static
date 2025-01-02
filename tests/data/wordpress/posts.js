@@ -27,10 +27,8 @@ export const posts = [
     sticky: false,
     template: '',
     format: 'standard',
-    meta: {
-      customMeta: 'Meta test',
-      footnotes: ''
-    },
+    customMeta: 'Meta test',
+    footnotes: '',
     categories: [
       {
         id: '1',
@@ -78,10 +76,8 @@ export const posts = [
     sticky: false,
     template: '',
     format: 'standard',
-    meta: {
-      customMeta: '',
-      footnotes: ''
-    },
+    customMeta: '',
+    footnotes: '',
     categories: [
       {
         id: '1',

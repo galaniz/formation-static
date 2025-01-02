@@ -20,7 +20,8 @@ import type {
   RenderFunctions,
   RenderLayout,
   RenderHttpError,
-  RenderNavigations
+  RenderNavigations,
+  RenderFunctionsArgs
 } from './renderTypes.js'
 import type { GenericStrings, ParentArgs, HtmlString } from '../global/globalTypes.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
@@ -35,7 +36,7 @@ import { isFunction } from '../utils/function/function.js'
 import { doShortcodes } from '../utils/shortcode/shortcode.js'
 import { tagExists } from '../utils/tag/tag.js'
 import { setStoreData, setStoreItem, getStoreItem } from '../store/store.js'
-import { setRedirectsData } from '../redirects/redirects.js'
+import { setRedirects } from '../redirects/redirects.js'
 import { serverlessRoutes } from '../serverless/serverless.js'
 import { scripts, styles } from '../utils/scriptStyle/scriptStyle.js'
 import { Container } from '../layouts/Container/Container.js'
@@ -45,16 +46,25 @@ import { Field } from '../objects/Field/Field.js'
 import { RichText } from '../text/RichText/RichText.js'
 
 /**
- * Output elements in render content
+ * Default render functions
  *
  * @type {RenderFunctions}
  */
-let renderFunctions: RenderFunctions = {
+const defaultRenderFunctions = {
   container: Container,
   column: Column,
   form: Form,
   field: Field,
   richText: RichText
+}
+
+/**
+ * Output elements in render content
+ *
+ * @type {RenderFunctions}
+ */
+let renderFunctions: RenderFunctions = {
+  ...defaultRenderFunctions
 }
 
 /**
@@ -81,21 +91,41 @@ let renderNavigations: RenderNavigations = () => ({})
 /**
  * Set content, layout and navigation output functions
  *
- * @param {RenderFunctions} functions
- * @param {RenderLayout} layout
- * @param {RenderNavigations} navigations
- * @return {void}
+ * @param {RenderFunctionsArgs} args
+ * @return {boolean}
  */
-const setRenderFunctions = (
-  functions: RenderFunctions,
-  layout: RenderLayout,
-  navigations: RenderNavigations,
-  httpError: RenderHttpError
-): void => {
-  renderFunctions = Object.assign(renderFunctions, functions)
+const setRenderFunctions = (args: RenderFunctionsArgs): boolean => {
+  if (!isObjectStrict(args)) {
+    return false
+  }
+
+  const {
+    functions,
+    layout,
+    navigations,
+    httpError
+  } = args
+
+  if (!isObjectStrict(functions) || !isFunction(layout)) {
+    return false
+  }
+
+  renderFunctions = {
+    ...defaultRenderFunctions,
+    ...functions
+  }
+
   renderLayout = layout
-  renderNavigations = navigations
-  renderHttpError = httpError
+
+  if (isFunction(navigations)) {
+    renderNavigations = navigations
+  }
+
+  if (isFunction(httpError)) {
+    renderHttpError = httpError
+  }
+
+  return true
 }
 
 /**
@@ -827,7 +857,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
 
   /* Redirects data */
 
-  setRedirectsData(redirect)
+  setRedirects(redirect)
 
   /* Empty serverless reload */
 

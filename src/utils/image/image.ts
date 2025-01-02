@@ -200,14 +200,14 @@ const getImage = <V extends boolean = false>(
     ${eagerHackOutput}
     ${sourceOutput}
     <img
-      ${classes !== '' ? ` class="${classes}"` : ''}
+      ${isStringStrict(classes) ? ` class="${classes}"` : ''}
       alt="${alt}"
       src="${picture ? srcFallback : src}"
       srcset="${picture ? srcsetFallback.join(', ') : srcsetSource.join(', ')}"
       sizes="${sizes}"
       width="${w}"
       height="${h}"
-      ${attr !== '' ? ` ${attr}` : ''}
+      ${isStringStrict(attr) ? ` ${attr}` : ''}
       ${lazy ? ' loading="lazy" decoding="async"' : ' loading="eager"'}
     >
   `

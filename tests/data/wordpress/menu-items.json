@@ -76,8 +76,8 @@
         [
           {
             "id": 3,
-            "name": "Main",
-            "slug": "main",
+            "name": "Primary",
+            "slug": "primary",
             "_links": {
               "self": [
                 {
@@ -290,8 +290,8 @@
         [
           {
             "id": 3,
-            "name": "Main",
-            "slug": "main",
+            "name": "Primary",
+            "slug": "primary",
             "_links": {
               "self": [
                 {
@@ -504,8 +504,8 @@
         [
           {
             "id": 3,
-            "name": "Main",
-            "slug": "main",
+            "name": "Primary",
+            "slug": "primary",
             "_links": {
               "self": [
                 {
@@ -607,7 +607,7 @@
       "rendered": "Example"
     },
     "status": "publish",
-    "url": "https://example.com",
+    "url": "http://example.com",
     "attr_title": "",
     "description": "",
     "type": "custom",
@@ -671,8 +671,8 @@
         [
           {
             "id": 3,
-            "name": "Main",
-            "slug": "main",
+            "name": "Primary",
+            "slug": "primary",
             "_links": {
               "self": [
                 {

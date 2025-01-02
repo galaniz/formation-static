@@ -29,7 +29,6 @@ const getParentSlug = (id: string, contentType: string, parents: LinkSlugParent[
 
   if (parent != null) {
     parents.unshift({ ...parent, contentType })
-
     getParentSlug(parent.id, contentType, parents)
   }
 }
@@ -187,7 +186,6 @@ const getSlug = <T extends boolean = false>(
   }
 
   let fullSlug = `${parts.length > 0 ? parts.join('/') : ''}${isNumber(page) && page > 1 ? `/?page=${page}` : ''}`
-
   fullSlug = applyFilters('slug', fullSlug, args)
 
   /* Parents and slug return */

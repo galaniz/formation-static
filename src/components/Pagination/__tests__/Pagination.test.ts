@@ -20,7 +20,7 @@ const testMinify = (str: string): string => {
 /* Tests */
 
 describe('Pagination()', () => {
-  const basePermaLink = 'https://example.com/'
+  const basePermaLink = 'http://example.com/'
 
   it('should return empty output and data if props are undefined', () => {
     // @ts-expect-error

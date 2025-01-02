@@ -121,7 +121,7 @@ describe('outputStyles()', () => {
   })
 
   it('should return empty string if config styles item map is empty', () => {
-    const result = outputStyles('https://example.com/')
+    const result = outputStyles('http://example.com/')
     const expectedResult = ''
 
     expect(result).toBe(expectedResult)
@@ -132,8 +132,8 @@ describe('outputStyles()', () => {
     addStyle('component')
     addStyle('header', ['button', 'collapsible'])
 
-    const result = outputStyles('https://example.com/')
-    const expectedResult = '<link rel="stylesheet" href="https://example.com/css/global.css" media="all"><link rel="stylesheet" href="https://example.com/css/button.css" media="all"><link rel="stylesheet" href="https://example.com/css/component.css" media="all"><link rel="stylesheet" href="https://example.com/css/collapsible.css" media="all"><link rel="stylesheet" href="https://example.com/css/header.css" media="all">'
+    const result = outputStyles('http://example.com/')
+    const expectedResult = '<link rel="stylesheet" href="http://example.com/css/global.css" media="all"><link rel="stylesheet" href="http://example.com/css/button.css" media="all"><link rel="stylesheet" href="http://example.com/css/component.css" media="all"><link rel="stylesheet" href="http://example.com/css/collapsible.css" media="all"><link rel="stylesheet" href="http://example.com/css/header.css" media="all">'
 
     expect(result).toBe(expectedResult)
   })
@@ -155,7 +155,7 @@ describe('outputScripts()', () => {
   })
 
   it('should return empty string if config scripts item map is empty', () => {
-    const result = outputScripts('https://example.com/')
+    const result = outputScripts('http://example.com/')
     const expectedResult = ''
 
     expect(result).toBe(expectedResult)
@@ -166,8 +166,8 @@ describe('outputScripts()', () => {
     addScript('component')
     addScript('header', ['button', 'collapsible'])
 
-    const result = outputScripts('https://example.com/')
-    const expectedResult = '<script type="module" src="https://example.com/js/global.js"></script><script type="module" src="https://example.com/js/button.js"></script><script type="module" src="https://example.com/js/component.js"></script><script type="module" src="https://example.com/js/collapsible.js"></script><script type="module" src="https://example.com/js/header.js"></script>'
+    const result = outputScripts('http://example.com/')
+    const expectedResult = '<script type="module" src="http://example.com/js/global.js"></script><script type="module" src="http://example.com/js/button.js"></script><script type="module" src="http://example.com/js/component.js"></script><script type="module" src="http://example.com/js/collapsible.js"></script><script type="module" src="http://example.com/js/header.js"></script>'
 
     expect(result).toBe(expectedResult)
   })

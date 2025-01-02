@@ -378,6 +378,15 @@ export interface WordPressDataFile {
 }
 
 /**
+ * @typedef WordPressDataMeta
+ * @type {Generic}
+ * @prop {string} [footnotes]
+ */
+export interface WordPressDataMeta extends Generic {
+  footnotes?: string
+}
+
+/**
  * @typedef {object} WordPressDataItem
  * @prop {number} [id]
  * @prop {string} [date]
@@ -401,8 +410,7 @@ export interface WordPressDataFile {
  * @prop {boolean} [sticky]
  * @prop {string} [template]
  * @prop {string} [format]
- * @prop {object} [meta]
- * @prop {string} meta.footnotes
+ * @prop {WordPressDataMeta} [meta]
  * @prop {number[]} [categories]
  * @prop {number[]} [tags]
  * @prop {string[]} [class_list]
@@ -434,9 +442,7 @@ export interface WordPressDataItem extends Partial<WordPressDataFeaturedMedia>, 
   sticky?: boolean
   template?: string
   format?: string
-  meta?: {
-    footnotes: string
-  }
+  meta?: WordPressDataMeta
   categories?: number[]
   tags?: number[]
   class_list?: string[]

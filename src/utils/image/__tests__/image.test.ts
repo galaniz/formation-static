@@ -207,7 +207,7 @@ describe('getImage()', () => {
       picture: true,
       alt: '',
       data: {
-        url: 'https://images.ctfassets.net/space/account/test.jpg',
+        url: 'http://images.ctfassets.net/space/account/test.jpg',
         width: 1800,
         height: 900,
         format: 'jpg',
@@ -219,14 +219,14 @@ describe('getImage()', () => {
 
     const exectedOutput = testMinify(`
       <source
-        srcset="https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=200&h=100 200w, https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=400&h=200 400w, https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=600&h=300 600w, https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=800&h=400 800w, https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1000&h=500 1000w, https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1200&h=600 1200w, https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1400&h=700 1400w"
+        srcset="http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=200&h=100 200w, http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=400&h=200 400w, http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=600&h=300 600w, http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=800&h=400 800w, http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1000&h=500 1000w, http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1200&h=600 1200w, http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1400&h=700 1400w"
         sizes="(min-width: 87.5rem) 87.5rem, 80vw"
         type="image/webp"
       >
       <img
         alt=""
-        src="https://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=1400&h=700"
-        srcset="https://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=200&h=100 200w, https://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=400&h=200 400w, https://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=600&h=300 600w, https://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=800&h=400 800w, https://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=1000&h=500 1000w, https://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=1200&h=600 1200w, https://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=1400&h=700 1400w"
+        src="http://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=1400&h=700"
+        srcset="http://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=200&h=100 200w, http://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=400&h=200 400w, http://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=600&h=300 600w, http://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=800&h=400 800w, http://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=1000&h=500 1000w, http://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=1200&h=600 1200w, http://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=1400&h=700 1400w"
         sizes="(min-width: 87.5rem) 87.5rem, 80vw"
         width="1400"
         height="700"
@@ -240,16 +240,16 @@ describe('getImage()', () => {
       aspectRatio: 0.5,
       naturalWidth: 1800,
       naturalHeight: 900,
-      src: 'https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1400&h=700',
-      srcFallback: 'https://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=1400&h=700',
+      src: 'http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1400&h=700',
+      srcFallback: 'http://images.ctfassets.net/space/account/test.jpg?fm=jpg&q=80&w=1400&h=700',
       srcset: [
-        'https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=200&h=100 200w',
-        'https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=400&h=200 400w',
-        'https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=600&h=300 600w',
-        'https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=800&h=400 800w',
-        'https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1000&h=500 1000w',
-        'https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1200&h=600 1200w',
-        'https://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1400&h=700 1400w'
+        'http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=200&h=100 200w',
+        'http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=400&h=200 400w',
+        'http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=600&h=300 600w',
+        'http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=800&h=400 800w',
+        'http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1000&h=500 1000w',
+        'http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1200&h=600 1200w',
+        'http://images.ctfassets.net/space/account/test.jpg?fm=webp&q=80&w=1400&h=700 1400w'
       ],
       sizes: '(min-width: 87.5rem) 87.5rem, 80vw'
     }
@@ -263,7 +263,7 @@ describe('getImage()', () => {
     const result = getImage({
       height: 200,
       data: {
-        url: 'https://images.ctfassets.net/space/account/test.png',
+        url: 'http://images.ctfassets.net/space/account/test.png',
         width: 2400,
         height: 600,
         format: 'png',
@@ -276,8 +276,8 @@ describe('getImage()', () => {
     const exectedOutput = testMinify(`
       <img
         alt="Test"
-        src="https://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=800&h=200"
-        srcset="https://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=200&h=50 200w, https://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=400&h=100 400w, https://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=600&h=150 600w, https://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=800&h=200 800w"
+        src="http://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=800&h=200"
+        srcset="http://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=200&h=50 200w, http://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=400&h=100 400w, http://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=600&h=150 600w, http://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=800&h=200 800w"
         sizes="(min-width: 50rem) 50rem, 100vw"
         width="800"
         height="200"
@@ -291,13 +291,13 @@ describe('getImage()', () => {
       aspectRatio: 0.25,
       naturalWidth: 2400,
       naturalHeight: 600,
-      src: 'https://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=800&h=200',
-      srcFallback: 'https://images.ctfassets.net/space/account/test.png?fm=png&q=75&w=800&h=200',
+      src: 'http://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=800&h=200',
+      srcFallback: 'http://images.ctfassets.net/space/account/test.png?fm=png&q=75&w=800&h=200',
       srcset: [
-        'https://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=200&h=50 200w',
-        'https://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=400&h=100 400w',
-        'https://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=600&h=150 600w',
-        'https://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=800&h=200 800w'
+        'http://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=200&h=50 200w',
+        'http://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=400&h=100 400w',
+        'http://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=600&h=150 600w',
+        'http://images.ctfassets.net/space/account/test.png?fm=webp&q=75&w=800&h=200 800w'
       ],
       sizes: '(min-width: 50rem) 50rem, 100vw'
     }
@@ -311,17 +311,17 @@ describe('getImage()', () => {
     const result = getImage({
       maxWidth: 1100,
       data: {
-        url: 'https://wp.com/test.png',
+        url: 'http://wp.com/test.png',
         width: 2200,
         height: 220,
         format: 'png',
         alt: 'Test',
         sizes: {
-          200: 'https://wp.com/test-200x20.png',
-          400: 'https://wp.com/test-400x40.png',
-          600: 'https://wp.com/test-600x60.png',
-          800: 'https://wp.com/test-800x80.png',
-          1000: 'https://wp.com/test-1000x100.png'
+          200: 'http://wp.com/test-200x20.png',
+          400: 'http://wp.com/test-400x40.png',
+          600: 'http://wp.com/test-600x60.png',
+          800: 'http://wp.com/test-800x80.png',
+          1000: 'http://wp.com/test-1000x100.png'
         }
       }
     }, true)
@@ -331,8 +331,8 @@ describe('getImage()', () => {
     const exectedOutput = testMinify(`
       <img
         alt="Test"
-        src="https://wp.com/test.png"
-        srcset="https://wp.com/test-200x20.png 200w, https://wp.com/test-400x40.png 400w, https://wp.com/test-600x60.png 600w, https://wp.com/test-800x80.png 800w, https://wp.com/test-1000x100.png 1000w"
+        src="http://wp.com/test.png"
+        srcset="http://wp.com/test-200x20.png 200w, http://wp.com/test-400x40.png 400w, http://wp.com/test-600x60.png 600w, http://wp.com/test-800x80.png 800w, http://wp.com/test-1000x100.png 1000w"
         sizes="(min-width: 68.75rem) 68.75rem, 100vw"
         width="1100"
         height="110"
@@ -346,14 +346,14 @@ describe('getImage()', () => {
       aspectRatio: 0.1,
       naturalWidth: 2200,
       naturalHeight: 220,
-      src: 'https://wp.com/test.png',
-      srcFallback: 'https://wp.com/test.png',
+      src: 'http://wp.com/test.png',
+      srcFallback: 'http://wp.com/test.png',
       srcset: [
-        'https://wp.com/test-200x20.png 200w',
-        'https://wp.com/test-400x40.png 400w',
-        'https://wp.com/test-600x60.png 600w',
-        'https://wp.com/test-800x80.png 800w',
-        'https://wp.com/test-1000x100.png 1000w'
+        'http://wp.com/test-200x20.png 200w',
+        'http://wp.com/test-400x40.png 400w',
+        'http://wp.com/test-600x60.png 600w',
+        'http://wp.com/test-800x80.png 800w',
+        'http://wp.com/test-1000x100.png 1000w'
       ],
       sizes: '(min-width: 68.75rem) 68.75rem, 100vw'
     }
@@ -371,16 +371,16 @@ describe('getImage()', () => {
       attr: 'id="test"',
       alt: '',
       data: {
-        url: 'https://wp.com/test.jpg',
+        url: 'http://wp.com/test.jpg',
         width: 1600,
         height: 800,
         format: 'jpg',
         alt: 'Test',
         sizes: {
-          200: 'https://wp.com/test-200x100.png',
-          400: 'https://wp.com/test-400x200.png',
-          600: 'https://wp.com/test-600x300.png',
-          800: 'https://wp.com/test-800x400.png'
+          200: 'http://wp.com/test-200x100.png',
+          400: 'http://wp.com/test-400x200.png',
+          600: 'http://wp.com/test-600x300.png',
+          800: 'http://wp.com/test-800x400.png'
         }
       }
     })
@@ -395,8 +395,8 @@ describe('getImage()', () => {
       <img
         class="test"
         alt=""
-        src="https://wp.com/test.jpg"
-        srcset="https://wp.com/test-200x100.png 200w, https://wp.com/test-400x200.png 400w, https://wp.com/test-600x300.png 600w, https://wp.com/test-800x400.png 800w"
+        src="http://wp.com/test.jpg"
+        srcset="http://wp.com/test-200x100.png 200w, http://wp.com/test-400x200.png 400w, http://wp.com/test-600x300.png 600w, http://wp.com/test-800x400.png 800w"
         sizes="(min-width: 50rem) 50rem, 100vw"
         width="800"
         height="400"
@@ -415,12 +415,12 @@ describe('getImage()', () => {
       width: 200,
       height: 200,
       data: {
-        url: 'https://wp.com/test.gif',
+        url: 'http://wp.com/test.gif',
         width: 800,
         height: 800,
         format: 'gif',
         sizes: {
-          200: 'https://wp.com/test-200x200.gif'
+          200: 'http://wp.com/test-200x200.gif'
         }
       }
     })
@@ -428,8 +428,8 @@ describe('getImage()', () => {
     const expectedResult = testMinify(`
       <img
         alt=""
-        src="https://wp.com/test.gif"
-        srcset="https://wp.com/test-200x200.gif 200w"
+        src="http://wp.com/test.gif"
+        srcset="http://wp.com/test-200x200.gif 200w"
         sizes="(min-width: 12.5rem) 12.5rem, 100vw"
         width="200"
         height="200"

@@ -82,7 +82,7 @@ let config: Config = {
  * @type {ConfigSet}
  */
 const setConfig: ConfigSet = (args) => {
-  config = Object.assign(config, args)
+  config = { ...config, ...args }
 
   return config
 }

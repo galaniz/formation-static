@@ -6,6 +6,7 @@
 
 import type { RenderAllData, RenderFunctionArgs, RenderFunctions, RenderReturn } from '../renderTypes.js'
 import type { GenericStrings } from '../../global/globalTypes.js'
+import type { Store } from '../../store/storeTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach } from 'vitest'
 import { testMinify } from '../../../tests/utils.js'
 import { Container } from '../../layouts/Container/Container.js'
@@ -16,7 +17,9 @@ import { RichText } from '../../text/RichText/RichText.js'
 import { Navigation } from '../../components/Navigation/Navigation.js'
 import { addAction, resetActions } from '../../utils/action/action.js'
 import { addFilter, resetFilters } from '../../utils/filter/filter.js'
-import { store, setStore } from '../../store/store.js'
+import { store, setStore, getStoreItem } from '../../store/store.js'
+import { setRedirects, redirects } from '../../redirects/redirects.js'
+import { isStringStrict } from '../../utils/string/string.js'
 import {
   render,
   renderItem,
@@ -29,20 +32,33 @@ import {
 } from '../render.js'
 
 /**
+ * Get default store object
+ *
+ * @return {Store}
+ */
+const getDefaultStore = (): Store => {
+  return {
+    slugs: {},
+    parents: {},
+    navigations: [],
+    navigationItems: [],
+    formMeta: {},
+    archiveMeta: {},
+    imageMeta: {}
+  }
+}
+
+/**
  * Reset store to default properties
  *
  * @return {void}
  */
 const resetStore = (): void => {
-  store.slugs = {}
-  store.parents = {}
-  store.navigations = []
-  store.navigationItems = []
-  store.formMeta = {}
-  store.archiveMeta = {}
-  store.imageMeta = {}
+  for (const [key] of Object.entries(store)) {
+    delete store[key] // eslint-disable-line @typescript-eslint/no-dynamic-delete
+  }
 
-  setStore({}, 'lib/store')
+  setStore(getDefaultStore(), 'lib/store')
 }
 
 /**
@@ -64,12 +80,12 @@ const minifyOutput = (items: RenderReturn[]): RenderReturn[] => {
  * @return {void}
  */
 const resetRenderFunctions = (): void => {
-  setRenderFunctions(
-    getDefaultRenderFunctions(),
-    () => '',
-    () => ({}),
-    () => ''
-  )
+  setRenderFunctions({
+    functions: getDefaultRenderFunctions(),
+    layout: () => '',
+    navigations: () => ({}),
+    httpError: () => ''
+  })
 }
 
 /**
@@ -87,38 +103,6 @@ const getDefaultRenderFunctions = (): RenderFunctions => {
   }
 }
 
-/* Workaround "function not covered" */
-
-describe('workaround...', () => {
-  it('should run default layout, navigations and http functions', async () => {
-    const layoutResult = await renderLayout({
-      id: '123',
-      contentType: 'page',
-      slug: 'test',
-      content: '',
-      pageData: {},
-      meta: {}
-    })
-
-    const navigationsResult = await renderNavigations({
-      navigations: [],
-      items: [],
-      currentLink: '',
-      currentType: '',
-      title: '',
-      parents: []
-    })
-
-    const httpErrorResult = await renderHttpError({
-      code: 500
-    })
-
-    expect(layoutResult).toBe('')
-    expect(navigationsResult).toEqual({})
-    expect(httpErrorResult).toBe('')
-  })
-})
-
 /* Test setRenderFunctions */
 
 describe('setRenderFunctions()', () => {
@@ -126,32 +110,80 @@ describe('setRenderFunctions()', () => {
     resetRenderFunctions()
   })
 
-  it('should set render functions to undefined', () => {
+  it('should return false and not set any functions', () => {
     // @ts-expect-error
-    setRenderFunctions()
+    const result = setRenderFunctions()
+    // @ts-expect-error
+    const resultLayout = renderLayout()
+    // @ts-expect-error
+    const resultHttpError = renderHttpError()
+    // @ts-expect-error
+    const resultNavigations = renderNavigations()
 
-    expect(renderFunctions).toEqual(getDefaultRenderFunctions())
-    expect(renderLayout).toBe(undefined)
-    expect(renderHttpError).toBe(undefined)
-    expect(renderNavigations).toBe(undefined)
+    const expectedResult = false
+    const expectedRenderFunctions = getDefaultRenderFunctions()
+    const expectedLayout = ''
+    const expectedHttpError = ''
+    const expectedNavigations = {}
+
+    expect(result).toBe(expectedResult)
+    expect(renderFunctions).toEqual(expectedRenderFunctions)
+    expect(resultLayout).toBe(expectedLayout)
+    expect(resultHttpError).toBe(expectedHttpError)
+    expect(resultNavigations).toEqual(expectedNavigations)
   })
 
-  it('should set render functions', async () => {
+  it('should return false and not set any functions if no functions or layout', () => {
+    // @ts-expect-error
+    const result = setRenderFunctions({})
+    // @ts-expect-error
+    const resultLayout = renderLayout()
+    // @ts-expect-error
+    const resultHttpError = renderHttpError()
+    // @ts-expect-error
+    const resultNavigations = renderNavigations()
+
+    const expectedResult = false
+    const expectedRenderFunctions = getDefaultRenderFunctions()
+    const expectedLayout = ''
+    const expectedHttpError = ''
+    const expectedNavigations = {}
+
+    expect(result).toBe(expectedResult)
+    expect(renderFunctions).toEqual(expectedRenderFunctions)
+    expect(resultLayout).toBe(expectedLayout)
+    expect(resultHttpError).toBe(expectedHttpError)
+    expect(resultNavigations).toEqual(expectedNavigations)
+  })
+
+  it('should return true and set render functions', async () => {
     const test = (): string => 'test'
     const layout = (): string => 'layout'
-    const http = (): string => 'http'
-    const navs = (): GenericStrings => {
+    const httpError = (): string => 'http'
+    const navigations = (): GenericStrings => {
       return {
         test: ''
       }
     }
 
-    setRenderFunctions({ test }, layout, navs, http)
+    const result = setRenderFunctions({
+      functions: { test },
+      layout,
+      navigations,
+      httpError
+    })
 
-    expect(renderFunctions).toEqual({ ...getDefaultRenderFunctions(), test })
-    expect(renderLayout).toBe(layout)
-    expect(renderHttpError).toBe(http)
-    expect(renderNavigations).toBe(navs)
+    const expectedResult = true
+    const expectedRenderFunctions = {
+      ...getDefaultRenderFunctions(),
+      test
+    }
+
+    expect(result).toBe(expectedResult)
+    expect(renderFunctions).toEqual(expectedRenderFunctions)
+    expect(renderLayout).toEqual(layout)
+    expect(renderHttpError).toEqual(httpError)
+    expect(renderNavigations).toEqual(navigations)
   })
 })
 
@@ -270,8 +302,8 @@ describe('renderItem()', () => {
 
 describe('render()', () => {
   beforeEach(() => {
-    setRenderFunctions(
-      {
+    setRenderFunctions({
+      functions: {
         test (props: RenderFunctionArgs<{ testAttr: string }>) {
           const { args } = props
           const { testAttr = '' } = args
@@ -292,8 +324,8 @@ describe('render()', () => {
           return [null]
         }
       },
-      (args) => {
-        const { content, meta } = args
+      layout: (args) => {
+        const { content, meta, navigations } = args
         const {
           title = '',
           paginationTitle = '',
@@ -314,6 +346,12 @@ describe('render()', () => {
         const canonicalMeta =
           canonical !== '' && isPag ? `<link rel="canonical" href="${canonical}${canonicalParams}">` : ''
 
+        let nav = ''
+
+        if (isStringStrict(navigations?.primary)) {
+          nav = `<nav>${navigations.primary}</nav>`
+        }
+
         return `
           <!DOCTYPE html>
           <html>
@@ -325,11 +363,11 @@ describe('render()', () => {
               ${prevMeta}
               ${nextMeta}
             </head>
-            <body>${content}</body>
+            <body>${nav}${content}</body>
           </html>
         `
       },
-      (args) => {
+      navigations: (args) => {
         const {
           navigations,
           items,
@@ -345,10 +383,12 @@ describe('render()', () => {
           }
         }
 
-        return {}
+        return {
+          primary: ''
+        }
       },
-      ({ code }) => `${code}`
-    )
+      httpError: ({ code }) => `${code}`
+    })
   })
 
   afterEach(() => {
@@ -356,6 +396,7 @@ describe('render()', () => {
     resetActions()
     resetFilters()
     resetStore()
+    setRedirects([])
   })
 
   it('should return empty array if no args', async () => {
@@ -394,47 +435,63 @@ describe('render()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should...', async () => {
-    const result = await render({
-      allData: {
-        navigation: [
-          {
-            id: '1',
-            title: 'Main',
-            location: [
-              'primary'
-            ],
-            items: [
-              {
-                id: '1',
-                title: 'Home',
-                menuOrder: 1
-              },
-              {
-                id: '2',
-                title: 'Example',
-                menuOrder: 2
-              }
-            ]
-          }
+  it('should store navigation data and output in item', async () => {
+    const navigations = [
+      {
+        id: '1',
+        title: 'Primary',
+        location: [
+          'primary'
         ],
-        navigationItem: [
+        items: [
           {
             id: '1',
             title: 'Home',
-            link: '/home/',
-            contentType: 'navigationItem',
-            internalLink: {
-              contentType: 'page',
-              slug: 'home',
-              id: '7'
-            }
+            menuOrder: 1
           },
           {
             id: '2',
             title: 'Example',
-            externalLink: 'https://example.com',
-            contentType: 'navigationItem'
+            menuOrder: 2
+          }
+        ]
+      }
+    ]
+
+    const navigationItems = [
+      {
+        id: '1',
+        title: 'Home',
+        link: '/home/',
+        contentType: 'navigationItem',
+        internalLink: {
+          contentType: 'page',
+          slug: 'home',
+          id: '7'
+        }
+      },
+      {
+        id: '2',
+        title: 'Example',
+        externalLink: 'http://example.com',
+        contentType: 'navigationItem'
+      }
+    ]
+
+    const result = await render({
+      allData: {
+        navigation: navigations,
+        navigationItem: navigationItems,
+        redirect: [
+          {
+            redirect: [
+              '/trailing /trailing/ 301'
+            ]
+          },
+          {
+            redirect: [
+              '/test /test/ 302'
+            ]
           }
         ],
         content: {
@@ -459,7 +516,18 @@ describe('render()', () => {
             <head>
               <title>Test</title>
             </head>
-            <body></body>
+            <body>
+              <nav>
+                <ul data-nav-depth="0">
+                  <li data-nav-depth="0">
+                    <a data-nav-depth="0" href="/home/">Home</a>
+                  </li>
+                  <li data-nav-depth="0">
+                    <a data-nav-depth="0" href="http://example.com">Example</a>
+                  </li>
+                </ul>
+              </nav>
+            </body>
           </html>
         `
       }
@@ -469,6 +537,12 @@ describe('render()', () => {
     const expectedResultMin = minifyOutput(expectedResult)
 
     expect(resultMin).toEqual(expectedResultMin)
+    expect(getStoreItem('navigations')).toEqual(navigations)
+    expect(getStoreItem('navigationItems')).toEqual(navigationItems)
+    expect(redirects).toEqual([
+      '/trailing /trailing/ 301',
+      '/test /test/ 302'
+    ])
   })
 
   it('should run all render actions and filters', async () => {
@@ -769,7 +843,7 @@ describe('render()', () => {
               metaTitle: 'Meta title',
               metaDescription: 'Meta description',
               metaImage: {
-                url: 'https://test.com/meta.png'
+                url: 'http://test.com/meta.png'
               }
             },
             {
@@ -830,7 +904,7 @@ describe('render()', () => {
             <head>
               <title>Meta title</title>
               <meta name="description" content="Meta description">
-              <meta property="og:image" content="https://test.com/meta.png">
+              <meta property="og:image" content="http://test.com/meta.png">
             </head>
             <body></body>
           </html>
@@ -1418,4 +1492,6 @@ describe('render()', () => {
 
     expect(resultMin).toEqual(expectedResultMin)
   })
+
+  // TODO: check scripts and styles reset and slugs set
 })

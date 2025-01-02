@@ -78,7 +78,7 @@ export const menuItems = [
   {
     id: '16',
     title: 'Example',
-    externalLink: 'https://example.com',
+    externalLink: 'http://example.com',
     attrTitle: '',
     description: '',
     contentType: 'navigationItem',

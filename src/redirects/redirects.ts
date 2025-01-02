@@ -1,5 +1,5 @@
 /**
- * Redirects - File
+ * Redirects
  */
 
 /* Imports */
@@ -19,11 +19,11 @@ let redirects: string[] = []
  * Set redirects with normalized data
  *
  * @param {RenderRedirect[]} data
- * @return {void}
+ * @return {boolean}
  */
-const setRedirectsData = (data?: RenderRedirect[]): void => {
+const setRedirects = (data?: RenderRedirect[]): boolean => {
   if (!isArrayStrict(data)) {
-    return
+    return false
   }
 
   redirects = []
@@ -41,11 +41,13 @@ const setRedirectsData = (data?: RenderRedirect[]): void => {
 
     redirects = redirects.concat(redirect)
   })
+
+  return redirects.length > 1
 }
 
 /* Exports */
 
 export {
   redirects,
-  setRedirectsData
+  setRedirects
 }

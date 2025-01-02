@@ -58,7 +58,7 @@ const testNavProps = (
   const externalItem = {
     id: '4',
     title: 'External',
-    externalLink: 'https://external.com/'
+    externalLink: 'http://external.com/'
   }
 
   return {
@@ -243,7 +243,7 @@ describe('Navigation', () => {
             </ul>
           </li>
           <li data-nav-depth="0">
-            <a data-nav-depth="0" href="https://external.com/">External</a>
+            <a data-nav-depth="0" href="http://external.com/">External</a>
           </li>
         </ul>
       `
@@ -265,7 +265,7 @@ describe('Navigation', () => {
             <a data-nav-depth="0" href="/about/">About</a>
           </li>
           <li data-nav-depth="0">
-            <a data-nav-depth="0" href="https://external.com/">External</a>
+            <a data-nav-depth="0" href="http://external.com/">External</a>
           </li>
         </ul>
       `
@@ -301,7 +301,7 @@ describe('Navigation', () => {
             </ul>
           </li>
           <li data-nav-depth="0" class="y" data-y>
-            <a data-nav-depth="0" class="z" href="https://external.com/" data-z>External</a>
+            <a data-nav-depth="0" class="z" href="http://external.com/" data-z>External</a>
           </li>
         </ul>
       `
@@ -419,7 +419,7 @@ describe('Navigation', () => {
           <!-- Before Item -->
           <li data-nav-depth="0" class="y-0-2-3" data-y="External">
             <!-- Before Link -->
-            <a data-nav-depth="0" class="z-0-2-3" href="https://external.com/" data-z="External">
+            <a data-nav-depth="0" class="z-0-2-3" href="http://external.com/" data-z="External">
               <!-- Before Link Text: z-0-2-3-External-2-3-0 -->
               External
               <!-- After Link Text: z-0-2-3-External-2-3-0 -->
@@ -453,7 +453,7 @@ describe('Navigation', () => {
             </ul>
           </li>
           <li data-nav-depth="0">
-            <a data-nav-depth="0" href="https://external.com/">External</a>
+            <a data-nav-depth="0" href="http://external.com/">External</a>
           </li>
         </ul>
       `
@@ -480,7 +480,7 @@ describe('Navigation', () => {
             </ul>
           </li>
           <li data-nav-depth="0">
-            <a data-nav-depth="0" href="https://external.com/">External</a>
+            <a data-nav-depth="0" href="http://external.com/">External</a>
           </li>
         </ul>
       `
@@ -507,7 +507,7 @@ describe('Navigation', () => {
             </ul>
           </li>
           <li data-nav-depth="0">
-            <a data-nav-depth="0" href="https://external.com/">External</a>
+            <a data-nav-depth="0" href="http://external.com/">External</a>
           </li>
         </ul>
       `

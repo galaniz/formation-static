@@ -65,12 +65,11 @@ const getContent = (args: RichTextContentProps): string => {
     dataAttr = false
   } = args
 
-  let {
-    _output = ''
-  } = args
+  let { _output = '' } = args
 
   for (let item of content) {
     item = applyFilters('richTextContentItem', item, props)
+    item = isObjectStrict(item) ? item : {}
 
     const {
       link = '',
@@ -79,10 +78,7 @@ const getContent = (args: RichTextContentProps): string => {
       content: c
     } = item
 
-    let {
-      tag = ''
-    } = item
-
+    let { tag = '' } = item
     let cc = c
 
     /* Nested content */
@@ -116,7 +112,7 @@ const getContent = (args: RichTextContentProps): string => {
         anchorLink = getLink(internalLink)
       }
 
-      if (anchorLink !== '') {
+      if (isStringStrict(anchorLink)) {
         attrs.push(`href="${anchorLink}"`)
       }
     }
@@ -198,9 +194,11 @@ const RichText = (props: RichTextProps): string => {
     return ''
   }
 
-  let { args } = props
+  const { args } = props
 
-  args = isObjectStrict(args) ? args : {}
+  if (!isObjectStrict(args)) {
+    return ''
+  }
 
   const {
     content = [],
@@ -215,9 +213,7 @@ const RichText = (props: RichTextProps): string => {
     dataAttr = true
   } = args
 
-  let {
-    tag = ''
-  } = args
+  let { tag = '' } = args
 
   /* Hr */
 
@@ -296,7 +292,7 @@ const RichText = (props: RichTextProps): string => {
 
     const id = headingContents
       .trim()
-      .replace('&hellip;', '')
+      .replace(/&hellip;/g, '')
       .replace(/[^\w\s]|_/g, '')
       .replace(/\s+/g, '-')
       .toLowerCase()
@@ -323,7 +319,7 @@ const RichText = (props: RichTextProps): string => {
       anchorLink = inLink
     }
 
-    if (anchorLink !== '') {
+    if (isStringStrict(anchorLink)) {
       attrs.push(`href="${anchorLink}"`)
     }
   }
@@ -350,7 +346,7 @@ const RichText = (props: RichTextProps): string => {
   let closing = ''
   let inner = ''
 
-  if (tag !== '' && output.trim() !== '') {
+  if (isStringStrict(tag) && output.trim() !== '') {
     opening = `<${tag}${(attrs.length > 0) ? ` ${attrs.join(' ')}` : ''}>`
     closing = `</${tag}>`
     inner = output

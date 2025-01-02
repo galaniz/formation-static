@@ -4,12 +4,8 @@
 
 /* Import */
 
-import type {
-  ServerlessApiKeys,
-  ServerlessRoutes,
-  ServerlessActions,
-  ServerlessArgs
-} from './serverlessTypes.js'
+import type { ServerlessRoutes, ServerlessActions, ServerlessArgs } from './serverlessTypes.js'
+import type { GenericStrings } from '../global/globalTypes.js'
 import { isStringStrict } from '../utils/string/string.js'
 import { isObjectStrict } from '../utils/object/object.js'
 
@@ -32,9 +28,9 @@ let serverlessRoutes: ServerlessRoutes = {
 /**
  * Api keys for use in serverless functions
  *
- * @type {ServerlessApiKeys}
+ * @type {GenericStrings}
  */
-let serverlessApiKeys: ServerlessApiKeys = {
+let serverlessApiKeys: GenericStrings = {
   smtp2go: ''
 }
 
@@ -65,9 +61,23 @@ const setServerless = (
     apiKeys
   } = args
 
-  serverlessActions = Object.assign(serverlessActions, actions)
-  serverlessRoutes = Object.assign(serverlessRoutes, routes)
-  serverlessApiKeys = Object.assign(serverlessApiKeys, apiKeys)
+  if (isObjectStrict(actions)) {
+    serverlessActions = { ...actions }
+  }
+
+  if (isObjectStrict(routes)) {
+    serverlessRoutes = {
+      ...{ reload: [] },
+      ...routes
+    }
+  }
+
+  if (isObjectStrict(apiKeys)) {
+    serverlessApiKeys = {
+      ...{ smtp2go: '' },
+      ...apiKeys
+    }
+  }
 
   if (isStringStrict(dir)) {
     serverlessDir = dir

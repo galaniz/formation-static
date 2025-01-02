@@ -18,7 +18,8 @@ import type {
   WordPressDataMenuItem,
   WordPressDataMenuChild,
   WordPressDataMenu,
-  WordPressDataMediaDetails
+  WordPressDataMediaDetails,
+  WordPressDataMeta
 } from './wordpressDataTypes.js'
 import type { RenderItem, RenderFile } from '../render/renderTypes.js'
 import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes.js'
@@ -575,6 +576,16 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 
         val = getTaxonomy(val as string)
       }
+    }
+
+    /* Meta */
+
+    if (key === 'meta' && isObj) {
+      for (const [metaKey, metaValue] of Object.entries(val as WordPressDataMeta)) {
+        newItem[metaKey] = metaValue
+      }
+
+      continue
     }
 
     /* Media details */

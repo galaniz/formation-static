@@ -2,8 +2,8 @@
   {
     "id": 3,
     "description": "",
-    "name": "Main",
-    "slug": "main",
+    "name": "Primary",
+    "slug": "primary",
     "meta": [],
     "locations": [
       "primary"
