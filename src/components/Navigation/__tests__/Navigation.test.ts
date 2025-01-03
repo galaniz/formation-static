@@ -14,12 +14,12 @@ import { setStore } from '../../../store/store.js'
  * Return nav props with specified current link and type
  *
  * @param {string} currentLink
- * @param {string} currentType
+ * @param {string|string[]} currentType
  * @return {NavigationProps}
  */
 const testNavProps = (
   currentLink: string = '/',
-  currentType: string = 'page'
+  currentType: string | string[] = 'page'
 ): NavigationProps => {
   const homeItem = {
     id: '1',
@@ -86,7 +86,7 @@ const testNavProps = (
         location: 'empty',
         items: []
       },
-      // @ts-expect-error (coverage)
+      // @ts-expect-error - invalid nav
       null
     ],
     items: [
@@ -95,7 +95,7 @@ const testNavProps = (
       // @ts-expect-error
       aboutItem,
       externalItem,
-      // @ts-expect-error (coverage)
+      // @ts-expect-error - invalid item
       null
     ],
     currentLink,
@@ -129,7 +129,7 @@ describe('Navigation', () => {
     home = new Navigation(testNavProps())
     about = new Navigation(testNavProps('/about/'))
     blog = new Navigation(testNavProps('/blog/'))
-    blogPost = new Navigation(testNavProps('/blog-post/', 'blog'))
+    blogPost = new Navigation(testNavProps('/blog-post/', ['blog', 'page']))
   })
 
   /* Test init */
@@ -212,7 +212,7 @@ describe('Navigation', () => {
           }
         ],
         items: [
-          // @ts-expect-error (coverage)
+          // @ts-expect-error - invalid internal link
           {
             internalLink: {
               id: 'empty'

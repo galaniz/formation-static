@@ -7,9 +7,10 @@
 import type { ServerlessContext, ServerlessSetup } from '../serverlessTypes.js'
 import type { getAllContentfulData } from '../../contentful/contentfulData.js'
 import type { getAllWordPressData } from '../../wordpress/wordpressData.js'
-import { isString, isStringStrict } from '../../utils/string/string.js'
+import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
-import { render } from '../../render/render.js'
+import { isFunction } from '../../utils/function/function.js'
+import { render, renderHttpError } from '../../render/render.js'
 
 /**
  * Output preview from contentful or wordpress
@@ -55,15 +56,24 @@ const Preview = async (
   })
 
   let html = ''
+  let status = 200
 
   if (isObjectStrict(data)) {
-    const output = data.output
+    html = data.output
+  }
 
-    html = isString(output) ? output : ''
+  const isEmpty = html === ''
+
+  if (isEmpty) {
+    status = 404
+  }
+
+  if (isEmpty && isFunction(renderHttpError)) {
+    html = await renderHttpError({ code: status })
   }
 
   return new Response(html, {
-    status: 200,
+    status,
     headers: {
       'Content-Type': 'text/html;charset=UTF-8'
     }

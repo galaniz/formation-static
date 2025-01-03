@@ -340,11 +340,11 @@ describe('getAllWordPressData()', () => {
     setStoreItem('slugs', {
       id: '1',
       contentType: 'post'
-    }, 'posts/1')
+    }, '/posts/1/')
 
     const result = await getAllWordPressData({
       serverlessData: {
-        path: 'posts/1',
+        path: '/posts/1/',
         query: {}
       }
     })
@@ -369,11 +369,11 @@ describe('getAllWordPressData()', () => {
       id: null,
       // @ts-expect-error
       contentType: null
-    }, 'posts/5')
+    }, '/posts/5/')
 
     const result = await getAllWordPressData({
       serverlessData: {
-        path: 'posts/5',
+        path: '/posts/5/',
         query: {}
       }
     })

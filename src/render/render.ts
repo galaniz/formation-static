@@ -50,7 +50,7 @@ import { RichText } from '../text/RichText/RichText.js'
  *
  * @type {RenderFunctions}
  */
-const defaultRenderFunctions = {
+const defaultRenderFunctions: RenderFunctions = {
   container: Container,
   column: Column,
   form: Form,
@@ -627,7 +627,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn | null
     formattedSlug = slug
   }
 
-  setStoreItem('slugs', { contentType, id }, formattedSlug)
+  setStoreItem('slugs', { contentType, id }, slugIsHtml ? `/${slug}` : formattedSlug)
 
   /* Check if index */
 

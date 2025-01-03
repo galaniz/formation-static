@@ -8,11 +8,38 @@ import type { ReloadQuery } from './ReloadTypes.js'
 import type { ServerlessContext, ServerlessSetup } from '../serverlessTypes.js'
 import type { getAllContentfulData } from '../../contentful/contentfulData.js'
 import type { getAllWordPressData } from '../../wordpress/wordpressData.js'
-import { isString, isStringStrict } from '../../utils/string/string.js'
+import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isFunction } from '../../utils/function/function.js'
 import { print } from '../../utils/print/print.js'
 import { render, renderHttpError } from '../../render/render.js'
+
+/**
+ * Error html output
+ *
+ * @private
+ * @param {ServerlessContext} context
+ * @param {ServerlessSetup} setupServerless
+ * @param {number} status
+ * @return {Promise<string>} html
+ */
+const getErrorHtml = async (
+  context: ServerlessContext,
+  setupServerless: ServerlessSetup,
+  status: number
+): Promise<string> => {
+  try {
+    setupServerless(context)
+
+    if (isFunction(renderHttpError)) {
+      return await renderHttpError({ code: status })
+    }
+  } catch (error) {
+    print('[SSF] Error rendering http error', error)
+  }
+
+  return ''
+}
 
 /**
  * Output paginated and/or filtered page on browser reload
@@ -54,7 +81,7 @@ const Reload = async (
 
     /* No query move on to default page */
 
-    if (noPage || noFilters) {
+    if (noPage && noFilters) {
       return next() // eslint-disable-line @typescript-eslint/return-await
     }
 
@@ -76,15 +103,24 @@ const Reload = async (
     })
 
     let html = ''
+    let status = 200
 
     if (isObjectStrict(data)) {
-      const output = data.output
+      html = data.output
+    }
 
-      html = isString(output) ? output : ''
+    const isEmpty = html === ''
+
+    if (isEmpty) {
+      status = 404
+    }
+
+    if (isEmpty && isFunction(renderHttpError)) {
+      html = await renderHttpError({ code: status })
     }
 
     return new Response(html, {
-      status: 200,
+      status,
       headers: {
         'Content-Type': 'text/html;charset=UTF-8'
       }
@@ -92,16 +128,11 @@ const Reload = async (
   } catch (error) {
     print('[SSF] Error with reload function', error)
 
-    const statusCode = 500
-
-    let html = ''
-
-    if (isFunction(renderHttpError)) {
-      html = await renderHttpError({ code: statusCode })
-    }
+    const status = 500
+    const html = await getErrorHtml(context, setupServerless, status)
 
     return new Response(html, {
-      status: statusCode,
+      status,
       headers: {
         'Content-Type': 'text/html;charset=UTF-8'
       }

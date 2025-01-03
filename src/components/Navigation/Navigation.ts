@@ -176,7 +176,7 @@ class Navigation {
    * @param {NavigationItem} item
    * @return {NavigationItem|undefined}
    */
-  #getItemInfo (item: NavigationItem): NavigationItem | undefined {
+  #getItemInfo (item: NavigationItem | undefined): NavigationItem | undefined {
     if (!isObjectStrict(item)) {
       return
     }
@@ -259,13 +259,7 @@ class Navigation {
     let childCurrent = false
 
     children.forEach(child => {
-      const childItem = this.#itemsById.get(child?.id)
-
-      if (childItem == null) {
-        return
-      }
-
-      const info = this.#getItemInfo(childItem)
+      const info = this.#getItemInfo(this.#itemsById.get(child?.id))
 
       if (info == null) {
         return

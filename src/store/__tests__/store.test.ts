@@ -4,10 +4,10 @@
 
 /* Imports */
 
-import type { Store } from '../storeTypes.js'
 import { it, expect, describe, vi, afterEach, afterAll, beforeEach, beforeAll } from 'vitest'
 import { vol } from 'memfs'
 import { readFile } from 'node:fs/promises'
+import { testDefaultStore, testResetStore } from '../../../tests/utils.js'
 import { config } from '../../config/config.js'
 import { createStoreFiles } from '../storeFiles.js'
 import {
@@ -20,46 +20,16 @@ import {
   getStoreItem
 } from '../store.js'
 
-/**
- * Get default store object
- *
- * @return {Store}
- */
-const getDefaultStore = (): Store => {
-  return {
-    slugs: {},
-    parents: {},
-    navigations: [],
-    navigationItems: [],
-    formMeta: {},
-    archiveMeta: {},
-    imageMeta: {}
-  }
-}
-
-/**
- * Reset store to default properties
- *
- * @return {void}
- */
-const resetStore = (): void => {
-  for (const [key] of Object.entries(store)) {
-    delete store[key] // eslint-disable-line @typescript-eslint/no-dynamic-delete
-  }
-
-  setStore(getDefaultStore(), 'lib/store')
-}
-
 /* Test setStore */
 
 describe('setStore()', () => {
   afterEach(() => {
-    resetStore()
+    testResetStore()
   })
 
   it('should return default store object', () => {
     const result = setStore({})
-    const expectedResult = getDefaultStore()
+    const expectedResult = testDefaultStore()
     const expectedStoreDir = 'lib/store'
 
     expect(result).toEqual(expectedResult)
@@ -90,7 +60,7 @@ describe('setStore()', () => {
 
 describe('setStoreItem()', () => {
   afterEach(() => {
-    resetStore()
+    testResetStore()
   })
 
   it('should return false if no params', () => {
@@ -123,9 +93,9 @@ describe('setStoreItem()', () => {
     const result = setStoreItem('slugs', {
       contentType: 'page',
       id: ''
-    }, 'test')
+    }, '/test/')
 
-    const resultStore = store.slugs.test
+    const resultStore = store.slugs['/test/']
     const expectedResult = true
     const expectedResultStore = {
       contentType: 'page',
@@ -177,7 +147,7 @@ describe('setStoreData()', () => {
         }
       }])
     })
-  
+
     vi.mock('/files/parents.json', () => ({
       default: {
         page: {
@@ -213,7 +183,7 @@ describe('setStoreData()', () => {
   })
 
   afterEach(() => {
-    resetStore()
+    testResetStore()
     config.env.dir = ''
     config.normalTypes = {}
     config.hierarchicalTypes = ['page']
@@ -235,7 +205,7 @@ describe('setStoreData()', () => {
     // @ts-expect-error
     const result = await setStoreData({})
     const expectedResult = true
-    const expectedStore = getDefaultStore()
+    const expectedStore = testDefaultStore()
 
     expect(result).toBe(expectedResult)
     expect(store).toEqual(expectedStore)
@@ -488,7 +458,7 @@ describe('fetchStoreItem()', () => {
         }
       }])
     })
-  
+
     vi.mock('/files/parents.json', () => ({
       default: {
         page: {
@@ -507,7 +477,7 @@ describe('fetchStoreItem()', () => {
   })
 
   afterEach(() => {
-    resetStore()
+    testResetStore()
     config.env.dir = ''
   })
 
@@ -549,7 +519,7 @@ describe('fetchStoreItem()', () => {
 
 describe('getStoreItem()', () => {
   afterEach(() => {
-    resetStore()
+    testResetStore()
   })
 
   it('should return undefined if no prop', () => {
@@ -595,7 +565,7 @@ describe('createStoreFiles()', () => {
   })
 
   afterEach(() => {
-    resetStore()
+    testResetStore()
     vol.reset()
   })
 

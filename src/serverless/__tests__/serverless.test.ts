@@ -133,7 +133,7 @@ describe('createServerlessFiles()', () => {
         custom: [
           {
             path: 'lorem.js',
-            content: loremContent 
+            content: loremContent
           }
         ]
       }
@@ -143,7 +143,7 @@ describe('createServerlessFiles()', () => {
 
     const ajax = await readFile('/files/ajax/index.js', { encoding: 'utf8' })
     const preview = await readFile('/files/_middleware.js', { encoding: 'utf8' })
-    const lorem = await readFile('/files/lorem.js', { encoding: 'utf8' }) 
+    const lorem = await readFile('/files/lorem.js', { encoding: 'utf8' })
 
     const expectedAjax = testMinify(`
       import { Ajax } from '@alanizcreative/static-site-formation/serverless/Ajax/Ajax.js';
@@ -188,7 +188,7 @@ describe('createServerlessFiles()', () => {
         custom: [
           {
             path: 'lorem.js',
-            content: '' 
+            content: ''
           }
         ]
       }
@@ -243,7 +243,7 @@ describe('createServerlessFiles()', () => {
         test: [
           {
             path: 'test.js',
-            content: 'test' 
+            content: 'test'
           }
         ]
       }

@@ -13,7 +13,7 @@ import { renderInlineContent, renderInlineItem } from '../renderInline.js'
  *
  * @return {void}
  */
-const resetRenderFunctions = (): void => {
+const testResetRenderFunctions = (): void => {
   setRenderFunctions({
     functions: {},
     layout: () => '',
@@ -66,7 +66,7 @@ describe('renderInlineItem()', () => {
   })
 
   afterEach(() => {
-    resetRenderFunctions()
+    testResetRenderFunctions()
   })
 
   it('should return empty string if no args', async () => {

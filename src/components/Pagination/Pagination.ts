@@ -37,7 +37,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     ellipsis = '',
     prev = '',
     next = '',
-    args = {}
+    args
   } = props
 
   const {
@@ -68,23 +68,27 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
 
   /* Url param filters */
 
-  let prevFilters = filters
-  let nextFilters = filters
-  let currentFilters = filters
+  const hasFilters = isStringStrict(filters)
 
-  if (isStringStrict(filters)) {
+  let prevFilters = ''
+  let nextFilters = ''
+  let currentFilters = ''
+
+  if (hasFilters) {
     if (current > 2) {
-      prevFilters = `&${prevFilters}`
+      prevFilters = `&${filters}`
     } else {
-      prevFilters = `?${prevFilters}`
+      prevFilters = `?${filters}`
     }
 
-    nextFilters = `&${nextFilters}`
-
     if (current === 1) {
-      currentFilters = `?${currentFilters}`
+      currentFilters = `?${filters}`
     } else {
-      currentFilters = `&${currentFilters}`
+      currentFilters = `&${filters}`
+    }
+
+    if (current < total) {
+      nextFilters = `&${filters}`
     }
   }
 
@@ -109,26 +113,24 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
   /* Determine number of items to display */
 
   const max = display - 1
-  const halff = Math.ceil(display / 2)
-  const half = max / 2
+  const half = Math.ceil(display / 2)
+  const maxHalf = max / 2
   const center = total > max
   const limit = center ? max : total - 1
 
   let start = 1
 
   if (center) {
-    start = current < max ? 1 : current - half
+    start = current < max ? 1 : current - maxHalf
   }
 
   if (start > total - limit) {
     start = total - limit
   }
 
-  let totalPagesItems = start + limit
+  const totalPagesItems = start + limit
 
-  if (totalPagesItems > total) {
-    totalPagesItems = total
-  }
+  let totalListItems = 2 // 2 for prev and next buttons
 
   /* List attributes */
 
@@ -146,27 +148,9 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
 
   const hasEllipsis = isStringStrict(ellipsis)
 
-  /* Max width */
-
-  let maxWidth = ''
-
-  if (itemMaxWidth) {
-    let totalListItems = totalPagesItems + 2 // 2 for prev and next buttons
-
-    if (center && hasEllipsis && current >= limit && current > halff) {
-      totalListItems += 1
-    }
-
-    if (center && hasEllipsis && current < total - half) {
-      totalListItems += 1
-    }
-
-    maxWidth = ` style="max-width:${100 / totalListItems}%"`
-  }
-
   /* Item attributes */
 
-  const itemAttrs = `${isStringStrict(itemClass) ? ` class="${itemClass}"` : ''}${isStringStrict(itemAttr) ? ` ${itemAttr}` : ''}${maxWidth}`
+  const itemAttrs = `${isStringStrict(itemClass) ? ` class="${itemClass}"` : ''}${isStringStrict(itemAttr) ? ` ${itemAttr}` : ''}`
 
   /* Previous item */
 
@@ -176,9 +160,9 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
   if (current > 1) {
     isPrevLink = true
     prevItem = `
-      <a${isStringStrict(prevLinkClass) ? ` class="${prevLinkClass}"` : ''}
+      <a
         href="${basePermaLink}${current > 2 ? `?page=${current - 1}` : ''}${prevFilters}"
-        aria-label="Previous page"
+        aria-label="Previous page"${isStringStrict(prevLinkClass) ? ` class="${prevLinkClass}"` : ''}
       >
         ${prev}
       </a>
@@ -195,8 +179,12 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     ellipsisOutput = `<li${itemAttrs} aria-hidden="true" data-pag-ellipsis>${ellipsis}</li>`
   }
 
-  if (center && current >= limit && current > halff) {
+  if (center && current >= limit && current > half) {
     output += ellipsisOutput
+
+    if (hasEllipsis) {
+      totalListItems += 1
+    }
   }
 
   /* Items loop */
@@ -215,9 +203,10 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
       `
     } else {
       const link = i === 1 ? basePermaLink : `${basePermaLink}?page=${i}`
+      const linkFilters = hasFilters ? i === 1 ? `?${filters}` : `&${filters}` : ''
 
       content = `
-        <a${isStringStrict(linkClass) ? ` class="${linkClass}"` : ''}${isStringStrict(linkAttr) ? ` ${linkAttr}` : ''}href="${link}${currentFilters}">
+        <a href="${link}${linkFilters}"${isStringStrict(linkClass) ? ` class="${linkClass}"` : ''}${isStringStrict(linkAttr) ? ` ${linkAttr}` : ''}>
           <span class="${a11yClass}">Page </span>
           ${i}
         </a>
@@ -225,12 +214,17 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     }
 
     output += `<li${itemAttrs}${isCurrent ? ' data-pag-current' : ''}>${content}</li>`
+    totalListItems += 1
   }
 
   /* Ellipsis */
 
-  if (center && current < total - half) {
+  if (center && current < total - maxHalf) {
     output += ellipsisOutput
+
+    if (hasEllipsis) {
+      totalListItems += 1
+    }
   }
 
   /* Next item */
@@ -241,9 +235,9 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
   if (current < total) {
     nextLink = true
     nextItem = `
-      <a${isStringStrict(nextLinkClass) ? ` class="${nextLinkClass}"` : ''}
+      <a
         href="${basePermaLink}?page=${current + 1}${nextFilters}"
-        aria-label="Next page"
+        aria-label="Next page"${isStringStrict(nextLinkClass) ? ` class="${nextLinkClass}"` : ''}
       >
         ${next}
       </a>
@@ -252,11 +246,22 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
 
   output += `<li${itemAttrs} data-pag-next="${nextLink ? 'link' : 'text'}">${nextItem}</li>`
 
+  /* Item max width */
+
+  let maxWidth = ''
+
+  if (itemMaxWidth) {
+    const width = 100 / totalListItems
+    const widthPercent = Number.isInteger(width) ? width.toString() : width.toFixed(4)
+
+    maxWidth = ` style="--pag-item-max-width:${widthPercent}%"`
+  }
+
   /* Output */
 
   return {
     output: `
-      <ol${listAttrs.length > 0 ? ` ${listAttrs.join(' ')}` : ''}>
+      <ol${listAttrs.length > 0 ? ` ${listAttrs.join(' ')}` : ''}${maxWidth}>
         ${output}
       </ol>
     `,

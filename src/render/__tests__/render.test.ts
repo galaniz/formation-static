@@ -4,20 +4,19 @@
 
 /* Imports */
 
-import type { RenderAllData, RenderFunctionArgs, RenderFunctions, RenderReturn } from '../renderTypes.js'
+import type { RenderAllData, RenderFunctionArgs, RenderReturn } from '../renderTypes.js'
 import type { GenericStrings } from '../../global/globalTypes.js'
-import type { Store } from '../../store/storeTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach } from 'vitest'
-import { testMinify } from '../../../tests/utils.js'
-import { Container } from '../../layouts/Container/Container.js'
-import { Column } from '../../layouts/Column/Column.js'
-import { Form } from '../../objects/Form/Form.js'
-import { Field } from '../../objects/Field/Field.js'
-import { RichText } from '../../text/RichText/RichText.js'
+import {
+  testMinify,
+  testResetRenderFunctions,
+  testDefaultRenderFunctions,
+  testResetStore
+} from '../../../tests/utils.js'
 import { Navigation } from '../../components/Navigation/Navigation.js'
 import { addAction, resetActions } from '../../utils/action/action.js'
 import { addFilter, resetFilters } from '../../utils/filter/filter.js'
-import { store, setStore, getStoreItem } from '../../store/store.js'
+import { getStoreItem } from '../../store/store.js'
 import { setRedirects, redirects } from '../../redirects/redirects.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import {
@@ -32,36 +31,6 @@ import {
 } from '../render.js'
 
 /**
- * Get default store object
- *
- * @return {Store}
- */
-const getDefaultStore = (): Store => {
-  return {
-    slugs: {},
-    parents: {},
-    navigations: [],
-    navigationItems: [],
-    formMeta: {},
-    archiveMeta: {},
-    imageMeta: {}
-  }
-}
-
-/**
- * Reset store to default properties
- *
- * @return {void}
- */
-const resetStore = (): void => {
-  for (const [key] of Object.entries(store)) {
-    delete store[key] // eslint-disable-line @typescript-eslint/no-dynamic-delete
-  }
-
-  setStore(getDefaultStore(), 'lib/store')
-}
-
-/**
  * Minify render return item output
  *
  * @param {RenderReturn[]} items
@@ -74,40 +43,11 @@ const minifyOutput = (items: RenderReturn[]): RenderReturn[] => {
   })
 }
 
-/**
- * Reset render functions to default
- *
- * @return {void}
- */
-const resetRenderFunctions = (): void => {
-  setRenderFunctions({
-    functions: getDefaultRenderFunctions(),
-    layout: () => '',
-    navigations: () => ({}),
-    httpError: () => ''
-  })
-}
-
-/**
- * Get default render functions object
- *
- * @return {RenderFunctions}
- */
-const getDefaultRenderFunctions = (): RenderFunctions => {
-  return {
-    container: Container,
-    column: Column,
-    form: Form,
-    field: Field,
-    richText: RichText
-  }
-}
-
 /* Test setRenderFunctions */
 
 describe('setRenderFunctions()', () => {
   afterEach(() => {
-    resetRenderFunctions()
+    testResetRenderFunctions()
   })
 
   it('should return false and not set any functions', () => {
@@ -121,7 +61,7 @@ describe('setRenderFunctions()', () => {
     const resultNavigations = renderNavigations()
 
     const expectedResult = false
-    const expectedRenderFunctions = getDefaultRenderFunctions()
+    const expectedRenderFunctions = testDefaultRenderFunctions()
     const expectedLayout = ''
     const expectedHttpError = ''
     const expectedNavigations = {}
@@ -144,7 +84,7 @@ describe('setRenderFunctions()', () => {
     const resultNavigations = renderNavigations()
 
     const expectedResult = false
-    const expectedRenderFunctions = getDefaultRenderFunctions()
+    const expectedRenderFunctions = testDefaultRenderFunctions()
     const expectedLayout = ''
     const expectedHttpError = ''
     const expectedNavigations = {}
@@ -175,7 +115,7 @@ describe('setRenderFunctions()', () => {
 
     const expectedResult = true
     const expectedRenderFunctions = {
-      ...getDefaultRenderFunctions(),
+      ...testDefaultRenderFunctions(),
       test
     }
 
@@ -392,10 +332,10 @@ describe('render()', () => {
   })
 
   afterEach(() => {
-    resetRenderFunctions()
+    testResetRenderFunctions()
     resetActions()
     resetFilters()
-    resetStore()
+    testResetStore()
     setRedirects([])
   })
 
