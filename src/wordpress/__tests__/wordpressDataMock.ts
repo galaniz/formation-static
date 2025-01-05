@@ -7,6 +7,7 @@
 import type { MockFetchResult, MockFetchOptions } from '../../../tests/types.js'
 import type { WordPressDataItem, WordPressDataError } from '../wordpressDataTypes.js'
 import { mockFetchErrorMessage } from '../../../tests/types.js'
+import { isNumber } from '../../utils/number/number.js'
 import { vi } from 'vitest'
 
 /**
@@ -112,7 +113,7 @@ const mockWordPressFetch = vi.fn(async (
       if (allPages) {
         const pageNum = parseInt(page, 10)
 
-        pageIndex = typeof pageNum === 'number' ? pageNum - 1 : 0
+        pageIndex = isNumber(pageNum) ? pageNum - 1 : 0
       }
 
       data = allPages ? pages[pageIndex] as WordPressDataItem : pages

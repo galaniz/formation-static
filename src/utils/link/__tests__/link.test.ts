@@ -4,9 +4,10 @@
 
 /* Imports */
 
-import { it, expect, describe, beforeEach, afterEach } from 'vitest'
+import { it, expect, describe, beforeEach, afterEach, vi } from 'vitest'
 import { getSlug, getLink, getPermalink } from '../link.js'
 import { setStoreItem } from '../../../store/store.js'
+import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
 import { config } from '../../../config/config.js'
 
 /* Test getSlug */
@@ -22,6 +23,7 @@ describe('getSlug()', () => {
   afterEach(() => {
     setStoreItem('archiveMeta', {})
     setStoreItem('parents', {})
+    resetFilters()
     config.hierarchicalTypes = []
     config.localeInSlug = {}
     config.typeInSlug = {}
@@ -43,7 +45,7 @@ describe('getSlug()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return locale if slug is index and in config slug locales', () => {
+  it('should return locale if locale exists and slug is index', () => {
     const result = getSlug({
       slug: 'index',
       pageData: {
@@ -59,7 +61,7 @@ describe('getSlug()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return config type slug and slug', () => {
+  it('should return type slug and slug', () => {
     config.typeInSlug = {
       color: 'hue'
     }
@@ -254,7 +256,46 @@ describe('getSlug()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return taxonomy slug', () => {
+  it('should return locale, localized type slug and exclude archive slug', () => {
+    config.typeInSlug = {
+      color: {
+        en: 'hue'
+      }
+    }
+
+    setStoreItem('archiveMeta', {
+      color: {
+        id: '123',
+        slug: 'colors',
+        title: 'Colors',
+        contentType: 'page'
+      }
+    })
+
+    const result = getSlug({
+      slug: 'index',
+      contentType: 'color',
+      pageData: {
+        locale: 'en-CA'
+      }
+    }, true)
+
+    const expectedResult = {
+      slug: 'en/hue',
+      parents: [
+        {
+          id: '123',
+          slug: 'colors',
+          title: 'Colors',
+          contentType: 'page'
+        }
+      ]
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return taxonomy slug and exclude archive slug', () => {
     setStoreItem('archiveMeta', {
       color: {
         id: '123',
@@ -279,7 +320,14 @@ describe('getSlug()', () => {
 
     const expectedResult = {
       slug: 'types',
-      parents: []
+      parents: [
+        {
+          id: '123',
+          slug: 'colors',
+          title: 'Colors',
+          contentType: 'page'
+        }
+      ]
     }
 
     expect(result).toEqual(expectedResult)
@@ -454,7 +502,14 @@ describe('getSlug()', () => {
 
     const expectedResult = {
       slug: 'types/cold',
-      parents: []
+      parents: [
+        {
+          id: '123',
+          slug: 'colors',
+          title: 'Colors',
+          contentType: 'page'
+        }
+      ]
     }
 
     expect(result).toEqual(expectedResult)
@@ -506,6 +561,59 @@ describe('getSlug()', () => {
     expect(result).toEqual(expectedResult)
   })
 
+  it('should return type, taxonomy, term and term parent slugs', () => {
+    config.hierarchicalTypes = ['term']
+    config.typeInSlug = {
+      color: 'colors'
+    }
+
+    setStoreItem('parents', {
+      term: {
+        789: {
+          id: '101',
+          slug: 'cold',
+          title: 'Cold'
+        }
+      }
+    })
+
+    const result = getSlug({
+      id: '789',
+      slug: 'icy',
+      contentType: 'term',
+      pageData: {
+        taxonomy: {
+          id: '456',
+          slug: 'types',
+          title: 'Color Types',
+          contentTypes: ['color'],
+          usePrimaryContentTypeSlug: true,
+          isPage: true
+        }
+      }
+    }, true)
+
+    const expectedResult = {
+      slug: 'colors/types/cold/icy',
+      parents: [
+        {
+          id: '456',
+          slug: 'types',
+          title: 'Color Types',
+          contentType: 'taxonomy'
+        },
+        {
+          id: '101',
+          slug: 'cold',
+          title: 'Cold',
+          contentType: 'term'
+        }
+      ]
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
   it('should return slug with page query param', () => {
     const result = getSlug({
       slug: 'colors',
@@ -518,7 +626,45 @@ describe('getSlug()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  // TODO: Test filters AND TERM PARENT
+  it('should filter slug parts', () => {
+    const filterArgs = vi.fn()
+
+    addFilter('slugParts', (parts, args) => {
+      filterArgs(args)
+      return parts.filter((part) => part !== 'colors')
+    })
+
+    const result = getSlug({
+      slug: 'colors',
+      contentType: 'page'
+    })
+
+    expect(result).toEqual('')
+    expect(filterArgs).toHaveBeenCalledWith({
+      slug: 'colors',
+      contentType: 'page'
+    })
+  })
+
+  it('should filter slug', () => {
+    const filterSlug = vi.fn()
+
+    addFilter('slug', (slug, args) => {
+      filterSlug(args)
+      return `${slug}/test`
+    })
+
+    const result = getSlug({
+      slug: 'hue',
+      contentType: 'page'
+    })
+
+    expect(result).toEqual('hue/test')
+    expect(filterSlug).toHaveBeenCalledWith({
+      slug: 'hue',
+      contentType: 'page'
+    })
+  })
 })
 
 /* Test getPermalink */

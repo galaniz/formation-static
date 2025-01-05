@@ -15,7 +15,7 @@ describe('Container()', () => {
   it('should return empty array if props are undefined', () => {
     // @ts-expect-error
     const result = Container(undefined)
-    const expectedResult = []
+    const expectedResult: string[] = []
 
     expect(result).toEqual(expectedResult)
   })
@@ -37,7 +37,7 @@ describe('Container()', () => {
 
     removeFilter(filterName, filter)
 
-    const expectedResult = []
+    const expectedResult: string[] = []
 
     expect(result).toEqual(expectedResult)
   })
@@ -49,7 +49,7 @@ describe('Container()', () => {
       }
     })
 
-    const expectedResult = []
+    const expectedResult: string[] = []
 
     expect(result).toEqual(expectedResult)
   })

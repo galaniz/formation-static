@@ -37,9 +37,10 @@ const getJson = <T>(value: string): object & T | undefined => {
  */
 const getJsonFile = async <T>(path: string, isStore: boolean = true): Promise<object & T | undefined> => {
   let res: object & T | undefined
+  let newPath = path
 
   try {
-    const newPath = isStore ? getPath(path, 'store') : path
+    newPath = isStore ? getPath(path, 'store') : path
     const { default: obj } = await import(newPath) // Removed assert json as not all exports are esnext
 
     if (isObject(obj)) {
@@ -51,7 +52,7 @@ const getJsonFile = async <T>(path: string, isStore: boolean = true): Promise<ob
     res = undefined
   }
 
-  return isStore ? await applyFilters('storeData', res, path, true) : res
+  return isStore ? await applyFilters('storeData', res, newPath, true) : res
 }
 
 /* Exports */

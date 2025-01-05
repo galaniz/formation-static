@@ -4,11 +4,12 @@
 
 /* Imports */
 
-import { it, expect, describe, vi, afterAll, beforeAll, afterEach } from 'vitest'
+import { it, expect, describe, vi, beforeEach, afterEach } from 'vitest'
 import { vol } from 'memfs'
-import { getJson, getJsonFile } from '../json.js'
 import { setStore } from '../../../store/store.js'
 import { config } from '../../../config/config.js'
+import { addFilter, resetFilters } from '../../filter/filter.js'
+import { getJson, getJsonFile } from '../json.js'
 
 /* Test getJson */
 
@@ -50,7 +51,7 @@ describe('getJson()', () => {
 /* Test getJsonFile */
 
 describe('getJsonFile()', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     vol.fromJSON({
       '/files/invalid.json': 'false',
       '/files/invalid.txt': 'Test text',
@@ -65,21 +66,21 @@ describe('getJsonFile()', () => {
       }])
     })
 
-    vi.mock('/files/invalid.json', () => ({
+    vi.doMock('/files/invalid.json', () => ({
       default: 'false'
     }))
 
-    vi.mock('/files/invalid.txt', () => ({
+    vi.doMock('/files/invalid.txt', () => ({
       default: 'Test text'
     }))
 
-    vi.mock('/files/valid.json', () => ({
+    vi.doMock('/files/valid.json', () => ({
       default: [{
         test: 'test'
       }]
     }))
 
-    vi.mock('/files/slugs.json', () => ({
+    vi.doMock('/files/slugs.json', () => ({
       default: {
         slug: {
           contentType: 'page',
@@ -89,12 +90,9 @@ describe('getJsonFile()', () => {
     }))
   })
 
-  afterAll(() => {
-    vol.reset()
-  })
-
   afterEach(() => {
     setStore({})
+    resetFilters()
     config.env.dir = ''
   })
 
@@ -148,5 +146,31 @@ describe('getJsonFile()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  // TODO: Test filter
+  it('should filter result', async () => {
+    config.env.dir = '/'
+    setStore({}, 'files')
+
+    const filterArgs = vi.fn()
+
+    addFilter('storeData', async (result, path) => {
+      filterArgs(path)
+
+      return {
+        ...result,
+        test: 'test'
+      }
+    })
+
+    const result = await getJsonFile('slugs')
+    const expectedResult = {
+      slug: {
+        contentType: 'page',
+        id: '123'
+      },
+      test: 'test'
+    }
+
+    expect(result).toEqual(expectedResult)
+    expect(filterArgs).toHaveBeenCalledWith('/files/slugs.json')
+  })
 })

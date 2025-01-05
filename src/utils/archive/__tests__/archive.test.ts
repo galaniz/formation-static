@@ -481,4 +481,43 @@ describe('getArchiveLabels()', () => {
 
     expect(result).toEqual(expectedResult)
   })
+
+  it('should return taxonomy title if term taxonomy is page', () => {
+    const result = getArchiveLabels('term', {
+      taxonomy: {
+        id: '123',
+        title: 'Test Taxonomy',
+        slug: 'test-taxonomy',
+        contentTypes: ['testContentType'],
+        isPage: true
+      }
+    })
+
+    const expectedResult = {
+      singular: 'Test Taxonomy',
+      plural: 'Test Taxonomy'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return archive meta labels if term taxonomy uses content type slug', () => {
+    const result = getArchiveLabels('term', {
+      taxonomy: {
+        id: '123',
+        title: 'Test Taxonomy',
+        slug: 'test-taxonomy',
+        contentTypes: ['testContentType'],
+        usePrimaryContentTypeSlug: true,
+        isPage: false
+      }
+    })
+
+    const expectedResult = {
+      singular: 'Test Content Type',
+      plural: 'Test Content Types'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
 })

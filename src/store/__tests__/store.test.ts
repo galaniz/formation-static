@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import { it, expect, describe, vi, afterEach, afterAll, beforeEach, beforeAll } from 'vitest'
+import { it, expect, describe, vi, afterEach, beforeEach, beforeAll } from 'vitest'
 import { vol } from 'memfs'
 import { readFile } from 'node:fs/promises'
 import { testDefaultStore, testResetStore } from '../../../tests/utils.js'
@@ -20,6 +20,37 @@ import {
   getStoreItem
 } from '../store.js'
 
+/**
+ * Set parents file
+ *
+ * @return {void}
+ */
+const setParentsFile = (): void => {
+  vol.fromJSON({
+    '/files/parents.json': JSON.stringify([{
+      page: {
+        1: {
+          id: '3',
+          title: 'Parent',
+          slug: 'parent'
+        }
+      }
+    }])
+  })
+
+  vi.doMock('/files/parents.json', () => ({
+    default: {
+      page: {
+        1: {
+          id: '3',
+          title: 'Parent',
+          slug: 'parent'
+        }
+      }
+    }
+  }))
+}
+
 /* Test setStore */
 
 describe('setStore()', () => {
@@ -27,7 +58,17 @@ describe('setStore()', () => {
     testResetStore()
   })
 
-  it('should return default store object', () => {
+  it('should return default store object if no args', () => {
+    // @ts-expect-error
+    const result = setStore()
+    const expectedResult = testDefaultStore()
+    const expectedStoreDir = 'lib/store'
+
+    expect(result).toEqual(expectedResult)
+    expect(storeDir).toBe(expectedStoreDir)
+  })
+
+  it('should return default store object if empty args', () => {
     const result = setStore({})
     const expectedResult = testDefaultStore()
     const expectedStoreDir = 'lib/store'
@@ -135,37 +176,9 @@ describe('setStoreItem()', () => {
 /* Test setStoreData */
 
 describe('setStoreData()', () => {
-  beforeAll(() => {
-    vol.fromJSON({
-      '/files/parents.json': JSON.stringify([{
-        page: {
-          1: {
-            id: '3',
-            title: 'Parent',
-            slug: 'parent'
-          }
-        }
-      }])
-    })
-
-    vi.mock('/files/parents.json', () => ({
-      default: {
-        page: {
-          1: {
-            id: '3',
-            title: 'Parent',
-            slug: 'parent'
-          }
-        }
-      }
-    }))
-  })
-
-  afterAll(() => {
-    vol.reset()
-  })
-
   beforeEach(() => {
+    setParentsFile()
+
     config.partialTypes = [
       'navigationItem',
       'navigation',
@@ -446,34 +459,8 @@ describe('setStoreData()', () => {
 /* Test fetchStoreItem */
 
 describe('fetchStoreItem()', () => {
-  beforeAll(() => {
-    vol.fromJSON({
-      '/files/parents.json': JSON.stringify([{
-        page: {
-          1: {
-            id: '3',
-            title: 'Parent',
-            slug: 'parent'
-          }
-        }
-      }])
-    })
-
-    vi.mock('/files/parents.json', () => ({
-      default: {
-        page: {
-          1: {
-            id: '3',
-            title: 'Parent',
-            slug: 'parent'
-          }
-        }
-      }
-    }))
-  })
-
-  afterAll(() => {
-    vol.reset()
+  beforeEach(() => {
+    setParentsFile()
   })
 
   afterEach(() => {
@@ -560,13 +547,8 @@ describe('createStoreFiles()', () => {
     vi.spyOn(console, 'info').mockImplementation(() => {})
   })
 
-  afterAll(() => {
-    vi.restoreAllMocks()
-  })
-
   afterEach(() => {
     testResetStore()
-    vol.reset()
   })
 
   it('should throw error if data is invalid json', async () => {

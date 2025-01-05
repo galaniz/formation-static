@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import { it, expect, describe, vi, afterEach, afterAll, beforeAll } from 'vitest'
+import { it, expect, describe, vi, afterEach, beforeAll } from 'vitest'
 import { vol } from 'memfs'
 import {
   testResetRenderFunctions,
@@ -27,13 +27,8 @@ describe('Reload()', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
   })
 
-  afterAll(() => {
-    vi.restoreAllMocks()
-  })
-
   afterEach(() => {
-    vi.unstubAllGlobals()
-    vol.reset()
+    vi.resetModules()
     testResetRenderFunctions()
     testResetStore()
     config.env.dir = ''
@@ -146,7 +141,7 @@ describe('Reload()', () => {
       }])
     })
 
-    vi.mock('/files/slugs.json', () => ({
+    vi.doMock('/files/slugs.json', () => ({
       default: {
         '/hello-world/': {
           id: '1',

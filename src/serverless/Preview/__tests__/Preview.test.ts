@@ -21,7 +21,6 @@ import { Preview } from '../Preview.js'
 
 describe('Preview()', () => {
   afterEach(() => {
-    vi.unstubAllGlobals()
     testResetRenderFunctions()
     testResetStore()
     config.cms = {

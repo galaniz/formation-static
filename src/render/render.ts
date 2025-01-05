@@ -541,6 +541,14 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn | null
 
   const pageHeadings: RichTextHeading[][] = []
 
+  /* Reset script and style files */
+
+  scripts.deps.clear()
+  scripts.item.clear()
+  scripts.meta = {}
+  styles.deps.clear()
+  styles.item.clear()
+
   /* Start action */
 
   const renderItemStartArgs: RenderItemStartActionArgs = {
@@ -553,14 +561,6 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn | null
   }
 
   await doActions('renderItemStart', renderItemStartArgs, true)
-
-  /* Reset script and style files */
-
-  scripts.deps.clear()
-  scripts.item.clear()
-  scripts.meta = {}
-  styles.deps.clear()
-  styles.item.clear()
 
   /* Meta */
 
@@ -827,10 +827,6 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
   const isServerless = serverlessData != null
   const isPreview = previewData != null
 
-  /* Start action */
-
-  await doActions('renderStart', args, true)
-
   /* Reset script and style directories */
 
   scripts.deps.clear()
@@ -846,6 +842,10 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
   }
 
   const { redirect, content } = allData
+
+  /* Start action */
+
+  await doActions('renderStart', args, true)
 
   /* Content data */
 

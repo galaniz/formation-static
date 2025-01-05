@@ -4,6 +4,7 @@
 
 /* Imports */
 
+import type { LinkShareReturn } from '../linkTypes.js'
 import { it, expect, describe } from 'vitest'
 import { getShareLinks } from '../linkShare.js'
 
@@ -13,7 +14,7 @@ describe('getShareLinks()', () => {
   it('should return empty array if no url or platforms provided', () => {
     // @ts-expect-error
     const result = getShareLinks()
-    const expectedResult = []
+    const expectedResult: LinkShareReturn[] = []
 
     expect(result).toEqual(expectedResult)
   })

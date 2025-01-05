@@ -4,24 +4,20 @@
 
 /* Imports */
 
-import { it, expect, describe, afterAll, beforeAll } from 'vitest'
+import { it, expect, describe, beforeEach } from 'vitest'
 import { vol } from 'memfs'
 import { getFilePaths } from '../filePath.js'
 
 /* Tests */
 
 describe('getFilePaths()', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     vol.fromJSON({
       '/files/test/test.json': '',
       '/files/test/test.md': '',
       '/files/test.js': '',
       '/files/test.txt': ''
     })
-  })
-
-  afterAll(() => {
-    vol.reset()
   })
 
   it('should throw an error if no directory is provided', async () => {

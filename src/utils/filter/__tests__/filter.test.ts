@@ -4,6 +4,7 @@
 
 /* Imports */
 
+import type { Filters } from '../filterTypes.js'
 import { it, expect, describe, beforeEach, vi } from 'vitest'
 import {
   filters,
@@ -247,7 +248,8 @@ describe('setFilters()', () => {
   })
 
   it('should return true and filter should not be added', () => {
-    const args = {}
+    const args: Partial<Filters> = {}
+    // @ts-expect-error
     args[testNameOne] = null
 
     const result = setFilters(args)
@@ -261,7 +263,7 @@ describe('setFilters()', () => {
   })
 
   it('should return true and filter should be added', () => {
-    const args = {}
+    const args: Partial<Filters> = {}
     args[testNameOne] = () => {}
 
     const result = setFilters(args)

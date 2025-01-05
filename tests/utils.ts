@@ -15,6 +15,7 @@ import { Field } from '../src/objects/Field/Field.js'
 import { RichText } from '../src/text/RichText/RichText.js'
 import { setRenderFunctions } from '../src/render/render.js'
 import { store, setStore } from '../src/store/store.js'
+import { setServerless } from '../src/serverless/serverless.js'
 
 /**
  * Remove all empty spaces from string
@@ -135,6 +136,19 @@ const testWordPressConfig = (): Config['cms'] => {
   }
 }
 
+/**
+ * Reset serverless variables to default values
+ *
+ * @return {void}
+ */
+const testResetServerless = (): void => {
+  setServerless({
+    actions: {},
+    routes: {},
+    apiKeys: {}
+  }, 'functions')
+}
+
 /* Exports */
 
 export {
@@ -144,5 +158,6 @@ export {
   testDefaultRenderFunctions,
   testResetRenderFunctions,
   testContext,
-  testWordPressConfig
+  testWordPressConfig,
+  testResetServerless
 }

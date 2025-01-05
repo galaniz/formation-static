@@ -36,13 +36,20 @@ const setLocalImages = async (): Promise<Array<PromiseSettledResult<sharp.Output
   const meta: Record<string, ImageProps> = {}
 
   for await (const path of getFilePaths(inputDir)) {
-    const ext = extname(path)
     const baseName = basename(path)
-    const [base] = baseName.split(ext)
+    const ext = extname(baseName)
+
+    /* Extension required */
+
+    if (!isStringStrict(ext)) {
+      continue
+    }
 
     /* Base required */
 
-    if (!isStringStrict(base)) {
+    const [base] = baseName.split(ext)
+
+    if (!isStringStrict(base?.trim())) {
       continue
     }
 
@@ -72,11 +79,7 @@ const setLocalImages = async (): Promise<Array<PromiseSettledResult<sharp.Output
     } = metadata
 
     const id = `${folders !== '' ? `${folders}/` : ''}${base}`
-    const [, format] = ext.split('.')
-
-    if (!isStringStrict(format)) {
-      continue
-    }
+    const format = ext.replace('.', '')
 
     meta[id] = {
       path: id,
@@ -92,8 +95,12 @@ const setLocalImages = async (): Promise<Array<PromiseSettledResult<sharp.Output
 
     let sizes = [...config.image.sizes]
 
-    sizes.push(width)
+    if (!sizes.includes(width)) {
+      sizes.push(width)
+    }
+
     sizes = sizes.filter(s => s <= width)
+
     sizes.forEach((size) => {
       images.push({
         size,

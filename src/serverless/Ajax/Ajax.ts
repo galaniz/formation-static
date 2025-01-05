@@ -45,12 +45,6 @@ const Ajax = async (context: ServerlessContext, setupServerless: ServerlessSetup
       throw new Error('Data not an object')
     }
 
-    /* Inputs required */
-
-    if (!isObjectStrict(data.inputs)) {
-      throw new Error('Inputs not an object')
-    }
-
     /* Honeypot check */
 
     const honeypotName = `${config.namespace}_asi`
@@ -70,12 +64,6 @@ const Ajax = async (context: ServerlessContext, setupServerless: ServerlessSetup
       }
 
       data.inputs[honeypotName].exclude = true
-    }
-
-    /* Id required */
-
-    if (!isStringStrict(data.id)) {
-      throw new Error('No id')
     }
 
     /* Action required */

@@ -4,6 +4,7 @@
 
 /* Imports */
 
+import type { Actions } from '../actionTypes.js'
 import { it, expect, describe, beforeEach, vi } from 'vitest'
 import {
   actions,
@@ -224,7 +225,8 @@ describe('setActions()', () => {
   })
 
   it('should return true and action should not be added', () => {
-    const args = {}
+    const args: Partial<Actions> = {}
+    // @ts-expect-error
     args[testNameOne] = null
 
     const result = setActions(args)
@@ -238,7 +240,7 @@ describe('setActions()', () => {
   })
 
   it('should return true and action should be added', () => {
-    const args = {}
+    const args: Partial<Actions> = {}
     args[testNameOne] = () => {}
 
     const result = setActions(args)

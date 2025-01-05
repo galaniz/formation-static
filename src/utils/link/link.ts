@@ -43,13 +43,19 @@ const getSlug = <T extends boolean = false>(
   args: LinkSlugArgs,
   returnParents = false as T
 ): LinkSlugReturnType<T> => {
-  const {
+  let {
     id = '',
     slug = '',
     page = 0,
     contentType = 'page',
     pageData = undefined
   } = isObjectStrict(args) ? args : {}
+
+  /* Types slugs */
+
+  let typeSlug = ''
+  let taxSlug = ''
+  let parentSlugs = ''
 
   /* Parts */
 
@@ -68,18 +74,6 @@ const getSlug = <T extends boolean = false>(
   const pageLocale = pageData?.locale
   const locale = isStringStrict(pageLocale) ? localeInSlug[pageLocale] : ''
   const hasLocale = isStringStrict(locale)
-
-  if (hasLocale) {
-    parts.push(locale)
-  }
-
-  /* Index */
-
-  const isIndex = slug === 'index'
-
-  if (isIndex && returnParents === false) {
-    return parts.join('/') as LinkSlugReturnType<T>
-  }
 
   /* Term/taxonomy */
 
@@ -110,11 +104,11 @@ const getSlug = <T extends boolean = false>(
 
   /* Archive and/or taxonomy parent */
 
-  let archiveParents: LinkSlugParent[] = []
-  let archiveParts: string[] = []
+  const archiveParents: LinkSlugParent[] = []
 
   if (archiveSlug !== '' && archiveId !== '') {
-    archiveParts.push(archiveSlug)
+    typeSlug = archiveSlug
+
     archiveParents.push({
       contentType: archiveContentType,
       title: archiveTitle,
@@ -124,12 +118,11 @@ const getSlug = <T extends boolean = false>(
   }
 
   if ((isTaxonomy || isTerm) && !taxonomyUseTypeSlug) {
-    archiveParts = []
-    archiveParents = []
+    typeSlug = ''
   }
 
   if (isTerm && taxonomySlug !== '' && taxonomyId !== '') {
-    archiveParts.push(taxonomySlug)
+    taxSlug = taxonomySlug
 
     if (taxonomyIsPage) {
       archiveParents.push({
@@ -141,10 +134,27 @@ const getSlug = <T extends boolean = false>(
     }
   }
 
+  /* Content type */
+
+  const contentTypeInSlug = typeInSlug[archiveType]
+
+  if (isString(contentTypeInSlug)) {
+    typeSlug = contentTypeInSlug
+  }
+
+  if (isObjectStrict(contentTypeInSlug) && hasLocale) {
+    const localizedTypeSlug = contentTypeInSlug[locale]
+
+    if (isString(localizedTypeSlug)) {
+      typeSlug = localizedTypeSlug
+    }
+  }
+
   /* Page parents */
 
   const isHierarchical = hierarchicalTypes.includes(contentType)
   let parents: LinkSlugParent[] = []
+  let hasParents = false
 
   getParentSlug(
     isHierarchical ? id : archiveId,
@@ -153,37 +163,53 @@ const getSlug = <T extends boolean = false>(
   )
 
   if (parents.length > 0) {
-    parts.push(`${parents.map(({ slug }) => slug).join('/')}`)
+    parentSlugs = parents.map(({ slug }) => slug).join('/')
+    hasParents = true
   }
 
-  parents = [...parents, ...archiveParents]
-  parts = [...parts, ...archiveParts]
-
-  /* Content type */
-
-  const contentTypeInSlug = typeInSlug[contentType]
-
-  if (isString(contentTypeInSlug)) {
-    parts.push(contentTypeInSlug)
+  if (isHierarchical) {
+    parents = [...archiveParents, ...parents]
+  } else {
+    parents = [...parents, ...archiveParents]
   }
 
-  if (isObjectStrict(contentTypeInSlug) && hasLocale) {
-    const localizedTypeSlug = contentTypeInSlug[locale]
+  /* Index */
 
-    if (isString(localizedTypeSlug)) {
-      parts.push(localizedTypeSlug)
-    }
+  const isIndex = slug === 'index'
+
+  if (isIndex && returnParents === false) {
+    slug = ''
   }
 
   /* Filter parts */
 
-  parts = applyFilters('slugParts', parts, args)
+  if (hasLocale) {
+    parts.push(locale)
+  }
 
-  /* Slug */
+  if (hasParents && !isHierarchical) {
+    parts.push(parentSlugs)
+  }
+
+  if (typeSlug !== '') {
+    parts.push(typeSlug)
+  }
+
+  if (taxSlug !== '') {
+    parts.push(taxSlug)
+  }
+
+  if (hasParents && isHierarchical) {
+    parts.push(parentSlugs)
+  }
 
   if (isStringStrict(slug) && !isIndex) {
     parts.push(slug)
   }
+
+  parts = applyFilters('slugParts', parts, args)
+
+  /* Slug */
 
   let fullSlug = `${parts.length > 0 ? parts.join('/') : ''}${isNumber(page) && page > 1 ? `/?page=${page}` : ''}`
   fullSlug = applyFilters('slug', fullSlug, args)

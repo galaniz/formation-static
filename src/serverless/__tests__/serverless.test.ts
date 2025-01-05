@@ -4,10 +4,10 @@
 
 /* Imports */
 
-import { it, expect, describe, vi, afterEach, afterAll, beforeAll } from 'vitest'
-import { vol, fs } from 'memfs'
+import { it, expect, describe, vi, afterEach, beforeAll } from 'vitest'
+import { fs } from 'memfs'
 import { readFile } from 'node:fs/promises'
-import { testMinify } from '../../../tests/utils.js'
+import { testMinify, testResetServerless } from '../../../tests/utils.js'
 import { config } from '../../config/config.js'
 import { createServerlessFiles } from '../serverlessFiles.js'
 import {
@@ -18,24 +18,11 @@ import {
   setServerless
 } from '../serverless.js'
 
-/**
- * Reset serverless variables to default values
- *
- * @return {void}
- */
-const resetServerless = (): void => {
-  setServerless({
-    actions: {},
-    routes: {},
-    apiKeys: {}
-  }, 'functions')
-}
-
 /* Test setServerless */
 
 describe('setServerless()', () => {
   afterEach(() => {
-    resetServerless()
+    testResetServerless()
   })
 
   it('should return false and not set serverless variables if no args', async () => {
@@ -67,7 +54,7 @@ describe('setServerless()', () => {
       }
     }, 'test')
 
-    const resultAction = await serverlessActions.test(
+    const resultAction = await serverlessActions?.test?.(
       // @ts-expect-error
       {}, {}
     )
@@ -99,15 +86,10 @@ describe('createServerlessFiles()', () => {
     vi.spyOn(console, 'info').mockImplementation(() => {})
   })
 
-  afterAll(() => {
-    vi.restoreAllMocks()
-  })
-
   afterEach(() => {
     config.cms.name = ''
     config.env.dev = true
-    resetServerless()
-    vol.reset()
+    testResetServerless()
   })
 
   it('should not create preview file if production', async () => {

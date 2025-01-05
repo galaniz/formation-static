@@ -43,9 +43,11 @@ export const mockFetchErrorMessage: {
   data: string
   route: string
   auth: string
+  body: string
 } = {
   url: 'URL not valid',
   data: 'Data not found',
   route: 'Route does not exist',
-  auth: 'Authorization is invalid'
+  auth: 'Authorization is invalid',
+  body: 'Body is not a string'
 }

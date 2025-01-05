@@ -197,9 +197,11 @@ const getArchiveLabels = (contentType: string, pageData?: RenderItem): ArchiveLa
     usePrimaryContentTypeSlug: taxonomyUseTypeSlug
   } = taxonomyInfo
 
-  if (contentType === 'term' && taxonomyIsPage) {
-    singular = taxonomyTitle
-    plural = taxonomyTitle
+  if (contentType === 'term' && taxonomyIsPage && isStringStrict(taxonomyTitle)) {
+    return {
+      singular: taxonomyTitle,
+      plural: taxonomyTitle
+    }
   }
 
   const useArchiveType = taxonomyUseTypeSlug && isStringStrict(taxonomyType)

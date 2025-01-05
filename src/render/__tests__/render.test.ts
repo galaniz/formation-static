@@ -6,6 +6,7 @@
 
 import type { RenderAllData, RenderFunctionArgs, RenderReturn } from '../renderTypes.js'
 import type { GenericStrings } from '../../global/globalTypes.js'
+import type { Scripts, Styles } from '../../utils/scriptStyle/scriptStyleTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach } from 'vitest'
 import {
   testMinify,
@@ -19,6 +20,7 @@ import { addFilter, resetFilters } from '../../utils/filter/filter.js'
 import { getStoreItem } from '../../store/store.js'
 import { setRedirects, redirects } from '../../redirects/redirects.js'
 import { isStringStrict } from '../../utils/string/string.js'
+import { addScript, addStyle, scripts, styles } from '../../utils/scriptStyle/scriptStyle.js'
 import {
   render,
   renderItem,
@@ -262,6 +264,16 @@ describe('render()', () => {
         // @ts-expect-error
         testEmpty () {
           return [null]
+        },
+        testScript () {
+          addScript('test/script.js', ['test/dep.js'])
+          addStyle('test/style.css', ['test/dep.css'])
+
+          scripts.meta = {
+            test: 'test'
+          }
+
+          return ''
         }
       },
       layout: (args) => {
@@ -342,7 +354,7 @@ describe('render()', () => {
   it('should return empty array if no args', async () => {
     // @ts-expect-error
     const result = await render()
-    const expectedResult = []
+    const expectedResult: RenderReturn[] = []
 
     expect(result).toEqual(expectedResult)
   })
@@ -354,7 +366,7 @@ describe('render()', () => {
 
     // @ts-expect-error
     const result = await render(renderArgs)
-    const expectedResult = []
+    const expectedResult: RenderReturn[] = []
 
     expect(result).toEqual(expectedResult)
   })
@@ -370,7 +382,7 @@ describe('render()', () => {
       }
     })
 
-    const expectedResult = []
+    const expectedResult: RenderReturn[] = []
 
     expect(result).toEqual(expectedResult)
   })
@@ -485,13 +497,22 @@ describe('render()', () => {
     ])
   })
 
-  it('should run all render actions and filters', async () => {
+  it('should run all render actions and filters and clear scripts and styles', async () => {
     const renderStart = vi.fn()
     const renderEnd = vi.fn()
     const renderItemStart = vi.fn()
     const renderItemEnd = vi.fn()
     const renderItem = vi.fn()
     const renderContent = vi.fn()
+
+    let scriptsStart: Scripts | undefined
+    let scriptsEnd: Scripts | undefined
+    let scriptsItemStart: Scripts | undefined
+    let scriptsItemEnd: Scripts | undefined
+    let stylesStart: Styles | undefined
+    let stylesEnd: Styles | undefined
+    let stylesItemStart: Styles | undefined
+    let stylesItemEnd: Styles | undefined
 
     const initialOutput = `
       <!DOCTYPE html>
@@ -534,6 +555,10 @@ describe('render()', () => {
                 id: '456',
                 renderType: 'test',
                 content: 'test'
+              },
+              {
+                renderType: 'testScript',
+                content: ''
               }
             ]
           }
@@ -541,9 +566,24 @@ describe('render()', () => {
       }
     }
 
-    addAction('renderStart', async (args) => { renderStart(args) })
-    addAction('renderEnd', async (args) => { renderEnd(args) })
-    addAction('renderItemStart', async (args) => { renderItemStart(args) })
+    addAction('renderStart', async (args) => {
+      renderStart(args)
+      scriptsStart = structuredClone(scripts)
+      stylesStart = structuredClone(styles)
+    })
+
+    addAction('renderEnd', async (args) => {
+      renderEnd(args)
+      scriptsEnd = structuredClone(scripts)
+      stylesEnd = structuredClone(styles)
+    })
+
+    addAction('renderItemStart', async (args) => {
+      renderItemStart(args)
+      scriptsItemStart = structuredClone(scripts)
+      stylesItemStart = structuredClone(styles)
+    })
+
     addFilter('renderItem', async (output, args) => {
       renderItem({ ...args, output: testMinify(output) })
       return output.replace('<html>', '<html lang="en-CA">')
@@ -551,11 +591,18 @@ describe('render()', () => {
 
     addAction('renderItemEnd', async (args) => {
       renderItemEnd({ ...args, output: testMinify(expectedOutput) })
+      scriptsItemEnd = structuredClone(scripts)
+      stylesItemEnd = structuredClone(styles)
     })
 
     addFilter('renderContent', async (output, args) => {
       renderContent(args)
       const [start = '', end = ''] = output
+
+      if (start === '') {
+        return ['', '']
+      }
+
       return [
         `<section>${start}`,
         `${end}</section>`
@@ -566,14 +613,35 @@ describe('render()', () => {
     const expectedResult = [{ slug: '/page/', output: expectedOutput }]
     const resultMin = minifyOutput(result)
     const expectedResultMin = minifyOutput(expectedResult)
+    const expectedScriptsMeta = { test: 'test' }
 
     expect(resultMin).toEqual(expectedResultMin)
+    expect(scriptsStart?.deps.size).toBe(0)
+    expect(scriptsEnd?.deps.size).toBe(1)
+    expect(scriptsItemStart?.deps.size).toBe(0)
+    expect(scriptsItemEnd?.deps.size).toBe(1)
+    expect(stylesStart?.deps.size).toBe(0)
+    expect(stylesEnd?.deps.size).toBe(1)
+    expect(stylesItemStart?.deps.size).toBe(0)
+    expect(stylesItemEnd?.deps.size).toBe(1)
+    expect(scriptsStart?.item.size).toBe(0)
+    expect(scriptsEnd?.item.size).toBe(2)
+    expect(scriptsItemStart?.item.size).toBe(0)
+    expect(scriptsItemEnd?.item.size).toBe(2)
+    expect(stylesStart?.item.size).toBe(0)
+    expect(stylesEnd?.item.size).toBe(2)
+    expect(stylesItemStart?.item.size).toBe(0)
+    expect(stylesItemEnd?.item.size).toBe(2)
+    expect(scriptsStart?.meta).toEqual({})
+    expect(scriptsEnd?.meta).toEqual(expectedScriptsMeta)
+    expect(scriptsItemStart?.meta).toEqual({})
+    expect(scriptsItemEnd?.meta).toEqual(expectedScriptsMeta)
     expect(renderStart).toHaveBeenCalledTimes(1)
     expect(renderEnd).toHaveBeenCalledTimes(1)
     expect(renderItemStart).toHaveBeenCalledTimes(1)
     expect(renderItemEnd).toHaveBeenCalledTimes(1)
     expect(renderItem).toHaveBeenCalledTimes(1)
-    expect(renderContent).toHaveBeenCalledTimes(1)
+    expect(renderContent).toHaveBeenCalledTimes(2)
     expect(renderStart).toHaveBeenCalledWith({ allData })
     expect(renderEnd).toHaveBeenCalledWith({ allData, data: expectedResult })
     expect(renderItem).toHaveBeenCalledWith({
@@ -590,7 +658,10 @@ describe('render()', () => {
         parents: [],
         content: undefined
       },
-      pageContains: ['test'],
+      pageContains: [
+        'test',
+        'testScript'
+      ],
       pageHeadings: [],
       serverlessData: undefined
     })
@@ -609,7 +680,10 @@ describe('render()', () => {
         parents: [],
         content: undefined
       },
-      pageContains: ['test'],
+      pageContains: [
+        'test',
+        'testScript'
+      ],
       pageHeadings: [],
       serverlessData: undefined
     })
@@ -626,6 +700,10 @@ describe('render()', () => {
             id: '456',
             renderType: 'test',
             content: 'test'
+          },
+          {
+            renderType: 'testScript',
+            content: ''
           }
         ]
       },
@@ -871,7 +949,19 @@ describe('render()', () => {
 
     const resultMin = minifyOutput(result)
     const expectedResultMin = minifyOutput(expectedResult)
+    const slugs = getStoreItem('slugs')
+    const expectedSlugs = {
+      '/parent/': {
+        contentType: 'page',
+        id: '3'
+      },
+      '/parent/child/': {
+        contentType: 'page',
+        id: '1'
+      }
+    }
 
+    expect(slugs).toEqual(expectedSlugs)
     expect(resultMin).toEqual(expectedResultMin)
     expect(pageHeadingsTest).toHaveBeenCalledWith([
       [
@@ -930,8 +1020,16 @@ describe('render()', () => {
 
     const resultMin = minifyOutput(result)
     const expectedResultMin = minifyOutput(expectedResult)
+    const slugs = getStoreItem('slugs')
+    const expectedSlugs = {
+      '/lorem.html': {
+        contentType: 'page',
+        id: '7'
+      }
+    }
 
     expect(resultMin).toEqual(expectedResultMin)
+    expect(slugs).toEqual(expectedSlugs)
   })
 
   it('should return item output with linked content template', async () => {
@@ -1432,6 +1530,4 @@ describe('render()', () => {
 
     expect(resultMin).toEqual(expectedResultMin)
   })
-
-  // TODO: check scripts and styles reset and slugs set
 })

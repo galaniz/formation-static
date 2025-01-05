@@ -4,8 +4,7 @@
 
 /* Imports */
 
-import { it, expect, describe, vi, afterEach, afterAll, beforeAll } from 'vitest'
-import { vol } from 'memfs'
+import { it, expect, describe, vi, afterEach, beforeAll } from 'vitest'
 import { readFile } from 'fs/promises'
 import { redirects, setRedirects } from '../redirects.js'
 import { createRedirectsFile } from '../redirectsFile.js'
@@ -20,7 +19,7 @@ describe('setRedirects()', () => {
   it('should return false and not set redirects if no data', () => {
     const result = setRedirects()
     const expectedResult = false
-    const expectedRedirects = []
+    const expectedRedirects: string[] = []
 
     expect(result).toBe(expectedResult)
     expect(redirects).toEqual(expectedRedirects)
@@ -30,7 +29,7 @@ describe('setRedirects()', () => {
     // @ts-expect-error
     const result = setRedirects(['', { redirect: 'test' }])
     const expectedResult = false
-    const expectedRedirects = []
+    const expectedRedirects: string[] = []
 
     expect(result).toBe(expectedResult)
     expect(redirects).toEqual(expectedRedirects)
@@ -68,13 +67,8 @@ describe('createRedirectsFile()', () => {
     vi.spyOn(console, 'info').mockImplementation(() => {})
   })
 
-  afterAll(() => {
-    vi.restoreAllMocks()
-  })
-
   afterEach(() => {
     redirects.length = 0
-    vol.reset()
   })
 
   it('should throw error if path is null', async () => {

@@ -5,7 +5,7 @@
 /* Imports */
 
 import type { RenderItem } from '../../render/renderTypes.js'
-import { it, expect, describe, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest'
+import { it, expect, describe, vi, beforeEach, afterEach, beforeAll } from 'vitest'
 import { getWordPressData, getAllWordPressData } from '../wordpressData.js'
 import { taxonomiesById } from '../wordpressDataNormal.js'
 import { mockFetchErrorMessage } from '../../../tests/types.js'
@@ -26,10 +26,6 @@ import { taxonomies } from '../../../tests/data/wordpress/taxonomies.js'
 
 beforeAll(() => {
   vi.stubGlobal('fetch', mockWordPressFetch)
-})
-
-afterAll(() => {
-  vi.unstubAllGlobals()
 })
 
 /* Test getWordPressData */
@@ -104,14 +100,14 @@ describe('getWordPressData()', () => {
 
   it('should return empty array if data is empty array', async () => {
     const result = await getWordPressData('emptyKey', 'empty')
-    const expectedResult = []
+    const expectedResult: RenderItem[] = []
 
     expect(result).toEqual(expectedResult)
   })
 
   it('should return empty array if data is array of null', async () => {
     const result = await getWordPressData('nullKey', 'null')
-    const expectedResult = []
+    const expectedResult: RenderItem[] = []
 
     expect(result).toEqual(expectedResult)
   })

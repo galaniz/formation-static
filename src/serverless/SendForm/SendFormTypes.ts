@@ -28,14 +28,3 @@ export interface SendFormRequestBody {
   html_body: string
   custom_headers?: unknown[]
 }
-
-/**
- * @typedef {object} SendFormRequestRes
- * @prop {object} data
- * @prop {number} data.succeeded
- */
-export interface SendFormRequestRes {
-  data: {
-    succeeded: number
-  }
-}

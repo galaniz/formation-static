@@ -19,8 +19,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "build:lib": "tsc",
-    "build:cjs": "tsc --moduleResolution node --module commonjs --esModuleInterop --outDir cjs/",
+    "build:lib": "tsc --project tsconfig.build.json",
+    "build:cjs": "tsc --project tsconfig.build.json --moduleResolution node --module commonjs --esModuleInterop --outDir cjs/",
     "build": "pnpm build:lib && pnpm build:cjs && node scripts/packageFile.js",
     "test": "vitest --run --reporter verbose --coverage",
     "lint": "npx ts-standard 'src/**/*.ts'",
@@ -68,8 +68,5 @@
     "sharp": {
       "optional": true
     }
-  },
-  "ts-standard": {
-    "project": "./tsconfig.eslint.json"
   }
 }

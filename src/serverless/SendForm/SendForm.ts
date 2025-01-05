@@ -4,11 +4,7 @@
 
 /* Imports */
 
-import type {
-  SendFormOutputData,
-  SendFormRequestBody,
-  SendFormRequestRes
-} from './SendFormTypes.js'
+import type { SendFormOutputData, SendFormRequestBody } from './SendFormTypes.js'
 import type { ServerlessAction } from '../serverlessTypes.js'
 import { config } from '../../config/config.js'
 import { escape } from '../../utils/escape/escape.js'
@@ -60,7 +56,7 @@ const recurseEmailHtml = <T>(
 
     if (label !== '' && !isArr) {
       output.html += `
-        <h${h} style='font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em'>
+        <h${h} style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
           ${l}
         </h${h}>
       `
@@ -68,18 +64,18 @@ const recurseEmailHtml = <T>(
       output.plain += `${l}\n`
     }
 
-    if (isObject(value)) {
-      recurseEmailHtml(value, output, depth + 1)
-    }
+    recurseEmailHtml(value, output, depth + 1)
 
     if (isString(value)) {
       output.html += `
-        <p style='font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;'>
+        <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
           ${value}
         </p>
       `
 
-      output.plain += value.replace(/(<([^>]+)>)/ig, '') + '\n'
+      output.plain += value
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/(<([^>]+)>)/ig, '') + '\n'
     }
 
     if (depth === 1) {
@@ -99,6 +95,18 @@ const recurseEmailHtml = <T>(
  * @type {ServerlessAction}
  */
 const SendForm: ServerlessAction = async (args) => {
+  /* Api key */
+
+  const apiKey = serverlessApiKeys.smtp2go
+
+  if (!isStringStrict(apiKey)) {
+    return {
+      error: {
+        message: 'No api key'
+      }
+    }
+  }
+
   /* Args */
 
   const { id, inputs } = args
@@ -113,6 +121,16 @@ const SendForm: ServerlessAction = async (args) => {
     }
   }
 
+  /* Inputs required */
+
+  if (!isObjectStrict(inputs) || Object.keys(inputs).length === 0) {
+    return {
+      error: {
+        message: 'No inputs'
+      }
+    }
+  }
+
   /* Meta information - to email and subject */
 
   const formMetaData = await fetchStoreItem('formMeta')
@@ -120,17 +138,17 @@ const SendForm: ServerlessAction = async (args) => {
   if (!isObjectStrict(formMetaData)) {
     return {
       error: {
-        message: 'No meta information'
+        message: 'No meta'
       }
     }
   }
 
-  const meta = formMetaData[id]
+  const meta = formMetaData?.[id]
 
   if (!isObjectStrict(meta)) {
     return {
       error: {
-        message: 'No meta information'
+        message: 'No meta object'
       }
     }
   }
@@ -218,7 +236,7 @@ const SendForm: ServerlessAction = async (args) => {
 
     if (inputType === 'email' && inputValueStr !== '') {
       replyToEmail = inputValueStr
-      inputValueStr = `<a href='mailto:${inputValueStr}'>${inputValueStr}</a>`
+      inputValueStr = `<a href="mailto:${inputValueStr}">${inputValueStr}</a>`
     }
 
     /* Output value */
@@ -277,7 +295,7 @@ const SendForm: ServerlessAction = async (args) => {
           <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin-right: auto; margin-left: auto; border-spacing: 0; max-width: 37.5em;">
             <tr>
               <td style="padding: 32px 0 0 0;">
-                <h1 style='font-family: sans-serif; color: #222; margin: 0; line-height: 1.3em;'>
+                <h1 style="font-family: sans-serif; color: #222; margin: 0; line-height: 1.3em;">
                   ${header}
                 </h1>
               </td>
@@ -288,7 +306,7 @@ const SendForm: ServerlessAction = async (args) => {
                   ${output.html}
                   <tr>
                     <td style="padding: 32px 0;">
-                      <p style='font-family: sans-serif; color: #222; margin: 0; line-height: 1.5em;'>
+                      <p style="font-family: sans-serif; color: #222; margin: 0; line-height: 1.5em;">
                         ${footer}
                       </p>
                     </td>
@@ -302,11 +320,7 @@ const SendForm: ServerlessAction = async (args) => {
     </table>
   `
 
-  const outputPlain = `
-    ${header}\n\n
-    ${output.plain}
-    ${footer}
-  `
+  const outputPlain = `${header}\n\n${output.plain}${footer}`
 
   /* Subjext fallback */
 
@@ -317,7 +331,7 @@ const SendForm: ServerlessAction = async (args) => {
   /* Smtp2go request */
 
   const body: SendFormRequestBody = {
-    api_key: serverlessApiKeys.smtp2go,
+    api_key: apiKey,
     to: toEmails,
     sender: senderEmail,
     subject,
@@ -345,11 +359,9 @@ const SendForm: ServerlessAction = async (args) => {
     }
   )
 
-  const resJson: SendFormRequestRes | undefined = await res.json()
-
   /* Success */
 
-  if (resJson?.data?.succeeded != null) {
+  if (res.ok) {
     return {
       success: {
         message: 'Form successully sent'
