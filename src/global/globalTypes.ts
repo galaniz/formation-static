@@ -65,7 +65,7 @@ export interface HtmlString {
 /**
  * @typedef {string} Source - cms | local
  */
-export type Source = 'cms' | 'local'
+export type Source = 'cms' | 'local' | (string & Record<never, never>)
 
 /**
  * @typedef {Object<string, *>} Generic
