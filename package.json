@@ -68,5 +68,14 @@
     "sharp": {
       "optional": true
     }
+  },
+  "release-it": {
+    "git": {
+      "requireCommits": true,
+      "commitMessage": "chore: release v${version}"
+    },
+    "github": {
+      "release": true
+    }
   }
 }

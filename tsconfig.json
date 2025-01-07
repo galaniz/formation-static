@@ -26,13 +26,11 @@
     ]
   },
   "include": [
-    "**/*.ts",
-    "**/*.config.ts"
+    "**/*.ts"
   ],
   "exclude": [
     "lib",
     "cjs",
-    "node_modules",
-    "**/*.config.ts"
+    "node_modules"
   ]
 }

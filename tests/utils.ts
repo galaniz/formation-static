@@ -89,24 +89,32 @@ const testResetRenderFunctions = (): void => {
 /**
  * Serverless context object
  *
- * @param {string} url
+ * @param {string} [url=http://test.com/]
+ * @param {string} [method=GET]
+ * @param {object} [data={}]
  * @return {ServerlessContext}
  */
-const testContext = (url: string = 'http://test.com/'): ServerlessContext => {
-  const request = new Request(url, { method: 'GET' })
+const testContext = (
+  url: string = 'http://test.com/',
+  method: string = 'GET',
+  data: object = {}
+): ServerlessContext => {
+  const request = new Request(url, { method })
 
   return {
     request: {
       ...request,
       url,
-      method: 'GET',
+      method,
       clone: () => ({
         ...request.clone(),
         fetcher: {},
         bytes: () => new ArrayBuffer(0)
       }),
       fetcher: {},
-      bytes: () => new ArrayBuffer(0)
+      bytes: () => new ArrayBuffer(0),
+      text: () => JSON.stringify(data),
+      json: () => (data)
     },
     functionPath: '',
     env: {},

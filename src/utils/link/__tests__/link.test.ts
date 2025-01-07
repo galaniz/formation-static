@@ -82,7 +82,7 @@ describe('getSlug()', () => {
   it('should return localized type slug and slug', () => {
     config.typeInSlug = {
       color: {
-        es: 'colores'
+        'es-CL': 'colores'
       }
     }
 
@@ -259,7 +259,7 @@ describe('getSlug()', () => {
   it('should return locale, localized type slug and exclude archive slug', () => {
     config.typeInSlug = {
       color: {
-        en: 'hue'
+        'en-CA': 'hue'
       }
     }
 

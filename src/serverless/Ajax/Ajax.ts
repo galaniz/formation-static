@@ -132,7 +132,7 @@ const Ajax = async (context: ServerlessContext, setupServerless: ServerlessSetup
     print('[SSF] Error with ajax function', error)
 
     let statusCode = 500
-    let message = ''
+    let message = error instanceof Error ? error.message : 'Unknown error'
 
     if (error instanceof ResponseError) {
       if (isNumber(error.response?.status)) {

@@ -72,7 +72,8 @@ const getSlug = <T extends boolean = false>(
   /* Locale */
 
   const pageLocale = pageData?.locale
-  const locale = isStringStrict(pageLocale) ? localeInSlug[pageLocale] : ''
+  const hasPageLocale = isStringStrict(pageLocale)
+  const locale = hasPageLocale ? localeInSlug[pageLocale] : ''
   const hasLocale = isStringStrict(locale)
 
   /* Term/taxonomy */
@@ -142,8 +143,8 @@ const getSlug = <T extends boolean = false>(
     typeSlug = contentTypeInSlug
   }
 
-  if (isObjectStrict(contentTypeInSlug) && hasLocale) {
-    const localizedTypeSlug = contentTypeInSlug[locale]
+  if (isObjectStrict(contentTypeInSlug) && hasPageLocale) {
+    const localizedTypeSlug = contentTypeInSlug[pageLocale]
 
     if (isString(localizedTypeSlug)) {
       typeSlug = localizedTypeSlug
