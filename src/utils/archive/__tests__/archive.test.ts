@@ -200,6 +200,7 @@ describe('getTaxonomyInfo()', () => {
       taxonomy: {
         id: '123',
         slug: 'test',
+        link: '/es/test/',
         title: 'Test',
         contentTypes: ['post', 'test']
       }
@@ -208,6 +209,7 @@ describe('getTaxonomyInfo()', () => {
     const expectedResult = {
       id: '123',
       slug: 'test',
+      link: '/es/test/',
       title: 'Test',
       contentTypes: ['post', 'test'],
       primaryContentType: 'post',

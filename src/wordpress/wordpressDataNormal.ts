@@ -24,6 +24,7 @@ import type {
 import type { RenderItem, RenderFile } from '../render/renderTypes.js'
 import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes.js'
 import { parse } from '@wordpress/block-serialization-spec-parser'
+import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { getObjectKeys } from '../utils/object/objectUtils.js'
 import { getPermalink } from '../utils/link/link.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
@@ -33,40 +34,14 @@ import { isNumber } from '../utils/number/number.js'
 import { config } from '../config/config.js'
 
 /**
- * Camel case version of prop names
- *
- * @private
- * @type {Object<string, string>}
- */
-const camelCaseKeys: Record<string, string> = {
-  date_gmt: 'dateGmt',
-  modified_gmt: 'modifiedGmt',
-  featured_media: 'featuredMedia',
-  menu_order: 'menuOrder',
-  comment_status: 'commentStatus',
-  ping_status: 'pingStatus',
-  class_list: 'classList',
-  attr_title: 'attrTitle',
-  type_label: 'typeLabel',
-  object_id: 'objectId',
-  alt_text: 'altText',
-  media_type: 'mediaType',
-  media_details: 'details',
-  mime_type: 'mimeType',
-  source_url: 'sourceUrl'
-}
-
-/**
- * Properties to exclude fro item
+ * Properties to exclude from item
  *
  * @private
  * @type {string[]}
  */
 const excludeProps: string[] = [
   '_links',
-  'auto_add',
-  'rest_base',
-  'rest_namespace'
+  'auto_add'
 ]
 
 /**
@@ -334,7 +309,7 @@ const normalizeEmbedded = (
           return
         }
 
-        newItem.featuredMedia = normalizeFile({
+        newItem.featured_media = normalizeFile({
           url,
           filename: file.split('/').pop(),
           alt,
@@ -507,7 +482,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 
     /* Key */
 
-    let k = camelCaseKeys[key] != null ? camelCaseKeys[key] : key
+    let k = key
 
     /* Check types */
 
@@ -516,14 +491,14 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 
     /* Id */
 
-    if (key === 'id' || k === 'objectId') {
+    if (key === 'id' || k === 'object_id') {
       val = value?.toString()
     }
 
     /* Content type */
 
     if (key === 'type' && isStr) {
-      newItem.contentType = value
+      newItem.contentType = normalizeContentType(value)
 
       if (isString(config.renderTypes[value])) {
         newItem.renderType = config.renderTypes[value]
@@ -590,7 +565,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 
     /* Media details */
 
-    if (k === 'details' && isObj) {
+    if (k === 'media_details' && isObj) {
       const valObj = val as WordPressDataMediaDetails
       const valFull = valObj.sizes.full
 
@@ -633,19 +608,19 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
     const {
       id = '',
       title = '',
-      menuOrder = 0,
+      menu_order = 0,
       menus = 0,
       parent
     } = item as WordPressDataMenuItem & { parent: number }
 
-    const hasMenuOrder = isNumber(menuOrder)
+    const hasMenuOrder = isNumber(menu_order)
 
     if (hasMenuOrder && isObjectStrict(itemsObj[parent])) {
       if (itemsObj[parent]?.children == null) {
         itemsObj[parent].children = []
       }
 
-      itemsObj[parent].children.push({ id, menuOrder, title })
+      itemsObj[parent].children.push({ id, menu_order, title })
     }
 
     if (hasMenuOrder && isNumber(menus) && parent === 0) {
@@ -655,7 +630,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
         menusById.set(menuId, [])
       }
 
-      menusById.get(menuId)?.push({ id, menuOrder, title })
+      menusById.get(menuId)?.push({ id, menu_order, title })
     }
   })
 
@@ -665,12 +640,12 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
     const {
       url = '',
       title = '',
-      attrTitle = '',
+      attr_title = '',
       description = '',
       contentType = '',
       children = [],
       object = '',
-      objectId = '',
+      object_id = '',
       target = '',
       classes = [],
       xfn = [],
@@ -685,7 +660,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
     const newItem: NavigationItem = {
       id,
       title,
-      attrTitle,
+      attr_title,
       description,
       contentType: 'navigationItem',
       target,
@@ -694,12 +669,12 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
       meta
     }
 
-    if (!isCustom && isStringStrict(object) && isStringStrict(objectId)) {
+    if (!isCustom && isStringStrict(object) && isStringStrict(object_id)) {
       const slug = url.split('/').filter(Boolean).pop()
       const isTerm = contentType === 'taxonomy'
       const internalLink: InternalLink = {
         contentType: isTerm ? 'term' : object,
-        id: objectId,
+        id: object_id,
         slug
       }
 
@@ -721,7 +696,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
     }
 
     if (isArrayStrict(children)) {
-      newItem.children = children.sort((a, b) => a.menuOrder - b.menuOrder)
+      newItem.children = children.sort((a, b) => a.menu_order - b.menu_order)
     }
 
     newItems.push(newItem)
@@ -755,7 +730,7 @@ const normalizeWordPressMenus = (menus: WordPressDataMenu[]): Navigation[] => {
       description,
       meta,
       location: locations,
-      items: menusById.get(id)?.sort((a, b) => a.menuOrder - b.menuOrder) ?? []
+      items: menusById.get(id)?.sort((a, b) => a.menu_order - b.menu_order) ?? []
     }
 
     newMenus.push(newMenu)

@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { RenderItem, RenderInlineItemArgs } from './renderTypes.js'
+import type { RenderItem, RenderInlineItem } from './renderTypes.js'
 import { renderContent, renderItem } from './render.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isString } from '../utils/string/string.js'
@@ -29,19 +29,16 @@ const renderInlineContent = async (items: RenderItem[]): Promise<string> => {
 /**
  * Convenience wrapper for render item
  *
- * @param {RenderInlineItemArgs} args
+ * @param {RenderInlineItem} item
  * @return {Promise<string>}
  */
-const renderInlineItem = async (args: RenderInlineItemArgs): Promise<string> => {
-  if (!isObjectStrict(args)) {
+const renderInlineItem = async (item: RenderInlineItem): Promise<string> => {
+  if (!isObjectStrict(item)) {
     return ''
   }
 
-  const { contentType } = args
-
   const res = await renderItem({
-    item: args,
-    contentType
+    item
   })
 
   if (isString(res?.data?.output)) {

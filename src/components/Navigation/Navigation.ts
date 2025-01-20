@@ -130,9 +130,17 @@ class Navigation {
     /* Items by id */
 
     this.items.forEach(item => {
+      if (item == null) {
+        return
+      }
+
+      this.#itemsById.set(item.id, item)
+    })
+
+    this.items.forEach(item => {
       const info = this.#getItemInfo(item)
 
-      if (info != null && isStringStrict(info.id)) {
+      if (info != null) {
         this.#itemsById.set(info.id, info)
       }
     })
@@ -157,7 +165,7 @@ class Navigation {
       }
 
       locations.forEach(loc => {
-        this.#navigationsByLocation.set(loc.toLowerCase().replace(/\s+/g, ''), {
+        this.#navigationsByLocation.set(loc, {
           title,
           items
         })

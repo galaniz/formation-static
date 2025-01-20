@@ -77,6 +77,7 @@ const getTaxonomyInfo = (contentType: string, pageData?: RenderItem): ArchiveTax
   const {
     id,
     slug,
+    link,
     title,
     contentTypes,
     usePrimaryContentTypeSlug,
@@ -93,6 +94,10 @@ const getTaxonomyInfo = (contentType: string, pageData?: RenderItem): ArchiveTax
   value.primaryContentType = isStringStrict(primaryTaxonomyType) ? primaryTaxonomyType : ''
   value.usePrimaryContentTypeSlug = isBoolean(usePrimaryContentTypeSlug) ? usePrimaryContentTypeSlug : true
   value.isPage = isBoolean(isPage) ? isPage : false
+
+  if (isStringStrict(link)) {
+    value.link = link
+  }
 
   return value
 }

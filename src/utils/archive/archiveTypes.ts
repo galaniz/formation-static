@@ -25,7 +25,7 @@ export interface ArchiveInfo {
  * @type {Taxonomy}
  * @prop {string} primaryContentType
  */
-export interface ArchiveTaxonomy extends Required<Taxonomy> {
+export interface ArchiveTaxonomy extends Omit<Required<Taxonomy>, 'link'>, Pick<Taxonomy, 'link'> {
   primaryContentType: string
 }
 

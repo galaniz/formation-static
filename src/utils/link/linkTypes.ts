@@ -71,7 +71,7 @@ export interface LinkShare {
  * @prop {string} link
  */
 export interface LinkShareReturn {
-  type: string
+  type: keyof Partial<LinkShare>
   link: string
 }
 

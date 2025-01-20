@@ -2,10 +2,10 @@ export const pages = [
   {
     id: '7',
     date: '2024-12-14T20:04:27',
-    dateGmt: '2024-12-14T20:04:27',
+    date_gmt: '2024-12-14T20:04:27',
     guid: 'http://wp.com/?page_id=7',
     modified: '2024-12-14T20:58:20',
-    modifiedGmt: '2024-12-14T20:58:20',
+    modified_gmt: '2024-12-14T20:58:20',
     slug: 'home',
     status: 'publish',
     contentType: 'page',
@@ -45,7 +45,7 @@ export const pages = [
       link: 'http://wp.com/author/demo/',
       slug: 'demo'
     },
-    featuredMedia: {
+    featured_media: {
       url: 'http://wp.com/wp-content/uploads/2024/12/screenshot.png',
       name: 'screenshot.png',
       alt: '',
@@ -63,12 +63,12 @@ export const pages = [
       }
     },
     parent: 0,
-    menuOrder: 0,
-    commentStatus: 'closed',
-    pingStatus: 'closed',
+    menu_order: 0,
+    comment_status: 'closed',
+    ping_status: 'closed',
     template: '',
     footnotes: '',
-    classList: [
+    class_list: [
       'post-7',
       'page',
       'type-page',
@@ -80,10 +80,10 @@ export const pages = [
   {
     id: '2',
     date: '2024-12-14T19:58:13',
-    dateGmt: '2024-12-14T19:58:13',
+    date_gmt: '2024-12-14T19:58:13',
     guid: 'http://wp.com/?page_id=2',
     modified: '2024-12-14T20:04:41',
-    modifiedGmt: '2024-12-14T20:04:41',
+    modified_gmt: '2024-12-14T20:04:41',
     slug: 'sample-page',
     status: 'publish',
     contentType: 'page',
@@ -172,19 +172,19 @@ export const pages = [
       link: 'http://wp.com/author/demo/',
       slug: 'demo'
     },
-    featuredMedia: 0,
+    featured_media: 0,
     parent: {
       id: '7',
       contentType: 'page',
       title: 'Home',
       slug: 'home'
     },
-    menuOrder: 0,
-    commentStatus: 'closed',
-    pingStatus: 'closed',
+    menu_order: 0,
+    comment_status: 'closed',
+    ping_status: 'closed',
     template: '',
     footnotes: '',
-    classList: [
+    class_list: [
       'post-2',
       'page',
       'type-page',

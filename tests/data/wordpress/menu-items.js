@@ -3,7 +3,7 @@ export const menuItems = [
     id: '10',
     title: 'Home',
     link: 'http://wp.com/home/',
-    attrTitle: '',
+    attr_title: '',
     description: '',
     contentType: 'navigationItem',
     internalLink: {
@@ -14,7 +14,7 @@ export const menuItems = [
     children: [
       {
         id: '11',
-        menuOrder: 2,
+        menu_order: 2,
         title: 'Test'
       }
     ],
@@ -31,7 +31,7 @@ export const menuItems = [
     id: '11',
     title: 'Test',
     link: '/home/sample-page/',
-    attrTitle: 'Test Attr',
+    attr_title: 'Test Attr',
     description: 'test description',
     contentType: 'navigationItem',
     internalLink: {
@@ -52,7 +52,7 @@ export const menuItems = [
     id: '15',
     title: 'Uncategorized',
     link: 'http://wp.com/category/uncategorized/',
-    attrTitle: '',
+    attr_title: '',
     description: '',
     contentType: 'navigationItem',
     internalLink: {
@@ -79,7 +79,7 @@ export const menuItems = [
     id: '16',
     title: 'Example',
     externalLink: 'http://example.com',
-    attrTitle: '',
+    attr_title: '',
     description: '',
     contentType: 'navigationItem',
     target: '',

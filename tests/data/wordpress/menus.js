@@ -10,17 +10,17 @@ export const menus = [
       {
         id: '10',
         title: 'Home',
-        menuOrder: 1
+        menu_order: 1
       },
       {
         id: '15',
         title: 'Uncategorized',
-        menuOrder: 3
+        menu_order: 3
       },
       {
         id: '16',
         title: 'Example',
-        menuOrder: 4
+        menu_order: 4
       }
     ],
     meta: []

@@ -11,6 +11,7 @@ import type {
 } from './contentfulDataTypes.js'
 import type { RenderItem, RenderFile } from '../render/renderTypes.js'
 import type { GenericStrings, InternalLink } from '../global/globalTypes.js'
+import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { isArrayStrict } from '../utils/array/array.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
@@ -238,7 +239,7 @@ const normalizeItem = (
   }
 
   if (type !== '' && type !== 'Link') {
-    newItem.contentType = type
+    newItem.contentType = normalizeContentType(type)
 
     if (isString(config.renderTypes[type])) {
       newItem.renderType = config.renderTypes[type]

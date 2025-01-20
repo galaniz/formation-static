@@ -149,7 +149,7 @@ describe('getWordPressData()', () => {
     const result = await getWordPressData('postsKey3', 'posts')
 
     expect(cacheGet).toHaveBeenCalledTimes(1)
-    expect(cacheGet).toHaveBeenCalledWith([])
+    expect(cacheGet).toHaveBeenCalledWith(undefined)
     expect(result).toEqual(posts)
   })
 

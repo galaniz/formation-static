@@ -2,10 +2,10 @@ export const media = [
   {
     id: '21',
     date: '2024-12-20T16:22:06',
-    dateGmt: '2024-12-20T16:22:06',
+    date_gmt: '2024-12-20T16:22:06',
     guid: 'http://wp.com/wp-content/uploads/2024/12/test.pdf',
     modified: '2024-12-20T16:22:06',
-    modifiedGmt: '2024-12-20T16:22:06',
+    modified_gmt: '2024-12-20T16:22:06',
     slug: 'test',
     status: 'inherit',
     contentType: 'attachment',
@@ -19,12 +19,12 @@ export const media = [
       link: 'http://wp.com/author/demo/',
       slug: 'demo'
     },
-    featuredMedia: 0,
-    commentStatus: 'open',
-    pingStatus: 'closed',
+    featured_media: 0,
+    comment_status: 'open',
+    ping_status: 'closed',
     template: '',
     meta: [],
-    classList: [
+    class_list: [
       'post-21',
       'attachment',
       'type-attachment',
@@ -33,10 +33,10 @@ export const media = [
     ],
     description: "<p class=\"attachment\"><a href='http://wp.com/wp-content/uploads/2024/12/test.pdf'><img loading=\"lazy\" decoding=\"async\" width=\"300\" height=\"232\" src=\"http://wp.com/wp-content/uploads/2024/12/test-pdf-300x232.jpg\" class=\"attachment-medium size-medium\" alt=\"\" /></a></p>\n",
     caption: '',
-    altText: '',
-    mediaType: 'file',
-    mimeType: 'application/pdf',
-    details: {
+    alt_text: '',
+    media_type: 'file',
+    mime_type: 'application/pdf',
+    media_details: {
       url: 'http://wp.com/wp-content/uploads/2024/12/test.pdf',
       name: 'test.pdf',
       alt: '',
@@ -53,15 +53,15 @@ export const media = [
       }
     },
     post: null,
-    sourceUrl: 'http://wp.com/wp-content/uploads/2024/12/test.pdf'
+    source_url: 'http://wp.com/wp-content/uploads/2024/12/test.pdf'
   },
   {
     id: '12',
     date: '2024-12-14T20:33:50',
-    dateGmt: '2024-12-14T20:33:50',
+    date_gmt: '2024-12-14T20:33:50',
     guid: 'http://wp.com/wp-content/uploads/2024/12/screenshot.png',
     modified: '2024-12-14T20:33:50',
-    modifiedGmt: '2024-12-14T20:33:50',
+    modified_gmt: '2024-12-14T20:33:50',
     slug: 'screenshot',
     status: 'inherit',
     contentType: 'attachment',
@@ -75,12 +75,12 @@ export const media = [
       link: 'http://wp.com/author/demo/',
       slug: 'demo'
     },
-    featuredMedia: 0,
-    commentStatus: 'open',
-    pingStatus: 'closed',
+    featured_media: 0,
+    comment_status: 'open',
+    ping_status: 'closed',
     template: '',
     meta: [],
-    classList: [
+    class_list: [
       'post-12',
       'attachment',
       'type-attachment',
@@ -89,10 +89,10 @@ export const media = [
     ],
     description: "<p class=\"attachment\"><a href='http://wp.com/wp-content/uploads/2024/12/screenshot.png'><img loading=\"lazy\" decoding=\"async\" width=\"300\" height=\"225\" src=\"http://wp.com/wp-content/uploads/2024/12/screenshot-300x225.png\" class=\"attachment-medium size-medium\" alt=\"\" srcset=\"http://wp.com/wp-content/uploads/2024/12/screenshot-300x225.png 300w, http://wp.com/wp-content/uploads/2024/12/screenshot-1024x768.png 1024w, http://wp.com/wp-content/uploads/2024/12/screenshot-768x576.png 768w, http://wp.com/wp-content/uploads/2024/12/screenshot.png 1200w\" sizes=\"auto, (max-width: 300px) 100vw, 300px\" /></a></p>\n",
     caption: '',
-    altText: 'test',
-    mediaType: 'image',
-    mimeType: 'image/png',
-    details: {
+    alt_text: 'test',
+    media_type: 'image',
+    mime_type: 'image/png',
+    media_details: {
       url: 'http://wp.com/wp-content/uploads/2024/12/screenshot.png',
       name: 'screenshot.png',
       alt: 'test',
@@ -110,6 +110,6 @@ export const media = [
       }
     },
     post: null,
-    sourceUrl: 'http://wp.com/wp-content/uploads/2024/12/screenshot.png'
+    source_url: 'http://wp.com/wp-content/uploads/2024/12/screenshot.png'
   }
 ]

@@ -120,6 +120,7 @@ export type ConfigFilter = (
  * @prop {string[]} hierarchicalTypes
  * @prop {Object<string, string>} localeInSlug
  * @prop {Object<string, string|Object<string, string>>} typeInSlug
+ * @prop {Object<string, string|Object<string, string>>} taxonomyInSlug
  * @prop {ConfigEnv} env
  * @prop {ConfigCms} cms
  * @prop {ConfigLocal} local
@@ -140,6 +141,7 @@ export interface Config {
   hierarchicalTypes: string[]
   localeInSlug: Record<string, string>
   typeInSlug: Record<string, string | Record<string, string>>
+  taxonomyInSlug: Record<string, string | Record<string, string>>
   env: ConfigEnv
   cms: ConfigCms
   local: ConfigLocal

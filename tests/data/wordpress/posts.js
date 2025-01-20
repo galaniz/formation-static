@@ -2,10 +2,10 @@ export const posts = [
   {
     id: '19',
     date: '2024-12-18T03:19:31',
-    dateGmt: '2024-12-18T03:19:31',
+    date_gmt: '2024-12-18T03:19:31',
     guid: 'http://wp.com/?p=19',
     modified: '2024-12-18T03:19:31',
-    modifiedGmt: '2024-12-18T03:19:31',
+    modified_gmt: '2024-12-18T03:19:31',
     slug: 'test',
     status: 'publish',
     contentType: 'post',
@@ -21,9 +21,9 @@ export const posts = [
       link: 'http://wp.com/author/demo/',
       slug: 'demo'
     },
-    featuredMedia: 0,
-    commentStatus: 'open',
-    pingStatus: 'open',
+    featured_media: 0,
+    comment_status: 'open',
+    ping_status: 'open',
     sticky: false,
     template: '',
     format: 'standard',
@@ -45,7 +45,7 @@ export const posts = [
       }
     ],
     tags: [],
-    classList: [
+    class_list: [
       'post-19',
       'post',
       'type-post',
@@ -58,10 +58,10 @@ export const posts = [
   {
     id: '1',
     date: '2024-12-14T19:58:13',
-    dateGmt: '2024-12-14T19:58:13',
+    date_gmt: '2024-12-14T19:58:13',
     guid: 'http://wp.com/?p=1',
     modified: '2024-12-14T19:58:13',
-    modifiedGmt: '2024-12-14T19:58:13',
+    modified_gmt: '2024-12-14T19:58:13',
     slug: 'hello-world',
     status: 'publish',
     contentType: 'post',
@@ -70,9 +70,9 @@ export const posts = [
     content: '\n<p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p>\n',
     excerpt: 'Welcome to WordPress. This is your first post. Edit or delete it, then start writing!',
     author: 1,
-    featuredMedia: 0,
-    commentStatus: 'open',
-    pingStatus: 'open',
+    featured_media: 0,
+    comment_status: 'open',
+    ping_status: 'open',
     sticky: false,
     template: '',
     format: 'standard',
@@ -109,7 +109,7 @@ export const posts = [
         }
       }
     ],
-    classList: [
+    class_list: [
       'post-1',
       'post',
       'type-post',

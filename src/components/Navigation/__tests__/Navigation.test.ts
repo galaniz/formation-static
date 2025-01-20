@@ -91,10 +91,10 @@ const testNavProps = (
     ],
     items: [
       homeItem,
-      blogItem,
       // @ts-expect-error
       aboutItem,
       externalItem,
+      blogItem,
       // @ts-expect-error - invalid item
       null
     ],

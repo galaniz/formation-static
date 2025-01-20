@@ -8,7 +8,9 @@ export const taxonomies = [
     contentTypes: [
       'post'
     ],
-    hierarchical: true
+    hierarchical: true,
+    rest_base: 'categories',
+    rest_namespace: 'wp/v2'
   },
   {
     id: 'post_tag',
@@ -19,7 +21,9 @@ export const taxonomies = [
     contentTypes: [
       'post'
     ],
-    hierarchical: false
+    hierarchical: false,
+    rest_base: 'tags',
+    rest_namespace: 'wp/v2'
   },
   {
     id: 'nav_menu',
@@ -30,7 +34,9 @@ export const taxonomies = [
     contentTypes: [
       'nav_menu_item'
     ],
-    hierarchical: false
+    hierarchical: false,
+    rest_base: 'menus',
+    rest_namespace: 'wp/v2'
   },
   {
     id: 'wp_pattern_category',
@@ -41,6 +47,8 @@ export const taxonomies = [
     contentTypes: [
       'wp_block'
     ],
-    hierarchical: false
+    hierarchical: false,
+    rest_base: 'wp_pattern_category',
+    rest_namespace: 'wp/v2'
   }
 ]

@@ -153,10 +153,12 @@ export interface RenderRichText {
 /**
  * @typedef {object} RenderTemplate
  * @prop {RenderItem[]} content
+ * @prop {Record<string, RenderItem>} namedContent
  * @prop {RenderItem[]} templates
  */
 export interface RenderTemplate {
   content: RenderItem[]
+  namedContent: Record<string, RenderItem>
   templates: RenderItem[]
 }
 
@@ -300,12 +302,10 @@ export interface RenderItem extends Generic, Partial<Taxonomy> {
 /**
  * @typedef {object} RenderItemArgs
  * @prop {RenderItem} item
- * @prop {string} contentType
  * @prop {RenderServerlessData} [serverlessData]
  */
 export interface RenderItemArgs {
   item: RenderItem
-  contentType: string
   serverlessData?: RenderServerlessData
 }
 
@@ -327,10 +327,10 @@ export interface RenderItemReturn {
 }
 
 /**
- * @typedef RenderInlineItemArgs
+ * @typedef RenderInlineItem
  * @type {RenderItem}
  */
-export interface RenderInlineItemArgs extends Omit<RenderItem, 'id' | 'slug' | 'contentType' | 'content'> {
+export interface RenderInlineItem extends Omit<RenderItem, 'id' | 'slug' | 'contentType' | 'content'> {
   id: string
   slug: string
   contentType: string
@@ -458,7 +458,7 @@ export type RenderItemFilter = (output: string, args: RenderItemActionArgs) => P
  * @param {RenderArgs} args
  * @return {Promise<void>}
  */
-export type RenderStartAction = (args: RenderArgs) => Promise<void>
+export type RenderStartAction = (args: RenderArgs) => Promise<void> | void
 
 /**
  * @typedef RenderEndActionArgs
@@ -474,18 +474,18 @@ export interface RenderEndActionArgs extends RenderArgs {
  * @param {RenderEndActionArgs} args
  * @return {Promise<void>}
  */
-export type RenderEndAction = (args: RenderEndActionArgs) => Promise<void>
+export type RenderEndAction = (args: RenderEndActionArgs) => Promise<void> | void
 
 /**
  * @typedef {function} RenderItemStartAction
  * @param {RenderItemStartActionArgs} args
  * @return {Promise<void>}
  */
-export type RenderItemStartAction = (args: RenderItemStartActionArgs) => Promise<void>
+export type RenderItemStartAction = (args: RenderItemStartActionArgs) => Promise<void> | void
 
 /**
  * @typedef {function} RenderItemEndAction
  * @param {RenderItemActionArgs} args
  * @return {Promise<void>}
  */
-export type RenderItemEndAction = (args: RenderItemActionArgs) => Promise<void>
+export type RenderItemEndAction = (args: RenderItemActionArgs) => Promise<void> | void

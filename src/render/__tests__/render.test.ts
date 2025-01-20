@@ -199,8 +199,8 @@ describe('renderItem()', () => {
 
   it('should return null if item is taxononmy and not a page', async () => {
     const result = await renderItem({
-      contentType: 'taxonomy',
       item: {
+        contentType: 'taxonomy',
         contentTypes: ['post'],
         isPage: false
       }
@@ -215,6 +215,7 @@ describe('renderItem()', () => {
     const result = await renderItem({
       contentType: 'page',
       item: {
+        contentType: 'page',
         // @ts-expect-error
         id: null
       }
@@ -227,8 +228,8 @@ describe('renderItem()', () => {
 
   it('should return null if item slug is empty string', async () => {
     const result = await renderItem({
-      contentType: 'page',
       item: {
+        contentType: 'page',
         id: '123',
         slug: ''
       }
@@ -1258,6 +1259,137 @@ describe('render()', () => {
                 <div>[four]</div>
               </section>
               <figure>[five]</figure>
+            </body>
+          </html>
+        `
+      }
+    ]
+
+    const resultMin = minifyOutput(result)
+    const expectedResultMin = minifyOutput(expectedResult)
+
+    expect(resultMin).toEqual(expectedResultMin)
+  })
+
+  it('should return item output with named content template', async () => {
+    const result = await render({
+      allData: {
+        content: {
+          page: [
+            {
+              id: '3',
+              title: 'Page',
+              contentType: 'page',
+              slug: 'page',
+              content: [
+                {
+                  renderType: 'contentTemplate',
+                  metadata: {
+                    tags: [
+                      {
+                        id: 'templateNamed',
+                        name: ''
+                      }
+                    ]
+                  },
+                  content: [
+                    {
+                      renderType: 'container',
+                      tag: '',
+                      metadata: {
+                        tags: [
+                          {
+                            id: 'template',
+                            name: ''
+                          }
+                        ]
+                      },
+                      content: [
+                        {
+                          renderType: 'container',
+                          tag: 'section',
+                          content: [
+                            {
+                              renderType: 'richText',
+                              tag: 'h2',
+                              content: [
+                                {
+                                  content: 'Fallback [1]',
+                                  name: 'custom-name-1',
+                                  metadata: {
+                                    tags: [
+                                      {
+                                        id: 'templateSlot',
+                                        name: ''
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          renderType: 'container',
+                          tag: 'section',
+                          content: [
+                            {
+                              renderType: 'richText',
+                              tag: 'h2',
+                              content: [
+                                {
+                                  content: 'Fallback [2]',
+                                  name: 'custom-name-2',
+                                  metadata: {
+                                    tags: [
+                                      {
+                                        id: 'templateSlot',
+                                        name: ''
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      content: '[2.5]' // Test skipping non-named content
+                    },
+                    {
+                      content: '[2]',
+                      name: 'custom-name-2'
+                    },
+                    {
+                      content: '[2.5]' // Test skipping non-named content
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }) as RenderReturn[]
+
+    const expectedResult = [
+      {
+        slug: '/page/',
+        output: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Page</title>
+            </head>
+            <body>
+              <section>
+                <h2 data-rich="h2" id="fallback-1">Fallback [1]</h2>
+              </section>
+              <section>
+                <h2 data-rich="h2" id="2">[2]</h2>
+              </section>
             </body>
           </html>
         `

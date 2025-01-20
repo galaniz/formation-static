@@ -133,29 +133,42 @@ const setRenderFunctions = (args: RenderFunctionsArgs): boolean => {
  *
  * @private
  * @param {RenderItem[]} content
- * @param {RenderItem[]} [_templates]
+ * @param {RenderItem[]} [templates]
+ * @param {boolean} [named]
  * @return {RenderTemplate}
  */
 const getContentTemplate = (
   content: RenderItem[],
-  _templates: RenderItem[] = []
+  templates: RenderItem[] = [],
+  named: boolean = false
 ): RenderTemplate => {
   /* Content must be array */
 
   if (!isArrayStrict(content)) {
     return {
       content: [],
-      templates: _templates
+      namedContent: {},
+      templates
     }
   }
 
+  /* Named content */
+
+  const namedContent: Record<string, RenderItem> = {}
+
   /* One level loop */
 
-  const _content = content.map((c) => {
+  const newContent = content.map((c) => {
+    /* Check name */
+
+    if (named && isString(c.name)) {
+      namedContent[c.name] = { ...c }
+    }
+
     /* Check if template */
 
     if (tagExists(c, 'template')) {
-      _templates.push(structuredClone(c))
+      templates.push(structuredClone(c))
 
       /* Replace template with template break */
 
@@ -179,8 +192,9 @@ const getContentTemplate = (
   /* Output */
 
   return {
-    content: _content,
-    templates: _templates
+    content: newContent,
+    namedContent,
+    templates
   }
 }
 
@@ -190,11 +204,15 @@ const getContentTemplate = (
  * @private
  * @param {RenderItem[]} templates
  * @param {RenderItem[]} [content]
+ * @param {Record<string, RenderItem>} [namedContent]
+ * @param {boolean} [named]
  * @return {RenderItem[]}
  */
 const mapContentTemplate = (
   templates: RenderItem[],
-  content: RenderItem[] = []
+  content: RenderItem[] = [],
+  namedContent: Record<string, RenderItem> = {},
+  named: boolean = false
 ): RenderItem[] => {
   /* Templates must be arrays */
 
@@ -250,7 +268,6 @@ const mapContentTemplate = (
         })
 
         breakIndex = breakIndex === -1 ? content.length : breakIndex
-
         let insertIndex = repeatIndex
 
         for (let j = insertIndex; j < breakIndex - 1; j += 1) {
@@ -264,7 +281,15 @@ const mapContentTemplate = (
     /* Replace slot with content */
 
     if (isSlot && content.length >= 1) {
-      const fill = content.shift()
+      let fill = content.shift()
+
+      if (named) {
+        fill = namedContent[t?.name as string]
+
+        if (fill == null) {
+          return
+        }
+      }
 
       if (fill != null) {
         templates[i] = fill
@@ -276,7 +301,7 @@ const mapContentTemplate = (
     /* Recurse children */
 
     if (isArray(children) && templates[i] != null) {
-      templates[i].content = mapContentTemplate(children, content)
+      templates[i].content = mapContentTemplate(children, content, namedContent, named)
     }
   })
 
@@ -343,8 +368,14 @@ const renderContent = async (
     /* Map out content to template */
 
     if (renderType === 'contentTemplate') {
-      const template = getContentTemplate(isArray(props.content) ? props.content : [])
-      const templates = mapContentTemplate(template.templates, template.content)
+      const isNamed = tagExists(item, 'templateNamed')
+      const template = getContentTemplate(isArray(props.content) ? props.content : [], [], isNamed)
+      const templates = mapContentTemplate(
+        template.templates,
+        template.content,
+        template.namedContent,
+        isNamed
+      )
 
       children = templates
     }
@@ -493,19 +524,28 @@ const renderContent = async (
  * @return {Promise<RenderItemReturn|null>}
  */
 const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn | null> => {
+  /* Args required */
+
   if (!isObjectStrict(args)) {
     return null
   }
 
   const {
     item,
-    contentType = 'page',
     serverlessData
   } = args
 
   /* Item must be object */
 
   if (!isObjectStrict(item)) {
+    return null
+  }
+
+  /* Content type required */
+
+  const contentType = item.contentType
+
+  if (!isStringStrict(contentType)) {
     return null
   }
 
@@ -865,7 +905,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
 
   /* Loop through all content types */
 
-  for (const [contentType, contentItems] of Object.entries(content)) {
+  for (const [, contentItems] of Object.entries(content)) {
     if (!isArrayStrict(contentItems)) {
       continue
     }
@@ -873,7 +913,6 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
     for (const contentItem of contentItems) {
       const item = await renderItem({
         item: contentItem,
-        contentType,
         serverlessData
       })
 

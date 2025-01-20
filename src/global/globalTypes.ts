@@ -8,6 +8,7 @@
  * @prop {string} title
  * @prop {string[]} contentTypes
  * @prop {string} [slug]
+ * @prop {string} [link]
  * @prop {boolean} [isPage]
  * @prop {boolean} [usePrimaryContentTypeSlug=true]
  */
@@ -16,6 +17,7 @@ export interface Taxonomy {
   title: string
   contentTypes: string[]
   slug?: string
+  link?: string
   isPage?: boolean
   usePrimaryContentTypeSlug?: boolean
 }
@@ -25,6 +27,7 @@ export interface Taxonomy {
  * @prop {string} [id]
  * @prop {string} [contentType]
  * @prop {string} [slug]
+ * @prop {string} [link]
  * @prop {string} [title]
  * @prop {Taxonomy} [taxonomy]
  */
@@ -32,6 +35,7 @@ export interface InternalLinkBase {
   id?: string
   contentType?: string
   slug?: string
+  link?: string
   title?: string
   taxonomy?: Taxonomy
 }

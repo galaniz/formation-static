@@ -65,10 +65,10 @@ export interface WordPressDataRenderedProtected {
 /**
  * @typedef WordPressDataMenuChild
  * @type {NavigationItem}
- * @prop {number} menuOrder
+ * @prop {number} menu_order
  */
 export interface WordPressDataMenuChild extends NavigationItem {
-  menuOrder: number
+  menu_order: number
 }
 
 /**

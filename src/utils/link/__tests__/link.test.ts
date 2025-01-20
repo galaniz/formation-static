@@ -27,6 +27,7 @@ describe('getSlug()', () => {
     config.hierarchicalTypes = []
     config.localeInSlug = {}
     config.typeInSlug = {}
+    config.taxonomyInSlug = {}
   })
 
   it('should return empty string if args are null', () => {
@@ -515,6 +516,36 @@ describe('getSlug()', () => {
     expect(result).toEqual(expectedResult)
   })
 
+  it('should return localized taxonomy slug and term slug', () => {
+    config.taxonomyInSlug = {
+      types: {
+        'es-CL': 'tipo'
+      }
+    }
+
+    const result = getSlug({
+      slug: 'cold',
+      contentType: 'term',
+      pageData: {
+        locale: 'es-CL',
+        taxonomy: {
+          id: '456',
+          slug: 'types',
+          title: 'Color Types',
+          contentTypes: ['color'],
+          usePrimaryContentTypeSlug: false
+        }
+      }
+    }, true)
+
+    const expectedResult = {
+      slug: 'es/tipo/cold',
+      parents: []
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
   it('should return archive, taxonomy and term slug', () => {
     setStoreItem('archiveMeta', {
       color: {
@@ -563,9 +594,8 @@ describe('getSlug()', () => {
 
   it('should return type, taxonomy, term and term parent slugs', () => {
     config.hierarchicalTypes = ['term']
-    config.typeInSlug = {
-      color: 'colors'
-    }
+    config.typeInSlug = { color: 'colors' }
+    config.taxonomyInSlug = { types: 'kind' }
 
     setStoreItem('parents', {
       term: {
@@ -594,11 +624,11 @@ describe('getSlug()', () => {
     }, true)
 
     const expectedResult = {
-      slug: 'colors/types/cold/icy',
+      slug: 'colors/kind/cold/icy',
       parents: [
         {
           id: '456',
-          slug: 'types',
+          slug: 'kind',
           title: 'Color Types',
           contentType: 'taxonomy'
         },

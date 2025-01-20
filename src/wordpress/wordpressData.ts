@@ -72,7 +72,7 @@ const getWordPressData = async (
   /* Check cache */
 
   if (config.env.cache) {
-    let cacheData: RenderItem[] = []
+    let cacheData: RenderItem[] | undefined
 
     const cacheDataFilterArgs = {
       key,

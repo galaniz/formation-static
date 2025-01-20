@@ -31,6 +31,7 @@ let config: Config = {
   ],
   localeInSlug: {},
   typeInSlug: {},
+  taxonomyInSlug: {},
   normalTypes: {},
   renderTypes: {},
   env: {

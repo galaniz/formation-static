@@ -66,7 +66,8 @@ const getSlug = <T extends boolean = false>(
   const {
     hierarchicalTypes,
     typeInSlug,
-    localeInSlug
+    localeInSlug,
+    taxonomyInSlug
   } = config
 
   /* Locale */
@@ -125,11 +126,25 @@ const getSlug = <T extends boolean = false>(
   if (isTerm && taxonomySlug !== '' && taxonomyId !== '') {
     taxSlug = taxonomySlug
 
+    const taxInSlug = taxonomyInSlug[taxSlug]
+
+    if (isString(taxInSlug)) {
+      taxSlug = taxInSlug
+    }
+
+    if (isObjectStrict(taxInSlug) && hasPageLocale) {
+      const localizedTaxSlug = taxInSlug[pageLocale]
+
+      if (isString(localizedTaxSlug)) {
+        taxSlug = localizedTaxSlug
+      }
+    }
+
     if (taxonomyIsPage) {
       archiveParents.push({
         contentType: 'taxonomy',
         title: taxonomyTitle,
-        slug: taxonomySlug,
+        slug: taxSlug,
         id: taxonomyId
       })
     }
