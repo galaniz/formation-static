@@ -230,20 +230,20 @@ describe('Navigation', () => {
     it('should return list markup string with home as current', () => {
       const res = home.getOutput('header')
       const expected = `
-        <ul data-nav-depth="0">
-          <li data-nav-depth="0" data-nav-current>
-            <a data-nav-depth="0" href="/" data-nav-current aria-current="page">Home</a>
+        <ul>
+          <li data-nav-current>
+            <a href="/" data-nav-current aria-current="page">Home</a>
           </li>
-          <li data-nav-depth="0">
-            <a data-nav-depth="0" href="/about/">About</a>
-            <ul data-nav-depth="1">
-              <li data-nav-depth="1">
-                <a data-nav-depth="1" href="/blog/">Blog</a>
+          <li>
+            <a href="/about/">About</a>
+            <ul>
+              <li>
+                <a href="/blog/">Blog</a>
               </li>
             </ul>
           </li>
-          <li data-nav-depth="0">
-            <a data-nav-depth="0" href="http://external.com/">External</a>
+          <li>
+            <a href="http://external.com/">External</a>
           </li>
         </ul>
       `
@@ -255,7 +255,7 @@ describe('Navigation', () => {
     })
 
     it('should return list markup string one level deep', () => {
-      const res = home.getOutput('header', {}, 0)
+      const res = home.getOutput('header', { depthAttr: true }, 0)
       const expected = `
         <ul data-nav-depth="0">
           <li data-nav-depth="0" data-nav-current>
@@ -284,7 +284,8 @@ describe('Navigation', () => {
         itemAttr: 'data-y',
         linkClass: 'z',
         internalLinkClass: 'in',
-        linkAttr: 'data-z'
+        linkAttr: 'data-z',
+        depthAttr: true
       })
 
       const expected = `
@@ -321,6 +322,7 @@ describe('Navigation', () => {
         linkClass: 'z',
         internalLinkClass: 'in',
         linkAttr: 'data-z',
+        depthAttr: true,
         filterBeforeList ({ args, output, items, depth }) {
           args.listClass = `x-${depth}-${items.length}`
           args.listAttr = `data-x-${depth}`
@@ -438,7 +440,7 @@ describe('Navigation', () => {
     })
 
     it('should return list markup string with about as current', () => {
-      const res = about.getOutput('header')
+      const res = about.getOutput('header', { depthAttr: true })
       const expected = `
         <ul data-nav-depth="0">
           <li data-nav-depth="0">
@@ -465,7 +467,7 @@ describe('Navigation', () => {
     })
 
     it('should return list markup string with blog as current', () => {
-      const res = blog.getOutput('header')
+      const res = blog.getOutput('header', { depthAttr: true })
       const expected = `
         <ul data-nav-depth="0">
           <li data-nav-depth="0">
@@ -492,7 +494,7 @@ describe('Navigation', () => {
     })
 
     it('should return list markup string with blog as archive current', () => {
-      const res = blogPost.getOutput('header')
+      const res = blogPost.getOutput('header', { depthAttr: true })
       const expected = `
         <ul data-nav-depth="0">
           <li data-nav-depth="0">

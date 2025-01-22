@@ -344,8 +344,9 @@ class Navigation {
 
     const listClasses = isStringStrict(args.listClass) ? ` class="${args.listClass}"` : ''
     const listAttrs = isStringStrict(args.listAttr) ? ` ${args.listAttr}` : ''
+    const depthAttr = args.depthAttr ? ` data-nav-depth="${depth}"` : ''
 
-    output.html += `<ul data-nav-depth="${depth}"${listClasses}${listAttrs}>`
+    output.html += `<ul${depthAttr}${listClasses}${listAttrs}>`
 
     items.forEach((item, index) => {
       const {
@@ -383,7 +384,7 @@ class Navigation {
         itemAttrs += ' data-nav-archive-current'
       }
 
-      output.html += `<li data-nav-depth="${depth}"${itemClasses}${itemAttrs}>`
+      output.html += `<li${depthAttr}${itemClasses}${itemAttrs}>`
 
       /* Link start */
 
@@ -428,7 +429,7 @@ class Navigation {
       const linkAttrs = ` ${linkAttrsArr.join(' ')}`
       const linkTag = hasLink ? 'a' : 'button'
 
-      output.html += `<${linkTag} data-nav-depth="${depth}"${linkClasses}${linkAttrs}>`
+      output.html += `<${linkTag}${depthAttr}${linkClasses}${linkAttrs}>`
 
       if (isFunction(args.filterBeforeLinkText)) {
         args.filterBeforeLinkText(filterArgs)
@@ -504,6 +505,7 @@ class Navigation {
       linkClass: '',
       internalLinkClass: '',
       linkAttr: '',
+      depthAttr: false,
       filterBeforeList: () => {},
       filterAfterList: () => {},
       filterBeforeItem: () => {},

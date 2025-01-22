@@ -23,7 +23,6 @@ import { config } from '../config/config.js'
 /**
  * Normalize route by type
  *
- * @private
  * @param {string} type
  * @return {string}
  */
@@ -329,6 +328,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
 /* Exports */
 
 export {
+  getRoute,
   getWordPressData,
   getAllWordPressData
 }

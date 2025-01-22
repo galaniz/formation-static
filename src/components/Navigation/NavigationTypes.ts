@@ -100,6 +100,7 @@ export interface NavigationBreadcrumbItem extends NavigationItem {
  * @prop {string} [linkClass]
  * @prop {string} [internalLinkClass]
  * @prop {string} [linkAttr]
+ * @prop {boolean} [depthAttr]
  */
 export interface NavigationOutputBaseArgs {
   listClass?: string
@@ -109,6 +110,7 @@ export interface NavigationOutputBaseArgs {
   linkClass?: string
   internalLinkClass?: string
   linkAttr?: string
+  depthAttr?: boolean
 }
 
 /**

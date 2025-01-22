@@ -471,12 +471,12 @@ describe('render()', () => {
             </head>
             <body>
               <nav>
-                <ul data-nav-depth="0">
-                  <li data-nav-depth="0">
-                    <a data-nav-depth="0" href="/home/">Home</a>
+                <ul>
+                  <li>
+                    <a href="/home/">Home</a>
                   </li>
-                  <li data-nav-depth="0">
-                    <a data-nav-depth="0" href="http://example.com">Example</a>
+                  <li>
+                    <a href="http://example.com">Example</a>
                   </li>
                 </ul>
               </nav>

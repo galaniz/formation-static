@@ -652,7 +652,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
       meta = []
     } = obj
 
-    if (!isStringStrict(url)) {
+    if (!isString(url) || !isStringStrict(title)) { // Allow empty string for link
       continue
     }
 
