@@ -47,7 +47,6 @@ describe('dataSource', () => {
   })
 
   it('should return false if param source is any', () => {
-    // @ts-expect-error
     const result = dataSource.isLocal('any')
     const expectedResult = false
 
@@ -93,7 +92,6 @@ describe('dataSource', () => {
   it('should return false if param source is any and cms name is contentful', () => {
     config.source = 'cms'
     config.cms.name = 'contentful'
-    // @ts-expect-error
     const result = dataSource.isContentful('any')
     const expectedResult = false
 

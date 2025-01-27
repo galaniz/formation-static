@@ -74,7 +74,7 @@ let config: Config = {
       200, 400, 600, 800, 1000, 1200, 1600, 2000
     ]
   },
-  filter: (config, _env) => config
+  filter: (config) => config
 }
 
 /**

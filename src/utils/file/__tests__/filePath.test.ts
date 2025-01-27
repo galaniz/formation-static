@@ -23,7 +23,7 @@ describe('getFilePaths()', () => {
   it('should throw an error if no directory is provided', async () => {
     await expect(async () => {
       const result: string[] = []
-      // @ts-expect-error
+      // @ts-expect-error - test undefined directory
       for await (const path of getFilePaths()) {
         result.push(path)
       }

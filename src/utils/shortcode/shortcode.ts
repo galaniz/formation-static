@@ -101,7 +101,7 @@ const getShortcodeData = (
     /* Closing tag */
 
     const closingTag = `[/${name}]`
-    const closingMatch = hasChild ? matches.find((m) => m[0] === closingTag) : matches?.[i + 1]
+    const closingMatch = hasChild ? matches.find((m) => m[0] === closingTag) : matches[i + 1]
 
     if (closingMatch?.[0] === closingTag) {
       endIndex = closingMatch.index
@@ -183,7 +183,7 @@ const getShortcodeData = (
  * @param {Shortcode} shortcode
  * @return {boolean}
  */
-const addShortcode = <T extends Shortcode>(name: string, shortcode: T): boolean => {
+const addShortcode = <T extends Shortcode>(name: string, shortcode: T): boolean => {  // eslint-disable-line @typescript-eslint/no-unnecessary-type-parameters
   if (!isStringStrict(name) || !isObjectStrict(shortcode)) {
     return false
   }
@@ -264,7 +264,7 @@ const resetShortcodes = (): void => {
  * @param {ShortcodesSet} args
  * @return {boolean}
  */
-const setShortcodes = <T extends ShortcodesSet>(args: T): boolean => {
+const setShortcodes = <T extends ShortcodesSet>(args: T): boolean => {  // eslint-disable-line @typescript-eslint/no-unnecessary-type-parameters
   if (!isObjectStrict(args)) {
     return false
   }
@@ -278,10 +278,6 @@ const setShortcodes = <T extends ShortcodesSet>(args: T): boolean => {
   resetShortcodes()
 
   names.forEach(([name, shortcode]) => {
-    if (shortcode == null) {
-      return
-    }
-
     addShortcode(name, shortcode)
   })
 

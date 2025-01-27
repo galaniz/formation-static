@@ -11,7 +11,7 @@ import { getTag, tagExists } from '../tag.js'
 
 describe('getTag()', () => {
   it('should return undefined if no params', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined params
     const result = getTag()
     const expectedResult = undefined
 
@@ -19,7 +19,7 @@ describe('getTag()', () => {
   })
 
   it('should return undefined if object is null', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null object
     const result = getTag(null, '123')
     const expectedResult = undefined
 
@@ -41,7 +41,7 @@ describe('getTag()', () => {
   it('should return undefined if tags contains no objects', () => {
     const result = getTag({
       metadata: {
-        // @ts-expect-error
+        // @ts-expect-error - test null tags
         tags: [null]
       }
     }, '123')
@@ -92,7 +92,7 @@ describe('getTag()', () => {
     const result = getTag({
       metadata: {
         tags: [
-          // @ts-expect-error
+          // @ts-expect-error - test undefined name
           { id: '123' }
         ]
       }
@@ -111,7 +111,7 @@ describe('getTag()', () => {
 
 describe('tagExists()', () => {
   it('should return false if no params', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined params
     const result = tagExists()
     const expectedResult = false
 
@@ -119,7 +119,7 @@ describe('tagExists()', () => {
   })
 
   it('should return false if object is null', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null object
     const result = tagExists(null, '123')
     const expectedResult = false
 

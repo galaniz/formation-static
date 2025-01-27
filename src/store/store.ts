@@ -86,7 +86,8 @@ const setStoreItem = <T extends Store, K extends keyof T, V extends keyof T[K] |
   }
 
   if (isStringStrict(subProp)) {
-    (store[prop] as any)[subProp] = value
+    // @ts-expect-error - store prop checked above
+    store[prop][subProp] = value
   } else {
     store[prop] = value
   }
@@ -145,7 +146,7 @@ const setStoreData = async (allData: RenderAllData, isServerless: boolean = fals
   }
 
   config.hierarchicalTypes.forEach(type => {
-    const items = data?.[type]
+    const items = data[type]
 
     if (!isArrayStrict(items)) {
       return

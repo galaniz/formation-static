@@ -10,13 +10,13 @@ import { isArray } from '../array/array.js'
  * Output console message
  *
  * @param {string} pre
- * @param {string|string[]|*} message
+ * @param {*} message
  * @param {string} [type=error] - error | warning | success | info
  * @return {void}
  */
 const print = (
   pre: string = 'Log',
-  message: string | string[] | unknown,
+  message: unknown,
   type: 'error' | 'warning' | 'success' | 'info' = 'error'
 ): void => {
   const red = '\x1b[31m'

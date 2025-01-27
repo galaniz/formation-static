@@ -53,12 +53,12 @@ describe('getWordPressData()', () => {
   })
 
   it('should throw an error if no arguments are provided', async () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined params
     await expect(async () => await getWordPressData()).rejects.toThrowError('No key')
   })
 
-  it('should throw an error only key is provided', async () => {
-    // @ts-expect-error
+  it('should throw an error if only key is provided', async () => {
+    // @ts-expect-error - test undefined params
     await expect(async () => await getWordPressData('key1')).rejects.toThrowError('No route')
   })
 
@@ -114,13 +114,13 @@ describe('getWordPressData()', () => {
 
   it('should return array of posts and run cache filter', async () => {
     config.env.cache = true
-    const cacheSet = vi.fn()
+    const cacheSet = vi.fn((data) => new Promise(resolve => { resolve(data) }))
 
     addFilter('cacheData', async (data, args): Promise<undefined> => {
       const { key, type } = args
 
       if (key === 'postsKey2' && type === 'set') {
-        cacheSet(data)
+        await cacheSet(data)
       }
     })
 
@@ -133,13 +133,13 @@ describe('getWordPressData()', () => {
 
   it('should return array of posts from cache', async () => {
     config.env.cache = true
-    const cacheGet = vi.fn()
+    const cacheGet = vi.fn((data) => new Promise(resolve => { resolve(data) }))
 
     addFilter('cacheData', async (data, args): Promise<RenderItem[] | undefined> => {
       const { key, type } = args
 
       if (key === 'postsKey3' && type === 'get') {
-        cacheGet(data)
+        await cacheGet(data)
         return posts as RenderItem[]
       }
 
@@ -361,9 +361,9 @@ describe('getAllWordPressData()', () => {
     config.wholeTypes = ['post']
 
     setStoreItem('slugs', {
-      // @ts-expect-error
+      // @ts-expect-error - test null id
       id: null,
-      // @ts-expect-error
+      // @ts-expect-error - test null content type
       contentType: null
     }, '/posts/5/')
 

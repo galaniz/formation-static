@@ -77,9 +77,11 @@ export type Source = 'cms' | 'local' | (string & Record<never, never>)
 export type Generic = Record<string, unknown>
 
 /**
- * @typedef {Object<string, function>} GenericFunctions
+ * @typedef {function} GenericFunction
+ * @param {*} args
+ * @return {*}
  */
-export type GenericFunctions = Record<string, Function>
+export type GenericFunction<T extends (...args: any[]) => any = (...args: any[]) => any> = T // eslint-disable-line @typescript-eslint/no-explicit-any
 
 /**
  * @typedef {Object<string, string>} GenericStrings

@@ -207,8 +207,8 @@ export type RenderHttpError = (args: RenderHttpErrorArgs) => string | Promise<st
  * @prop {RichTextHeading[]} [headings]
  * @prop {RenderItem[]} [children]
  */
-export interface RenderFunctionArgs<T = any, R = RenderItem> {
-  args: 0 extends (1 & T) ? any : T
+export interface RenderFunctionArgs<T = any, R = RenderItem> { // eslint-disable-line @typescript-eslint/no-explicit-any
+  args: 0 extends (1 & T) ? any : T // eslint-disable-line @typescript-eslint/no-explicit-any
   parents?: ParentArgs[]
   pageData?: R
   pageContains?: string[]
@@ -223,14 +223,14 @@ export interface RenderFunctionArgs<T = any, R = RenderItem> {
  * @param {RenderFunctionArgs} props
  * @return {string|string[]|Promise<string|string[]>}
  */
-export type RenderFunction<T = any, R = RenderItem> = (
+export type RenderFunction<T = any, R = RenderItem> = ( // eslint-disable-line @typescript-eslint/no-explicit-any
   props: RenderFunctionArgs<T, R>
 ) => string | string[] | Promise<string | string[]>
 
 /**
  * @typedef {Object<string, RenderFunction>} RenderFunctions
  */
-export type RenderFunctions<T = any, R = RenderItem> = Record<string, RenderFunction<T, R>>
+export type RenderFunctions<T = any, R = RenderItem> = Record<string, RenderFunction<T, R>> // eslint-disable-line @typescript-eslint/no-explicit-any
 
 /**
  * @typedef {object} RenderFunctionsArgs
@@ -441,22 +441,22 @@ export interface RenderReturn {
  * @typedef {function} RenderContentFilter
  * @param {string[]} content
  * @param {ParentArgs}
- * @return {Promise<string[]>}
+ * @return {Promise<string[]>|string[]}
  */
-export type RenderContentFilter = (content: string[], args: ParentArgs) => Promise<string[]>
+export type RenderContentFilter = (content: string[], args: ParentArgs) => Promise<string[]> | string[]
 
 /**
  * @typedef {function} RenderItemFilter
  * @param {string} output
  * @param {RenderItemActionArgs} args
- * @return {Promise<string>}
+ * @return {Promise<string>|string}
  */
-export type RenderItemFilter = (output: string, args: RenderItemActionArgs) => Promise<string>
+export type RenderItemFilter = (output: string, args: RenderItemActionArgs) => Promise<string> | string
 
 /**
  * @typedef {function} RenderStartAction
  * @param {RenderArgs} args
- * @return {Promise<void>}
+ * @return {Promise<void>|void}
  */
 export type RenderStartAction = (args: RenderArgs) => Promise<void> | void
 
@@ -472,20 +472,20 @@ export interface RenderEndActionArgs extends RenderArgs {
 /**
  * @typedef {function} RenderEndAction
  * @param {RenderEndActionArgs} args
- * @return {Promise<void>}
+ * @return {Promise<void>|void}
  */
 export type RenderEndAction = (args: RenderEndActionArgs) => Promise<void> | void
 
 /**
  * @typedef {function} RenderItemStartAction
  * @param {RenderItemStartActionArgs} args
- * @return {Promise<void>}
+ * @return {Promise<void>|void}
  */
 export type RenderItemStartAction = (args: RenderItemStartActionArgs) => Promise<void> | void
 
 /**
  * @typedef {function} RenderItemEndAction
  * @param {RenderItemActionArgs} args
- * @return {Promise<void>}
+ * @return {Promise<void>|void}
  */
 export type RenderItemEndAction = (args: RenderItemActionArgs) => Promise<void> | void

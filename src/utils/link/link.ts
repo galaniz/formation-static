@@ -43,13 +43,15 @@ const getSlug = <T extends boolean = false>(
   args: LinkSlugArgs,
   returnParents = false as T
 ): LinkSlugReturnType<T> => {
-  let {
+  const {
     id = '',
-    slug = '',
     page = 0,
+    slug: initSlug = '',
     contentType = 'page',
     pageData = undefined
   } = isObjectStrict(args) ? args : {}
+
+  let slug = initSlug
 
   /* Types slugs */
 
@@ -193,7 +195,7 @@ const getSlug = <T extends boolean = false>(
 
   const isIndex = slug === 'index'
 
-  if (isIndex && returnParents === false) {
+  if (isIndex && !returnParents) {
     slug = ''
   }
 
@@ -232,7 +234,7 @@ const getSlug = <T extends boolean = false>(
 
   /* Parents and slug return */
 
-  if (returnParents === true) {
+  if (returnParents) {
     const res = {
       slug: fullSlug,
       parents

@@ -23,7 +23,7 @@ describe('addShortcode()', () => {
   })
 
   it('should return false if name is not a string', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined name
     const result = addShortcode()
     const expectedResult = false
 
@@ -31,7 +31,7 @@ describe('addShortcode()', () => {
   })
 
   it('should return false if shortcode is not an object', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null shortcode
     const result = addShortcode('test', null)
     const expectedResult = false
 
@@ -59,7 +59,7 @@ describe('removeShortcode()', () => {
   })
 
   it('should return false if name is not a string', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined name
     const result = removeShortcode()
     const expectedResult = false
 
@@ -104,7 +104,7 @@ describe('doShortcodes()', () => {
     addShortcode('test', {
       callback: () => 'test'
     })
-    // @ts-expect-error
+    // @ts-expect-error - test null content
     const result = await doShortcodes(null)
     const expectedResult = null
 
@@ -123,7 +123,7 @@ describe('doShortcodes()', () => {
   })
 
   it('should return content if shortcode is null', async () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null shortcode
     shortcodes.set('test', null)
 
     const result = await doShortcodes('Lorem ipsum [test]')
@@ -134,7 +134,7 @@ describe('doShortcodes()', () => {
 
   it(
     'should return content with shortcode replaced and skip invalid attributes',
-    async () => await new Promise(async (resolve) => {  // eslint-disable-line
+    async () => await new Promise(async (resolve) => { // eslint-disable-line @typescript-eslint/no-misused-promises
       addShortcode('test', {
         callback ({ attributes }) {
           const result = Object.keys(attributes).length
@@ -260,7 +260,7 @@ describe('setShortcodes()', () => {
   })
 
   it('should return false if args is not an object', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const result = setShortcodes()
     const expectedResult = false
 
@@ -276,7 +276,7 @@ describe('setShortcodes()', () => {
 
   it('should return true if args is an object but not add null shortcodes', () => {
     const result = setShortcodes({
-      // @ts-expect-error
+      // @ts-expect-error - test null shortcode
       test: null
     })
 

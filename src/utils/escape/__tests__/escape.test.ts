@@ -11,7 +11,7 @@ import { escape } from '../escape.js'
 
 describe('escape()', () => {
   it('should throw error if value is null', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null value
     expect(() => escape(null)).toThrowError()
   })
 

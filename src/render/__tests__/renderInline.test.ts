@@ -26,7 +26,7 @@ const testResetRenderFunctions = (): void => {
 
 describe('renderInlineContent()', () => {
   it('should return empty string if no items', async () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined items
     const result = await renderInlineContent()
     const expectedResult = ''
 
@@ -70,7 +70,7 @@ describe('renderInlineItem()', () => {
   })
 
   it('should return empty string if no args', async () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const result = await renderInlineItem()
     const expectedResult = ''
 
@@ -78,7 +78,7 @@ describe('renderInlineItem()', () => {
   })
 
   it('should return empty string if incomplete args', async () => {
-    // @ts-expect-error
+    // @ts-expect-error - test incomplete item props
     const result = await renderInlineItem({
       id: '1',
       contentType: 'page',

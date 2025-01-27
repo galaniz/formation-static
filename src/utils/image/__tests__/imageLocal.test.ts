@@ -57,13 +57,8 @@ describe('setLocalImages()', () => {
   })
 
   afterAll(async () => {
-    if (tempDir != null) {
-      await rm(tempDir, { recursive: true, force: true })
-    }
-
-    if (tempEmptyDir != null) {
-      await rm(tempEmptyDir, { recursive: true, force: true })
-    }
+    await rm(tempDir, { recursive: true, force: true })
+    await rm(tempEmptyDir, { recursive: true, force: true })
   })
 
   beforeEach(() => {

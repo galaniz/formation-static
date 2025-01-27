@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { GenericFunctions } from '../../global/globalTypes.js'
+import type { GenericFunction } from '../../global/globalTypes.js'
 import type {
   RenderStartAction,
   RenderEndAction,
@@ -13,14 +13,13 @@ import type {
 } from '../../render/renderTypes.js'
 
 /**
- * @typedef Actions
- * @type {GenericFunctions}
+ * @typedef {Object<string, GenericFunction>} Actions
  * @prop {RenderStartAction} renderStart
  * @prop {RenderEndAction} renderEnd
  * @prop {RenderItemStartAction} renderItemStart
  * @prop {RenderItemEndAction} renderItemEnd
  */
-export interface Actions extends GenericFunctions {
+export interface Actions extends Record<string, GenericFunction> {
   renderStart: RenderStartAction
   renderEnd: RenderEndAction
   renderItemStart: RenderItemStartAction
@@ -35,7 +34,7 @@ export interface Actions extends GenericFunctions {
  * @prop {Set<RenderItemStartAction>} renderItemStart
  * @prop {Set<RenderItemEndAction>} renderItemEnd
  */
-export type ActionMap = Map<string, Set<Function>> & Map<
+export type ActionMap = Map<string, Set<GenericFunction>> & Map<
 'renderStart' |
 'renderEnd' |
 'renderItemStart' |

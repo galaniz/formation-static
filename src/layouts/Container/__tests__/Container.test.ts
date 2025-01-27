@@ -13,7 +13,7 @@ import { Container } from '../Container.js'
 
 describe('Container()', () => {
   it('should return empty array if props are undefined', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined props
     const result = Container(undefined)
     const expectedResult: string[] = []
 
@@ -22,7 +22,7 @@ describe('Container()', () => {
 
   it('should return empty array if filtered props are undefined', () => {
     const filterName = 'containerProps'
-    // @ts-expect-error
+    // @ts-expect-error - test undefined filtered props
     const filter: ContainerPropsFilter = () => {
       return undefined
     }
@@ -55,7 +55,7 @@ describe('Container()', () => {
   })
 
   it('should return div tags if props is an empty object', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test empty props
     const result = Container({})
     const expectedResult = ['<div>', '</div>']
 
@@ -63,7 +63,7 @@ describe('Container()', () => {
   })
 
   it('should return div tags if args are undefined', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const result = Container({ args: undefined })
     const expectedResult = ['<div>', '</div>']
 
@@ -74,7 +74,7 @@ describe('Container()', () => {
     const result = Container({
       args: {
         tag: 'div',
-        // @ts-expect-error
+        // @ts-expect-error - test invalid attr
         attr: 123
       }
     })

@@ -22,7 +22,7 @@ const mockSendFormFetch = vi.fn(async (
   url: string,
   options: MockFetchOptions
 ): Promise<MockFetchResult> => {
-  return await new Promise(async (resolve) => { // eslint-disable-line
+  return await new Promise((resolve) => {
     /* Status */
 
     let status = 200

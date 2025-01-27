@@ -21,15 +21,15 @@ import { serverlessApiKeys } from '../serverless.js'
  * Recurse through data to output plain and html email body
  *
  * @private
- * @param {object} data
+ * @param {SendFormOutputData} data
  * @param {Object<string, string>} output
  * @param {string} output.html
  * @param {string} output.plain
  * @param {number} depth
  * @return {void}
  */
-const recurseEmailHtml = <T>(
-  data: T,
+const recurseEmailHtml = (
+  data: SendFormOutputData,
   output: {
     html: string
     plain: string
@@ -64,7 +64,7 @@ const recurseEmailHtml = <T>(
       output.plain += `${l}\n`
     }
 
-    recurseEmailHtml(value, output, depth + 1)
+    recurseEmailHtml(value as SendFormOutputData, output, depth + 1)
 
     if (isString(value)) {
       output.html += `
@@ -143,7 +143,7 @@ const SendForm: ServerlessAction = async (args) => {
     }
   }
 
-  const meta = formMetaData?.[id]
+  const meta = formMetaData[id]
 
   if (!isObjectStrict(meta)) {
     return {
@@ -260,16 +260,16 @@ const SendForm: ServerlessAction = async (args) => {
         outputData[legend] = {}
       }
 
-      // @ts-expect-error
-      const inputData = outputData[legend][inputLabel]
+      // @ts-expect-error - legend object set above
+      const inputData = outputData[legend][inputLabel] as string[] | undefined
 
       if (inputData == null) {
-        // @ts-expect-error
+        // @ts-expect-error - legend object set above
         outputData[legend][inputLabel] = []
       }
 
-      // @ts-expect-error
-      outputData[legend][inputLabel].push(outputValue)
+      // @ts-expect-error - input array set above
+      (outputData[legend][inputLabel] as string[]).push(outputValue)
     }
 
     /* Label */
@@ -281,7 +281,7 @@ const SendForm: ServerlessAction = async (args) => {
         outputData[inputLabel] = []
       }
 
-      // @ts-expect-error
+      // @ts-expect-error - input array set above
       outputData[inputLabel].push(outputValue)
     }
   }

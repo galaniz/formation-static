@@ -101,6 +101,7 @@ export interface NavigationBreadcrumbItem extends NavigationItem {
  * @prop {string} [internalLinkClass]
  * @prop {string} [linkAttr]
  * @prop {boolean} [depthAttr]
+ * @prop {string} [dataAttr="data-nav"]
  */
 export interface NavigationOutputBaseArgs {
   listClass?: string
@@ -111,6 +112,7 @@ export interface NavigationOutputBaseArgs {
   internalLinkClass?: string
   linkAttr?: string
   depthAttr?: boolean
+  dataAttr?: string
 }
 
 /**
@@ -185,11 +187,11 @@ export interface NavigationOutputArgs extends NavigationOutputBaseArgs {
 /**
  * @typedef {object} NavigationBreadcrumbOutputFilterArgs
  * @prop {HtmlString} output
- * @prop {boolean} isLastLevel
+ * @prop {boolean} lastLevel
  */
 export interface NavigationBreadcrumbOutputFilterArgs {
   output: HtmlString
-  isLastLevel: boolean
+  lastLevel: boolean
 }
 
 /**

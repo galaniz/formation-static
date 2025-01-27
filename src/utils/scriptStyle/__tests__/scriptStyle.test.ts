@@ -16,7 +16,7 @@ describe('addStyle()', () => {
   })
 
   it('should return false if path is null', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null path
     const result = addStyle(null)
     const expectedResult = false
 
@@ -65,7 +65,7 @@ describe('addScript()', () => {
   })
 
   it('should return false if path is null', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null path
     const result = addScript(null)
     const expectedResult = false
 

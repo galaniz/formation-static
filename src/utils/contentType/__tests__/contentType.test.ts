@@ -14,7 +14,7 @@ describe('normalizeContentType()', () => {
   beforeEach(() => {
     config.normalTypes = {
       'ssf/content-type': 'normalContentType',
-      // @ts-expect-error
+      // @ts-expect-error - test null value
       'ssf/content-null': null
     }
   })

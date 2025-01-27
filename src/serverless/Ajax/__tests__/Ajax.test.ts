@@ -23,7 +23,7 @@ describe('Ajax()', () => {
         name: 'John',
         email: 'john@example.com'
       }
-    // @ts-expect-error
+    // @ts-expect-error - test null setupServerless
     ), null)
 
     const status = result.status

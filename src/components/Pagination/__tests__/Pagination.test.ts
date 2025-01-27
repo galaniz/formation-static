@@ -29,7 +29,7 @@ describe('Pagination()', () => {
   }
 
   it('should return empty output and data if props are undefined', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined props
     const result = Pagination(undefined)
     const expectedResult = {
       output: '',

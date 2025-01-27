@@ -75,7 +75,7 @@ const testNavProps = (
             id: homeItem.id,
             title: homeItem.title
           },
-          // @ts-expect-error - null children
+          // @ts-expect-error - test null children
           aboutItem,
           externalItem
         ]
@@ -86,16 +86,16 @@ const testNavProps = (
         location: 'empty',
         items: []
       },
-      // @ts-expect-error - invalid nav
+      // @ts-expect-error - test invalid nav
       null
     ],
     items: [
       homeItem,
-      // @ts-expect-error
+      // @ts-expect-error - test null children
       aboutItem,
       externalItem,
       blogItem,
-      // @ts-expect-error - invalid item
+      // @ts-expect-error - test invalid item
       null
     ],
     currentLink,
@@ -142,7 +142,7 @@ describe('Navigation', () => {
     })
 
     it('should fail to initialize with undefined props', () => {
-      // @ts-expect-error
+      // @ts-expect-error - test undefined props
       const nav = new Navigation(undefined)
       const result = nav.init
       const expectedResult = false
@@ -151,7 +151,7 @@ describe('Navigation', () => {
     })
 
     it('should fail to initialize with empty props', () => {
-      // @ts-expect-error
+      // @ts-expect-error - test empty props
       const nav = new Navigation({})
       const result = nav.init
       const expectedResult = false
@@ -207,12 +207,12 @@ describe('Navigation', () => {
           {
             title: 'Nav',
             location: 'nav',
-            // @ts-expect-error
+            // @ts-expect-error - test null items
             items: [null, null]
           }
         ],
         items: [
-          // @ts-expect-error - invalid internal link
+          // @ts-expect-error - test invalid internal link
           {
             internalLink: {
               id: 'empty'
@@ -552,7 +552,7 @@ describe('Navigation', () => {
     ] as NavigationBreadcrumbItem[]
 
     it('should return empty string if items are null', () => {
-      // @ts-expect-error
+      // @ts-expect-error - test null items
       const result = home.getBreadcrumbs(null)
       const expectedResult = ''
 
@@ -638,11 +638,11 @@ describe('Navigation', () => {
         linkAttr: 'data-z',
         currentClass: 'c',
         a11yClass: '',
-        filterBeforeLink ({ output, isLastLevel }) {
-          output.html += `<!-- Before Link: ${isLastLevel.toString()} -->`
+        filterBeforeLink ({ output, lastLevel }) {
+          output.html += `<!-- Before Link: ${lastLevel.toString()} -->`
         },
-        filterAfterLink ({ output, isLastLevel }) {
-          output.html += `<!-- After Link: ${isLastLevel.toString()} -->`
+        filterAfterLink ({ output, lastLevel }) {
+          output.html += `<!-- After Link: ${lastLevel.toString()} -->`
         }
       })
 

@@ -26,7 +26,7 @@ describe('setRedirects()', () => {
   })
 
   it('should return false and not set redirects if invalid data', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test invalid data
     const result = setRedirects(['', { redirect: 'test' }])
     const expectedResult = false
     const expectedRedirects: string[] = []
@@ -72,8 +72,8 @@ describe('createRedirectsFile()', () => {
   })
 
   it('should throw error if path is null', async () => {
-    // @ts-expect-error
-    await expect(async () => await createRedirectsFile(null)).rejects.toThrowError()
+    // @ts-expect-error - test null path
+    await expect(async () => { await createRedirectsFile(null) }).rejects.toThrowError()
   })
 
   it('should create redirects file', async () => {

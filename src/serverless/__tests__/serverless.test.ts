@@ -25,8 +25,8 @@ describe('setServerless()', () => {
     testResetServerless()
   })
 
-  it('should return false and not set serverless variables if no args', async () => {
-    // @ts-expect-error
+  it('should return false and not set serverless variables if no args', () => {
+    // @ts-expect-error - test undefined args
     const result = setServerless()
     const expectedResult = false
     const expectedDir = 'functions'
@@ -44,7 +44,9 @@ describe('setServerless()', () => {
   it('should return true and set variables', async () => {
     const result = setServerless({
       actions: {
-        test: async () => ({})
+        test: () => new Promise(resolve => {
+          resolve({})
+        })
       },
       apiKeys: {
         test: 'test'
@@ -54,8 +56,8 @@ describe('setServerless()', () => {
       }
     }, 'test')
 
-    const resultAction = await serverlessActions?.test?.(
-      // @ts-expect-error
+    const resultAction = await serverlessActions.test?.(
+      // @ts-expect-error - test empty data
       {}, {}
     )
 

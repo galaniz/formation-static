@@ -19,11 +19,11 @@ import { isFunction } from '../utils/function/function.js'
  * @param {function} [filterValue]
  * @return {void}
  */
-const resolveInternalLinks = <T, U>(
+const resolveInternalLinks = <T, U>( // eslint-disable-line @typescript-eslint/no-unnecessary-type-parameters
   data: T,
   currentData: U,
   props: string[] = ['internalLink'],
-  filterValue?: Function
+  filterValue?: (prop: string | number | symbol, value: unknown) => T
 ): void => {
   if (!isObject(data) || !isObject(currentData) || !isArray(props)) {
     return
@@ -47,6 +47,7 @@ const resolveInternalLinks = <T, U>(
         v = filterValue(prop, v)
       }
 
+      // @ts-expect-error - type 'undefined' is not assignable to type '(object & U)[keyof U]'
       currentData[prop] = v
     } else if (isObject(value)) {
       resolveInternalLinks(data, value, props, filterValue)
@@ -72,7 +73,7 @@ const undefineProps = <T>(obj: T, props: string[] = []): T => {
     const value = clone[prop]
 
     if (props.includes(prop.toString())) {
-      // @ts-expect-error: Type 'undefined' is not assignable to type 'T[keyof T]'
+      // @ts-expect-error - type 'undefined' is not assignable to type 'T[keyof T]'
       clone[prop] = undefined
     } else if (isObject(value)) {
       undefineProps(value, props)

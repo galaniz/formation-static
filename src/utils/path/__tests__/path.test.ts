@@ -21,7 +21,7 @@ describe('getPath()', () => {
 
   it('should return empty string if file is null', () => {
     const file = null
-    // @ts-expect-error
+    // @ts-expect-error - test null file
     const result = getPath(file)
     const expectedResult = ''
 
@@ -86,7 +86,7 @@ describe('getPath()', () => {
 describe('getPathDepth()', () => {
   it('should return empty string if path is not a string', () => {
     const path = null
-    // @ts-expect-error
+    // @ts-expect-error - test null path
     const result = getPathDepth(path)
     const expectedResult = ''
 

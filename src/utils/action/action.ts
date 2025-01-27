@@ -5,6 +5,7 @@
 /* Imports */
 
 import type { Actions, ActionMap, ActionReturnType } from './actionTypes.js'
+import type { GenericFunction } from '../../global/globalTypes.js'
 import { isSet, isSetStrict } from '../set/set.js'
 import { isStringStrict } from '../string/string.js'
 import { isObjectStrict } from '../object/object.js'
@@ -72,11 +73,11 @@ const removeAction = <T extends keyof Actions>(name: T, action: Actions[T]): boo
  * Call asynchronous functions sequentially
  *
  * @private
- * @param {function[]} callbacks
+ * @param {GenericFunction[]} callbacks
  * @param {*} [args]
  * @return {void}
  */
-const doSequentially = async <T>(callbacks: Function[], args: T): Promise<void> => {
+const doSequentially = async (callbacks: GenericFunction[], args?: unknown): Promise<void> => {
   for (const callback of callbacks) {
     await callback(args)
   }
@@ -90,9 +91,9 @@ const doSequentially = async <T>(callbacks: Function[], args: T): Promise<void> 
  * @param {boolean} [isAsync]
  * @return {*}
  */
-const doActions = <T, V extends boolean = false>(
+const doActions = <V extends boolean = false>(
   name: string,
-  args?: T,
+  args?: unknown,
   isAsync: V = false as V
 ): ActionReturnType<V> => {
   const actionSet = actions.get(name)
@@ -101,7 +102,7 @@ const doActions = <T, V extends boolean = false>(
     return undefined as ActionReturnType<V>
   }
 
-  const callbacks: Function[] = []
+  const callbacks: GenericFunction[] = []
 
   for (const callback of actionSet.values()) {
     if (isAsync) {

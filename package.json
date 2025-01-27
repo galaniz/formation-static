@@ -19,11 +19,11 @@
     "node": ">=20"
   },
   "scripts": {
-    "build:lib": "tsc --project tsconfig.build.json",
-    "build:cjs": "tsc --project tsconfig.build.json --moduleResolution node --module commonjs --esModuleInterop --outDir cjs/",
+    "build:lib": "npx tsc --project tsconfig.build.json",
+    "build:cjs": "npx tsc --project tsconfig.build.json --moduleResolution node --module commonjs --esModuleInterop --outDir cjs/",
     "build": "pnpm build:lib && pnpm build:cjs && node scripts/packageFile.js",
     "test": "vitest --run --reporter verbose --coverage",
-    "lint": "npx ts-standard 'src/**/*.ts'",
+    "lint": "npx eslint .",
     "release": "release-it",
     "release:beta": "release-it --preRelease=beta"
   },
@@ -44,10 +44,11 @@
     "@types/uuid": "^10.0.0",
     "@types/wordpress__block-serialization-spec-parser": "^3.1.3",
     "@vitest/coverage-v8": "^2.1.6",
+    "eslint": "9.14.0",
     "memfs": "4.15.0",
     "release-it": "^17.10.0",
-    "ts-standard": "^12.0.2",
     "typescript": "^5.7.2",
+    "typescript-eslint": "8.19.1",
     "vitest": "^2.1.6"
   },
   "dependencies": {
@@ -72,10 +73,13 @@
   "release-it": {
     "git": {
       "requireCommits": true,
-      "commitMessage": "chore: release v${version}"
+      "commitMessage": "chore: release ${version} [ci skip]"
     },
     "github": {
       "release": true
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -16,7 +16,7 @@ import { getJson, getJsonFile } from '../json.js'
 describe('getJson()', () => {
   it('should return undefined if value is null', () => {
     const value = null
-    // @ts-expect-error
+    // @ts-expect-error - test null value
     const result = getJson(value)
     const expectedResult = undefined
 
@@ -98,7 +98,7 @@ describe('getJsonFile()', () => {
 
   it('should return undefined if path is null', async () => {
     const path = null
-    // @ts-expect-error
+    // @ts-expect-error - test null path
     const result = await getJsonFile(path)
     const expectedResult = undefined
 
@@ -150,10 +150,12 @@ describe('getJsonFile()', () => {
     config.env.dir = '/'
     setStore({}, 'files')
 
-    const filterArgs = vi.fn()
+    const filterArgs = vi.fn((path: string) => new Promise(resolve => {
+      resolve(path)
+    }))
 
     addFilter('storeData', async (result, path) => {
-      filterArgs(path)
+      await filterArgs(path)
 
       return {
         ...result,

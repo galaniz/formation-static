@@ -21,18 +21,18 @@ export interface WordPressDataParams {
 
 /**
  * @typedef {object} WordPressDataError
- * @prop {string} code
- * @prop {string} message
- * @prop {object} data
- * @prop {number} data.status
+ * @prop {string} [code]
+ * @prop {string} [message]
+ * @prop {object} [data]
+ * @prop {number} [data.status]
  * @prop {GenericStrings} [data.params]
  * @prop {Generic} [data.details]
  */
 export interface WordPressDataError {
-  code: string
-  message: string
-  data: {
-    status: number
+  code?: string
+  message?: string
+  data?: {
+    status?: number
     params?: GenericStrings
     details?: Generic
   }
@@ -46,20 +46,20 @@ export type WordPressDataStatus =
 
 /**
  * @typedef {object} WordPressDataRendered
- * @prop {string} rendered
+ * @prop {string} [rendered]
  */
 export interface WordPressDataRendered {
-  rendered: string
+  rendered?: string
 }
 
 /**
  * @typedef {object} WordPressDataRenderedProtected
- * @prop {string} rendered
- * @prop {boolean} protected
+ * @prop {string} [rendered]
+ * @prop {boolean} [protected]
  */
 export interface WordPressDataRenderedProtected {
-  rendered: string
-  protected: boolean
+  rendered?: string
+  protected?: boolean
 }
 
 /**
@@ -101,129 +101,129 @@ export type WordPressDataRichText = RenderItem & { attrs?: Record<string, string
 /**
  * @typedef {object} WordPressDataAuthor
  * @prop {number} id
- * @prop {string} name
- * @prop {string} url
- * @prop {string} description
- * @prop {string} link
- * @prop {string} slug
+ * @prop {string} [name]
+ * @prop {string} [url]
+ * @prop {string} [description]
+ * @prop {string} [link]
+ * @prop {string} [slug]
  */
 export interface WordPressDataAuthor {
   id: number
-  name: string
-  url: string
-  description: string
-  link: string
-  slug: string
+  name?: string
+  url?: string
+  description?: string
+  link?: string
+  slug?: string
 }
 
 /**
  * @typedef {object} WordPressDataMediaDetails
- * @prop {number} width
- * @prop {number} height
- * @prop {number} filesize
- * @prop {string} file
- * @prop {Object<string, WordPressDataMediaSize>} sizes
+ * @prop {number} [width]
+ * @prop {number} [height]
+ * @prop {number} [filesize]
+ * @prop {string} [file]
+ * @prop {Object<string, WordPressDataMediaSize>} [sizes]
  */
 export interface WordPressDataMediaDetails {
-  width: number
-  height: number
-  filesize: number
-  file: string
-  sizes: Record<string, WordPressDataMediaSize>
+  width?: number
+  height?: number
+  filesize?: number
+  file?: string
+  sizes?: Record<string, WordPressDataMediaSize>
 }
 
 /**
  * @typedef {object} WordPressDataMediaSize
- * @prop {string} source_url
+ * @prop {string} [source_url]
  * @prop {string} [mime_type]
  * @prop {string} [file]
  * @prop {number} [filesize]
- * @prop {number} width
- * @prop {number} height
+ * @prop {number} [width]
+ * @prop {number} [height]
  */
 export interface WordPressDataMediaSize {
-  source_url: string
+  source_url?: string
   mime_type?: string
   file?: string
   filesize?: number
-  width: number
-  height: number
+  width?: number
+  height?: number
 }
 
 /**
  * @typedef {object} WordPressDataFeaturedMedia
  * @prop {number} id
- * @prop {string} source_url
- * @prop {string} alt_text
- * @prop {WordPressDataRendered} caption
- * @prop {string} media_type
- * @prop {string} mime_type
- * @prop {WordPressDataMediaDetails} media_details
+ * @prop {string} [source_url]
+ * @prop {string} [alt_text]
+ * @prop {WordPressDataRendered} [caption]
+ * @prop {string} [media_type]
+ * @prop {string} [mime_type]
+ * @prop {WordPressDataMediaDetails} [media_details]
  */
 export interface WordPressDataFeaturedMedia {
   id: number
-  source_url: string
-  alt_text: string
-  caption: WordPressDataRendered
-  media_type: string
-  mime_type: string
-  media_details: WordPressDataMediaDetails
+  source_url?: string
+  alt_text?: string
+  caption?: WordPressDataRendered
+  media_type?: string
+  mime_type?: string
+  media_details?: WordPressDataMediaDetails
 }
 
 /**
  * @typedef {object} WordPressDataTerm
  * @prop {number} id
- * @prop {string} link
- * @prop {string} name
- * @prop {string} slug
- * @prop {string} taxonomy
+ * @prop {string} [link]
+ * @prop {string} [name]
+ * @prop {string} [slug]
+ * @prop {string} [taxonomy]
  */
 export interface WordPressDataTerm {
   id: number
-  link: string
-  name: string
-  slug: string
-  taxonomy: string
+  link?: string
+  name?: string
+  slug?: string
+  taxonomy?: string
 }
 
 /**
  * @typedef {object} WordPressDataAttachment
  * @prop {number} id
- * @prop {string} source_url
- * @prop {WordPressDataRendered} title
- * @prop {string} media_type
- * @prop {string} mime_type
+ * @prop {string} [source_url]
+ * @prop {WordPressDataRendered} [title]
+ * @prop {string} [media_type]
+ * @prop {string} [mime_type]
  */
 export interface WordPressDataAttachment {
   id: number
-  source_url: string
-  title: WordPressDataRendered
-  media_type: string
-  mime_type: string
+  source_url?: string
+  title?: WordPressDataRendered
+  media_type?: string
+  mime_type?: string
 }
 
 /**
  * @typedef {object} WordPressDataParent
  * @prop {number} id
- * @prop {WordPressDataRendered} title
- * @prop {WordPressDataRendered} excerpt
- * @prop {string} slug
- * @prop {string} type
- * @prop {string} link
- * @prop {number} author
- * @prop {number} featured_media
+ * @prop {WordPressDataRendered} [title]
+ * @prop {WordPressDataRendered} [excerpt]
+ * @prop {string} [slug]
+ * @prop {string} [type]
+ * @prop {string} [link]
+ * @prop {number} [author]
+ * @prop {number} [featured_media]
  * @prop {string} [name]
  * @prop {string} [taxonomy]
  */
 export interface WordPressDataParent {
   id: number
-  title: WordPressDataRendered
-  excerpt: WordPressDataRendered
-  slug: string
-  type: string
-  link: string
-  author: number
-  featured_media: number
+  title?: WordPressDataRendered
+  excerpt?: WordPressDataRendered
+  slug?: string
+  type?: string
+  link?: string
+  author?: number
+  featured_media?: number
   name?: string
   taxonomy?: string
 }

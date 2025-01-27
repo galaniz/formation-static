@@ -7,6 +7,7 @@
 import type {
   ContentfulDataParams,
   ContentfulData,
+  ContentfulDataItem,
   AllContentfulDataArgs
 } from './contentfulDataTypes.js'
 import type { RenderAllData, RenderItem } from '../render/renderTypes.js'
@@ -41,14 +42,12 @@ const getContentfulData = async (
   /* Check cache */
 
   if (config.env.cache) {
-    let cacheData: RenderItem[] | undefined
-
     const cacheDataFilterArgs = {
       key,
       type: 'get'
     }
 
-    cacheData = await applyFilters('cacheData', cacheData, cacheDataFilterArgs, true)
+    const cacheData = await applyFilters('cacheData', undefined as RenderItem[] | undefined, cacheDataFilterArgs, true)
 
     if (isObject(cacheData)) {
       return structuredClone(cacheData)
@@ -94,7 +93,7 @@ const getContentfulData = async (
     throw new ResponseError('Bad fetch response', resp)
   }
 
-  const resolvedData = resolveResponse(data)
+  const resolvedData = resolveResponse(data) as { items: ContentfulDataItem[] }
   const newData = normalizeContentfulData(resolvedData.items)
 
   /* Add to cache */

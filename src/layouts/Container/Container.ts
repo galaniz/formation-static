@@ -76,7 +76,7 @@ const Container = (props: ContainerProps): string[] => {
 
   const innerClassesArr = []
 
-  if (isNested && hasLayoutClasses) {
+  if (isNested && hasLayoutClasses) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
     innerClassesArr.push(layoutClasses)
   }
 

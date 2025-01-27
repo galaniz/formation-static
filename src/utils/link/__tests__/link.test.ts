@@ -32,7 +32,7 @@ describe('getSlug()', () => {
 
   it('should return empty string if args are null', () => {
     const args = null
-    // @ts-expect-error
+    // @ts-expect-error - test null args
     const result = getSlug(args)
     const expectedResult = ''
 
@@ -791,7 +791,7 @@ describe('getLink()', () => {
   })
 
   it('should return external link', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null internal link
     const result = getLink(null, 'http://external.com/')
     const expectedResult = 'http://external.com/'
 

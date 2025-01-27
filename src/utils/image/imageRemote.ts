@@ -21,12 +21,12 @@ import { isArrayStrict } from '../array/array.js'
  * @return {Promise<void>}
  */
 const createFile = async (path: string, buffer: Buffer): Promise<void> => {
-  return await new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     createWriteStream(path).write(buffer, (error) => {
       if (error instanceof Error) {
         reject(error)
       } else {
-        resolve()
+        resolve(path)
       }
     })
   })
@@ -73,11 +73,7 @@ const getRemoteImages = async (images: ImageRemote[]): Promise<Array<PromiseSett
         folders.pop()
 
         await mkdir(resolve(folders.join('/')), { recursive: true })
-
-        return await createFile(
-          resolve(fullPath),
-          Buffer.from(buffer)
-        )
+        await createFile(resolve(fullPath), Buffer.from(buffer))
       }
     })
   )

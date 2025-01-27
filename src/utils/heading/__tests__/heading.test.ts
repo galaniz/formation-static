@@ -42,7 +42,7 @@ describe('isHeading()', () => {
   })
 
   it('should return false if value is a number', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test number tag
     const value = isHeading(1)
     const expectedResult = false
 
@@ -50,7 +50,7 @@ describe('isHeading()', () => {
   })
 
   it('should return false if value is a null', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null tag
     const value = isHeading(null)
     const expectedResult = false
 

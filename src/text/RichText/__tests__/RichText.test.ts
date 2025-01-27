@@ -16,7 +16,7 @@ describe('RichText()', () => {
   })
 
   it('should return empty string if no props', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined props
     const result = RichText()
     const expectedResult = ''
 
@@ -24,7 +24,7 @@ describe('RichText()', () => {
   })
 
   it('should return empty string if no args', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test empty props
     const result = RichText({})
     const expectedResult = ''
 
@@ -34,7 +34,7 @@ describe('RichText()', () => {
   it('should return empty string if content is null', () => {
     const result = RichText({
       args: {
-        // @ts-expect-error
+        // @ts-expect-error - test null content
         content: null
       }
     })
@@ -110,7 +110,7 @@ describe('RichText()', () => {
   })
 
   it('should return empty string if filtered props are null', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test filtered null props
     addFilter('richTextProps', () => {
       return null
     })
@@ -128,7 +128,7 @@ describe('RichText()', () => {
   })
 
   it('should return empty string if nested filtered item is null', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test filtered null item
     addFilter('richTextContentItem', () => {
       return null
     })

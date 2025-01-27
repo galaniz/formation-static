@@ -22,7 +22,7 @@ describe('getExcerpt()', () => {
   })
 
   it('should return empty string if args are null or empty', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null args
     const resultNull = getExcerpt(null)
     const resultEmpty = getExcerpt({})
     const expectedResult = ''

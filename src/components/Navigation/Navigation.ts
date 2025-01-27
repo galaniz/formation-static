@@ -130,7 +130,7 @@ class Navigation {
     /* Items by id */
 
     this.items.forEach(item => {
-      if (item == null) {
+      if (item == null) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
         return
       }
 
@@ -267,7 +267,7 @@ class Navigation {
     let childCurrent = false
 
     children.forEach(child => {
-      const info = this.#getItemInfo(this.#itemsById.get(child?.id))
+      const info = this.#getItemInfo(this.#itemsById.get(child?.id)) // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 
       if (info == null) {
         return
@@ -603,15 +603,15 @@ class Navigation {
 
       /* Check if last */
 
-      const isLastLevel = lastItemIndex === index
+      const lastLevel = lastItemIndex === index
 
       /* Filter args */
 
-      const filterArgs = { output, isLastLevel }
+      const filterArgs = { output, lastLevel }
 
       /* Item */
 
-      output.html += `<li${itemClasses}${itemAttrs}${isLastLevel ? ' data-nav-last' : ''}>`
+      output.html += `<li${itemClasses}${itemAttrs}${lastLevel ? ' data-nav-last' : ''}>`
 
       /* Link */
 

@@ -151,11 +151,12 @@ const normalizeFile = (file: WordPressDataFile): RenderFile => {
     s = {}
 
     for (const [, value] of Object.entries(sizes)) {
-      let {
+      const {
         width,
-        url,
         source_url: src
       } = value
+
+      let { url } = value
 
       if (isStringStrict(src)) {
         url = src
@@ -311,12 +312,12 @@ const normalizeEmbedded = (
 
         newItem.featured_media = normalizeFile({
           url,
-          filename: file.split('/').pop(),
+          filename: file?.split('/').pop(),
           alt,
           width,
           height,
           filesizeInBytes: filesize,
-          subtype: mimeType.split('/').pop(),
+          subtype: mimeType?.split('/').pop(),
           mime: mimeType,
           sizes
         })
@@ -341,7 +342,7 @@ const normalizeEmbedded = (
             link,
             name,
             slug,
-            taxonomy
+            taxonomy = ''
           } = e
 
           let taxonomyLookup = taxonomy
@@ -419,13 +420,13 @@ const normalizeBlocks = (blocks: readonly Block[]): RenderItem[] => {
       }
 
       if (attrItemExists && attrItemArr.includes(key)) {
-        const itemValue = normalizeItem(value)
+        const itemValue = normalizeItem(value as WordPressDataItem)
         itemValue.content = undefined
         attrs[key] = itemValue
       }
 
-      if (isStringStrict(value.mime)) {
-        attrs[key] = normalizeFile(value)
+      if (isStringStrict((value as WordPressDataFile).mime)) {
+        attrs[key] = normalizeFile(value as WordPressDataFile)
       }
     }
 
@@ -567,17 +568,17 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 
     if (k === 'media_details' && isObj) {
       const valObj = val as WordPressDataMediaDetails
-      const valFull = valObj.sizes.full
+      const valFull = valObj.sizes?.full
 
       val = normalizeFile({
-        url: item?.source_url,
-        filename: item?.source_url?.split('/').pop(),
-        alt: item?.alt_text,
+        url: item.source_url,
+        filename: item.source_url?.split('/').pop(),
+        alt: item.alt_text,
         width: valFull?.width,
         height: valFull?.height,
-        filesizeInBytes: valObj?.filesize,
-        subtype: item?.mime_type?.split('/')[1],
-        mime: item?.mime_type,
+        filesizeInBytes: valObj.filesize,
+        subtype: item.mime_type?.split('/')[1],
+        mime: item.mime_type,
         sizes: valObj.sizes
       })
     }
@@ -600,7 +601,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
  * @return {NavigationItem[]}
  */
 const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): NavigationItem[] => {
-  const itemsObj: Record<string, WordPressDataMenuItem> = Object.fromEntries(items.map(item => [item.id, item]))
+  const itemsObj = Object.fromEntries(items.map(item => [item.id, item])) as Record<string, WordPressDataMenuItem>
 
   menusById.clear()
 
@@ -616,7 +617,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
     const hasMenuOrder = isNumber(menu_order)
 
     if (hasMenuOrder && isObjectStrict(itemsObj[parent])) {
-      if (itemsObj[parent]?.children == null) {
+      if (itemsObj[parent].children == null) {
         itemsObj[parent].children = []
       }
 
@@ -692,6 +693,8 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
 
       if (isExternal) {
         newItem.externalLink = url
+      } else {
+        newItem.link = url
       }
     }
 

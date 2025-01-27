@@ -65,7 +65,7 @@ const setLocalImages = async (): Promise<Array<PromiseSettledResult<sharp.Output
 
     /* Image instance */
 
-    const instance = await sharp(path)
+    const instance = sharp(path)
 
     /* Store meta data */
 

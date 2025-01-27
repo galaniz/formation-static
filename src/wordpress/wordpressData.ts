@@ -71,14 +71,12 @@ const getWordPressData = async (
   /* Check cache */
 
   if (config.env.cache) {
-    let cacheData: RenderItem[] | undefined
-
     const cacheDataFilterArgs = {
       key,
       type: 'get'
     }
 
-    cacheData = await applyFilters('cacheData', cacheData, cacheDataFilterArgs, true)
+    const cacheData = await applyFilters('cacheData', undefined as RenderItem[] | undefined, cacheDataFilterArgs, true)
 
     if (isObject(cacheData)) {
       return structuredClone(cacheData)

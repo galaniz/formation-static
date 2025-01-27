@@ -13,7 +13,7 @@ import { Column } from '../Column.js'
 
 describe('Column()', () => {
   it('should return empty array if props are undefined', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined props
     const result = Column(undefined)
     const expectedResult: string[] = []
 
@@ -22,7 +22,7 @@ describe('Column()', () => {
 
   it('should return empty array if filtered props are undefined', () => {
     const filterName = 'columnProps'
-    // @ts-expect-error
+    // @ts-expect-error - test undefined filtered props
     const filter: ColumnPropsFilter = () => {
       return undefined
     }
@@ -55,7 +55,7 @@ describe('Column()', () => {
   })
 
   it('should return div tags if props is an empty object', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test empty props
     const result = Column({})
     const expectedResult = ['<div>', '</div>']
 
@@ -63,7 +63,7 @@ describe('Column()', () => {
   })
 
   it('should return div tags if args are undefined', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const result = Column({ args: undefined })
     const expectedResult = ['<div>', '</div>']
 
@@ -74,7 +74,7 @@ describe('Column()', () => {
     const result = Column({
       args: {
         tag: 'div',
-        // @ts-expect-error
+        // @ts-expect-error - test invalid attr
         attr: false
       }
     })

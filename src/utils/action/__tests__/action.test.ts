@@ -67,7 +67,7 @@ describe('addAction()', () => {
   it('should return false if name is null', () => {
     const name = null
     const action = (): void => {}
-    // @ts-expect-error
+    // @ts-expect-error - test null name
     const result = addAction(name, action)
     const expectedResult = false
 
@@ -77,7 +77,7 @@ describe('addAction()', () => {
   it('should return false if action is null', () => {
     const name = 'name'
     const action = null
-    // @ts-expect-error
+    // @ts-expect-error - test null action
     const result = addAction(name, action)
     const expectedResult = false
 
@@ -129,7 +129,9 @@ describe('doActions()', () => {
   })
 
   it('async action should be called and return arg value', async () => {
-    const testAction = vi.fn(async (arg: boolean): Promise<boolean> => arg)
+    const testAction = vi.fn((arg: boolean) => new Promise(resolve => {
+      resolve(arg)
+    }))
 
     addAction(testNameOne, testAction)
     await doActions(testNameOne, false, true)
@@ -139,7 +141,10 @@ describe('doActions()', () => {
   })
 
   it('mixed actions should be called and return arg value', async () => {
-    const testActionOne = vi.fn(async (arg: string): Promise<string> => arg)
+    const testActionOne = vi.fn((arg: string) => new Promise(resolve => {
+      resolve(arg)
+    }))
+
     const testActionTwo = vi.fn((arg: string): string => arg)
     const testValue = 'test'
 
@@ -164,7 +169,7 @@ describe('removeAction()', () => {
   it('should return false if name is null', () => {
     const name = null
     const action = (): void => {}
-    // @ts-expect-error
+    // @ts-expect-error - test null name
     const result = removeAction(name, action)
     const expectedResult = false
 
@@ -174,7 +179,7 @@ describe('removeAction()', () => {
   it('should return false if action is null', () => {
     const name = 'name'
     const action = null
-    // @ts-expect-error
+    // @ts-expect-error - test null action
     const result = removeAction(name, action)
     const expectedResult = false
 
@@ -210,7 +215,7 @@ describe('setActions()', () => {
   })
 
   it('should return false if args are null', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null args
     const result = setActions(null)
     const expectedResult = false
 
@@ -226,7 +231,7 @@ describe('setActions()', () => {
 
   it('should return true and action should not be added', () => {
     const args: Partial<Actions> = {}
-    // @ts-expect-error
+    // @ts-expect-error - test null action
     args[testNameOne] = null
 
     const result = setActions(args)

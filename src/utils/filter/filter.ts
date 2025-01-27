@@ -5,6 +5,7 @@
 /* Imports */
 
 import type { Filters, FilterMap, FilterReturnType } from './filterTypes.js'
+import type { GenericFunction } from '../../global/globalTypes.js'
 import { isSet, isSetStrict } from '../set/set.js'
 import { isStringStrict } from '../string/string.js'
 import { isObjectStrict } from '../object/object.js'
@@ -88,14 +89,14 @@ const removeFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boo
  * Call asynchronous functions sequentially
  *
  * @private
- * @param {function[]} callbacks
+ * @param {GenericFunction[]} callbacks
  * @param {*} value
  * @param {*} [args]
  * @return {*}
  */
-const applySequentially = async <T, U>(callbacks: Function[], value: T, args: U): Promise<T> => {
+const applySequentially = async <T>(callbacks: GenericFunction[], value: T, args?: unknown): Promise<T> => {
   for (const callback of callbacks) {
-    value = await callback(value, args)
+    value = await callback(value, args) as T
   }
 
   return value
@@ -110,10 +111,10 @@ const applySequentially = async <T, U>(callbacks: Function[], value: T, args: U)
  * @param {boolean} [isAsync]
  * @return {*}
  */
-const applyFilters = <T, U, V extends boolean = false>(
+const applyFilters = <T, V extends boolean = false>(
   name: string,
   value: T,
-  args?: U,
+  args?: unknown,
   isAsync: V = false as V
 ): FilterReturnType<T, V> => {
   const filterSet = filters.get(name)
@@ -122,13 +123,13 @@ const applyFilters = <T, U, V extends boolean = false>(
     return value as FilterReturnType<T, V>
   }
 
-  const callbacks: Function[] = []
+  const callbacks: GenericFunction[] = []
 
   for (const callback of filterSet.values()) {
     if (isAsync) {
       callbacks.push(callback)
     } else {
-      value = callback(value, args)
+      value = callback(value, args) as T
     }
   }
 

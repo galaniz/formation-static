@@ -284,7 +284,7 @@ const mapContentTemplate = (
       let fill = content.shift()
 
       if (named) {
-        fill = namedContent[t?.name as string]
+        fill = namedContent[t.name as string]
 
         if (fill == null) {
           return
@@ -321,6 +321,8 @@ const renderContent = async (
   args: RenderContentArgs,
   _output: HtmlString = { html: '' }
 ): Promise<string> => {
+  /* Args must be object */
+
   if (!isObjectStrict(args)) {
     return _output.html
   }
@@ -331,14 +333,12 @@ const renderContent = async (
     pageData,
     pageContains = [],
     pageHeadings = [],
-    navigations = {}
-  } = args
-
-  let {
+    navigations = {},
     parents = [],
-    headingsIndex = -1,
     depth = 0
   } = args
+
+  let { headingsIndex = -1 } = args
 
   /* Content must be array */
 
@@ -409,7 +409,7 @@ const renderContent = async (
     const renderFunction = renderFunctions[renderType]
 
     if (isFunction(renderFunction)) {
-      const renderArgs: RenderFunctionArgs<any> = {
+      const renderArgs: RenderFunctionArgs = {
         args: props,
         parents,
         pageData,
@@ -626,8 +626,8 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn | null
     meta.description = item.metaDescription
   }
 
-  if (isStringStrict((item.metaImage as any)?.url)) {
-    meta.image = (item.metaImage as any).url
+  if (isStringStrict((item as { metaImage?: { url?: string } }).metaImage?.url)) { // Cast one off for contentful image
+    meta.image = (item as { metaImage: { url: string } }).metaImage.url
   }
 
   if (!isStringStrict(meta.title) && isStringStrict(title)) {
@@ -702,9 +702,9 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn | null
 
   if (isObjectStrict(serverlessData)) {
     const serverlessPath = serverlessData.path
-    const isServerless = serverlessPath === formattedSlug && serverlessData.query != null
+    const isServerless = serverlessPath === formattedSlug && serverlessData.query != null // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 
-    if (!isServerless) { // Avoid re-rendering non dynamic pages
+    if (!isServerless) { // Avoid re-rendering non dynamic pages (eg. first page of archive)
       return {
         serverlessRender: false
       }

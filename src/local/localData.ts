@@ -7,7 +7,6 @@
 import type { LocalData, LocalDataParams, AllLocalDataArgs } from './localDataTypes.js'
 import type { RenderItem, RenderAllData } from '../render/renderTypes.js'
 import type { AllDataFilterArgs } from '../utils/filter/filterTypes.js'
-import type { Generic } from '../global/globalTypes.js'
 import { readdir, readFile } from 'node:fs/promises'
 import { extname, basename, resolve } from 'node:path'
 import { applyFilters } from '../utils/filter/filter.js'
@@ -39,14 +38,12 @@ const getLocalData = async (
   /* Check cache */
 
   if (config.env.cache) {
-    let cacheData: LocalData = {}
-
     const cacheDataFilterArgs = {
       key,
       type: 'get'
     }
 
-    cacheData = await applyFilters('cacheData', cacheData, cacheDataFilterArgs, true)
+    const cacheData = await applyFilters('cacheData', undefined as LocalData | undefined, cacheDataFilterArgs, true)
 
     if (isObject(cacheData)) {
       return structuredClone(cacheData)
@@ -199,8 +196,8 @@ const getAllLocalData = async (
   /* Internal props */
 
   resolveProps.data.forEach((d) => {
-    resolveInternalLinks(data, data, [d], (prop: string, value: Generic) => {
-      if (resolveProps.data.includes(prop)) {
+    resolveInternalLinks(data, data, [d], (prop, value) => {
+      if (resolveProps.data.includes(prop as string)) {
         const newValue = undefineProps(value, excludeProps.data)
 
         return newValue
@@ -216,8 +213,8 @@ const getAllLocalData = async (
 
   /* Empty archive data */
 
-  const archivePosts: any = {}
-  // const archiveTerms: any = {}
+  const archivePosts: Record<string, RenderItem[]> = {}
+  // const archiveTerms: Record<string, Record<string, RenderItem[]>> = {}
 
   /* Set content */
 

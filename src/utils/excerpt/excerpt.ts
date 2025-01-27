@@ -48,7 +48,7 @@ const getContentWords = <T>(args: ExcerptContentWordArgs<T>): string[] => {
 
       if (isObject(value)) {
         _words = getContentWords({
-          content: value,
+          content: value as T,
           prop,
           limit,
           _words

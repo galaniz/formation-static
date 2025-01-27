@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { GenericFunctions } from '../../global/globalTypes.js'
+import type { GenericFunction } from '../../global/globalTypes.js'
 import type { ColumnPropsFilter } from '../../layouts/Column/ColumnTypes.js'
 import type { ContainerPropsFilter } from '../../layouts/Container/ContainerTypes.js'
 import type { FieldPropsFilter } from '../../objects/Field/FieldTypes.js'
@@ -115,8 +115,7 @@ export type StoreDataFilter = (
 ) => Promise<object | undefined>
 
 /**
- * @typedef Filters
- * @type {GenericFunctions}
+ * @typedef {Object<string, GenericFunction>} Filters
  * @prop {ColumnPropsFilter} columnProps
  * @prop {ContainerPropsFilter} containerProps
  * @prop {FieldPropsFilter} fieldProps
@@ -138,7 +137,7 @@ export type StoreDataFilter = (
  * @prop {LinkSlugPartsFilter} slugParts
  * @prop {LinkSlugFilter} slug
  */
-export interface Filters extends GenericFunctions {
+export interface Filters extends Record<string, GenericFunction> {
   columnProps: ColumnPropsFilter
   containerProps: ContainerPropsFilter
   fieldProps: FieldPropsFilter
@@ -185,7 +184,7 @@ export interface Filters extends GenericFunctions {
  * @prop {Set<LinkSlugPartsFilter>} slugParts
  * @prop {Set<LinkSlugFilter>} slug
  */
-export type FilterMap = Map<string, Set<Function>> & Map<
+export type FilterMap = Map<string, Set<GenericFunction>> & Map<
 'columnProps' |
 'containerProps' |
 'fieldProps' |

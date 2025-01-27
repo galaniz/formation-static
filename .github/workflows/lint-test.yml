@@ -34,10 +34,10 @@ jobs:
       - name: Install pnpm dependencies
         run: pnpm install --frozen-lockfile
 
-      # Lint ts and scss files
-      - name: Run lint (ts and scss)
+      # Lint ts files
+      - name: Run lint
         run: pnpm lint
 
       # Test ts files
-      - name: Run tests (ts)
+      - name: Run tests
         run: pnpm test

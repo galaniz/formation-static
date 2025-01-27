@@ -20,13 +20,13 @@ describe('getArchiveInfo()', () => {
         contentType: 'post'
       },
       test: {
-        // @ts-expect-error
+        // @ts-expect-error - test null id
         id: null,
-        // @ts-expect-error
+        // @ts-expect-error - test null slug
         slug: null,
-        // @ts-expect-error
+        // @ts-expect-error - test null title
         title: null,
-        // @ts-expect-error
+        // @ts-expect-error - test null content type
         contentType: null
       }
     })
@@ -37,7 +37,7 @@ describe('getArchiveInfo()', () => {
   })
 
   it('should return object with empty values if no content type is provided', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined content type
     const result = getArchiveInfo()
     const expectedResult = {
       id: '',
@@ -102,7 +102,7 @@ describe('getArchiveInfo()', () => {
 
 describe('getTaxonomyInfo()', () => {
   it('should return object with empty values if no content type or page data is provided', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined content type
     const result = getTaxonomyInfo()
     const expectedResult = {
       id: '',
@@ -122,7 +122,7 @@ describe('getTaxonomyInfo()', () => {
       id: '123',
       title: 'Test',
       contentType: 'test',
-      // @ts-expect-error
+      // @ts-expect-error - test null taxonomy
       taxonomy: null
     })
 
@@ -168,13 +168,13 @@ describe('getTaxonomyInfo()', () => {
       title: 'Test',
       slug: 'test',
       taxonomy: {
-        // @ts-expect-error
+        // @ts-expect-error - test null id
         id: null,
-        // @ts-expect-error
+        // @ts-expect-error - test null slug
         slug: null,
-        // @ts-expect-error
+        // @ts-expect-error - test null title
         title: null,
-        // @ts-expect-error
+        // @ts-expect-error - test null content types
         contentTypes: null
       }
     })
@@ -247,7 +247,7 @@ describe('getArchiveLink()', () => {
   })
 
   it('should return object with empty values if no content type is provided', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined content type
     const result = getArchiveLink()
     const expectedResult = {
       title: '',
@@ -400,7 +400,7 @@ describe('getArchiveLabels()', () => {
   })
 
   it('should return default labels if content type is null', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null content type
     const result = getArchiveLabels(null)
     const expectedResult = {
       singular: 'Post',
@@ -442,7 +442,7 @@ describe('getArchiveLabels()', () => {
 
   it('should return default labels if taxonomy content type is null', () => {
     const result = getArchiveLabels('taxonomy', {
-      // @ts-expect-error
+      // @ts-expect-error - test null content type
       contentType: null
     })
 

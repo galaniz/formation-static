@@ -53,13 +53,13 @@ describe('setRenderFunctions()', () => {
   })
 
   it('should return false and not set any functions', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const result = setRenderFunctions()
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const resultLayout = renderLayout()
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const resultHttpError = renderHttpError()
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const resultNavigations = renderNavigations()
 
     const expectedResult = false
@@ -76,13 +76,13 @@ describe('setRenderFunctions()', () => {
   })
 
   it('should return false and not set any functions if no functions or layout', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test empty args
     const result = setRenderFunctions({})
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const resultLayout = renderLayout()
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const resultHttpError = renderHttpError()
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const resultNavigations = renderNavigations()
 
     const expectedResult = false
@@ -98,7 +98,7 @@ describe('setRenderFunctions()', () => {
     expect(resultNavigations).toEqual(expectedNavigations)
   })
 
-  it('should return true and set render functions', async () => {
+  it('should return true and set render functions', () => {
     const test = (): string => 'test'
     const layout = (): string => 'layout'
     const httpError = (): string => 'http'
@@ -133,7 +133,7 @@ describe('setRenderFunctions()', () => {
 
 describe('renderContent()', () => {
   it('should return empty string if no args', async () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const result = await renderContent()
     const expectedResult = ''
 
@@ -142,7 +142,7 @@ describe('renderContent()', () => {
 
   it('should return empty string if content is null', async () => {
     const result = await renderContent({
-      // @ts-expect-error
+      // @ts-expect-error - test null content
       content: null,
       serverlessData: undefined,
       pageData: {},
@@ -178,7 +178,7 @@ describe('renderContent()', () => {
 
 describe('renderItem()', () => {
   it('should return null if no args', async () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const result = await renderItem()
     const expectedResult = null
 
@@ -188,7 +188,7 @@ describe('renderItem()', () => {
   it('should return null if item is null', async () => {
     const result = await renderItem({
       contentType: 'page',
-      // @ts-expect-error
+      // @ts-expect-error - test null item
       item: null
     })
 
@@ -216,7 +216,7 @@ describe('renderItem()', () => {
       contentType: 'page',
       item: {
         contentType: 'page',
-        // @ts-expect-error
+        // @ts-expect-error - test null id
         id: null
       }
     })
@@ -262,7 +262,7 @@ describe('render()', () => {
             '</li>'
           ]
         },
-        // @ts-expect-error
+        // @ts-expect-error - test null output
         testEmpty () {
           return [null]
         },
@@ -353,7 +353,7 @@ describe('render()', () => {
   })
 
   it('should return empty array if no args', async () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const result = await render()
     const expectedResult: RenderReturn[] = []
 
@@ -365,7 +365,7 @@ describe('render()', () => {
       allData: null
     }
 
-    // @ts-expect-error
+    // @ts-expect-error - test null all data
     const result = await render(renderArgs)
     const expectedResult: RenderReturn[] = []
 
@@ -377,7 +377,7 @@ describe('render()', () => {
       allData: {
         content: {
           empty: [],
-          // @ts-expect-error
+          // @ts-expect-error - test null content
           null: [null]
         }
       }
@@ -567,36 +567,36 @@ describe('render()', () => {
       }
     }
 
-    addAction('renderStart', async (args) => {
+    addAction('renderStart', (args) => {
       renderStart(args)
       scriptsStart = structuredClone(scripts)
       stylesStart = structuredClone(styles)
     })
 
-    addAction('renderEnd', async (args) => {
+    addAction('renderEnd', (args) => {
       renderEnd(args)
       scriptsEnd = structuredClone(scripts)
       stylesEnd = structuredClone(styles)
     })
 
-    addAction('renderItemStart', async (args) => {
+    addAction('renderItemStart', (args) => {
       renderItemStart(args)
       scriptsItemStart = structuredClone(scripts)
       stylesItemStart = structuredClone(styles)
     })
 
-    addFilter('renderItem', async (output, args) => {
+    addFilter('renderItem', (output, args) => {
       renderItem({ ...args, output: testMinify(output) })
       return output.replace('<html>', '<html lang="en-CA">')
     })
 
-    addAction('renderItemEnd', async (args) => {
+    addAction('renderItemEnd', (args) => {
       renderItemEnd({ ...args, output: testMinify(expectedOutput) })
       scriptsItemEnd = structuredClone(scripts)
       stylesItemEnd = structuredClone(styles)
     })
 
-    addFilter('renderContent', async (output, args) => {
+    addFilter('renderContent', (output, args) => {
       renderContent(args)
       const [start = '', end = ''] = output
 
@@ -734,7 +734,7 @@ describe('render()', () => {
               contentType: 'page',
               slug: 'test',
               content: [
-                // @ts-expect-error
+                // @ts-expect-error - test null content
                 null
               ]
             }
@@ -840,7 +840,7 @@ describe('render()', () => {
   it('should return parent and child output items with rich text content', async () => {
     const pageHeadingsTest = vi.fn()
 
-    addAction('renderItemEnd', async (args) => {
+    addAction('renderItemEnd', (args) => {
       const { id, pageHeadings } = args
 
       if (id !== '1') {
@@ -1073,7 +1073,7 @@ describe('render()', () => {
                 },
                 {
                   renderType: 'contentTemplate',
-                  // @ts-expect-error
+                  // @ts-expect-error - test null content
                   content: null
                 },
                 {

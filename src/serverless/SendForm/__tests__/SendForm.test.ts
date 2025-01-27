@@ -4,6 +4,7 @@
 
 /* Imports */
 
+import type { SendFormRequestBody } from '../SendFormTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach, beforeAll } from 'vitest'
 import { vol } from 'memfs'
 import { testContext, testResetStore, testMinify } from '../../../../tests/utils.js'
@@ -96,7 +97,7 @@ describe('SendForm()', () => {
       }
     })
 
-    // @ts-expect-error
+    // @ts-expect-error - test empty params
     const result = await SendForm()
     const expectedResult = {
       error: {
@@ -127,7 +128,7 @@ describe('SendForm()', () => {
     const result = await SendForm({
       action,
       id: 'test',
-      // @ts-expect-error
+      // @ts-expect-error - test null inputs
       inputs: null
     }, context)
 
@@ -303,7 +304,12 @@ describe('SendForm()', () => {
 
     const message = result.error?.message
     const expectedMessage = 'Error sending email'
-    const error = JSON.parse(await result.error?.response?.json() as string)
+    const error = JSON.parse(await result.error?.response?.json() as string) as {
+      data: {
+        error: string
+      }
+    }
+
     const expectedError = {
       data: {
         error: 'Authorization is invalid'
@@ -352,7 +358,7 @@ describe('SendForm()', () => {
       }
     }
 
-    const fetchBody = JSON.parse(fetchSpy?.mock?.calls[0]?.[1]?.body as string)
+    const fetchBody = JSON.parse(fetchSpy.mock.calls[0]?.[1]?.body as string) as SendFormRequestBody
 
     fetchBody.text_body = testMinify(fetchBody.text_body)
     fetchBody.html_body = testMinify(fetchBody.html_body)
@@ -505,7 +511,7 @@ describe('SendForm()', () => {
       }
     }, context)
 
-    const fetchBody = JSON.parse(fetchSpy?.mock?.calls[0]?.[1]?.body as string)
+    const fetchBody = JSON.parse(fetchSpy.mock.calls[0]?.[1]?.body as string) as SendFormRequestBody
     const subject = fetchBody.subject
     const expectedSubject = 'Test Contact Form'
 
@@ -549,7 +555,7 @@ describe('SendForm()', () => {
       }
     }, context)
 
-    const fetchBody = JSON.parse(fetchSpy?.mock?.calls[0]?.[1]?.body as string)
+    const fetchBody = JSON.parse(fetchSpy.mock.calls[0]?.[1]?.body as string) as SendFormRequestBody
     const toEmails = fetchBody.to
     const expectedToEmails = ['to@test.com', 'test@test.com']
     const subject = fetchBody.subject
@@ -589,7 +595,7 @@ describe('SendForm()', () => {
       inputs
     }, context)
 
-    const fetchBody = JSON.parse(fetchSpy?.mock?.calls[0]?.[1]?.body as string)
+    const fetchBody = JSON.parse(fetchSpy.mock.calls[0]?.[1]?.body as string) as SendFormRequestBody
     const subject = fetchBody.subject
     const expectedSubject = 'Test Subject'
 

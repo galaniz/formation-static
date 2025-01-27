@@ -67,7 +67,7 @@ describe('addFilter()', () => {
   it('should return false if name is null', () => {
     const name = null
     const filter = (): void => {}
-    // @ts-expect-error
+    // @ts-expect-error - test null name
     const result = addFilter(name, filter)
     const expectedResult = false
 
@@ -77,7 +77,7 @@ describe('addFilter()', () => {
   it('should return false if filter is null', () => {
     const name = 'name'
     const filter = null
-    // @ts-expect-error
+    // @ts-expect-error - test null filter
     const result = addFilter(name, filter)
     const expectedResult = false
 
@@ -135,8 +135,13 @@ describe('applyFilters()', () => {
   })
 
   it('async filters should be called and return cumulative number', async () => {
-    const testFilterOne = vi.fn(async (value: number): Promise<number> => value + 4)
-    const testFilterTwo = vi.fn(async (value: number): Promise<number> => value - 8)
+    const testFilterOne = vi.fn((value: number) => new Promise(resolve => {
+      resolve(value + 4)
+    }))
+
+    const testFilterTwo = vi.fn((value: number) => new Promise(resolve => {
+      resolve(value - 8)
+    }))
 
     addFilter(testNameOne, testFilterOne)
     addFilter(testNameOne, testFilterTwo)
@@ -152,12 +157,12 @@ describe('applyFilters()', () => {
   })
 
   it('mixed filters should be called and result in cumulative string', async () => {
-    const testFilterOne = vi.fn(
-      async (
-        value: string,
-        arg: string
-      ): Promise<string> => `${value}${arg}1`
-    )
+    const testFilterOne = vi.fn((
+      value: string,
+      arg: string
+    ) => new Promise(resolve => {
+      resolve(`${value}${arg}1`)
+    }))
 
     const testFilterTwo = vi.fn((
       value: string,
@@ -187,7 +192,7 @@ describe('removeFilter()', () => {
   it('should return false if name is null', () => {
     const name = null
     const filter = (): void => {}
-    // @ts-expect-error
+    // @ts-expect-error - test null name
     const result = removeFilter(name, filter)
     const expectedResult = false
 
@@ -197,7 +202,7 @@ describe('removeFilter()', () => {
   it('should return false if filter is null', () => {
     const name = 'name'
     const filter = null
-    // @ts-expect-error
+    // @ts-expect-error - test null filter
     const result = removeFilter(name, filter)
     const expectedResult = false
 
@@ -233,7 +238,7 @@ describe('setFilters()', () => {
   })
 
   it('should return false if args are null', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null args
     const result = setFilters(null)
     const expectedResult = false
 
@@ -249,7 +254,7 @@ describe('setFilters()', () => {
 
   it('should return true and filter should not be added', () => {
     const args: Partial<Filters> = {}
-    // @ts-expect-error
+    // @ts-expect-error - test null action
     args[testNameOne] = null
 
     const result = setFilters(args)

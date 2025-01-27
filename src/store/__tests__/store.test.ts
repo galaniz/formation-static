@@ -59,7 +59,7 @@ describe('setStore()', () => {
   })
 
   it('should return default store object if no args', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const result = setStore()
     const expectedResult = testDefaultStore()
     const expectedStoreDir = 'lib/store'
@@ -105,7 +105,7 @@ describe('setStoreItem()', () => {
   })
 
   it('should return false if no params', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test empty params
     const result = setStoreItem()
     const expectedResult = false
 
@@ -113,9 +113,9 @@ describe('setStoreItem()', () => {
   })
 
   it('should return false if no value is not an object', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test invalid value
     const resultOne = setStoreItem('slugs', '')
-    // @ts-expect-error
+    // @ts-expect-error - test invalid value
     const resultTwo = setStoreItem('slugs', null)
     const expectedResult = false
 
@@ -207,7 +207,7 @@ describe('setStoreData()', () => {
   })
 
   it('should return false if no data', async () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined data
     const result = await setStoreData()
     const expectedResult = false
 
@@ -215,7 +215,7 @@ describe('setStoreData()', () => {
   })
 
   it('should return true but not set any store items', async () => {
-    // @ts-expect-error
+    // @ts-expect-error - test empty data
     const result = await setStoreData({})
     const expectedResult = true
     const expectedStore = testDefaultStore()
@@ -469,7 +469,7 @@ describe('fetchStoreItem()', () => {
   })
 
   it('should return undefined if no prop', async () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined prop
     const result = await fetchStoreItem()
     const expectedResult = undefined
 
@@ -510,7 +510,7 @@ describe('getStoreItem()', () => {
   })
 
   it('should return undefined if no prop', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined prop
     const result = getStoreItem()
     const expectedResult = undefined
 
@@ -553,7 +553,7 @@ describe('createStoreFiles()', () => {
 
   it('should throw error if data is invalid json', async () => {
     setStore({ test: { bigInt: 123n } }, '/files')
-    await expect(async () => await createStoreFiles()).rejects.toThrowError()
+    await expect(async () => { await createStoreFiles() }).rejects.toThrowError()
   })
 
   it('should write json files from store object', async () => {

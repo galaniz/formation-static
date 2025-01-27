@@ -21,7 +21,7 @@ const mockWordPressFetch = vi.fn(async (
   url: string,
   options: MockFetchOptions
 ): Promise<MockFetchResult> => {
-  return await new Promise(async (resolve, reject) => { // eslint-disable-line
+  return await new Promise(async (resolve, reject) => { // eslint-disable-line @typescript-eslint/no-misused-promises
     /* Status */
 
     let status = 200
@@ -44,7 +44,7 @@ const mockWordPressFetch = vi.fn(async (
       if (!urlObj.host.includes('.')) {
         throw new Error()
       }
-    } catch (error) {
+    } catch {
       reject(new TypeError(mockFetchErrorMessage.url))
       return
     }
@@ -73,7 +73,7 @@ const mockWordPressFetch = vi.fn(async (
     /* Options */
 
     const { headers: authHeaders } = options
-    const auth = authHeaders?.get('Authorization')
+    const auth = authHeaders.get('Authorization')
 
     if (auth !== `Basic ${btoa('user:pass')}`) {
       status = 401
@@ -148,7 +148,7 @@ const mockWordPressFetch = vi.fn(async (
     }
 
     if (route === 'null') {
-      // @ts-expect-error
+      // @ts-expect-error - test null data
       data = [null, null, null, null]
     }
 

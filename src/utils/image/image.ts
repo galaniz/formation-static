@@ -167,7 +167,7 @@ const getImage = <V extends boolean = false>(
     }
 
     if (isWordpress) {
-      const sizeUrl = data?.sizes?.[s]
+      const sizeUrl = data.sizes?.[s]
 
       if (isStringStrict(sizeUrl)) {
         srcsetSource.push(`${sizeUrl} ${s}w`)
@@ -213,7 +213,7 @@ const getImage = <V extends boolean = false>(
   `
 
   if (returnDetails) {
-    return { // eslint-disable-line @typescript-eslint/consistent-type-assertions
+    return {
       output,
       aspectRatio,
       naturalWidth,

@@ -19,7 +19,7 @@ describe('getImage()', () => {
   })
 
   it('should return empty string if args is undefined', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test undefined args
     const result = getImage()
     const expectedResult = ''
 
@@ -27,7 +27,7 @@ describe('getImage()', () => {
   })
 
   it('should return empty string if data is not an object', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null data
     const result = getImage({ data: null })
     const expectedResult = ''
 
@@ -446,7 +446,7 @@ describe('getImage()', () => {
 
 describe('getImageClosestSize()', () => {
   it('should return 200 if size is null', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null size
     const result = getImageClosestSize(null)
     const expectedResult = 200
 
@@ -511,7 +511,7 @@ describe('getImageMaxWidth()', () => {
   ]
 
   it('should return 0 if args is null', () => {
-    // @ts-expect-error
+    // @ts-expect-error - test null args
     const result = getImageMaxWidth(null)
     const expectedResult = 0
 
@@ -521,9 +521,9 @@ describe('getImageMaxWidth()', () => {
   it('should return 0 if parents, widths, maxWidths and breakpoints are null or empty', () => {
     const result = getImageMaxWidth({
       parents: [],
-      // @ts-expect-error
+      // @ts-expect-error - test null widths
       widths: null,
-      // @ts-expect-error
+      // @ts-expect-error - test null max widths
       maxWidths: null,
       breakpoints: []
     })
@@ -535,7 +535,7 @@ describe('getImageMaxWidth()', () => {
 
   it('should return 0 if parents are an array of null', () => {
     const result = getImageMaxWidth({
-      // @ts-expect-error
+      // @ts-expect-error - test null parents
       parents: [null, null, null, null],
       widths,
       maxWidths,
@@ -552,12 +552,12 @@ describe('getImageMaxWidth()', () => {
       parents: [
         {
           renderType: 'container',
-          // @ts-expect-error
+          // @ts-expect-error - test null args
           args: null
         },
         {
           renderType: 'column',
-          // @ts-expect-error
+          // @ts-expect-error - test null args
           args: null
         }
       ],

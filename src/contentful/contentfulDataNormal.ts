@@ -138,7 +138,7 @@ const normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
           internalLink = target
         }
 
-        const url = target?.fields?.file?.url
+        const url = target.fields?.file?.url
 
         if (nodeType === 'asset-hyperlink' && isString(url)) {
           link = url
@@ -248,7 +248,7 @@ const normalizeItem = (
 
   /* Metadata tags */
 
-  if (isArrayStrict(itemCopy?.metadata?.tags)) {
+  if (isArrayStrict(itemCopy.metadata?.tags)) {
     newItem.metadata = {
       tags: itemCopy.metadata.tags.map((t) => {
         return {
@@ -304,7 +304,7 @@ const normalizeItem = (
     const nodeType = itemCopy.nodeType
 
     if (nodeType === 'embedded-entry-block' || nodeType === 'embedded-asset-block') {
-      const content = isObjectStrict(itemCopy?.data?.target) ? itemCopy.data.target : item
+      const content = isObjectStrict(itemCopy.data?.target) ? itemCopy.data.target : item
 
       newItem = normalizeItem(content, data, isInternalLink)
     } else {
