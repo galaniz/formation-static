@@ -65,11 +65,11 @@ export interface RenderCommon {
 /**
  * @typedef {object} RenderServerlessData
  * @prop {string} path
- * @prop {Generic} query
+ * @prop {Generic} [query]
  */
 export interface RenderServerlessData {
   path: string
-  query: Generic
+  query?: Generic
 }
 
 /**

@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { RenderItem, RenderInlineItem } from './renderTypes.js'
+import type { RenderItem, RenderContentArgs, RenderInlineItem } from './renderTypes.js'
 import { renderContent, renderItem } from './render.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isString } from '../utils/string/string.js'
@@ -12,17 +12,27 @@ import { isString } from '../utils/string/string.js'
 /**
  * Convenience wrapper for render content
  *
- * @param {RenderItem[]} items
+ * @param {RenderItem[]} content
+ * @param {object} [args]
+ * @param {ParentArgs[]} [args.parents]
+ * @param {RenderItem} [args.pageData]
+ * @param {string[]} [args.pageContains]
+ * @param {RichTextHeading[][]} [args.pageHeadings]
+ * @param {GenericStrings} [args.navigations]
  * @return {Promise<string>}
  */
-const renderInlineContent = async (items: RenderItem[]): Promise<string> => {
+const renderInlineContent = async (
+  content: RenderItem[],
+  args?: Partial<Omit<RenderContentArgs, 'content'>>
+): Promise<string> => {
   return await renderContent({
-    content: items,
+    content,
     parents: [],
     pageData: {},
     pageContains: [],
     pageHeadings: [],
-    navigations: {}
+    navigations: {},
+    ...args
   })
 }
 

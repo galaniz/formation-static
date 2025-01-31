@@ -37,11 +37,12 @@ const getParentSlug = (id: string, contentType: string, parents: LinkSlugParent[
  * Get slug with archive/taxonomy base and parents
  *
  * @param {LinkSlugArgs} args
+ * @param {boolean} [returnParents]
  * @return {LinkSlugReturnType}
  */
 const getSlug = <T extends boolean = false>(
   args: LinkSlugArgs,
-  returnParents = false as T
+  returnParents: T = false as T
 ): LinkSlugReturnType<T> => {
   const {
     id = '',

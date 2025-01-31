@@ -99,13 +99,13 @@ const setStoreItem = <T extends Store, K extends keyof T, V extends keyof T[K] |
  * Set serverless or build time data (navigations, archive meta, parents)
  *
  * @param {RenderAllData} allData
- * @param {boolean} [isServerless]
+ * @param {boolean} [serverless]
  * @return {Promise<boolean>}
  */
-const setStoreData = async (allData: RenderAllData, isServerless: boolean = false): Promise<boolean> => {
+const setStoreData = async (allData: RenderAllData, serverless: boolean = false): Promise<boolean> => {
   /* Serverless all data */
 
-  if (isServerless) {
+  if (serverless) {
     for (const key of Object.keys(store)) {
       if (key === 'slugs') { // Skip slugs as set in data fetch
         continue

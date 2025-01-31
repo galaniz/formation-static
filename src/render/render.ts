@@ -702,7 +702,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn | null
 
   if (isObjectStrict(serverlessData)) {
     const serverlessPath = serverlessData.path
-    const isServerless = serverlessPath === formattedSlug && serverlessData.query != null // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+    const isServerless = serverlessPath === formattedSlug && serverlessData.query != null
 
     if (!isServerless) { // Avoid re-rendering non dynamic pages (eg. first page of archive)
       return {

@@ -119,12 +119,17 @@ const getWordPressData = async (
 
   /* Params */
 
-  let url = `${ssl ? 'https' : 'http'}://${host}/wp-json/wp/v2/${route}?_embed&status=${status}`
+  let url = `${ssl ? 'https' : 'http'}://${host}/wp-json/wp/v2/${route}?status=${status}`
   let loop = false
+  let embed = false
 
   if (isObjectStrict(params)) {
     for (const [key, value] of Object.entries(params)) {
       let val = value
+
+      if (key === '_embed') {
+        embed = true
+      }
 
       if (key === 'per_page' && value === -1) {
         val = 100
@@ -137,6 +142,10 @@ const getWordPressData = async (
 
   if (loop) {
     url += `&page=${_page}`
+  }
+
+  if (!embed) {
+    url += '&_embed'
   }
 
   /* Check and transform data */
