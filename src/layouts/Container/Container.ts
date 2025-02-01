@@ -34,9 +34,7 @@ const Container = (props: ContainerProps): string[] => {
     return fallback
   }
 
-  let { args } = props
-
-  args = isObjectStrict(args) ? args : {}
+  const { args } = props
 
   const {
     tag = 'div',
@@ -45,7 +43,7 @@ const Container = (props: ContainerProps): string[] => {
     style = '',
     attr = '',
     nest = false
-  } = args
+  } = isObjectStrict(args) ? args : {}
 
   /* Tag required */
 

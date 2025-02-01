@@ -357,7 +357,7 @@ describe('getAllWordPressData()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return menu items, menus and skip serverless data with all posts', async () => {
+  it('should return empty data if serverless data invalid', async () => {
     config.wholeTypes = ['post']
 
     setStoreItem('slugs', {
@@ -375,11 +375,10 @@ describe('getAllWordPressData()', () => {
     })
 
     const expectedResult = {
-      navigationItem: menuItems,
-      navigation: menus,
+      navigationItem: [],
+      navigation: [],
       content: {
-        page: [],
-        post: posts
+        page: []
       }
     }
 

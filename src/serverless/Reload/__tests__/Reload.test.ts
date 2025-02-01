@@ -72,6 +72,25 @@ describe('Reload()', () => {
   })
 
   it('should return 500 response with render http error output', async () => {
+    const context = testContext('http://wp.com/hello-world/?page=10')
+    const response = await Reload(context, () => {
+      setRenderFunctions({
+        functions: {},
+        layout: () => '',
+        httpError: ({ code }) => `<html><body><h1>${code}</h1></body></html>`
+      })
+    }, () => { throw new Error() })
+
+    const body = await response.text()
+    const status = response.status
+    const expectedBody = '<html><body><h1>500</h1></body></html>'
+    const expectedStatus = 500
+
+    expect(body).toBe(expectedBody)
+    expect(status).toBe(expectedStatus)
+  })
+
+  it('should return 404 response with render http error output', async () => {
     vi.stubGlobal('fetch', mockWordPressFetch)
 
     const context = testContext('http://wp.com/hello-world/?page=10')
@@ -85,8 +104,8 @@ describe('Reload()', () => {
 
     const body = await response.text()
     const status = response.status
-    const expectedBody = '<html><body><h1>500</h1></body></html>'
-    const expectedStatus = 500
+    const expectedBody = '<html><body><h1>404</h1></body></html>'
+    const expectedStatus = 404
 
     expect(body).toBe(expectedBody)
     expect(status).toBe(expectedStatus)
@@ -103,28 +122,6 @@ describe('Reload()', () => {
     const body = await response.text()
     const status = response.status
     const expectedBody = ''
-    const expectedStatus = 404
-
-    expect(body).toBe(expectedBody)
-    expect(status).toBe(expectedStatus)
-  })
-
-  it('should return 404 response with render http error output', async () => {
-    vi.stubGlobal('fetch', mockWordPressFetch)
-
-    const context = testContext('http://wp.com/hello-world/?page=10')
-    const response = await Reload(context, () => {
-      setConfig({ cms: testWordPressConfig() })
-      setRenderFunctions({
-        functions: {},
-        layout: () => '',
-        httpError: ({ code }) => `<html><body><h1>${code}</h1></body></html>`
-      })
-    }, getAllWordPressData)
-
-    const body = await response.text()
-    const status = response.status
-    const expectedBody = '<html><body><h1>404</h1></body></html>'
     const expectedStatus = 404
 
     expect(body).toBe(expectedBody)

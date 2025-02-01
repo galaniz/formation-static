@@ -296,10 +296,10 @@ const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
 
     if (renderType === 'column') {
       const {
-        width = 'None',
-        widthSmall = 'None',
-        widthMedium = 'None',
-        widthLarge = 'None'
+        width = 'Default',
+        widthSmall = 'Default',
+        widthMedium = 'Default',
+        widthLarge = 'Default'
       } = args
 
       w[0] = isNumber(widths[width]) && widths[width] > 0 ? widths[width] : 1
@@ -309,7 +309,7 @@ const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
     }
 
     if (renderType === 'container') {
-      const { maxWidth = 'None' } = args
+      const { maxWidth = 'Default' } = args
 
       m = isNumber(maxWidths[maxWidth]) ? maxWidths[maxWidth] : 0
     }

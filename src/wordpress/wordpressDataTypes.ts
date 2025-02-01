@@ -453,6 +453,16 @@ export interface WordPressDataItem extends Partial<WordPressDataFeaturedMedia>, 
 }
 
 /**
+ * @typedef {object} WordPressDataResultInfo
+ * @prop {number} [total]
+ * @prop {number} [totalPages]
+ */
+export interface WordPressDataResultInfo {
+  total?: number
+  totalPages?: number
+}
+
+/**
  * @typedef {object} AllWordPressDataArgs
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]

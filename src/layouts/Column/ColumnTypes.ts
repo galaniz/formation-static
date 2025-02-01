@@ -10,21 +10,21 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
 /**
  * @typedef ColumnArgs
  * @type {Generic}
- * @prop {string} [tag]
- * @prop {string} [width] - Used in getImageMaxWidth()
- * @prop {string} [widthSmall] - Used in getImageMaxWidth()
- * @prop {string} [widthMedium] - Used in getImageMaxWidth()
- * @prop {string} [widthLarge] - Used in getImageMaxWidth()
+ * @prop {string} [tag=div]
+ * @prop {string|number} [width] - Used in getImageMaxWidth()
+ * @prop {string|number} [widthSmall] - Used in getImageMaxWidth()
+ * @prop {string|number} [widthMedium] - Used in getImageMaxWidth()
+ * @prop {string|number} [widthLarge] - Used in getImageMaxWidth()
  * @prop {string} [classes] - Back end option
  * @prop {string} [style] - Back end option
  * @prop {string} [attr] - Back end option
  */
 export interface ColumnArgs extends Generic {
   tag?: string
-  width?: string
-  widthSmall?: string
-  widthMedium?: string
-  widthLarge?: string
+  width?: string | number
+  widthSmall?: string | number
+  widthMedium?: string | number
+  widthLarge?: string | number
   classes?: string
   style?: string
   attr?: string

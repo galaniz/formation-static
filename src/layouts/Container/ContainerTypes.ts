@@ -10,8 +10,8 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
 /**
  * @typedef ContainerArgs
  * @type {Generic}
- * @prop {string} [tag]
- * @prop {string} [maxWidth] - Used in getImageMaxWidth()
+ * @prop {string} [tag=div]
+ * @prop {string|number} [maxWidth] - Used in getImageMaxWidth()
  * @prop {string} [layoutClasses] - Back end option
  * @prop {string} [classes] - Back end option
  * @prop {string} [style] - Back end option
@@ -20,7 +20,7 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
  */
 export interface ContainerArgs extends Generic {
   tag?: string
-  maxWidth?: string
+  maxWidth?: string | number
   layoutClasses?: string
   classes?: string
   style?: string

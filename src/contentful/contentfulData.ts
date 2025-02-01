@@ -149,8 +149,6 @@ const getAllContentfulData = async (
 
   /* Get single entry data if serverless or preview data */
 
-  let isEntry = false
-
   if (isServerless || isPreview) {
     let contentType = ''
     let id = ''
@@ -181,7 +179,6 @@ const getAllContentfulData = async (
       const data = await getContentfulData(key, params)
 
       if (isArray(data)) {
-        isEntry = true
         allData.content[contentType] = data
       }
     }
@@ -189,7 +186,7 @@ const getAllContentfulData = async (
 
   /* Get partial data - not serverless */
 
-  if (!isServerless || !isEntry) {
+  if (!isServerless) {
     const partial = config.partialTypes
 
     for (const contentType of partial) {
@@ -212,7 +209,7 @@ const getAllContentfulData = async (
 
   /* Get whole data (for page generation) - not serverless or preview */
 
-  if ((!isServerless && !isPreview) || !isEntry) {
+  if (!isServerless && !isPreview) {
     const whole = config.wholeTypes
 
     for (const contentType of whole) {

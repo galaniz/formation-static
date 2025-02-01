@@ -8,6 +8,7 @@ import type {
   WordPressDataError,
   WordPressDataItem,
   WordPressDataParams,
+  WordPressDataResultInfo,
   AllWordPressDataArgs
 } from './wordpressDataTypes.js'
 import type { RenderAllData, RenderItem } from '../render/renderTypes.js'
@@ -53,13 +54,15 @@ const getRoute = (type: string): string => {
  * @param {string} key
  * @param {string} route
  * @param {WordPressDataParams} [params]
- * @param {number} [_page]
+ * @param {WordPressDataResultInfo} [info=null]
+ * @param {number} [_page=1]
  * @return {Promise<RenderItem[]>}
  */
 const getWordPressData = async (
   key: string,
   route: string,
-  params: WordPressDataParams = {},
+  params?: WordPressDataParams,
+  info: WordPressDataResultInfo | null = null,
   _page: number = 1
 ): Promise<RenderItem[]> => {
   /* Key required for cache */
@@ -167,18 +170,25 @@ const getWordPressData = async (
 
   /* Total */
 
-  const total = resp.headers.get('X-WP-TotalPages')
-  const totalPages = isStringStrict(total) ? parseInt(total, 10) : 1
+  const total = resp.headers.get('X-WP-Total')
+  const totalPages = resp.headers.get('X-WP-TotalPages')
+  const totalNum = isStringStrict(total) ? parseInt(total, 10) : 1
+  const totalPagesNum = isStringStrict(totalPages) ? parseInt(totalPages, 10) : 1
+
+  if (isObjectStrict(info)) {
+    info.total = totalNum
+    info.totalPages = totalPagesNum
+  }
 
   /* Normalize */
 
   const dataItems = isArray(data) ? data : [data] as WordPressDataItem[]
   let newData = normalizeWordPressData(dataItems, route)
 
-  if (loop && _page < totalPages) {
+  if (loop && _page < totalPagesNum) {
     const pagData = await getWordPressData(key, route, {
       per_page: -1
-    }, _page + 1)
+    }, null, _page + 1)
 
     if (isArray(pagData)) {
       newData = [
@@ -208,7 +218,7 @@ const getWordPressData = async (
 /**
  * Fetch data from all content types or single entry if serverless
  *
- * @param {AllWordPressDataArgs} args
+ * @param {AllWordPressDataArgs} [args]
  * @return {Promise<RenderAllData|undefined>}
  */
 const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderAllData | undefined> => {
@@ -242,8 +252,6 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
 
   /* Get single entry data if serverless or preview data */
 
-  let isEntry = false
-
   if (isServerless || isPreview) {
     let contentType = ''
     let id = ''
@@ -269,7 +277,6 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
       const data = await getWordPressData(key, `${getRoute(contentType)}/${id}`)
 
       if (isArray(data)) {
-        isEntry = true
         allData.content[contentType] = data
       }
     }
@@ -277,7 +284,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
 
   /* Get partial data - not serverless */
 
-  if (!isServerless || !isEntry) {
+  if (!isServerless) {
     const partial = config.partialTypes
 
     for (const contentType of partial) {
@@ -299,7 +306,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
 
   /* Get whole data (for page generation) - not serverless or preview */
 
-  if ((!isServerless && !isPreview) || !isEntry) {
+  if (!isServerless && !isPreview) {
     const whole = config.wholeTypes
 
     for (const contentType of whole) {
