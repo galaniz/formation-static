@@ -261,6 +261,7 @@ describe('getWordPressData()', () => {
 
 describe('getAllWordPressData()', () => {
   beforeEach(() => {
+    config.env.prodUrl = 'http://wp.com/'
     config.renderTypes = {
       page: 'p',
       'core/paragraph': 'richText',
@@ -275,6 +276,7 @@ describe('getAllWordPressData()', () => {
     config.cms.ssl = true
     config.cms.prodHost = ''
     config.env.prod = false
+    config.env.prodUrl = ''
     config.renderTypes = {}
     config.wholeTypes = ['page']
     config.partialTypes = [

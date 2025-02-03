@@ -73,7 +73,7 @@ const getContent = (args: RichTextContentProps): string => {
 
     const {
       link = '',
-      attr = '',
+      attr,
       internalLink,
       content: c
     } = item
@@ -101,6 +101,12 @@ const getContent = (args: RichTextContentProps): string => {
 
     if (isStringStrict(attr)) {
       attrs.push(attr)
+    }
+
+    if (isObjectStrict(attr)) {
+      Object.entries(attr).forEach(([key, value]) => {
+        attrs.push(`${key}="${value}"`)
+      })
     }
 
     /* Link */
@@ -209,7 +215,7 @@ const RichText = (props: RichTextProps): string => {
     headingStyle = '',
     align = '',
     style = '',
-    attr = '',
+    attr,
     dataAttr = true
   } = args
 
@@ -334,6 +340,12 @@ const RichText = (props: RichTextProps): string => {
 
   if (isStringStrict(attr)) {
     attrs.push(attr)
+  }
+
+  if (isObjectStrict(attr)) {
+    Object.entries(attr).forEach(([key, value]) => {
+      attrs.push(`${key}="${value}"`)
+    })
   }
 
   /* Output */

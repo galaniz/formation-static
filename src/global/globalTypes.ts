@@ -51,11 +51,11 @@ export interface InternalLink extends InternalLinkBase, Partial<Taxonomy> {
 /**
  * @typedef {object} ParentArgs
  * @prop {string} renderType
- * @prop {Generic} args
+ * @prop {object} args
  */
-export interface ParentArgs {
+export interface ParentArgs<T = Generic> {
   renderType: string
-  args: Generic
+  args: T
 }
 
 /**

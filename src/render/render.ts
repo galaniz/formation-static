@@ -23,8 +23,9 @@ import type {
   RenderNavigations,
   RenderFunctionsArgs
 } from './renderTypes.js'
-import type { GenericStrings, ParentArgs, HtmlString } from '../global/globalTypes.js'
+import type { ParentArgs, HtmlString } from '../global/globalTypes.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
+import type { Navigation } from '../components/Navigation/Navigation.js'
 import { doActions } from '../utils/action/action.js'
 import { applyFilters } from '../utils/filter/filter.js'
 import { getSlug, getPermalink } from '../utils/link/link.js'
@@ -86,7 +87,7 @@ let renderHttpError: RenderHttpError = () => ''
  *
  * @type {RenderNavigations}
  */
-let renderNavigations: RenderNavigations = () => ({})
+let renderNavigations: RenderNavigations = () => undefined
 
 /**
  * Set content, layout and navigation output functions
@@ -333,7 +334,7 @@ const renderContent = async (
     pageData,
     pageContains = [],
     pageHeadings = [],
-    navigations = {},
+    navigations,
     parents = [],
     depth = 0
   } = args
@@ -677,7 +678,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn | null
 
   /* Navigations */
 
-  let navigations: GenericStrings = {}
+  let navigations: Navigation | undefined
 
   if (isFunction(renderNavigations)) {
     let currentType: string | string[] = contentType

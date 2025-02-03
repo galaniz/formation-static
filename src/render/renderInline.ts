@@ -31,7 +31,7 @@ const renderInlineContent = async (
     pageData: {},
     pageContains: [],
     pageHeadings: [],
-    navigations: {},
+    navigations: undefined,
     ...args
   })
 }

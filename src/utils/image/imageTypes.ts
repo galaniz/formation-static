@@ -80,8 +80,8 @@ export type ImageMaxWidthParents = ParentArgs & ColumnProps & ContainerProps
  * @prop {number[]} breakpoints
  * @prop {Source} [source]
  */
-export interface ImageMaxWidthArgs {
-  parents: ImageMaxWidthParents[]
+export interface ImageMaxWidthArgs<T = ImageMaxWidthParents> {
+  parents: T[]
   widths: GenericNumbers
   maxWidths: GenericNumbers
   breakpoints: number[]

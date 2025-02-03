@@ -5,7 +5,6 @@
 /* Imports */
 
 import type { RenderAllData, RenderFunctionArgs, RenderReturn } from '../renderTypes.js'
-import type { GenericStrings } from '../../global/globalTypes.js'
 import type { Scripts, Styles } from '../../utils/scriptStyle/scriptStyleTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach } from 'vitest'
 import {
@@ -66,7 +65,7 @@ describe('setRenderFunctions()', () => {
     const expectedRenderFunctions = testDefaultRenderFunctions()
     const expectedLayout = ''
     const expectedHttpError = ''
-    const expectedNavigations = {}
+    const expectedNavigations = undefined
 
     expect(result).toBe(expectedResult)
     expect(renderFunctions).toEqual(expectedRenderFunctions)
@@ -89,7 +88,7 @@ describe('setRenderFunctions()', () => {
     const expectedRenderFunctions = testDefaultRenderFunctions()
     const expectedLayout = ''
     const expectedHttpError = ''
-    const expectedNavigations = {}
+    const expectedNavigations = undefined
 
     expect(result).toBe(expectedResult)
     expect(renderFunctions).toEqual(expectedRenderFunctions)
@@ -102,11 +101,7 @@ describe('setRenderFunctions()', () => {
     const test = (): string => 'test'
     const layout = (): string => 'layout'
     const httpError = (): string => 'http'
-    const navigations = (): GenericStrings => {
-      return {
-        test: ''
-      }
-    }
+    const navigations = () => undefined
 
     const result = setRenderFunctions({
       functions: { test },
@@ -148,7 +143,7 @@ describe('renderContent()', () => {
       pageData: {},
       pageContains: [],
       pageHeadings: [],
-      navigations: {},
+      navigations: undefined,
       parents: []
     })
 
@@ -164,7 +159,7 @@ describe('renderContent()', () => {
       pageData: {},
       pageContains: [],
       pageHeadings: [],
-      navigations: {},
+      navigations: undefined,
       parents: []
     })
 
@@ -299,10 +294,11 @@ describe('render()', () => {
         const canonicalMeta =
           canonical !== '' && isPag ? `<link rel="canonical" href="${canonical}${canonicalParams}">` : ''
 
+        const primary = navigations?.getOutput('primary')
         let nav = ''
 
-        if (isStringStrict(navigations?.primary)) {
-          nav = `<nav>${navigations.primary}</nav>`
+        if (isStringStrict(primary)) {
+          nav = `<nav>${primary}</nav>`
         }
 
         return `
@@ -329,16 +325,10 @@ describe('render()', () => {
         } = args
 
         if (navigations.length > 0 && items.length > 0) {
-          const nav = new Navigation({ navigations, items, currentLink, currentType })
-
-          return {
-            primary: nav.getOutput('primary')
-          }
+          return new Navigation({ navigations, items, currentLink, currentType })
         }
 
-        return {
-          primary: ''
-        }
+        return
       },
       httpError: ({ code }) => `${code}`
     })

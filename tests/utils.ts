@@ -81,7 +81,7 @@ const testResetRenderFunctions = (): void => {
   setRenderFunctions({
     functions: {},
     layout: () => '',
-    navigations: () => ({}),
+    navigations: () => undefined,
     httpError: () => ''
   })
 }

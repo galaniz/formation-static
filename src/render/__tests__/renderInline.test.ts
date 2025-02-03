@@ -17,7 +17,7 @@ const testResetRenderFunctions = (): void => {
   setRenderFunctions({
     functions: {},
     layout: () => '',
-    navigations: () => ({}),
+    navigations: () => undefined,
     httpError: () => ''
   })
 }
@@ -60,7 +60,7 @@ describe('renderInlineItem()', () => {
     setRenderFunctions({
       functions: {},
       layout: ({ content }) => content,
-      navigations: () => ({}),
+      navigations: () => undefined,
       httpError: () => ''
     })
   })

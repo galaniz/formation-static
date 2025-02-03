@@ -152,10 +152,11 @@ export const pages = [
           },
           {
             tag: 'a',
-            attr: 'data-test="test"',
-            attrs: undefined,
-            content: 'your dashboard',
-            link: '#'
+            attr: {
+              'data-test': 'test',
+              href: '#'
+            },
+            content: 'your dashboard'
           },
           {
             content: ' to delete this page and create new pages for your content. Have fun!'

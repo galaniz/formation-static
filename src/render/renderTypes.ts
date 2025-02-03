@@ -12,10 +12,11 @@ import type {
   ParentArgs
 } from '../global/globalTypes.js'
 import type {
-  Navigation,
+  NavigationList,
   NavigationItem,
   NavigationProps
 } from '../components/Navigation/NavigationTypes.js'
+import type { Navigation } from '../components/Navigation/Navigation.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
 import type { StoreParent } from '../store/storeTypes.js'
 import { PaginationData } from '../components/Pagination/PaginationTypes.js'
@@ -140,14 +141,14 @@ export interface RenderFile {
  * @prop {string} [link]
  * @prop {InternalLink} [internalLink]
  * @prop {RenderItem[]|string} [content]
- * @prop {string} [attr]
+ * @prop {string|GenericStrings} [attr]
  */
 export interface RenderRichText {
   tag?: string
   link?: string
   internalLink?: InternalLink
   content?: RenderItem[] | string
-  attr?: string
+  attr?: string | GenericStrings
 }
 
 /**
@@ -176,9 +177,9 @@ export interface RenderNavigationsArgs extends NavigationProps {
 /**
  * @typedef {function} RenderNavigations
  * @param {RenderNavigationsArgs} args
- * @return {GenericStrings|Promise<GenericStrings>}
+ * @return {Navigation|undefined|Promise<Navigation|undefined>}
  */
-export type RenderNavigations = (args: RenderNavigationsArgs) => GenericStrings | Promise<GenericStrings>
+export type RenderNavigations = (args: RenderNavigationsArgs) => Navigation | undefined | Promise<Navigation | undefined>
 
 /**
  * @typedef {object} RenderHttpErrorArgs
@@ -202,17 +203,17 @@ export type RenderHttpError = (args: RenderHttpErrorArgs) => string | Promise<st
  * @prop {ParentArgs[]} [parents]
  * @prop {RenderItem} [pageData]
  * @prop {string[]} [pageContains]
- * @prop {GenericStrings} [navigations]
+ * @prop {Navigation} [navigations]
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RichTextHeading[]} [headings]
  * @prop {RenderItem[]} [children]
  */
-export interface RenderFunctionArgs<T = any, R = RenderItem> { // eslint-disable-line @typescript-eslint/no-explicit-any
+export interface RenderFunctionArgs<T = any, R = RenderItem, P = ParentArgs> { // eslint-disable-line @typescript-eslint/no-explicit-any
   args: 0 extends (1 & T) ? any : T // eslint-disable-line @typescript-eslint/no-explicit-any
-  parents?: ParentArgs[]
+  parents?: P[]
   pageData?: R
   pageContains?: string[]
-  navigations?: GenericStrings
+  navigations?: Navigation
   serverlessData?: RenderServerlessData
   headings?: RichTextHeading[]
   children?: R[]
@@ -223,14 +224,15 @@ export interface RenderFunctionArgs<T = any, R = RenderItem> { // eslint-disable
  * @param {RenderFunctionArgs} props
  * @return {string|string[]|Promise<string|string[]>}
  */
-export type RenderFunction<T = any, R = RenderItem> = ( // eslint-disable-line @typescript-eslint/no-explicit-any
-  props: RenderFunctionArgs<T, R>
+export type RenderFunction<T = any, R = RenderItem, P = ParentArgs> = ( // eslint-disable-line @typescript-eslint/no-explicit-any
+  props: RenderFunctionArgs<T, R, P>
 ) => string | string[] | Promise<string | string[]>
 
 /**
  * @typedef {Object<string, RenderFunction>} RenderFunctions
  */
-export type RenderFunctions<T = any, R = RenderItem> = Record<string, RenderFunction<T, R>> // eslint-disable-line @typescript-eslint/no-explicit-any
+export type RenderFunctions<T = any, R = RenderItem, P = ParentArgs> = // eslint-disable-line @typescript-eslint/no-explicit-any
+  Record<string, RenderFunction<T, R, P>>
 
 /**
  * @typedef {object} RenderFunctionsArgs
@@ -251,14 +253,14 @@ export interface RenderFunctionsArgs {
  * @type {RenderCommon}
  * @prop {RenderItem[]} content
  * @prop {ParentArgs[]} parents
- * @prop {GenericStrings} navigations
+ * @prop {Navigation} [navigations]
  * @prop {number} [headingsIndex]
  * @prop {number} [depth]
  */
 export interface RenderContentArgs extends RenderCommon {
   content: RenderItem[]
   parents: ParentArgs[]
-  navigations: GenericStrings
+  navigations?: Navigation
   headingsIndex?: number
   depth?: number
 }
@@ -367,7 +369,7 @@ export interface RenderItemActionArgs extends RenderCommon {
  * @typedef {object} RenderLayoutArgs
  * @prop {string} id
  * @prop {RenderMeta} meta
- * @prop {GenericStrings} [navigations]
+ * @prop {Navigation} [navigations]
  * @prop {string} contentType
  * @prop {string} content
  * @prop {string} slug
@@ -379,7 +381,7 @@ export interface RenderItemActionArgs extends RenderCommon {
 export interface RenderLayoutArgs {
   id: string
   meta: RenderMeta
-  navigations?: GenericStrings
+  navigations?: Navigation
   contentType: string
   content: string
   slug: string
@@ -399,14 +401,14 @@ export type RenderLayout = (args: RenderLayoutArgs) => string | Promise<string>
 /**
  * @typedef RenderAllData
  * @type {Generic}
- * @prop {Navigation[]} [navigation]
+ * @prop {NavigationList[]} [navigation]
  * @prop {NavigationItem[]} [navigationItem]
  * @prop {RenderRedirect[]} [redirect]
  * @prop {Object<string, RenderItem[]>} content
  * @prop {RenderItem[]} content.page
  */
 export interface RenderAllData extends Generic {
-  navigation?: Navigation[]
+  navigation?: NavigationList[]
   navigationItem?: NavigationItem[]
   redirect?: RenderRedirect[]
   content: {
@@ -440,10 +442,10 @@ export interface RenderReturn {
 /**
  * @typedef {function} RenderContentFilter
  * @param {string[]} content
- * @param {ParentArgs}
+ * @param {ParentArgs} args
  * @return {Promise<string[]>|string[]}
  */
-export type RenderContentFilter = (content: string[], args: ParentArgs) => Promise<string[]> | string[]
+export type RenderContentFilter = <T>(content: string[], args: ParentArgs<T>) => Promise<string[]> | string[]
 
 /**
  * @typedef {function} RenderItemFilter

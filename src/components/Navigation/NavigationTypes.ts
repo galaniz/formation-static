@@ -8,26 +8,26 @@ import type { InternalLink, Generic, HtmlString } from '../../global/globalTypes
 
 /**
  * @typedef {object} NavigationProps
- * @prop {Navigation[]} navigations
+ * @prop {NavigationList[]} navigations
  * @prop {NavigationItem[]} items
  * @prop {string} [currentLink]
  * @prop {string|string[]} [currentType]
  */
 export interface NavigationProps {
-  navigations: Navigation[]
+  navigations: NavigationList[]
   items: NavigationItem[]
   currentLink?: string
   currentType?: string | string[]
 }
 
 /**
- * @typedef Navigation
+ * @typedef NavigationList
  * @type {Generic}
  * @prop {string} title
  * @prop {string|string[]} location
  * @prop {NavigationItem[]} items
  */
-export interface Navigation extends Generic {
+export interface NavigationList extends Generic {
   title: string
   location: string | string[]
   items: NavigationItem[]
@@ -46,7 +46,7 @@ export interface NavigationByLocationItem {
 /**
  * @typedef {Map<string, NavigationInfo>} NavigationByLocation
  */
-export type NavigationByLocation = Map<string, NavigationByLocationItem>
+export type NavigationByLocation<L extends string = string> = Map<L, NavigationByLocationItem>
 
 /**
  * @typedef NavigationItem
@@ -101,7 +101,7 @@ export interface NavigationBreadcrumbItem extends NavigationItem {
  * @prop {string} [internalLinkClass]
  * @prop {string} [linkAttr]
  * @prop {boolean} [depthAttr]
- * @prop {string} [dataAttr="data-nav"]
+ * @prop {string} [dataAttr]
  */
 export interface NavigationOutputBaseArgs {
   listClass?: string
@@ -164,6 +164,8 @@ export type NavigationFilter = (args: NavigationOutputFilterArgs) => void
 /**
  * @typedef NavigationOutputArgs
  * @type {NavigationOutputBaseArgs}
+ * @prop {string} [listTag]
+ * @prop {string} [itemTag]
  * @prop {NavigationOutputListFilter} [filterBeforeList]
  * @prop {NavigationOutputListFilter} [filterAfterList]
  * @prop {NavigationFilter} [filterBeforeItem]
@@ -174,6 +176,8 @@ export type NavigationFilter = (args: NavigationOutputFilterArgs) => void
  * @prop {NavigationFilter} [filterAfterLinkText]
  */
 export interface NavigationOutputArgs extends NavigationOutputBaseArgs {
+  listTag?: string
+  itemTag?: string
   filterBeforeList?: NavigationOutputListFilter
   filterAfterList?: NavigationOutputListFilter
   filterBeforeItem?: NavigationFilter

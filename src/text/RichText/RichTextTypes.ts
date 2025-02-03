@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { InternalLink, Generic } from '../../global/globalTypes.js'
+import type { InternalLink, Generic, GenericStrings } from '../../global/globalTypes.js'
 import type { RenderRichText, RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js'
 
 /**
@@ -34,18 +34,18 @@ export interface RichTextElement {
 /**
  * @typedef RichTextArgs
  * @type {Generic}
- * @prop {string} [args.tag]
- * @prop {RenderRichText[]|string} [args.content]
- * @prop {string} [args.classes]
- * @prop {string} [args.textStyle]
- * @prop {string} [args.headingStyle]
- * @prop {string} [args.caption]
- * @prop {string} [args.align]
- * @prop {string} [args.link]
- * @prop {InternalLink} [args.internalLink]
- * @prop {string} [args.style]
- * @prop {string} [args.attr]
- * @prop {boolean|string[]} [args.dataAttr=true]
+ * @prop {string} [tag]
+ * @prop {RenderRichText[]|string} [content]
+ * @prop {string} [classes]
+ * @prop {string} [textStyle]
+ * @prop {string} [headingStyle]
+ * @prop {string} [caption]
+ * @prop {string} [align]
+ * @prop {string} [link]
+ * @prop {InternalLink} [internalLink]
+ * @prop {string} [style]
+ * @prop {string|GenericStrings} [attr]
+ * @prop {boolean|string[]} [dataAttr=true]
  */
 export interface RichTextArgs extends Generic {
   tag?: string
@@ -58,7 +58,7 @@ export interface RichTextArgs extends Generic {
   link?: string
   internalLink?: InternalLink
   style?: string
-  attr?: string
+  attr?: string | GenericStrings
   dataAttr?: boolean | string[]
 }
 

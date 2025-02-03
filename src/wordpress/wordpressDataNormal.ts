@@ -14,7 +14,6 @@ import type {
   WordPressDataAuthor,
   WordPressDataFeaturedMedia,
   WordPressDataParent,
-  WordPressDataRichText,
   WordPressDataMenuItem,
   WordPressDataMenuChild,
   WordPressDataMenu,
@@ -22,11 +21,10 @@ import type {
   WordPressDataMeta
 } from './wordpressDataTypes.js'
 import type { RenderItem, RenderFile } from '../render/renderTypes.js'
-import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes.js'
+import type { NavigationList, NavigationItem } from '../components/Navigation/NavigationTypes.js'
 import { parse } from '@wordpress/block-serialization-spec-parser'
 import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { getObjectKeys } from '../utils/object/objectUtils.js'
-import { getPermalink } from '../utils/link/link.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
 import { isArrayStrict } from '../utils/array/array.js'
 import { isObjectStrict } from '../utils/object/object.js'
@@ -82,47 +80,6 @@ const getTaxonomy = (id: string): Taxonomy => {
     contentTypes
     // usePrimaryContentTypeSlug
   }
-}
-
-/**
- * Remove #text tags and set attr
- *
- * @private
- * @param {WordPressDataRichText} item
- * @return {RenderItem}
- */
-const normalizeRichText = (item: WordPressDataRichText): RenderItem => {
-  const { tag, content, attrs } = item
-
-  if (tag === '#text') {
-    item.tag = ''
-  }
-
-  if (isObjectStrict(attrs)) {
-    const attr: string[] = []
-
-    for (const [k, v] of Object.entries(attrs)) {
-      if (k === 'href') {
-        item.link = v
-        continue
-      }
-
-      attr.push(`${k}="${v}"`)
-    }
-
-    item.attr = attr.join(' ')
-    item.attrs = undefined
-  }
-
-  if (isArrayStrict(content)) {
-    const newContent = content.map((c) => {
-      return normalizeRichText(c)
-    })
-
-    item.content = newContent
-  }
-
-  return item
 }
 
 /**
@@ -430,7 +387,7 @@ const normalizeBlocks = (blocks: readonly Block[]): RenderItem[] => {
       }
     }
 
-    let newItem: RenderItem = {
+    const newItem: RenderItem = {
       contentType,
       ...attrs
     }
@@ -439,10 +396,6 @@ const normalizeBlocks = (blocks: readonly Block[]): RenderItem[] => {
 
     if (isString(renderType)) {
       newItem.renderType = renderType
-    }
-
-    if (renderType === 'richText') {
-      newItem = normalizeRichText(newItem)
     }
 
     if (isArrayStrict(innerBlocks)) {
@@ -688,8 +641,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
     }
 
     if (isCustom) {
-      const permalink = getPermalink()
-      const isExternal = permalink !== '' ? !url.startsWith(permalink) : true
+      const isExternal = url.startsWith('http') && !url.startsWith(config.env.prodUrl)
 
       if (isExternal) {
         newItem.externalLink = url
@@ -713,10 +665,10 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
  *
  * @private
  * @param {WordPressDataMenu[]} menus
- * @return {Navigation[]}
+ * @return {NavigationList[]}
  */
-const normalizeWordPressMenus = (menus: WordPressDataMenu[]): Navigation[] => {
-  const newMenus: Navigation[] = []
+const normalizeWordPressMenus = (menus: WordPressDataMenu[]): NavigationList[] => {
+  const newMenus: NavigationList[] = []
 
   menus.forEach((menu) => {
     const {
@@ -727,7 +679,7 @@ const normalizeWordPressMenus = (menus: WordPressDataMenu[]): Navigation[] => {
       meta = []
     } = menu
 
-    const newMenu: Navigation = {
+    const newMenu: NavigationList = {
       id,
       title,
       description,

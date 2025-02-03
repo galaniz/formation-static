@@ -92,13 +92,6 @@ export interface WordPressDataMenu extends RenderItem {
 }
 
 /**
- * @typedef WordPressDataRichText
- * @type {RenderItem}
- * @prop {Object<string, string>} [attrs]
- */
-export type WordPressDataRichText = RenderItem & { attrs?: Record<string, string> }
-
-/**
  * @typedef {object} WordPressDataAuthor
  * @prop {number} id
  * @prop {string} [name]

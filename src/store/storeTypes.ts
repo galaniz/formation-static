@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { Navigation, NavigationItem } from '../components/Navigation/NavigationTypes.js'
+import type { NavigationList, NavigationItem } from '../components/Navigation/NavigationTypes.js'
 import type { ImageProps } from '../utils/image/imageTypes.js'
 import type { FormMeta } from '../objects/Form/FormTypes.js'
 import type { Generic } from '../global/globalTypes.js'
@@ -63,7 +63,7 @@ export interface StoreArchiveMeta {
  * @prop {Object<string, StoreArchiveMeta>} archiveMeta
  * @prop {Object<string, FormMeta>} formMeta
  * @prop {Object<string, ImageProps>} imageMeta
- * @prop {Navigation[]} navigations
+ * @prop {NavigationList[]} navigations
  * @prop {NavigationItem[]} navigationItems
  */
 export interface Store extends Generic {
@@ -72,6 +72,6 @@ export interface Store extends Generic {
   archiveMeta: Record<string, StoreArchiveMeta>
   formMeta: Record<string, FormMeta>
   imageMeta: Record<string, ImageProps>
-  navigations: Navigation[]
+  navigations: NavigationList[]
   navigationItems: NavigationItem[]
 }
