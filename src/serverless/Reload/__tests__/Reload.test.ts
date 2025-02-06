@@ -5,7 +5,6 @@
 /* Imports */
 
 import { it, expect, describe, vi, afterEach, beforeAll } from 'vitest'
-import { vol } from 'memfs'
 import {
   testResetRenderFunctions,
   testResetStore,
@@ -17,7 +16,7 @@ import { mockWordPressFetch } from '../../../wordpress/__tests__/wordpressDataMo
 import { setRenderFunctions } from '../../../render/render.js'
 import { isStringStrict } from '../../../utils/string/string.js'
 import { config, setConfig } from '../../../config/config.js'
-import { setStore } from '../../../store/store.js'
+import { setStoreItem } from '../../../store/store.js'
 import { Reload } from '../Reload.js'
 
 /* Tests */
@@ -28,10 +27,8 @@ describe('Reload()', () => {
   })
 
   afterEach(() => {
-    vi.resetModules()
     testResetRenderFunctions()
     testResetStore()
-    config.env.dir = ''
     config.cms = {
       name: '',
       space: '',
@@ -129,24 +126,6 @@ describe('Reload()', () => {
   })
 
   it('should return 200 response with render layout output', async () => {
-    vol.fromJSON({
-      '/files/slugs.json': JSON.stringify([{
-        '/hello-world/': {
-          id: '1',
-          contentType: 'post'
-        }
-      }])
-    })
-
-    vi.doMock('/files/slugs.json', () => ({
-      default: {
-        '/hello-world/': {
-          id: '1',
-          contentType: 'post'
-        }
-      }
-    }))
-
     vi.stubGlobal('fetch', mockWordPressFetch)
 
     const context = testContext('http://wp.com/hello-world/?page=10&filters=cat')
@@ -159,7 +138,12 @@ describe('Reload()', () => {
         }
       })
 
-      setStore({}, 'files')
+      setStoreItem('slugs', {
+        '/hello-world/': {
+          id: '1',
+          contentType: 'post'
+        }
+      })
 
       setRenderFunctions({
         functions: {},

@@ -32,7 +32,7 @@ const Ajax = async (context: ServerlessContext, setupServerless: ServerlessSetup
   try {
     /* Setup */
 
-    setupServerless(context)
+    await setupServerless(context, 'ajax')
 
     /* Get form data */
 

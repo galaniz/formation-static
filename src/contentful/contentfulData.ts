@@ -19,7 +19,7 @@ import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
 import { isArray } from '../utils/array/array.js'
 import { config } from '../config/config.js'
-import { fetchStoreItem } from '../store/store.js'
+import { getStoreItem } from '../store/store.js'
 import { normalizeContentfulData } from './contentfulDataNormal.js'
 
 /**
@@ -154,7 +154,7 @@ const getAllContentfulData = async (
     let id = ''
 
     if (isServerless) {
-      const slugs = await fetchStoreItem('slugs')
+      const slugs = getStoreItem('slugs')
       const path = serverlessData.path
       const item = slugs[path]
 

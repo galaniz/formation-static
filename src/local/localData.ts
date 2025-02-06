@@ -10,7 +10,7 @@ import type { AllDataFilterArgs } from '../utils/filter/filterTypes.js'
 import { readdir, readFile } from 'node:fs/promises'
 import { extname, basename, resolve } from 'node:path'
 import { applyFilters } from '../utils/filter/filter.js'
-import { fetchStoreItem, getStoreItem } from '../store/store.js'
+import { getStoreItem } from '../store/store.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
 import { isArray } from '../utils/array/array.js'
@@ -175,7 +175,7 @@ const getAllLocalData = async (
 
   /* Image data */
 
-  const imageMeta = fetchStoreItem('imageMeta')
+  const imageMeta = getStoreItem('imageMeta')
 
   resolveInternalLinks(imageMeta, data, resolveProps.image)
 

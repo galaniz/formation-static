@@ -14,7 +14,7 @@ import { isObject, isObjectStrict } from '../../utils/object/object.js'
 import { isBoolean } from '../../utils/boolean/boolean.js'
 import { getObjectKeys } from '../../utils/object/objectUtils.js'
 import { getPermalink } from '../../utils/link/link.js'
-import { fetchStoreItem } from '../../store/store.js'
+import { getStoreItem } from '../../store/store.js'
 import { serverlessApiKeys } from '../serverless.js'
 
 /**
@@ -133,7 +133,7 @@ const SendForm: ServerlessAction = async (args) => {
 
   /* Meta information - to email and subject */
 
-  const formMetaData = await fetchStoreItem('formMeta')
+  const formMetaData = getStoreItem('formMeta')
 
   if (!isObjectStrict(formMetaData)) {
     return {

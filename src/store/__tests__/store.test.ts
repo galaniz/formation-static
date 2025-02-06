@@ -5,7 +5,6 @@
 /* Imports */
 
 import { it, expect, describe, vi, afterEach, beforeEach, beforeAll } from 'vitest'
-import { vol } from 'memfs'
 import { readFile } from 'node:fs/promises'
 import { testDefaultStore, testResetStore } from '../../../tests/utils.js'
 import { config } from '../../config/config.js'
@@ -15,41 +14,9 @@ import {
   storeDir,
   setStore,
   setStoreData,
-  fetchStoreItem,
   setStoreItem,
   getStoreItem
 } from '../store.js'
-
-/**
- * Set parents file
- *
- * @return {void}
- */
-const setParentsFile = (): void => {
-  vol.fromJSON({
-    '/files/parents.json': JSON.stringify([{
-      page: {
-        1: {
-          id: '3',
-          title: 'Parent',
-          slug: 'parent'
-        }
-      }
-    }])
-  })
-
-  vi.doMock('/files/parents.json', () => ({
-    default: {
-      page: {
-        1: {
-          id: '3',
-          title: 'Parent',
-          slug: 'parent'
-        }
-      }
-    }
-  }))
-}
 
 /* Test setStore */
 
@@ -177,7 +144,15 @@ describe('setStoreItem()', () => {
 
 describe('setStoreData()', () => {
   beforeEach(() => {
-    setParentsFile()
+    setStoreItem('parents ', {
+      page: {
+        1: {
+          id: '3',
+          title: 'Parent',
+          slug: 'parent'
+        }
+      }
+    })
 
     config.partialTypes = [
       'navigationItem',
@@ -197,7 +172,6 @@ describe('setStoreData()', () => {
 
   afterEach(() => {
     testResetStore()
-    config.env.dir = ''
     config.normalTypes = {}
     config.hierarchicalTypes = ['page']
     config.partialTypes = [
@@ -206,17 +180,17 @@ describe('setStoreData()', () => {
     ]
   })
 
-  it('should return false if no data', async () => {
+  it('should return false if no data', () => {
     // @ts-expect-error - test undefined data
-    const result = await setStoreData()
+    const result = setStoreData()
     const expectedResult = false
 
     expect(result).toBe(expectedResult)
   })
 
-  it('should return true but not set any store items', async () => {
+  it('should return true but not set any store items', () => {
     // @ts-expect-error - test empty data
-    const result = await setStoreData({})
+    const result = setStoreData({})
     const expectedResult = true
     const expectedStore = testDefaultStore()
 
@@ -224,7 +198,7 @@ describe('setStoreData()', () => {
     expect(store).toEqual(expectedStore)
   })
 
-  it('should set navigation, parent and archive meta items', async () => {
+  it('should set navigation, parent and archive meta items', () => {
     setStore({
       archiveMeta: {
         term: {
@@ -286,7 +260,7 @@ describe('setStoreData()', () => {
       slug: 'parent'
     }
 
-    const result = await setStoreData({
+    const result = setStoreData({
       navigation: navigations,
       navigationItem: navigationItems,
       term: [
@@ -420,85 +394,6 @@ describe('setStoreData()', () => {
 
     expect(result).toBe(expectedResult)
     expect(store).toEqual(expectedStore)
-  })
-
-  it('should return true and set serverless parents data', async () => {
-    config.env.dir = '/'
-    setStore({}, 'files')
-
-    const result = await setStoreData({
-      content: {
-        page: []
-      }
-    }, true)
-
-    const expectedResult = true
-    const expectedStore = {
-      slugs: {},
-      parents: {
-        page: {
-          1: {
-            id: '3',
-            title: 'Parent',
-            slug: 'parent'
-          }
-        }
-      },
-      navigations: [],
-      navigationItems: [],
-      formMeta: {},
-      archiveMeta: {},
-      imageMeta: {}
-    }
-
-    expect(result).toBe(expectedResult)
-    expect(store).toEqual(expectedStore)
-  })
-})
-
-/* Test fetchStoreItem */
-
-describe('fetchStoreItem()', () => {
-  beforeEach(() => {
-    setParentsFile()
-  })
-
-  afterEach(() => {
-    testResetStore()
-    config.env.dir = ''
-  })
-
-  it('should return undefined if no prop', async () => {
-    // @ts-expect-error - test undefined prop
-    const result = await fetchStoreItem()
-    const expectedResult = undefined
-
-    expect(result).toEqual(expectedResult)
-  })
-
-  it('should return undefined if prop does not exist', async () => {
-    const result = await fetchStoreItem('doesNotExist')
-    const expectedResult = undefined
-
-    expect(result).toEqual(expectedResult)
-  })
-
-  it('should return parents data', async () => {
-    config.env.dir = '/'
-    setStore({}, 'files')
-
-    const result = await fetchStoreItem('parents')
-    const expectedResult = {
-      page: {
-        1: {
-          id: '3',
-          title: 'Parent',
-          slug: 'parent'
-        }
-      }
-    }
-
-    expect(result).toEqual(expectedResult)
   })
 })
 

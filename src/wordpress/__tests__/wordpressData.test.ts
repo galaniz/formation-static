@@ -54,12 +54,19 @@ describe('getWordPressData()', () => {
 
   it('should throw an error if no arguments are provided', async () => {
     // @ts-expect-error - test undefined params
-    await expect(async () => await getWordPressData()).rejects.toThrowError('No key')
+    await expect(async () => await getWordPressData()).rejects.toThrowError('No args')
+  })
+
+  it('should throw an error if no key is provided', async () => {
+    // @ts-expect-error - test undefined params
+    await expect(async () => await getWordPressData({})).rejects.toThrowError('No key')
   })
 
   it('should throw an error if only key is provided', async () => {
     // @ts-expect-error - test undefined params
-    await expect(async () => await getWordPressData('key1')).rejects.toThrowError('No route')
+    await expect(async () => await getWordPressData({
+      key: 'key1'
+    })).rejects.toThrowError('No route')
   })
 
   it('should throw an error if no config credentials', async () => {
@@ -74,39 +81,60 @@ describe('getWordPressData()', () => {
       prodHost: ''
     }
 
-    await expect(async () => await getWordPressData('key2', 'route')).rejects.toThrowError('No credentials')
+    await expect(async () => await getWordPressData({
+      key: 'key2',
+      route: 'route'
+    })).rejects.toThrowError('No credentials')
   })
 
   it('should throw an error if host is invalid', async () => {
     config.cms.devHost = 'wp'
 
-    await expect(async () => await getWordPressData('key3', 'route')).rejects.toThrowError(mockFetchErrorMessage.url)
+    await expect(async () => await getWordPressData({
+      key: 'key3',
+      route: 'route'
+    })).rejects.toThrowError(mockFetchErrorMessage.url)
   })
 
   it('should throw an error if invalid credentials', async () => {
     config.cms.devUser = 'user1'
     config.cms.devCredential = 'pass1'
 
-    await expect(async () => await getWordPressData('key4', 'route')).rejects.toThrowError(mockFetchErrorMessage.auth)
+    await expect(async () => await getWordPressData({
+      key:'key4',
+      route: 'route'
+    })).rejects.toThrowError(mockFetchErrorMessage.auth)
   })
 
   it('should throw an error if route does not exist', async () => {
-    await expect(async () => await getWordPressData('key5', 'does-not-exist')).rejects.toThrowError(mockFetchErrorMessage.route)
+    await expect(async () => await getWordPressData({
+      key: 'key5',
+      route: 'does-not-exist'
+    })).rejects.toThrowError(mockFetchErrorMessage.route)
   })
 
   it('should throw an error if id does not exist', async () => {
-    await expect(async () => await getWordPressData('postsKey1', 'posts/0')).rejects.toThrowError(mockFetchErrorMessage.data)
+    await expect(async () => await getWordPressData({
+      key: 'postsKey1',
+      route: 'posts/0'
+    })).rejects.toThrowError(mockFetchErrorMessage.data)
   })
 
   it('should return empty array if data is empty array', async () => {
-    const result = await getWordPressData('emptyKey', 'empty')
+    const result = await getWordPressData({
+      key: 'emptyKey',
+      route: 'empty'
+    })
     const expectedResult: RenderItem[] = []
 
     expect(result).toEqual(expectedResult)
   })
 
   it('should return empty array if data is array of null', async () => {
-    const result = await getWordPressData('nullKey', 'null')
+    const result = await getWordPressData({
+      key: 'nullKey',
+      route: 'null'
+    })
     const expectedResult: RenderItem[] = []
 
     expect(result).toEqual(expectedResult)
@@ -124,7 +152,10 @@ describe('getWordPressData()', () => {
       }
     })
 
-    const result = await getWordPressData('postsKey2', 'posts')
+    const result = await getWordPressData({
+      key: 'postsKey2',
+      route: 'posts'
+    })
 
     expect(cacheSet).toHaveBeenCalledTimes(1)
     expect(cacheSet).toHaveBeenCalledWith(posts)
@@ -146,7 +177,10 @@ describe('getWordPressData()', () => {
       return data
     })
 
-    const result = await getWordPressData('postsKey3', 'posts')
+    const result = await getWordPressData({
+      key: 'postsKey3',
+      route: 'posts'
+    })
 
     expect(cacheGet).toHaveBeenCalledTimes(1)
     expect(cacheGet).toHaveBeenCalledWith(undefined)
@@ -161,46 +195,75 @@ describe('getWordPressData()', () => {
       'frm/custom': 'custom'
     }
 
-    const result = await getWordPressData('pagesKey', 'pages')
+    const result = await getWordPressData({
+      key: 'pagesKey',
+      route: 'pages'
+    })
 
     expect(result).toEqual(pages)
   })
 
   it('should return array of one post with id 1', async () => {
-    const result = await getWordPressData('postsKey4', 'posts/1')
+    const result = await getWordPressData({
+      key: 'postsKey4',
+      route: 'posts/1'
+    })
 
     expect(result).toEqual([posts.find((post) => post.id === '1')])
   })
 
   it('should return array of categories', async () => {
-    const result = await getWordPressData('categoriesKey1', 'categories')
+    const result = await getWordPressData({
+      key: 'categoriesKey1',
+      route: 'categories'
+    })
 
     expect(result).toEqual(categories)
   })
 
   it('should return array of tags', async () => {
-    const result = await getWordPressData('tagsKey', 'tags')
+    const result = await getWordPressData({
+      key: 'tagsKey',
+      route: 'tags'
+    })
 
     expect(result).toEqual(tags)
   })
 
   it('should return array of media', async () => {
-    const result = await getWordPressData('mediaKey', 'media')
+    const result = await getWordPressData({
+      key: 'mediaKey',
+      route: 'media'
+    })
 
     expect(result).toEqual(media)
   })
 
   it('should return array of taxonomies', async () => {
-    const result = await getWordPressData('taxonomiesKey1', 'taxonomies')
+    const result = await getWordPressData({
+      key: 'taxonomiesKey1',
+      route: 'taxonomies'
+    })
 
     expect(result).toEqual(taxonomies)
   })
 
   it('should return categories and posts with taxonomies linked', async () => {
-    await getWordPressData('taxonomiesKey2', 'taxonomies')
+    await getWordPressData({
+      key: 'taxonomiesKey2',
+      route: 'taxonomies'
+    })
 
-    const categoriesResult = await getWordPressData('categoriesKey2', 'categories')
-    const postsResult = await getWordPressData('postsKey5', 'posts')
+    const categoriesResult = await getWordPressData({
+      key: 'categoriesKey2',
+      route: 'categories'
+    })
+
+    const postsResult = await getWordPressData({
+      key: 'postsKey5',
+      route: 'posts'
+    })
+
     const uncategorized = {
       id: 'category',
       title: 'Categories',

@@ -107,7 +107,7 @@ describe('getJsonFile()', () => {
 
   it('should return undefined if file is a text file', async () => {
     const path = '/files/invalid.txt'
-    const result = await getJsonFile(path, false)
+    const result = await getJsonFile(path)
     const expectedResult = undefined
 
     expect(result).toBe(expectedResult)
@@ -115,7 +115,7 @@ describe('getJsonFile()', () => {
 
   it('should return undefined if file contains invalid json', async () => {
     const path = '/files/invalid.json'
-    const result = await getJsonFile(path, false)
+    const result = await getJsonFile(path)
     const expectedResult = undefined
 
     expect(result).toBe(expectedResult)
@@ -123,7 +123,7 @@ describe('getJsonFile()', () => {
 
   it('should return object if file contains valid json', async () => {
     const path = '/files/valid.json'
-    const result = await getJsonFile(path, false)
+    const result = await getJsonFile(path)
     const expectedResult = [{
       test: 'test'
     }]
@@ -135,7 +135,7 @@ describe('getJsonFile()', () => {
     config.env.dir = '/'
     setStore({}, 'files')
 
-    const result = await getJsonFile('slugs')
+    const result = await getJsonFile('slugs', true)
     const expectedResult = {
       slug: {
         contentType: 'page',
@@ -163,7 +163,7 @@ describe('getJsonFile()', () => {
       }
     })
 
-    const result = await getJsonFile('slugs')
+    const result = await getJsonFile('slugs', true)
     const expectedResult = {
       slug: {
         contentType: 'page',

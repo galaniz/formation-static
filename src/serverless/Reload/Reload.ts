@@ -29,7 +29,7 @@ const getErrorHtml = async (
   status: number
 ): Promise<string> => {
   try {
-    setupServerless(context)
+    await setupServerless(context, 'error')
 
     if (isFunction(renderHttpError)) {
       return await renderHttpError({ code: status })
@@ -87,7 +87,7 @@ const Reload = async (
 
     /* Setup */
 
-    setupServerless(context)
+    await setupServerless(context, 'reload')
 
     /* Data params */
 

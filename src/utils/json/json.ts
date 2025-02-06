@@ -32,10 +32,10 @@ const getJson = <T extends object>(value: string): T | undefined => { // eslint-
  * Import json file and return contents if object
  *
  * @param {string} path
- * @param {boolean} store
+ * @param {boolean} [store=false]
  * @return {Promise<object|undefined>}
  */
-const getJsonFile = async <T>(path: string, store: boolean = true): Promise<object & T | undefined> => {
+const getJsonFile = async <T>(path: string, store: boolean = false): Promise<object & T | undefined> => {
   let res: object & T | undefined
   let newPath = path
 

@@ -32,9 +32,10 @@ export type ServerlessContext = EventContext<GenericStrings, string, unknown>
 /**
  * @typedef {function} ServerlessSetup
  * @param {ServerlessContext} context
- * @return {void}
+ * @param {string} [type]
+ * @return {void|Promise<void>}
  */
-export type ServerlessSetup = (context: ServerlessContext) => void
+export type ServerlessSetup = (context: ServerlessContext, type?: string) => Promise<void> | void
 
 /**
  * @typedef ServerlessActionInput

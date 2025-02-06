@@ -7,9 +7,8 @@
 import type {
   WordPressDataError,
   WordPressDataItem,
-  WordPressDataParams,
-  WordPressDataResultInfo,
-  AllWordPressDataArgs
+  AllWordPressDataArgs,
+  WordPressDataArgs
 } from './wordpressDataTypes.js'
 import type { RenderAllData, RenderItem } from '../render/renderTypes.js'
 import type { DataFilterArgs } from '../utils/filter/filterTypes.js'
@@ -18,7 +17,7 @@ import { applyFilters } from '../utils/filter/filter.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
 import { isArray } from '../utils/array/array.js'
-import { fetchStoreItem } from '../store/store.js'
+import { getStoreItem } from '../store/store.js'
 import { config } from '../config/config.js'
 
 /**
@@ -51,20 +50,26 @@ const getRoute = (type: string): string => {
 /**
  * Fetch data from wordpress cms or cache
  *
- * @param {string} key
- * @param {string} route
- * @param {WordPressDataParams} [params]
- * @param {WordPressDataResultInfo} [info=null]
+ * @param {WordPressDataArgs} args
  * @param {number} [_page=1]
  * @return {Promise<RenderItem[]>}
  */
-const getWordPressData = async (
-  key: string,
-  route: string,
-  params?: WordPressDataParams,
-  info: WordPressDataResultInfo | null = null,
-  _page: number = 1
-): Promise<RenderItem[]> => {
+const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Promise<RenderItem[]> => {
+  /* Args required */
+
+  if (!isObjectStrict(args)) {
+    throw new Error('No args')
+  }
+
+  const {
+    key,
+    route,
+    params,
+    info,
+    fetcher = fetch,
+    options
+  } = args
+
   /* Key required for cache */
 
   if (!isStringStrict(key)) {
@@ -156,7 +161,7 @@ const getWordPressData = async (
   const headers = new Headers()
   headers.set('Authorization', `Basic ${btoa(`${user}:${pass}`)}`)
 
-  const resp = await fetch(url, { headers })
+  const resp = await fetcher(url, { headers, ...options })
   const data: WordPressDataError | WordPressDataItem | WordPressDataItem[] = await resp.json()
 
   /* Check if error */
@@ -186,9 +191,14 @@ const getWordPressData = async (
   let newData = normalizeWordPressData(dataItems, route)
 
   if (loop && _page < totalPagesNum) {
-    const pagData = await getWordPressData(key, route, {
-      per_page: -1
-    }, null, _page + 1)
+    const pagData = await getWordPressData({
+      key,
+      route,
+      info,
+      params: {
+        per_page: -1
+      }
+    }, _page + 1)
 
     if (isArray(pagData)) {
       newData = [
@@ -257,7 +267,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
     let id = ''
 
     if (isServerless) {
-      const slugs = await fetchStoreItem('slugs')
+      const slugs = getStoreItem('slugs')
       const path = serverlessData.path
       const item = slugs[path]
 
@@ -274,7 +284,10 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
 
     if (id !== '') {
       const key = `serverless_${id}_${contentType}`
-      const data = await getWordPressData(key, `${getRoute(contentType)}/${id}`)
+      const data = await getWordPressData({
+        key,
+        route: `${getRoute(contentType)}/${id}`
+      })
 
       if (isArray(data)) {
         allData.content[contentType] = data
@@ -292,8 +305,12 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
 
       const key = `all_${contentType}`
 
-      let data = await getWordPressData(key, getRoute(contentType), {
-        per_page: -1
+      let data = await getWordPressData({
+        key,
+        route: getRoute(contentType),
+        params: {
+          per_page: -1
+        }
       })
 
       data = applyFilters('wordpressData', data, wordpressDataFilterArgs)
@@ -314,8 +331,12 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
 
       const key = `all_${contentType}`
 
-      let data = await getWordPressData(key, getRoute(contentType), {
-        per_page: -1
+      let data = await getWordPressData({
+        key,
+        route: getRoute(contentType),
+        params: {
+          per_page: -1
+        }
       })
 
       data = applyFilters('wordpressData', data, wordpressDataFilterArgs)

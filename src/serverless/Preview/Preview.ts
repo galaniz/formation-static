@@ -40,7 +40,7 @@ const Preview = async (
 
   /* Setup */
 
-  setupServerless(context)
+  await setupServerless(context, 'preview')
 
   /* Data params */
 

@@ -456,6 +456,24 @@ export interface WordPressDataResultInfo {
 }
 
 /**
+ * @typedef {object} WordPressDataArgs
+ * @prop {string} key
+ * @prop {string} route
+ * @prop {WordPressDataParams} [params]
+ * @prop {WordPressDataResultInfo} [info]
+ * @prop {fetch} [fetcher]
+ * @prop {RequestInit} [options]
+ */
+export interface WordPressDataArgs {
+  key: string
+  route: string
+  params?: WordPressDataParams
+  info?: WordPressDataResultInfo
+  fetcher?: typeof fetch
+  options?: RequestInit
+}
+
+/**
  * @typedef {object} AllWordPressDataArgs
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]

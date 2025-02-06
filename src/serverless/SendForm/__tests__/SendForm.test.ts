@@ -6,10 +6,9 @@
 
 import type { SendFormRequestBody } from '../SendFormTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach, beforeAll } from 'vitest'
-import { vol } from 'memfs'
 import { testContext, testResetStore, testMinify } from '../../../../tests/utils.js'
 import { mockSendFormFetch } from './SendFormMock.js'
-import { setStore } from '../../../store/store.js'
+import { store, setStoreItem } from '../../../store/store.js'
 import { config } from '../../../config/config.js'
 import { setServerless } from '../../serverless.js'
 import { SendForm } from '../SendForm.js'
@@ -71,9 +70,7 @@ describe('SendForm()', () => {
   }
 
   beforeEach(() => {
-    config.env.dir = '/'
     config.title = 'Test'
-    setStore({}, 'files')
     setServerless({
       apiKeys: {
         smtp2go: 'test'
@@ -82,12 +79,10 @@ describe('SendForm()', () => {
   })
 
   afterEach(() => {
-    config.env.dir = ''
     config.title = ''
     config.env.prod = false
     config.env.prodUrl = ''
     testResetStore()
-    vi.resetModules()
   })
 
   it('should return error if no api key', async () => {
@@ -142,13 +137,8 @@ describe('SendForm()', () => {
   })
 
   it('should return error if form meta is null', async () => {
-    vol.fromJSON({
-      '/files/formMeta.json': JSON.stringify([])
-    })
-
-    vi.doMock('/files/formMeta.json', () => ({
-      default: []
-    }))
+    // @ts-expect-error - test null form meta
+    store.formMeta = null
 
     const result = await SendForm({
       action,
@@ -166,25 +156,13 @@ describe('SendForm()', () => {
   })
 
   it('should return error if form meta is not an object', async () => {
-    vol.fromJSON({
-      '/files/formMeta.json': JSON.stringify([{
-        test: {
-          subject: 'Meta Subject',
-          toEmail: 'to@test.com',
-          senderEmail: 'from@test.com'
-        }
-      }])
-    })
-
-    vi.doMock('/files/formMeta.json', () => ({
-      default: {
-        test: {
-          subject: 'Meta Subject',
-          toEmail: 'to@test.com',
-          senderEmail: 'from@test.com'
-        }
+    setStoreItem('formMeta', {
+      test: {
+        subject: 'Meta Subject',
+        toEmail: 'to@test.com',
+        senderEmail: 'from@test.com'
       }
-    }))
+    })
 
     const result = await SendForm({
       action,
@@ -202,23 +180,12 @@ describe('SendForm()', () => {
   })
 
   it('should return error if no to email', async () => {
-    vol.fromJSON({
-      '/files/formMeta.json': JSON.stringify([{
-        test: {
-          subject: 'Meta Subject',
-          senderEmail: 'from@test.com'
-        }
-      }])
-    })
-
-    vi.doMock('/files/formMeta.json', () => ({
-      default: {
-        test: {
-          subject: 'Meta Subject',
-          senderEmail: 'from@test.com'
-        }
+    setStoreItem('formMeta', {
+      test: {
+        subject: 'Meta Subject',
+        senderEmail: 'from@test.com'
       }
-    }))
+    })
 
     const result = await SendForm({
       action,
@@ -236,23 +203,12 @@ describe('SendForm()', () => {
   })
 
   it('should return error if no sender email', async () => {
-    vol.fromJSON({
-      '/files/formMeta.json': JSON.stringify([{
-        test: {
-          subject: 'Meta Subject',
-          toEmail: 'to@test.com'
-        }
-      }])
-    })
-
-    vi.doMock('/files/formMeta.json', () => ({
-      default: {
-        test: {
-          subject: 'Meta Subject',
-          toEmail: 'to@test.com'
-        }
+    setStoreItem('formMeta', {
+      test: {
+        subject: 'Meta Subject',
+        toEmail: 'to@test.com'
       }
-    }))
+    })
 
     const result = await SendForm({
       action,
@@ -270,25 +226,13 @@ describe('SendForm()', () => {
   })
 
   it('should return error if incorrect api key', async () => {
-    vol.fromJSON({
-      '/files/formMeta.json': JSON.stringify([{
-        test: {
-          subject: 'Meta Subject',
-          toEmail: 'to@test.com',
-          senderEmail: 'from@test.com'
-        }
-      }])
-    })
-
-    vi.doMock('/files/formMeta.json', () => ({
-      default: {
-        test: {
-          subject: 'Meta Subject',
-          toEmail: 'to@test.com',
-          senderEmail: 'from@test.com'
-        }
+    setStoreItem('formMeta', {
+      test: {
+        subject: 'Meta Subject',
+        toEmail: 'to@test.com',
+        senderEmail: 'from@test.com'
       }
-    }))
+    })
 
     setServerless({
       apiKeys: {
@@ -323,25 +267,13 @@ describe('SendForm()', () => {
   it('should return success with specified body object', async () => {
     const fetchSpy = vi.spyOn(global, 'fetch')
 
-    vol.fromJSON({
-      '/files/formMeta.json': JSON.stringify([{
-        test: {
-          subject: 'Meta Subject',
-          toEmail: 'to@test.com',
-          senderEmail: 'from@test.com'
-        }
-      }])
-    })
-
-    vi.doMock('/files/formMeta.json', () => ({
-      default: {
-        test: {
-          subject: 'Meta Subject',
-          toEmail: 'to@test.com',
-          senderEmail: 'from@test.com'
-        }
+    setStoreItem('formMeta', {
+      test: {
+        subject: 'Meta Subject',
+        toEmail: 'to@test.com',
+        senderEmail: 'from@test.com'
       }
-    }))
+    })
 
     config.env.prod = true
     config.env.prodUrl = 'http://test.com'
@@ -473,25 +405,13 @@ describe('SendForm()', () => {
   it('should return success with default subject', async () => {
     const fetchSpy = vi.spyOn(global, 'fetch')
 
-    vol.fromJSON({
-      '/files/formMeta.json': JSON.stringify([{
-        test: {
-          subject: '',
-          toEmail: 'to@test.com',
-          senderEmail: 'from@test.com'
-        }
-      }])
-    })
-
-    vi.doMock('/files/formMeta.json', () => ({
-      default: {
-        test: {
-          subject: '',
-          toEmail: 'to@test.com',
-          senderEmail: 'from@test.com'
-        }
+    setStoreItem('formMeta', {
+      test: {
+        subject: '',
+        toEmail: 'to@test.com',
+        senderEmail: 'from@test.com'
       }
-    }))
+    })
 
     const result = await SendForm({
       action,
@@ -522,25 +442,13 @@ describe('SendForm()', () => {
   it('should return success with meta subject and two to emails', async () => {
     const fetchSpy = vi.spyOn(global, 'fetch')
 
-    vol.fromJSON({
-      '/files/formMeta.json': JSON.stringify([{
-        test: {
-          subject: 'Meta Subject',
-          toEmail: 'to@test.com,test@test.com',
-          senderEmail: 'from@test.com'
-        }
-      }])
-    })
-
-    vi.doMock('/files/formMeta.json', () => ({
-      default: {
-        test: {
-          subject: 'Meta Subject',
-          toEmail: 'to@test.com,test@test.com',
-          senderEmail: 'from@test.com'
-        }
+    setStoreItem('formMeta', {
+      test: {
+        subject: 'Meta Subject',
+        toEmail: 'to@test.com,test@test.com',
+        senderEmail: 'from@test.com'
       }
-    }))
+    })
 
     const result = await SendForm({
       action,
@@ -569,25 +477,13 @@ describe('SendForm()', () => {
   it('should return success with input subject', async () => {
     const fetchSpy = vi.spyOn(global, 'fetch')
 
-    vol.fromJSON({
-      '/files/formMeta.json': JSON.stringify([{
-        test: {
-          subject: '',
-          toEmail: 'to@test.com',
-          senderEmail: 'from@test.com'
-        }
-      }])
-    })
-
-    vi.doMock('/files/formMeta.json', () => ({
-      default: {
-        test: {
-          subject: '',
-          toEmail: 'to@test.com',
-          senderEmail: 'from@test.com'
-        }
+    setStoreItem('formMeta', {
+      test: {
+        subject: '',
+        toEmail: 'to@test.com',
+        senderEmail: 'from@test.com'
       }
-    }))
+    })
 
     const result = await SendForm({
       action,

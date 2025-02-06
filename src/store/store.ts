@@ -10,7 +10,6 @@ import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
 import { isArrayStrict } from '../utils/array/array.js'
-import { getJsonFile } from '../utils/json/json.js'
 import { config } from '../config/config.js'
 
 /**
@@ -96,31 +95,12 @@ const setStoreItem = <T extends Store, K extends keyof T, V extends keyof T[K] |
 }
 
 /**
- * Set serverless or build time data (navigations, archive meta, parents)
+ * Set build time data (navigations, archive meta, parents)
  *
  * @param {RenderAllData} allData
- * @param {boolean} [serverless]
- * @return {Promise<boolean>}
+ * @return {boolean}
  */
-const setStoreData = async (allData: RenderAllData, serverless: boolean = false): Promise<boolean> => {
-  /* Serverless all data */
-
-  if (serverless) {
-    for (const key of Object.keys(store)) {
-      if (key === 'slugs') { // Skip slugs as set in data fetch
-        continue
-      }
-
-      const data = await getJsonFile(key)
-
-      if (data != null) {
-        store[key] = data
-      }
-    }
-
-    return true
-  }
-
+const setStoreData = (allData: RenderAllData): boolean => {
   /* Data must be object */
 
   if (!isObjectStrict(allData)) {
@@ -225,24 +205,6 @@ const getStoreItem = <T extends Store, K extends keyof T>(prop: K): T[K] => {
   return store[prop as keyof Store] as T[K]
 }
 
-/**
- * Set and get serverless store property
- *
- * @param {string} prop
- * @return {object}
- */
-const fetchStoreItem = async<T extends Store, K extends keyof T>(
-  prop: K
-): Promise<T[K]> => {
-  const data = await getJsonFile(prop as string)
-
-  if (data != null) {
-    store[prop as keyof Store] = data
-  }
-
-  return store[prop as keyof Store] as T[K]
-}
-
 /* Exports */
 
 export {
@@ -250,7 +212,6 @@ export {
   storeDir,
   setStore,
   setStoreData,
-  fetchStoreItem,
   setStoreItem,
   getStoreItem
 }

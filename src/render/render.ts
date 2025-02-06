@@ -894,7 +894,9 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
 
   /* Store data */
 
-  await setStoreData(allData, isServerless)
+  if (!isServerless) {
+    setStoreData(allData)
+  }
 
   /* Redirects data */
 
