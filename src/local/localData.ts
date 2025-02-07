@@ -165,11 +165,11 @@ const getAllLocalData = async (
     }
   }
 
-  config.partialTypes.forEach((contentType) => {
+  config.partialTypes.forEach(contentType => {
     allData[contentType] = []
   })
 
-  config.wholeTypes.forEach((contentType) => {
+  config.wholeTypes.forEach(contentType => {
     allData.content[contentType] = []
   })
 
@@ -195,7 +195,7 @@ const getAllLocalData = async (
 
   /* Internal props */
 
-  resolveProps.data.forEach((d) => {
+  resolveProps.data.forEach(d => {
     resolveInternalLinks(data, data, [d], (prop, value) => {
       if (resolveProps.data.includes(prop as string)) {
         const newValue = undefineProps(value, excludeProps.data)
@@ -257,7 +257,7 @@ const getAllLocalData = async (
   /* Term content */
 
   /*
-  Object.keys(config.contentTypes.taxonomy).forEach((tax) => {
+  Object.keys(config.contentTypes.taxonomy).forEach(tax => {
     const { contentTypes, props } = config.contentTypes.taxonomy[tax]
 
     if (archiveTerms.terms[tax] == null) {
@@ -272,13 +272,13 @@ const getAllLocalData = async (
           archiveTerms.terms[tax][ct] = {}
         }
 
-        contentData.forEach((cd) => {
+        contentData.forEach(cd => {
           const prop = props[i]
           const terms = cd[prop] as Generic[]
           const dataCopy = undefineProps(cd, excludeProps.archive.terms)
 
           if (isArrayStrict(terms)) {
-            terms.forEach((term) => {
+            terms.forEach(term => {
               if (!isObjectStrict(term)) {
                 return
               }

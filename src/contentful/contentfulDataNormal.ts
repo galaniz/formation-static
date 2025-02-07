@@ -74,7 +74,7 @@ const normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
 
   /* Recurse */
 
-  items.forEach((item) => {
+  items.forEach(item => {
     if (!isObjectStrict(item)) {
       return
     }
@@ -100,7 +100,7 @@ const normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
       contentValue = contentValue.replace(/\n/g, '<br>')
 
       if (isArrayStrict(marks)) {
-        const markTags = marks.map((m) => {
+        const markTags = marks.map(m => {
           return getTag(m.type)
         })
 
@@ -250,7 +250,7 @@ const normalizeItem = (
 
   if (isArrayStrict(itemCopy.metadata?.tags)) {
     newItem.metadata = {
-      tags: itemCopy.metadata.tags.map((t) => {
+      tags: itemCopy.metadata.tags.map(t => {
         return {
           id: isString(t.sys?.id) ? t.sys.id : '',
           name: isString(t.sys?.name) ? t.sys.name : ''
@@ -269,7 +269,7 @@ const normalizeItem = (
       return Object.assign(normalizeFile(file, fields), newItem)
     }
 
-    getObjectKeys(fields).forEach((prop) => {
+    getObjectKeys(fields).forEach(prop => {
       const field = fields[prop] as ContentfulDataItem[] | ContentfulDataItem | string
 
       if (prop === 'content' && isInternalLink) {
@@ -281,7 +281,7 @@ const normalizeItem = (
           const { content } = field
 
           if (isArrayStrict(content)) {
-            newItem[prop] = content.map((c) => {
+            newItem[prop] = content.map(c => {
               return isObjectStrict(c) ? normalizeItem(c, data, isInternalLink) : c
             })
           }
@@ -289,7 +289,7 @@ const normalizeItem = (
           newItem[prop] = normalizeItem(field, data, prop === 'internalLink')
         }
       } else if (isArrayStrict(field)) {
-        newItem[prop] = field.map((f) => {
+        newItem[prop] = field.map(f => {
           return isObjectStrict(f) ? normalizeItem(f, data, isInternalLink) : f
         })
       } else {
@@ -343,7 +343,7 @@ const normalizeContentfulData = (
 
   /* Recurse data */
 
-  data.forEach((item) => {
+  data.forEach(item => {
     if (!isObjectStrict(item)) {
       return
     }

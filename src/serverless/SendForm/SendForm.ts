@@ -42,7 +42,7 @@ const recurseEmailHtml = (
 
   const isArr = isArray(data)
 
-  getObjectKeys(data).forEach((label) => {
+  getObjectKeys(data).forEach(label => {
     const value = data[label]
     const l = label.toString()
     const h = depth + 1

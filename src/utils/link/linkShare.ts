@@ -38,7 +38,7 @@ const getShareLinks = (
     return []
   }
 
-  return platforms.map((platform) => {
+  return platforms.map(platform => {
     const platformLink = shareLinks[platform]
 
     let link = isStringStrict(platformLink) ? `${platformLink}${url}` : ''

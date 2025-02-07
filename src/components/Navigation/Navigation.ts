@@ -585,7 +585,7 @@ class Navigation<L extends string = string> {
 
     /* Remove items that do not have title or slug */
 
-    const filteredItems = items.filter((item) => {
+    const filteredItems = items.filter(item => {
       if (!isStringStrict(item.title)) {
         return false
       }

@@ -101,7 +101,7 @@ const setLocalImages = async (): Promise<Array<PromiseSettledResult<sharp.Output
 
     sizes = sizes.filter(s => s <= width)
 
-    sizes.forEach((size) => {
+    sizes.forEach(size => {
       images.push({
         size,
         ext: format,

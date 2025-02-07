@@ -283,7 +283,7 @@ const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
 
   /* Width strings to numbers */
 
-  parents.forEach((parent) => {
+  parents.forEach(parent => {
     if (!isObjectStrict(parent)) {
       return
     }

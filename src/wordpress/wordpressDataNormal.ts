@@ -154,7 +154,7 @@ const normalizeEmbedded = (
   item: WordPressDataItem,
   newItem: RenderItem
 ): void => {
-  getObjectKeys(value).forEach((k) => {
+  getObjectKeys(value).forEach(k => {
     const embeds = value[k]
 
     /* Must be array */
@@ -166,7 +166,7 @@ const normalizeEmbedded = (
     /* Author */
 
     if (k === 'author') {
-      embeds.forEach((embed) => {
+      embeds.forEach(embed => {
         if (!isObjectStrict(embed)) {
           return
         }
@@ -198,7 +198,7 @@ const normalizeEmbedded = (
     /* Parent */
 
     if (k === 'up') {
-      embeds.forEach((embed) => {
+      embeds.forEach(embed => {
         if (!isObjectStrict(embed)) {
           return
         }
@@ -238,7 +238,7 @@ const normalizeEmbedded = (
     /* Featured media */
 
     if (k === 'wp:featuredmedia') {
-      embeds.forEach((embed) => {
+      embeds.forEach(embed => {
         if (!isObjectStrict(embed)) {
           return
         }
@@ -284,12 +284,12 @@ const normalizeEmbedded = (
     /* Term */
 
     if (k === 'wp:term') {
-      embeds.forEach((embed) => {
+      embeds.forEach(embed => {
         if (!isArrayStrict(embed)) {
           return
         }
 
-        embed.forEach((e) => {
+        embed.forEach(e => {
           if (!isObjectStrict(e)) {
             return
           }
@@ -318,7 +318,7 @@ const normalizeEmbedded = (
             return
           }
 
-          newItem[taxonomyLookup] = itemTaxonomy.map((taxonomyId) => {
+          newItem[taxonomyLookup] = itemTaxonomy.map(taxonomyId => {
             if (taxonomyId !== id) {
               return taxonomyId
             }
@@ -350,7 +350,7 @@ const normalizeBlocks = (blocks: readonly Block[]): RenderItem[] => {
 
   /* Recurse */
 
-  blocks.forEach((block) => {
+  blocks.forEach(block => {
     const {
       blockName,
       attrs,
@@ -558,7 +558,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
 
   menusById.clear()
 
-  items.forEach((item) => {
+  items.forEach(item => {
     const {
       id = '',
       title = '',
@@ -670,7 +670,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
 const normalizeWordPressMenus = (menus: WordPressDataMenu[]): NavigationList[] => {
   const newMenus: NavigationList[] = []
 
-  menus.forEach((menu) => {
+  menus.forEach(menu => {
     const {
       id = '',
       title = '',
@@ -724,7 +724,7 @@ const normalizeWordPressData = (
 
   /* Recurse data */
 
-  data.forEach((item) => {
+  data.forEach(item => {
     if (!isObjectStrict(item)) {
       return
     }

@@ -452,7 +452,7 @@ describe('getAllWordPressData()', () => {
 
   it('should run filter on data to include test attribute', async () => {
     addFilter('wordpressData', (data) => {
-      return data.map((item) => {
+      return data.map(item => {
         return {
           ...item,
           test: 'test'

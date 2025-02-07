@@ -37,7 +37,7 @@ const getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
 
   /* Output */
 
-  return opts.map((opt) => {
+  return opts.map(opt => {
     const {
       text = '',
       value = '',
@@ -176,7 +176,7 @@ const Field = (props: FieldProps): string => {
   const opts: FieldOption[] = []
 
   if (isArrayStrict(options)) {
-    options.forEach((option) => {
+    options.forEach(option => {
       const [optText, optValue, optSelected] = option.split(' : ')
 
       if (!isStringStrict(optText) || !isStringStrict(optValue)) {
@@ -319,7 +319,7 @@ const Field = (props: FieldProps): string => {
     }
     case 'select': {
       if (opts.length > 0) {
-        const optsOutput = opts.map((opt) => {
+        const optsOutput = opts.map(opt => {
           const {
             text,
             value,

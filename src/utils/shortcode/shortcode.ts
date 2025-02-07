@@ -115,7 +115,7 @@ const getShortcodeData = (
     const attr = tag.match(attrReg)
 
     if (isArrayStrict(attr)) {
-      attr.forEach((a) => {
+      attr.forEach(a => {
         const [key, value] = a.split('=')
 
         if (!isStringStrict(key) || !isStringStrict(value)) {

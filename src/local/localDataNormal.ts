@@ -29,14 +29,14 @@ const resolveInternalLinks = <T, U>( // eslint-disable-line @typescript-eslint/n
     return
   }
 
-  getObjectKeys(currentData).forEach((prop) => {
+  getObjectKeys(currentData).forEach(prop => {
     const value = currentData[prop]
 
     if (props.includes(prop.toString())) {
       let v
 
       if (isArray(value)) {
-        v = value.map((k) => data[k as keyof T])
+        v = value.map(k => data[k as keyof T])
       }
 
       if (isString(value)) {
@@ -69,7 +69,7 @@ const undefineProps = <T>(obj: T, props: string[] = []): T => {
 
   const clone = structuredClone(obj)
 
-  getObjectKeys(clone).forEach((prop) => {
+  getObjectKeys(clone).forEach(prop => {
     const value = clone[prop]
 
     if (props.includes(prop.toString())) {

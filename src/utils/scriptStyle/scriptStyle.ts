@@ -71,7 +71,7 @@ const addScriptStyle = (
   /* Add deps */
 
   if (isArrayStrict(deps)) {
-    deps.forEach((dep) => {
+    deps.forEach(dep => {
       const depInput = `${inputDir}/${dep}.${ext}`
       const depOutput = `${outputDir}/${dep}`
 
@@ -160,7 +160,7 @@ const outputScriptsStyles = (type: 'styles' | 'scripts', link: string): string =
 
   let output = ''
 
-  itemOut.forEach((out) => {
+  itemOut.forEach(out => {
     if (type === 'scripts') {
       output += `<script type="module" src="${link}${out}.js"></script>`
     }

@@ -329,7 +329,7 @@ describe('Navigation', () => {
           output.html += '<!-- Before List -->'
 
           if (depth > 0) {
-            items.forEach((item) => {
+            items.forEach(item => {
               item.link = ''
             })
           }

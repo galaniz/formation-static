@@ -159,7 +159,7 @@ const getContentTemplate = (
 
   /* One level loop */
 
-  const newContent = content.map((c) => {
+  const newContent = content.map(c => {
     /* Check name */
 
     if (named && isString(c.name)) {

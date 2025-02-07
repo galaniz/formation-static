@@ -28,7 +28,7 @@ const setRedirects = (data?: RenderRedirect[]): boolean => {
 
   redirects = []
 
-  data.forEach((item) => {
+  data.forEach(item => {
     if (!isObjectStrict(item)) {
       return
     }
