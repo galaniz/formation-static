@@ -1297,6 +1297,11 @@ describe('render()', () => {
                       content: [
                         {
                           renderType: 'container',
+                          tag: 'header',
+                          content: 'Test'
+                        },
+                        {
+                          renderType: 'container',
                           tag: 'section',
                           content: [
                             {
@@ -1378,6 +1383,7 @@ describe('render()', () => {
               <title>Page</title>
             </head>
             <body>
+              <header>Test</header>
               <section>
                 <h2 data-rich="h2" id="fallback-1">Fallback [1]</h2>
               </section>

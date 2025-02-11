@@ -485,14 +485,16 @@ const renderContent = async (
     if (childrenArr != null) {
       const parentsCopy = [...parents]
 
-      parentsCopy.unshift({
-        renderType,
-        args: {
-          ...props,
-          content: undefined,
-          parents: undefined
-        }
-      })
+      if (renderType !== '') { // Skip non rendering parents
+        parentsCopy.unshift({
+          renderType,
+          args: {
+            ...props,
+            content: undefined,
+            parents: undefined
+          }
+        })
+      }
 
       await renderContent(
         {

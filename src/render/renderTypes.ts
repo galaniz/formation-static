@@ -491,3 +491,13 @@ export type RenderItemStartAction = (args: RenderItemStartActionArgs) => Promise
  * @return {Promise<void>|void}
  */
 export type RenderItemEndAction = (args: RenderItemActionArgs) => Promise<void> | void
+
+/**
+ * @typedef {object} RenderDataMeta
+ * @prop {number} [total]
+ * @prop {number} [totalPages]
+ */
+export interface RenderDataMeta {
+  total?: number
+  totalPages?: number
+}

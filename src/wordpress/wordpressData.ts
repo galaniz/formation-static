@@ -11,10 +11,10 @@ import type {
   WordPressDataArgs
 } from './wordpressDataTypes.js'
 import type { RenderAllData, RenderItem } from '../render/renderTypes.js'
-import type { DataFilterArgs } from '../utils/filter/filterTypes.js'
+import type { CacheData, DataFilterArgs } from '../utils/filter/filterTypes.js'
 import { normalizeWordPressData } from './wordpressDataNormal.js'
 import { applyFilters } from '../utils/filter/filter.js'
-import { isObject, isObjectStrict } from '../utils/object/object.js'
+import { isObjectStrict } from '../utils/object/object.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
 import { isArray } from '../utils/array/array.js'
 import { getStoreItem } from '../store/store.js'
@@ -65,7 +65,7 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
     key,
     route,
     params,
-    info,
+    meta,
     fetcher = fetch,
     options
   } = args
@@ -76,6 +76,10 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
     throw new Error('No key')
   }
 
+  /* Meta check */
+
+  const hasMeta = isObjectStrict(meta)
+
   /* Check cache */
 
   if (config.env.cache) {
@@ -84,10 +88,19 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
       type: 'get'
     }
 
-    const cacheData = await applyFilters('cacheData', undefined as RenderItem[] | undefined, cacheDataFilterArgs, true)
+    const cacheData = await applyFilters('cacheData', undefined as CacheData | undefined, cacheDataFilterArgs, true)
+    const cacheItems = cacheData?.items
+    const cacheMeta = cacheData?.meta
 
-    if (isObject(cacheData)) {
-      return structuredClone(cacheData)
+    if (isObjectStrict(cacheMeta) && hasMeta) {
+      const { total, totalPages } = cacheMeta
+
+      meta.total = total
+      meta.totalPages = totalPages
+    }
+
+    if (isArray(cacheItems)) {
+      return structuredClone(cacheItems)
     }
   }
 
@@ -180,9 +193,9 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
   const totalNum = isStringStrict(total) ? parseInt(total, 10) : 1
   const totalPagesNum = isStringStrict(totalPages) ? parseInt(totalPages, 10) : 1
 
-  if (isObjectStrict(info)) {
-    info.total = totalNum
-    info.totalPages = totalPagesNum
+  if (hasMeta) {
+    meta.total = totalNum
+    meta.totalPages = totalPagesNum
   }
 
   /* Normalize */
@@ -194,7 +207,7 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
     const pagData = await getWordPressData({
       key,
       route,
-      info,
+      meta,
       params: {
         per_page: -1
       }
@@ -217,7 +230,10 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
       data
     }
 
-    await applyFilters('cacheData', newData, cacheDataFilterArgs, true)
+    await applyFilters('cacheData', {
+      items: newData,
+      meta
+    }, cacheDataFilterArgs, true)
   }
 
   /* Output */

@@ -9,7 +9,8 @@ import type { NavigationItem } from '../components/Navigation/NavigationTypes.js
 import type {
   RenderServerlessData,
   RenderPreviewData,
-  RenderItem
+  RenderItem,
+  RenderDataMeta
 } from '../render/renderTypes.js'
 
 /**
@@ -444,21 +445,11 @@ export interface WordPressDataItem extends Partial<WordPressDataFeaturedMedia>, 
 }
 
 /**
- * @typedef {object} WordPressDataResultInfo
- * @prop {number} [total]
- * @prop {number} [totalPages]
- */
-export interface WordPressDataResultInfo {
-  total?: number
-  totalPages?: number
-}
-
-/**
  * @typedef {object} WordPressDataArgs
  * @prop {string} key
  * @prop {string} route
  * @prop {WordPressDataParams} [params]
- * @prop {WordPressDataResultInfo} [info]
+ * @prop {RenderDataMeta} [meta]
  * @prop {fetch} [fetcher]
  * @prop {RequestInit} [options]
  */
@@ -466,7 +457,7 @@ export interface WordPressDataArgs {
   key: string
   route: string
   params?: WordPressDataParams
-  info?: WordPressDataResultInfo
+  meta?: RenderDataMeta
   fetcher?: typeof fetch
   options?: RequestInit
 }

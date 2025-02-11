@@ -25,7 +25,8 @@ import type {
   RenderContentFilter,
   RenderServerlessData,
   RenderPreviewData,
-  RenderAllData
+  RenderAllData,
+  RenderDataMeta
 } from '../../render/renderTypes.js'
 
 /**
@@ -82,26 +83,37 @@ export type LocalDataFilter = (data: LocalData) => LocalData
 export type AllDataFilter = (allData: RenderAllData, args: AllDataFilterArgs) => RenderAllData
 
 /**
+ * @typedef {object} CacheData
+ * @prop {RenderItem[]} [data]
+ * @prop {RenderDataMeta} [meta]
+ */
+export interface CacheData {
+  items?: RenderItem[]
+  meta?: RenderDataMeta
+}
+
+/**
  * @typedef {object} CacheDataFilterArgs
  * @prop {string} key
  * @prop {string} type
- * @prop {RenderItem[]} [data]
+ * @prop {CacheData} [data]
  */
 export interface CacheDataFilterArgs {
   key: string
   type: string
-  data?: RenderItem[]
+  data?: CacheData
 }
 
 /**
  * @typedef {function} CacheDataFilter
- * @param {RenderItem[]} data
- * @return {Promise<RenderItem[]|undefined>}
+ * @param {CacheData} data
+ * @param {CacheDataFilterArgs} args
+ * @return {Promise<CacheData|undefined>}
  */
 export type CacheDataFilter = (
-  data: RenderItem[],
+  data: CacheData,
   args: CacheDataFilterArgs
-) => Promise<RenderItem[] | undefined>
+) => Promise<CacheData | undefined>
 
 /**
  * @typedef {function} StoreDataFilter

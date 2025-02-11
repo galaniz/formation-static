@@ -21,6 +21,7 @@ import { categories } from '../../../tests/data/wordpress/categories.js'
 import { tags } from '../../../tests/data/wordpress/tags.js'
 import { media } from '../../../tests/data/wordpress/media.js'
 import { taxonomies } from '../../../tests/data/wordpress/taxonomies.js'
+import { CacheData } from '../../utils/filter/filterTypes.js'
 
 /* Mock fetch */
 
@@ -158,7 +159,10 @@ describe('getWordPressData()', () => {
     })
 
     expect(cacheSet).toHaveBeenCalledTimes(1)
-    expect(cacheSet).toHaveBeenCalledWith(posts)
+    expect(cacheSet).toHaveBeenCalledWith({
+      items: posts,
+      meta: undefined
+    })
     expect(result).toEqual(posts)
   })
 
@@ -166,25 +170,39 @@ describe('getWordPressData()', () => {
     config.env.cache = true
     const cacheGet = vi.fn((data) => new Promise(resolve => { resolve(data) }))
 
-    addFilter('cacheData', async (data, args): Promise<RenderItem[] | undefined> => {
+    addFilter('cacheData', async (data, args): Promise<CacheData | undefined> => {
       const { key, type } = args
 
       if (key === 'postsKey3' && type === 'get') {
         await cacheGet(data)
-        return posts as RenderItem[]
+        return {
+          items: posts,
+          meta: {
+            total: 1,
+            totalPages: 1
+          }
+        }
       }
 
       return data
     })
 
+    const meta = {
+      total: 0,
+      totalPages: 0
+    }
+
     const result = await getWordPressData({
       key: 'postsKey3',
-      route: 'posts'
+      route: 'posts',
+      meta
     })
 
     expect(cacheGet).toHaveBeenCalledTimes(1)
     expect(cacheGet).toHaveBeenCalledWith(undefined)
     expect(result).toEqual(posts)
+    expect(meta.total).toEqual(1)
+    expect(meta.totalPages).toEqual(1)
   })
 
   it('should return array of pages with production credentials', async () => {
