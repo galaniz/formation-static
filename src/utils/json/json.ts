@@ -16,10 +16,10 @@ import { applyFilters } from '../filter/filter.js'
  */
 const getJson = <T extends object>(value: string): T | undefined => { // eslint-disable-line @typescript-eslint/no-unnecessary-type-parameters
   try {
-    const obj: unknown = JSON.parse(value)
+    const val: unknown = JSON.parse(value)
 
-    if (isObject(obj)) {
-      return obj as T
+    if (isObject(val)) {
+      return val as T
     }
 
     throw new Error('Parsed value is not an object')

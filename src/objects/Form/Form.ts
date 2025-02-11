@@ -123,7 +123,7 @@ const Form = (props: FormProps): string[] => {
   const honeypotId: string = uuid()
   const honeypotName = `${config.namespace}_asi`
   const honeypot = `
-    <div${isStringStrict(honeypotFieldClasses) ? ` class="${honeypotFieldClasses}"` : ''} data-form-asi>
+    <div${isStringStrict(honeypotFieldClasses) ? ` class="${honeypotFieldClasses}"` : ''}>
       <label${isStringStrict(honeypotLabelClasses) ? ` class="${honeypotLabelClasses}"` : ''} for="${honeypotId}">Website</label>
       <input${isStringStrict(honeypotClasses) ? ` class="${honeypotClasses}"` : ''} type="url" name="${honeypotName}" id="${honeypotId}" autocomplete="off">
     </div>
@@ -137,7 +137,7 @@ const Form = (props: FormProps): string[] => {
         ${errorSummary}`,
         `${honeypot}
         ${errorResult}
-        <div${isStringStrict(submitFieldClasses) ? ` class="${submitFieldClasses}"` : ''} data-form-submit>
+        <div${isStringStrict(submitFieldClasses) ? ` class="${submitFieldClasses}"` : ''}>
           <button${isStringStrict(submitClasses) ? ` class="${submitClasses}"` : ''}${isStringStrict(submitAttr) ? ` ${submitAttr}` : ''} type="submit">
             ${submitLoader}
             <span>${submitLabel}</span>

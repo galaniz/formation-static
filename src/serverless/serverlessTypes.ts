@@ -20,9 +20,7 @@ export interface ServerlessRoute {
 /**
  * @typedef {Object<string, ServerlessRoute[]>} ServerlessRoutes
  */
-export interface ServerlessRoutes {
-  [key: string]: ServerlessRoute[]
-}
+export type ServerlessRoutes = Record<string, ServerlessRoute[]>
 
 /**
  * @typedef {EventContext} ServerlessContext

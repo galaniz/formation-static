@@ -8,19 +8,19 @@ import type { RenderItem } from '../../render/renderTypes.js'
 
 /**
  * @typedef {function} TagGetMethod
- * @param {RenderItem} obj
+ * @param {RenderItem} item
  * @param {string} id
  * @return {TagGetReturn|undefined}
  */
-export type TagGet = (obj: RenderItem, id: string) => TagGetReturn | undefined
+export type TagGet = (item: RenderItem, id: string) => TagGetReturn | undefined
 
 /**
  * @typedef {function} TagExistsMethod
- * @param {RenderItem} obj
+ * @param {RenderItem} item
  * @param {string} id
  * @return {boolean}
  */
-export type TagExists = (obj: RenderItem, id: string) => boolean
+export type TagExists = (item: RenderItem, id: string) => boolean
 
 /**
  * @typedef {object} TagGetReturn

@@ -27,7 +27,7 @@ let actions: ActionMap = new Map([
  * Add action to action map
  *
  * @param {string} name
- * @param {function} action
+ * @param {GenericFunction} action
  * @return {boolean}
  */
 const addAction = <T extends keyof Actions>(name: T, action: Actions[T]): boolean => {
@@ -52,7 +52,7 @@ const addAction = <T extends keyof Actions>(name: T, action: Actions[T]): boolea
  * Remove action from actions map
  *
  * @param {string} name
- * @param {function} action
+ * @param {GenericFunction} action
  * @return {boolean}
  */
 const removeAction = <T extends keyof Actions>(name: T, action: Actions[T]): boolean => {

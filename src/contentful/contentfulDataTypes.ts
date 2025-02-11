@@ -14,9 +14,7 @@ import type {
 /**
  * @typedef {Object<string, (string|number|boolean)>} ContentfulDataParams
  */
-export interface ContentfulDataParams {
-  [key: string]: string | number | boolean
-}
+export type ContentfulDataParams = Record<string, string | number | boolean>
 
 /**
  * @typedef {object} ContentfulDataTag

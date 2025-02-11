@@ -14,12 +14,12 @@ import { isArrayStrict } from '../array/array.js'
  *
  * @type {TagGet}
  */
-const getTag: TagGet = (obj, id) => {
-  if (!isObjectStrict(obj) || !isStringStrict(id)) {
+const getTag: TagGet = (item, id) => {
+  if (!isObjectStrict(item) || !isStringStrict(id)) {
     return
   }
 
-  const tags = obj.metadata?.tags
+  const tags = item.metadata?.tags
 
   if (!isArrayStrict(tags)) {
     return
@@ -54,8 +54,8 @@ const getTag: TagGet = (obj, id) => {
  *
  * @type {TagExists}
  */
-const tagExists: TagExists = (obj, id) => {
-  const res = getTag(obj, id)
+const tagExists: TagExists = (item, id) => {
+  const res = getTag(item, id)
 
   return res != null
 }

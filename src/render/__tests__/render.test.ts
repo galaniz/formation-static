@@ -1354,6 +1354,10 @@ describe('render()', () => {
                     },
                     {
                       content: '[2.5]' // Test skipping non-named content
+                    },
+                    {
+                      content: '[4]',
+                      name: 'custom-name-2' // Test overriding named content
                     }
                   ]
                 }
@@ -1378,7 +1382,7 @@ describe('render()', () => {
                 <h2 data-rich="h2" id="fallback-1">Fallback [1]</h2>
               </section>
               <section>
-                <h2 data-rich="h2" id="2">[2]</h2>
+                <h2 data-rich="h2" id="4">[4]</h2>
               </section>
             </body>
           </html>

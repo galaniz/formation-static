@@ -47,7 +47,7 @@ const getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
     const id: string = uuid()
 
     return `
-      <div data-field-option-${type}>
+      <div data-form-option-${type}>
         <input
           type="${type}"
           name="${name}"
@@ -55,11 +55,11 @@ const getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
           class="${classes}"
           value="${value}"${attr}${selected ? ' checked' : ''}
         >
-        <label for="${id}" data-field-option>
-          <span${labelClass} data-field-label>
-            <span data-field-text>${text}</span>
+        <label for="${id}" data-form-option>
+          <span${labelClass} data-form-label>
+            <span data-form-text>${text}</span>
           </span>
-          <span data-field-control="${type}">${icon}</span>
+          <span data-form-control="${type}">${icon}</span>
         </label>
       </div>
     `
@@ -205,7 +205,7 @@ const Field = (props: FieldProps): string => {
   const attr: string[] = []
 
   if (required) {
-    attr.push(fieldset ? 'data-fieldset-required="true"' : 'aria-required="true"')
+    attr.push(fieldset ? 'data-aria-required="true"' : 'aria-required="true"')
   }
 
   if (isStringStrict(value) && !checkboxRadioOpts) {
@@ -221,11 +221,11 @@ const Field = (props: FieldProps): string => {
   }
 
   if (isStringStrict(emptyErrorMessage)) {
-    attr.push(`data-field-empty="${emptyErrorMessage}"`)
+    attr.push(`data-form-empty="${emptyErrorMessage}"`)
   }
 
   if (isStringStrict(invalidErrorMessage)) {
-    attr.push(`data-field-invalid="${invalidErrorMessage}"`)
+    attr.push(`data-form-invalid="${invalidErrorMessage}"`)
   }
 
   if (classesArr.length > 0) {
@@ -247,15 +247,15 @@ const Field = (props: FieldProps): string => {
   let labelBefore = ''
   let labelAfter = ''
 
-  const labelRequired = required ? ' data-field-required' : ''
-  const labelRequiredIcon = required ? '<span data-field-required-icon aria-hidden="true"></span>' : ''
+  const labelRequired = required ? ' data-form-required' : ''
+  const labelRequiredIcon = required ? '<span data-form-required-icon aria-hidden="true"></span>' : ''
   const labelClass = isStringStrict(labelClasses) ? ` class="${labelClasses}"` : ''
 
   if (checkboxRadio) {
     if (fieldset) {
       labelBefore = `
         <legend id="${uuid()}"${labelRequired}>
-          <span data-field-legend>
+          <span data-form-legend>
             ${label}${required ? `<span${isStringStrict(visuallyHiddenClass) ? ` class="${visuallyHiddenClass}"` : ''}> required</span>` : ''}
             ${labelRequiredIcon}
           </span>
@@ -263,21 +263,21 @@ const Field = (props: FieldProps): string => {
       `
     } else {
       labelAfter = `
-        <label for="${id}" data-field-option>
-          <span${labelClass} data-field-label${labelRequired}>
-            <span data-field-text>
+        <label for="${id}" data-form-option>
+          <span${labelClass} data-form-label${labelRequired}>
+            <span data-form-text>
               ${label}
               ${labelRequiredIcon}
             </span>
           </span>
-          <span data-field-control="${type}">${icon}</span>
+          <span data-form-control="${type}">${icon}</span>
         </label>
       `
     }
   } else {
     labelBefore = `
-      <label for="${id}"${labelClass} data-field-label${labelRequired}>
-        <span data-field-text>
+      <label for="${id}"${labelClass} data-form-label${labelRequired}>
+        <span data-form-text>
           ${label}
           ${labelRequiredIcon}
         </span>
@@ -330,9 +330,9 @@ const Field = (props: FieldProps): string => {
         }).join('')
 
         input = `
-          <div data-field-select>
+          <div data-form-select>
             <select name="${name}" id="${id}"${attrs}>${optsOutput}</select>
-            <div data-field-select-icon>${selectIcon}</div>
+            <div data-form-select-icon>${selectIcon}</div>
           </div>
         `
       }
@@ -348,7 +348,7 @@ const Field = (props: FieldProps): string => {
   /* Output */
 
   return `
-    <div class="${fieldClassesArr.join(' ')}" data-field="${type}">
+    <div class="${fieldClassesArr.join(' ')}" data-form="${type}">
       ${fieldset ? `<fieldset${isStringStrict(fieldsetClasses) ? ` class="${fieldsetClasses}"` : ''}>` : ''}
       ${labelBefore}
       ${input}

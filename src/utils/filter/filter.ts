@@ -43,7 +43,7 @@ let filters: FilterMap = new Map([
  * Add filter to filters map
  *
  * @param {string} name
- * @param {function} filter
+ * @param {GenericFunction} filter
  * @return {boolean}
  */
 const addFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boolean => {
@@ -68,7 +68,7 @@ const addFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boolea
  * Remove filter from filters map
  *
  * @param {string} name
- * @param {function} filter
+ * @param {GenericFunction} filter
  * @return {boolean}
  */
 const removeFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boolean => {

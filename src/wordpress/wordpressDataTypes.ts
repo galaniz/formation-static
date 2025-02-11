@@ -15,9 +15,7 @@ import type {
 /**
  * @typedef {Object<string, (string|number|boolean)>} WordPressDataParams
  */
-export interface WordPressDataParams {
-  [key: string]: string | number | boolean
-}
+export type WordPressDataParams = Record<string, string | number | boolean>
 
 /**
  * @typedef {object} WordPressDataError
