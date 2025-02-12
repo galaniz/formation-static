@@ -35,6 +35,7 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
  * @prop {string} [honeypotFieldClasses]
  * @prop {string} [honeypotLabelClasses]
  * @prop {string} [honeypotClasses]
+ * @prop {string} [honeypotLabel]
  */
 export interface FormArgs extends Generic {
   id?: string
@@ -61,6 +62,7 @@ export interface FormArgs extends Generic {
   honeypotFieldClasses?: string
   honeypotLabelClasses?: string
   honeypotClasses?: string
+  honeypotLabel?: string
 }
 
 /**

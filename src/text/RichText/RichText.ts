@@ -27,7 +27,7 @@ import { isHeading } from '../../utils/heading/heading.js'
  * @param {string} content
  * @return {boolean}
  */
-const containsShortcode = (tag: string = '', content: string = ''): boolean => {
+const containsShortcode = (tag: string, content: string): boolean => {
   if (tag === 'p' && content.charAt(0) === '[' && content.charAt(content.length - 1) === ']') {
     return true
   }
@@ -72,7 +72,7 @@ const getContent = (args: RichTextContentProps): string => {
     item = isObjectStrict(item) ? item : {}
 
     const {
-      link = '',
+      link,
       attr,
       internalLink,
       content: c
@@ -208,13 +208,13 @@ const RichText = (props: RichTextProps): string => {
 
   const {
     content = [],
-    classes = '',
-    link = '',
+    classes,
+    link,
     internalLink,
-    textStyle = '',
-    headingStyle = '',
-    align = '',
-    style = '',
+    textStyle,
+    headingStyle,
+    align,
+    style,
     attr,
     dataAttr = true
   } = args

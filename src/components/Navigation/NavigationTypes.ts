@@ -209,12 +209,14 @@ export type NavigationBreadcrumbOutputFilter = (args: NavigationBreadcrumbOutput
  * @typedef NavigationBreadcrumbOutputArgs
  * @type {NavigationOutputBaseArgs}
  * @prop {string} [currentClass]
+ * @prop {string} [currentLabel]
  * @prop {string} [a11yClass]
  * @prop {NavigationBreadcrumbOutputFilter} [filterBeforeLink]
  * @prop {NavigationBreadcrumbOutputFilter} [filterAfterLink]
  */
 export interface NavigationBreadcrumbOutputArgs extends NavigationOutputBaseArgs {
   currentClass?: string
+  currentLabel?: string
   a11yClass?: string
   filterBeforeLink?: NavigationBreadcrumbOutputFilter
   filterAfterLink?: NavigationBreadcrumbOutputFilter

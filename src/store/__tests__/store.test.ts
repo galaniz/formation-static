@@ -173,11 +173,8 @@ describe('setStoreData()', () => {
   afterEach(() => {
     testResetStore()
     config.normalTypes = {}
-    config.hierarchicalTypes = ['page']
-    config.partialTypes = [
-      'navigationItem',
-      'navigation'
-    ]
+    config.hierarchicalTypes = []
+    config.partialTypes = []
   })
 
   it('should return false if no data', () => {

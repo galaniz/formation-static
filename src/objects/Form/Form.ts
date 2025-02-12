@@ -39,33 +39,35 @@ const Form = (props: FormProps): string[] => {
   }
 
   const { args } = props
+  const newArgs = isObjectStrict(args) ? args : {}
 
   const {
-    id = '',
+    id,
     action = 'sendForm',
-    subject = '',
-    toEmail = '',
-    senderEmail = '',
+    subject,
+    toEmail,
+    senderEmail,
     submitLabel = 'Send',
-    successTitle = '',
-    successText = '',
-    errorTitle = '',
-    errorText = '',
-    errorSummary = '',
-    errorResult = '',
-    successResult = '',
-    formClasses = '',
-    formAttr = '',
-    fieldsClasses = '',
-    fieldsAttr = '',
-    submitFieldClasses = '',
-    submitClasses = '',
-    submitAttr = '',
-    submitLoader = '',
-    honeypotFieldClasses = '',
-    honeypotLabelClasses = '',
-    honeypotClasses = ''
-  } = isObjectStrict(args) ? args : {}
+    successTitle,
+    successText,
+    errorTitle,
+    errorText,
+    errorSummary,
+    errorResult,
+    successResult,
+    formClasses,
+    formAttr,
+    fieldsClasses,
+    fieldsAttr,
+    submitFieldClasses,
+    submitClasses,
+    submitAttr,
+    submitLoader,
+    honeypotFieldClasses,
+    honeypotLabelClasses,
+    honeypotClasses,
+    honeypotLabel = 'Website'
+  } = newArgs
 
   /* Id required */
 
@@ -98,14 +100,14 @@ const Form = (props: FormProps): string[] => {
   if (isStringStrict(successTitle)) {
     scriptMeta.successMessage = {
       primary: successTitle,
-      secondary: successText
+      secondary: isStringStrict(successText) ? successText : ''
     }
   }
 
   if (isStringStrict(errorTitle)) {
     scriptMeta.errorMessage = {
       primary: errorTitle,
-      secondary: errorText
+      secondary: isStringStrict(errorText) ? errorText : ''
     }
   }
 
@@ -124,7 +126,7 @@ const Form = (props: FormProps): string[] => {
   const honeypotName = `${config.namespace}_asi`
   const honeypot = `
     <div${isStringStrict(honeypotFieldClasses) ? ` class="${honeypotFieldClasses}"` : ''}>
-      <label${isStringStrict(honeypotLabelClasses) ? ` class="${honeypotLabelClasses}"` : ''} for="${honeypotId}">Website</label>
+      <label${isStringStrict(honeypotLabelClasses) ? ` class="${honeypotLabelClasses}"` : ''} for="${honeypotId}">${honeypotLabel}</label>
       <input${isStringStrict(honeypotClasses) ? ` class="${honeypotClasses}"` : ''} type="url" name="${honeypotName}" id="${honeypotId}" autocomplete="off">
     </div>
   `

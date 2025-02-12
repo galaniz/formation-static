@@ -105,10 +105,10 @@ class Navigation<L extends string = string> {
     /* Defaults */
 
     const {
-      navigations = [],
-      items = [],
-      currentLink = '',
-      currentType = ''
+      navigations,
+      items,
+      currentLink,
+      currentType
     } = props
 
     /* Check that required items exist */
@@ -121,7 +121,7 @@ class Navigation<L extends string = string> {
 
     this.navigations = navigations
     this.items = items
-    this.currentLink = currentLink
+    this.currentLink = isStringStrict(currentLink) ? currentLink : ''
 
     const typesArr = isArrayStrict(currentType) ? currentType : [currentType]
 
@@ -153,8 +153,8 @@ class Navigation<L extends string = string> {
       }
 
       const {
-        title = '',
-        location = '',
+        title,
+        location,
         items = []
       } = nav
 
@@ -191,10 +191,10 @@ class Navigation<L extends string = string> {
 
     const {
       id,
-      title = '',
+      title,
       link,
       internalLink,
-      externalLink = '',
+      externalLink,
       children
     } = item
 
@@ -261,8 +261,8 @@ class Navigation<L extends string = string> {
    * @return {boolean}
    */
   #recurseItemChildren (
-    children: NavigationItem[] = [],
-    output: NavigationItem[] = []
+    children: NavigationItem[],
+    output: NavigationItem[]
   ): boolean {
     let childCurrent = false
 
@@ -326,7 +326,7 @@ class Navigation<L extends string = string> {
    * @return {void}
    */
   #recurseOutput = (
-    items: NavigationItem[] = [],
+    items: NavigationItem[],
     output: HtmlString,
     args: NavigationOutputArgs,
     depth: number = 0,
@@ -359,10 +359,10 @@ class Navigation<L extends string = string> {
 
     items.forEach((item, index) => {
       const {
-        title = '',
-        link = '',
+        title,
+        link,
         external = false,
-        children = [],
+        children,
         current = false,
         descendentCurrent = false,
         archiveCurrent = false
@@ -461,7 +461,7 @@ class Navigation<L extends string = string> {
 
       /* Nested content */
 
-      if (children.length > 0) {
+      if (isArrayStrict(children)) {
         this.#recurseOutput(children, output, args, depth + 1, maxDepth)
       }
 
@@ -548,7 +548,7 @@ class Navigation<L extends string = string> {
    */
   getBreadcrumbs (
     items: NavigationBreadcrumbItem[],
-    current: string = '',
+    current: string,
     args?: NavigationBreadcrumbOutputArgs
   ): string {
     /* Items required */
@@ -568,6 +568,7 @@ class Navigation<L extends string = string> {
       internalLinkClass: '',
       linkAttr: '',
       currentClass: '',
+      currentLabel: '',
       a11yClass: 'a-hide-vis',
       dataAttr: '',
       filterBeforeLink: () => {},
@@ -577,6 +578,10 @@ class Navigation<L extends string = string> {
     /* Data attributes */
 
     const dataAttr = isStringStrict(args.dataAttr) ? args.dataAttr : 'data-nav'
+
+    /* Current label */
+
+    const currentLabel = isStringStrict(args.currentLabel) ? args.currentLabel : '(current page)'
 
     /* List attributes */
 
@@ -674,7 +679,7 @@ class Navigation<L extends string = string> {
       <ol${listClasses}${listAttrs}>
         ${itemsArr.join('')}
         <li${itemClasses}${itemAttrs} ${dataAttr}-current>
-          <span${currentClasses}>${current}<span${a11yClasses}> (current page)</span></span>
+          <span${currentClasses}>${current}<span${a11yClasses}> ${currentLabel}</span></span>
         </li>
       </ol>
     `

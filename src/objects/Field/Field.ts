@@ -20,18 +20,18 @@ import { isArrayStrict } from '../../utils/array/array.js'
  */
 const getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
   const {
-    opts = [],
-    name = '',
-    classes = '',
-    attr = '',
+    opts,
+    name,
+    classes,
+    attr,
     type = 'checkbox',
-    icon = '',
-    labelClass = ''
+    icon,
+    labelClass
   } = args
 
   /* Opts and name required */
 
-  if (opts.length === 0 || name === '') {
+  if (!isArrayStrict(opts) || !isStringStrict(name)) {
     return ''
   }
 
@@ -39,14 +39,14 @@ const getCheckboxRadioOpts = (args: FieldCheckboxRadioArgs = {}): string => {
 
   return opts.map(opt => {
     const {
-      text = '',
-      value = '',
+      text,
+      value,
       selected = false
     } = opt
 
     const id: string = uuid()
 
-    return `
+    return /* html */`
       <div data-form-option-${type}>
         <input
           type="${type}"
@@ -93,28 +93,28 @@ const Field = (props: FieldProps): string => {
 
   const {
     type = 'text',
-    name = '',
-    label = '',
-    value = '',
+    name,
+    label,
+    value,
     required = false,
-    width = '',
-    widthSmall = '',
-    widthMedium = '',
-    widthLarge = '',
-    autoCompleteToken = '',
-    placeholder = '',
-    options = [],
+    width,
+    widthSmall,
+    widthMedium,
+    widthLarge,
+    autoCompleteToken,
+    placeholder,
+    options,
     rows = 5,
-    emptyErrorMessage = '',
-    invalidErrorMessage = '',
-    fieldsetClasses = '',
-    fieldClasses = '',
-    labelClasses = '',
-    classes = '',
-    visuallyHiddenClass = '',
-    radioIcon = '',
-    checkboxIcon = '',
-    selectIcon = ''
+    emptyErrorMessage,
+    invalidErrorMessage,
+    fieldsetClasses,
+    fieldClasses,
+    labelClasses,
+    classes,
+    visuallyHiddenClass,
+    radioIcon,
+    checkboxIcon,
+    selectIcon
   } = args
 
   let { fieldset = false } = args

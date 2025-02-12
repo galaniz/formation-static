@@ -32,29 +32,36 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     total = 1,
     display = 5,
     current = 1,
-    filters = '',
-    basePermaLink = '',
-    ellipsis = '',
+    filters,
+    basePermaLink,
+    ellipsis,
     prev = '',
     next = '',
+    prevLabel = 'Previous page',
+    nextLabel = 'Next page',
+    currentLabel = 'Current page',
+    pageLabel = 'Page',
+    titleTemplate = 'Page %current of %total',
     args
   } = props
 
+  const newArgs = isObjectStrict(args) ? args : {}
+
   const {
-    listClass = '',
-    listAttr = '',
-    itemClass = '',
-    itemAttr = '',
+    listClass,
+    listAttr,
+    itemClass,
+    itemAttr,
     itemMaxWidth = false,
-    linkClass = '',
-    linkAttr = '',
-    currentClass = '',
+    linkClass,
+    linkAttr,
+    currentClass,
     a11yClass = 'a-hide-vis',
-    prevSpanClass = '',
-    prevLinkClass = '',
-    nextSpanClass = '',
-    nextLinkClass = ''
-  } = isObjectStrict(args) ? args : {}
+    prevSpanClass,
+    prevLinkClass,
+    nextSpanClass,
+    nextLinkClass
+  } = newArgs
 
   /* Total must be greater than 1 and base link required */
 
@@ -104,7 +111,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
   if (current === 1) {
     data.next = current + 1
   } else {
-    data.title = `Page ${current} of ${total}`
+    data.title = titleTemplate.replace('%current', current.toString()).replace('%total', total.toString())
     data.next = current + 1 <= total ? current + 1 : 0
     data.prev = current - 1
     data.prevFilters = prevFilters
@@ -162,7 +169,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     prevItem = `
       <a
         href="${basePermaLink}${current > 2 ? `?page=${current - 1}` : ''}${prevFilters}"
-        aria-label="Previous page"${isStringStrict(prevLinkClass) ? ` class="${prevLinkClass}"` : ''}
+        aria-label="${prevLabel}"${isStringStrict(prevLinkClass) ? ` class="${prevLinkClass}"` : ''}
       >
         ${prev}
       </a>
@@ -197,7 +204,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     if (isCurrent) {
       content = `
         <span${isStringStrict(currentClass) ? ` class="${currentClass}"` : ''}>
-          <span class="${a11yClass}">Current page </span>
+          <span class="${a11yClass}">${currentLabel} </span>
           ${i}
         </span>
       `
@@ -207,7 +214,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
 
       content = `
         <a href="${link}${linkFilters}"${isStringStrict(linkClass) ? ` class="${linkClass}"` : ''}${isStringStrict(linkAttr) ? ` ${linkAttr}` : ''}>
-          <span class="${a11yClass}">Page </span>
+          <span class="${a11yClass}">${pageLabel} </span>
           ${i}
         </a>
       `
@@ -237,7 +244,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     nextItem = `
       <a
         href="${basePermaLink}?page=${current + 1}${nextFilters}"
-        aria-label="Next page"${isStringStrict(nextLinkClass) ? ` class="${nextLinkClass}"` : ''}
+        aria-label="${nextLabel}"${isStringStrict(nextLinkClass) ? ` class="${nextLinkClass}"` : ''}
       >
         ${next}
       </a>

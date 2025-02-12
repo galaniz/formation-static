@@ -130,7 +130,7 @@ const createServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> 
     }
 
     for (const route of routes) {
-      let { path = '', content = '' } = route
+      let { path, content } = route
 
       if (!isStringStrict(path)) {
         continue

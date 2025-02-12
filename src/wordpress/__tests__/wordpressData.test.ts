@@ -5,6 +5,7 @@
 /* Imports */
 
 import type { RenderItem } from '../../render/renderTypes.js'
+import type { CacheData } from '../../utils/filter/filterTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach, beforeAll } from 'vitest'
 import { getWordPressData, getAllWordPressData } from '../wordpressData.js'
 import { taxonomiesById } from '../wordpressDataNormal.js'
@@ -21,7 +22,6 @@ import { categories } from '../../../tests/data/wordpress/categories.js'
 import { tags } from '../../../tests/data/wordpress/tags.js'
 import { media } from '../../../tests/data/wordpress/media.js'
 import { taxonomies } from '../../../tests/data/wordpress/taxonomies.js'
-import { CacheData } from '../../utils/filter/filterTypes.js'
 
 /* Mock fetch */
 
@@ -43,12 +43,20 @@ describe('getWordPressData()', () => {
       prodCredential: 'pass',
       prodHost: 'wp.com'
     }
+
+    config.wholeTypes = ['page']
+    config.partialTypes = [
+      'nav_menu_item',
+      'nav_menu'
+    ]
   })
 
   afterEach(() => {
     config.renderTypes = {}
     config.env.prod = false
     config.env.cache = false
+    config.wholeTypes = []
+    config.partialTypes = []
     taxonomiesById.clear()
     resetFilters()
   })
@@ -110,7 +118,7 @@ describe('getWordPressData()', () => {
   it('should throw an error if route does not exist', async () => {
     await expect(async () => await getWordPressData({
       key: 'key5',
-      route: 'does-not-exist'
+      route: 'does_not_exist'
     })).rejects.toThrowError(mockFetchErrorMessage.route)
   })
 
@@ -343,6 +351,13 @@ describe('getWordPressData()', () => {
 describe('getAllWordPressData()', () => {
   beforeEach(() => {
     config.env.prodUrl = 'http://wp.com/'
+
+    config.wholeTypes = ['page']
+    config.partialTypes = [
+      'nav_menu_item',
+      'nav_menu'
+    ]
+
     config.renderTypes = {
       page: 'p',
       'core/paragraph': 'richText',
@@ -359,18 +374,15 @@ describe('getAllWordPressData()', () => {
     config.env.prod = false
     config.env.prodUrl = ''
     config.renderTypes = {}
-    config.wholeTypes = ['page']
-    config.partialTypes = [
-      'navigationItem',
-      'navigation'
-    ]
+    config.wholeTypes = []
+    config.partialTypes = []
   })
 
   it('should return throw an error if route does not exist', async () => {
     config.partialTypes = [
-      'navigationItem',
-      'navigation',
-      'does-not-exist'
+      'nav_menu_item',
+      'nav_menu',
+      'does_not_exist'
     ]
 
     await expect(async () => await getAllWordPressData()).rejects.toThrowError(mockFetchErrorMessage.route)

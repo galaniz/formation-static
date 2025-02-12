@@ -22,6 +22,7 @@ import type {
 import type {
   RenderItem,
   RenderItemFilter,
+  RenderItemDataFilter,
   RenderContentFilter,
   RenderServerlessData,
   RenderPreviewData,
@@ -33,10 +34,12 @@ import type {
  * @typedef {object} DataFilterArgs
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]
+ * @prop {string} [contentType]
  */
 export interface DataFilterArgs {
   serverlessData?: RenderServerlessData
   previewData?: RenderPreviewData
+  contentType?: string
 }
 
 /**
@@ -138,6 +141,7 @@ export type StoreDataFilter = (
  * @prop {RichTextContentItemFilter} richTextContentItem
  * @prop {RichTextContentOutputFilter} richTextContentOutput
  * @prop {RenderItemFilter} renderItem
+ * @prop {RenderItemDataFilter} renderItemData
  * @prop {RenderContentFilter} renderContent
  * @prop {AjaxResultFilter} ajaxResult
  * @prop {CacheDataFilter} cacheData
@@ -160,6 +164,7 @@ export interface Filters extends Record<string, GenericFunction> {
   richTextContent: RichTextContentFilter
   richTextContentOutput: RichTextContentOutputFilter
   renderItem: RenderItemFilter
+  renderItemData: RenderItemDataFilter
   renderContent: RenderContentFilter
   ajaxResult: AjaxResultFilter
   cacheData: CacheDataFilter
@@ -185,6 +190,7 @@ export interface Filters extends Record<string, GenericFunction> {
  * @prop {Set<RichTextContentFilter>} richTextContent
  * @prop {Set<RichTextContentOutputFilter>} richTextContentOutput
  * @prop {Set<RenderItemFilter>} renderItem
+ * @prop {Set<RenderItemDataFilter>} renderItemData
  * @prop {Set<RenderContentFilter>} renderContent
  * @prop {Set<AjaxResultFilter>} ajaxResult
  * @prop {Set<CacheDataFilter>} cacheData
@@ -207,6 +213,7 @@ export type FilterMap = Map<string, Set<GenericFunction>> & Map<
 'richTextContent' |
 'richTextContentOutput' |
 'renderItem' |
+'renderItemData' |
 'renderContent' |
 'ajaxResult' |
 'cacheData' |
@@ -228,6 +235,7 @@ RichTextContentItemFilter |
 RichTextContentFilter |
 RichTextContentOutputFilter |
 RenderItemFilter |
+RenderItemDataFilter |
 RenderContentFilter |
 AjaxResultFilter |
 CacheDataFilter |

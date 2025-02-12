@@ -30,7 +30,7 @@ import { normalizeContentfulData } from './contentfulDataNormal.js'
  * @return {Promise<RenderItem[]>}
  */
 const getContentfulData = async (
-  key: string = '',
+  key: string,
   params: ContentfulDataParams = {}
 ): Promise<RenderItem[]> => {
   /* Key required for cache */

@@ -16,7 +16,7 @@ import { serverlessDir } from '../../serverless/serverless.js'
  * @param {string} [type]
  * @return {string}
  */
-const getPath = (file: string = '', type: string = ''): string => {
+const getPath = (file: string, type?: string): string => {
   const root = config.env.dir
 
   if (!isStringStrict(root) || !isStringStrict(file)) {

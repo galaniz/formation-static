@@ -34,8 +34,8 @@ const getRoute = (type: string): string => {
     category: 'categories',
     tag: 'tags',
     attachment: 'media',
-    navigation: 'menus',
-    navigationItem: 'menu-items'
+    nav_menu: 'menus',
+    nav_menu_item: 'menu-items'
   }
 
   const route = routes[type]
@@ -317,7 +317,10 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
     const partial = config.partialTypes
 
     for (const contentType of partial) {
-      allData[contentType] = []
+      const partialType =
+        contentType === 'nav_menu' ? 'navigation' : contentType === 'nav_menu_item' ? 'navigationItem' : contentType
+
+      allData[partialType] = []
 
       const key = `all_${contentType}`
 
@@ -329,10 +332,13 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
         }
       })
 
-      data = applyFilters('wordpressData', data, wordpressDataFilterArgs)
+      data = applyFilters('wordpressData', data, {
+        ...wordpressDataFilterArgs,
+        contentType
+      })
 
       if (isArray(data)) {
-        allData[contentType] = data
+        allData[partialType] = data
       }
     }
   }
@@ -355,7 +361,10 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
         }
       })
 
-      data = applyFilters('wordpressData', data, wordpressDataFilterArgs)
+      data = applyFilters('wordpressData', data, {
+        ...wordpressDataFilterArgs,
+        contentType
+      })
 
       if (isArray(data)) {
         allData.content[contentType] = data

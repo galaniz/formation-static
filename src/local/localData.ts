@@ -26,7 +26,7 @@ import { resolveInternalLinks, undefineProps } from './localDataNormal.js'
  * @return {Promise<LocalData | null>}
  */
 const getLocalData = async (
-  key: string = '',
+  key: string,
   params: LocalDataParams = {}
 ): Promise<LocalData | null> => {
   /* Key required for cache */

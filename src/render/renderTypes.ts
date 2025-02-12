@@ -456,6 +456,18 @@ export type RenderContentFilter = <T>(content: string[], args: ParentArgs<T>) =>
 export type RenderItemFilter = (output: string, args: RenderItemActionArgs) => Promise<string> | string
 
 /**
+ * @typedef {function} RenderItemDataFilter
+ * @param {RenderItem} item
+ * @param {object} args
+ * @param {string} args.contentType
+ * @return {Promise<RenderItem>|RenderItem}
+ */
+export type RenderItemDataFilter = (
+  item: RenderItem,
+  args: { contentType: string }
+) => Promise<RenderItem> | RenderItem
+
+/**
  * @typedef {function} RenderStartAction
  * @param {RenderArgs} args
  * @return {Promise<void>|void}

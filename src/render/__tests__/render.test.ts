@@ -20,6 +20,7 @@ import { getStoreItem } from '../../store/store.js'
 import { setRedirects, redirects } from '../../redirects/redirects.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { addScript, addStyle, scripts, styles } from '../../utils/scriptStyle/scriptStyle.js'
+import { config } from '../../config/config.js'
 import {
   render,
   renderItem,
@@ -240,6 +241,7 @@ describe('renderItem()', () => {
 
 describe('render()', () => {
   beforeEach(() => {
+    config.hierarchicalTypes = ['page']
     setRenderFunctions({
       functions: {
         test (props: RenderFunctionArgs<{ testAttr: string }>) {
@@ -335,6 +337,7 @@ describe('render()', () => {
   })
 
   afterEach(() => {
+    config.hierarchicalTypes = []
     testResetRenderFunctions()
     resetActions()
     resetFilters()
@@ -494,6 +497,7 @@ describe('render()', () => {
     const renderItemStart = vi.fn()
     const renderItemEnd = vi.fn()
     const renderItem = vi.fn()
+    const renderItemData = vi.fn()
     const renderContent = vi.fn()
 
     let scriptsStart: Scripts | undefined
@@ -509,7 +513,7 @@ describe('render()', () => {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Page</title>
+          <title>Page Test</title>
         </head>
         <body>
           <section>
@@ -523,7 +527,7 @@ describe('render()', () => {
       <!DOCTYPE html>
       <html lang="en-CA">
         <head>
-          <title>Page</title>
+          <title>Page Test</title>
         </head>
         <body>
           <section>
@@ -580,6 +584,16 @@ describe('render()', () => {
       return output.replace('<html>', '<html lang="en-CA">')
     })
 
+    addFilter('renderItemData', (item, args) => {
+      renderItemData({ item, args })
+
+      if (args.contentType === 'page') {
+        return { ...item, title: 'Page Test' }
+      }
+
+      return item
+    })
+
     addAction('renderItemEnd', (args) => {
       renderItemEnd({ ...args, output: testMinify(expectedOutput) })
       scriptsItemEnd = structuredClone(scripts)
@@ -632,9 +646,33 @@ describe('render()', () => {
     expect(renderItemStart).toHaveBeenCalledTimes(1)
     expect(renderItemEnd).toHaveBeenCalledTimes(1)
     expect(renderItem).toHaveBeenCalledTimes(1)
+    expect(renderItemData).toHaveBeenCalledTimes(1)
     expect(renderContent).toHaveBeenCalledTimes(2)
     expect(renderStart).toHaveBeenCalledWith({ allData })
     expect(renderEnd).toHaveBeenCalledWith({ allData, data: expectedResult })
+    expect(renderItemData).toHaveBeenCalledWith({
+      args: {
+        contentType: 'page'
+      },
+      item: {
+        id: '123',
+        slug: 'page',
+        contentType: 'page',
+        title: 'Page',
+        content: [
+          {
+            id: '456',
+            renderType: 'test',
+            content: 'test'
+          },
+          {
+            renderType: 'testScript',
+            content: ''
+          }
+        ]
+      }
+    })
+
     expect(renderItem).toHaveBeenCalledWith({
       id: '123',
       contentType: 'page',
@@ -644,7 +682,7 @@ describe('render()', () => {
         id: '123',
         slug: 'page',
         contentType: 'page',
-        title: 'Page',
+        title: 'Page Test',
         basePermalink: '/page/',
         parents: [],
         content: undefined
@@ -666,7 +704,7 @@ describe('render()', () => {
         id: '123',
         slug: 'page',
         contentType: 'page',
-        title: 'Page',
+        title: 'Page Test',
         basePermalink: '/page/',
         parents: [],
         content: undefined
@@ -685,7 +723,7 @@ describe('render()', () => {
         id: '123',
         slug: 'page',
         contentType: 'page',
-        title: 'Page',
+        title: 'Page Test',
         content: [
           {
             id: '456',

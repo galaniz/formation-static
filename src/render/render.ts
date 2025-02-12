@@ -910,14 +910,14 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
 
   /* Loop through all content types */
 
-  for (const [, contentItems] of Object.entries(content)) {
+  for (const [contentType, contentItems] of Object.entries(content)) {
     if (!isArrayStrict(contentItems)) {
       continue
     }
 
     for (const contentItem of contentItems) {
       const item = await renderItem({
-        item: contentItem,
+        item: await applyFilters('renderItemData', contentItem, { contentType }, true),
         serverlessData
       })
 

@@ -19,16 +19,9 @@ let config: Config = {
     description: '',
     image: ''
   },
-  partialTypes: [
-    'navigationItem',
-    'navigation'
-  ],
-  wholeTypes: [
-    'page'
-  ],
-  hierarchicalTypes: [
-    'page'
-  ],
+  partialTypes: [],
+  wholeTypes: [],
+  hierarchicalTypes: [],
   localeInSlug: {},
   typeInSlug: {},
   taxonomyInSlug: {},

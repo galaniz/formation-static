@@ -32,7 +32,7 @@ const testNameTwo: string = 'testNameTwo'
 /* Test filters */
 
 describe('filters', () => {
-  it('should be map containing 20 empty sets', () => {
+  it('should be map containing 21 empty sets', () => {
     let allEmpty = true
 
     for (const [, value] of filters) {
@@ -43,7 +43,7 @@ describe('filters', () => {
     }
 
     const size = filters.size
-    const expectedSize = 20
+    const expectedSize = 21
 
     expect(allEmpty).toEqual(true)
     expect(size).toBe(expectedSize)
@@ -289,7 +289,7 @@ describe('resetFilters()', () => {
     filters.delete(testNameOne)
   })
 
-  it('should reset map to initial 20 empty sets', () => {
+  it('should reset map to initial 21 empty sets', () => {
     addFilter(testNameOne, () => false)
     addFilter('richTextOutput', () => '')
     resetFilters()
@@ -304,7 +304,7 @@ describe('resetFilters()', () => {
     }
 
     const size = filters.size
-    const expectedSize = 20
+    const expectedSize = 21
 
     expect(allEmpty).toEqual(true)
     expect(size).toBe(expectedSize)

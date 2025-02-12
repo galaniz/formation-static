@@ -252,8 +252,8 @@ const getSlug = <T extends boolean = false>(
 /**
  * Get absolute or relative url
  *
- * @param {string} slug
- * @param {boolean} trailingSlash
+ * @param {string} [slug]
+ * @param {boolean} [trailingSlash]
  * @return {string}
  */
 const getPermalink = (slug: string = '', trailingSlash: boolean = true): string => {
@@ -263,7 +263,7 @@ const getPermalink = (slug: string = '', trailingSlash: boolean = true): string 
     url = config.env.prodUrl
   }
 
-  if (slug === '/') {
+  if (!isString(slug) || slug === '/') {
     return url
   }
 

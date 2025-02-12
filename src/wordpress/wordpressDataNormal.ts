@@ -616,7 +616,6 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
       title,
       attr_title,
       description,
-      contentType: 'navigationItem',
       target,
       classes,
       xfn,
@@ -704,7 +703,7 @@ const normalizeWordPressMenus = (menus: WordPressDataMenu[]): NavigationList[] =
  */
 const normalizeWordPressData = (
   data: WordPressDataItem[],
-  route: string = '',
+  route?: string,
   _newData: RenderItem[] = []): RenderItem[] => {
   /* Data must be array */
 

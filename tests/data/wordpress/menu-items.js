@@ -5,7 +5,6 @@ export const menuItems = [
     link: 'http://wp.com/home/',
     attr_title: '',
     description: '',
-    contentType: 'navigationItem',
     internalLink: {
       contentType: 'page',
       slug: 'home',
@@ -33,7 +32,6 @@ export const menuItems = [
     link: '/home/sample-page/',
     attr_title: 'Test Attr',
     description: 'test description',
-    contentType: 'navigationItem',
     internalLink: {
       contentType: 'page',
       slug: 'sample-page',
@@ -54,7 +52,6 @@ export const menuItems = [
     link: 'http://wp.com/category/uncategorized/',
     attr_title: '',
     description: '',
-    contentType: 'navigationItem',
     internalLink: {
       contentType: 'term',
       slug: 'uncategorized',
@@ -81,7 +78,6 @@ export const menuItems = [
     externalLink: 'http://example.com',
     attr_title: '',
     description: '',
-    contentType: 'navigationItem',
     target: '',
     classes: [
       ''

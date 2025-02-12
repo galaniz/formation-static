@@ -54,7 +54,7 @@ const mockWordPressFetch = vi.fn(async (
     const path = urlObj.pathname.split('v2/')[1]
     const [route, id] = path?.split('/') ?? []
 
-    if (route === 'does-not-exist') {
+    if (route === 'does_not_exist') {
       status = 500
       data = {
         code: 'route_not_found',
