@@ -9,7 +9,8 @@ import type {
   RichTextOutputFilterArgs,
   RichTextContentProps,
   RichTextContentFilterArgs,
-  RichTextContentOutputFilterArgs
+  RichTextContentOutputFilterArgs,
+  RichTextContent
 } from './RichTextTypes.js'
 import { getLink } from '../../utils/link/link.js'
 import { getExcerpt } from '../../utils/excerpt/excerpt.js'
@@ -67,25 +68,25 @@ const getContent = (args: RichTextContentProps): string => {
 
   let { _output = '' } = args
 
-  for (let item of content) {
-    item = applyFilters('richTextContentItem', item, props)
-    item = isObjectStrict(item) ? item : {}
+  for (const item of content) {
+    const newItem = applyFilters('richTextContentItem', item, props)
+    const itemObj = isObjectStrict(newItem) ? newItem : {}
 
     const {
       link,
       attr,
       internalLink,
-      content: c
-    } = item
+      content: itemContent
+    } = itemObj
 
-    let { tag = '' } = item
-    let cc = c
+    let { tag = '' } = itemObj
+    let newContent = itemContent
 
     /* Nested content */
 
-    if (isArrayStrict(c)) {
-      cc = getContent({
-        content: c,
+    if (isArrayStrict(itemContent)) {
+      newContent = getContent({
+        content: itemContent,
         props,
         dataAttr
       })
@@ -127,19 +128,19 @@ const getContent = (args: RichTextContentProps): string => {
 
     let outputStr = ''
 
-    if (isString(cc)) {
+    if (isString(newContent)) {
       const richTextContentFilterArgs: RichTextContentFilterArgs = {
-        args: item,
+        args: newItem,
         props
       }
 
-      const ccc = applyFilters('richTextContent', cc, richTextContentFilterArgs)
+      const filteredContent = applyFilters('richTextContent', newContent, richTextContentFilterArgs)
 
-      if (isString(ccc)) {
-        cc = ccc
+      if (isString(filteredContent)) {
+        newContent = filteredContent
       }
 
-      outputStr += cc
+      outputStr += newContent
     }
 
     if (containsShortcode(tag, outputStr)) {
@@ -160,7 +161,7 @@ const getContent = (args: RichTextContentProps): string => {
     }
 
     const richTextContentOutputArgs: RichTextContentOutputFilterArgs = {
-      args: item,
+      args: newItem,
       props,
       element: {
         opening,
@@ -175,6 +176,41 @@ const getContent = (args: RichTextContentProps): string => {
   }
 
   /* Output */
+
+  return _output
+}
+
+/**
+ * Rich text content as plain text string
+ *
+ * @param {RichTextContent|RichTextContent[]|string|undefined} args
+ * @return {string}
+ */
+const getPlainText = (
+  args: RichTextContent | RichTextContent[] | string | undefined,
+  _output: string = ''
+): string => {
+  if (isString(args)) {
+    return args
+  }
+
+  const content = isObjectStrict(args) ? args.content : args
+
+  if (!isArrayStrict(content)) {
+    return _output
+  }
+
+  for (const item of content) {
+    const { content: itemContent } = isObjectStrict(item) ? item : {}
+
+    if (isString(itemContent)) {
+      _output += itemContent
+    }
+
+    if (isArrayStrict(itemContent)) {
+      _output += getPlainText({ content: itemContent }, _output)
+    }
+  }
 
   return _output
 }
@@ -381,4 +417,7 @@ const RichText = (props: RichTextProps): string => {
 
 /* Exports */
 
-export { RichText }
+export {
+  RichText,
+  getPlainText
+}

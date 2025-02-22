@@ -117,7 +117,7 @@ export const pages = [
           content: undefined
         },
         contentIsAttribute: 'blocks',
-        blocks: [
+        content: [
           {
             contentType: 'core/paragraph',
             renderType: 'richText',

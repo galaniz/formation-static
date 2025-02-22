@@ -63,6 +63,14 @@ export interface RichTextArgs extends Generic {
 }
 
 /**
+ * @typedef {object} RichTextContent
+ * @prop {RenderRichText[]|string} [content]
+ */
+export interface RichTextContent {
+  content?: RenderRichText[] | string
+}
+
+/**
  * @typedef RichTextProps
  * @type {RenderFunctionArgs}
  * @prop {RichTextArgs} args

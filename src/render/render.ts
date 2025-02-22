@@ -360,6 +360,7 @@ const renderContent = async (
 
     const props = structuredClone(item)
     const renderType = isString(props.renderType) ? props.renderType : ''
+    const contentAttr = props.contentIsAttribute
     const isRichText = renderType === 'richText'
 
     /* Check for nested content */
@@ -383,7 +384,7 @@ const renderContent = async (
 
     /* Children check */
 
-    let childrenArr
+    let childrenArr: undefined | RenderItem[]
     let childrenStr = ''
 
     if (isArrayStrict(children) && !isRichText) {
@@ -398,6 +399,13 @@ const renderContent = async (
 
     if (renderType === 'content' && depth === 0) {
       headingsIndex = pageHeadings.push([]) - 1
+    }
+
+    /* Content is attribute */
+
+    if (isStringStrict(contentAttr)) {
+      props[contentAttr] = children
+      childrenArr = undefined
     }
 
     /* Render output */

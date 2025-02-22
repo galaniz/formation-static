@@ -28,9 +28,9 @@ const getImage = <V extends boolean = false>(
   returnDetails: V = false as V
 ): ImageReturnType<V> => {
   const {
-    data = undefined,
-    classes = '',
-    attr = '',
+    data,
+    classes,
+    attr,
     alt: imageAlt = 'inherit',
     width = 'auto',
     height = 'auto',

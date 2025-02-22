@@ -39,8 +39,6 @@ const Form = (props: FormProps): string[] => {
   }
 
   const { args } = props
-  const newArgs = isObjectStrict(args) ? args : {}
-
   const {
     id,
     action = 'sendForm',
@@ -67,7 +65,7 @@ const Form = (props: FormProps): string[] => {
     honeypotLabelClasses,
     honeypotClasses,
     honeypotLabel = 'Website'
-  } = newArgs
+  } = isObjectStrict(args) ? args : {}
 
   /* Id required */
 

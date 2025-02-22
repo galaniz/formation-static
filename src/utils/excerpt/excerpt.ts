@@ -68,8 +68,8 @@ const getContentWords = <T>(args: ExcerptContentWordArgs<T>): string[] => {
  */
 const getExcerpt = <T extends object>(args: ExcerptArgs<T>): string => {
   const {
-    excerpt = '',
-    content = undefined,
+    excerpt,
+    content,
     prop = 'content',
     limit = 25,
     limitExcerpt = false,

@@ -35,8 +35,6 @@ const Container = (props: ContainerProps): string[] => {
   }
 
   const { args } = props
-  const newArgs = isObjectStrict(args) ? args : {}
-
   const {
     tag = 'div',
     layoutClasses,
@@ -44,7 +42,7 @@ const Container = (props: ContainerProps): string[] => {
     style,
     attr,
     nest = false
-  } = newArgs
+  } = isObjectStrict(args) ? args : {}
 
   /* Tag required */
 

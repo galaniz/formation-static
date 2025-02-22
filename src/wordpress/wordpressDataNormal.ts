@@ -312,7 +312,7 @@ const normalizeEmbedded = (
             taxonomyLookup = 'tags'
           }
 
-          const itemTaxonomy = item[taxonomyLookup]
+          const itemTaxonomy = newItem[taxonomyLookup] ?? item[taxonomyLookup]
 
           if (!isArrayStrict(itemTaxonomy)) {
             return
@@ -363,11 +363,7 @@ const normalizeBlocks = (blocks: readonly Block[]): RenderItem[] => {
       return
     }
 
-    const {
-      contentIsAttribute,
-      attributeIsItem
-    } = attrs
-
+    const { attributeIsItem } = attrs
     const attrItemArr = (isStringStrict(attributeIsItem) ? attributeIsItem : '').split(',')
     const attrItemExists = attrItemArr.length > 0
 
@@ -399,8 +395,7 @@ const normalizeBlocks = (blocks: readonly Block[]): RenderItem[] => {
     }
 
     if (isArrayStrict(innerBlocks)) {
-      const contentAttr = isStringStrict(contentIsAttribute) ? contentIsAttribute : 'content'
-      newItem[contentAttr] = normalizeBlocks(innerBlocks)
+      newItem.content = normalizeBlocks(innerBlocks)
     }
 
     return newItems.push(newItem)

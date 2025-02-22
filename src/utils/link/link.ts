@@ -49,7 +49,7 @@ const getSlug = <T extends boolean = false>(
     page = 0,
     slug: initSlug = '',
     contentType = 'page',
-    pageData = undefined
+    pageData
   } = isObjectStrict(args) ? args : {}
 
   let slug = initSlug

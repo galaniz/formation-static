@@ -35,14 +35,12 @@ const Column = (props: ColumnProps): string[] => {
   }
 
   const { args } = props
-  const newArgs = isObjectStrict(args) ? args : {}
-
   const {
     tag = 'div',
     classes,
     style,
     attr
-  } = newArgs
+  } = isObjectStrict(args) ? args : {}
 
   /* Tag required */
 

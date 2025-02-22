@@ -45,8 +45,6 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     args
   } = props
 
-  const newArgs = isObjectStrict(args) ? args : {}
-
   const {
     listClass,
     listAttr,
@@ -61,7 +59,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     prevLinkClass,
     nextSpanClass,
     nextLinkClass
-  } = newArgs
+  } = isObjectStrict(args) ? args : {}
 
   /* Total must be greater than 1 and base link required */
 

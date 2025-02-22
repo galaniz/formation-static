@@ -250,12 +250,10 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
 const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderAllData | undefined> => {
   /* Args */
 
-  const argsObj = isObjectStrict(args) ? args : {}
-
   const {
     serverlessData,
     previewData
-  } = argsObj
+  } = isObjectStrict(args) ? args : {}
 
   /* All data */
 
