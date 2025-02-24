@@ -32,6 +32,44 @@ import { isNumber } from '../utils/number/number.js'
 import { config } from '../config/config.js'
 
 /**
+ * Normalize WordPress routes
+ *
+ * @type {Map<string, string>}
+ */
+const normalRoutes: Map<string, string> = new Map([
+  ['page', 'pages'],
+  ['post', 'posts'],
+  ['taxonomy', 'taxonomies'],
+  ['category', 'categories'],
+  ['tag', 'tags'],
+  ['attachment', 'media'],
+  ['nav_menu', 'menus'],
+  ['nav_menu_item', 'menu-items']
+])
+
+/**
+ * Normalize WordPress meta keys
+ *
+ * @type {Map<string, string>}
+ */
+const normalMetaKeys: Map<string, string> = new Map()
+
+/**
+ * Taxonomies grouped by id
+ *
+ * @type {Map<string, RenderItem>}
+ */
+const normalTaxonomies: Map<string, RenderItem> = new Map()
+
+/**
+ * Menu items grouped by menu id
+ *
+ * @private
+ * @type {Map<string, WordPressDataMenuChild[]>}
+ */
+const menusById: Map<string, WordPressDataMenuChild[]> = new Map()
+
+/**
  * Properties to exclude from item
  *
  * @private
@@ -43,21 +81,6 @@ const excludeProps: string[] = [
 ]
 
 /**
- * Menu items grouped by menu id
- *
- * @private
- * @type {Map<string, WordPressDataMenuChild[]>}
- */
-const menusById: Map<string, WordPressDataMenuChild[]> = new Map()
-
-/**
- * Taxonomies grouped by id
- *
- * @type {Map<string, RenderItem>}
- */
-const taxonomiesById: Map<string, RenderItem> = new Map()
-
-/**
  * Taxonomy from taxonomies given id
  *
  * @private
@@ -65,7 +88,7 @@ const taxonomiesById: Map<string, RenderItem> = new Map()
  * @return {Taxonomy}
  */
 const getTaxonomy = (id: string): Taxonomy => {
-  const taxonomy = taxonomiesById.get(id)
+  const taxonomy = normalTaxonomies.get(id)
 
   const {
     title = '',
@@ -506,7 +529,8 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 
     if (key === 'meta' && isObj) {
       for (const [metaKey, metaValue] of Object.entries(val as WordPressDataMeta)) {
-        newItem[metaKey] = metaValue
+        const normalKey = normalMetaKeys.get(metaKey) ?? metaKey
+        newItem[normalKey] = metaValue
       }
 
       continue
@@ -737,11 +761,11 @@ const normalizeWordPressData = (
   }
 
   if (route === 'taxonomies') {
-    taxonomiesById.clear()
+    normalTaxonomies.clear()
 
     _newData.forEach(item => {
       const { id = '' } = item
-      taxonomiesById.set(id, item)
+      normalTaxonomies.set(id, item)
     })
   }
 
@@ -754,5 +778,7 @@ const normalizeWordPressData = (
 
 export {
   normalizeWordPressData,
-  taxonomiesById
+  normalRoutes,
+  normalMetaKeys,
+  normalTaxonomies
 }

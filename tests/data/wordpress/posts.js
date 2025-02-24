@@ -27,7 +27,7 @@ export const posts = [
     sticky: false,
     template: '',
     format: 'standard',
-    customMeta: 'Meta test',
+    custom: 'Meta test',
     footnotes: '',
     categories: [
       {
@@ -76,7 +76,7 @@ export const posts = [
     sticky: false,
     template: '',
     format: 'standard',
-    customMeta: '',
+    custom: '',
     footnotes: '',
     categories: [
       {

@@ -11,7 +11,7 @@ import { Navigation } from '../Navigation.js'
 import { setStore } from '../../../store/store.js'
 
 /**
- * Return nav props with specified current link and type
+ * Nav props with specified current link and type
  *
  * @param {string} currentLink
  * @param {string|string[]} currentType
@@ -189,6 +189,41 @@ describe('Navigation', () => {
       expect(navs.get('empty')).not.toBeDefined()
       expect(navs.size).toBe(2)
     })
+
+    it('should return single navigation by location', () => {
+      const nav = home.getNavigationByLocation('header')
+      const expectedNav = {
+        title: 'Home',
+        items: [
+          {
+            id: '1',
+            title: 'Home'
+          },
+          {
+            id: '3',
+            title: 'About',
+            internalLink: {
+              id: 'about',
+              slug: 'about'
+            },
+            children: [
+              {
+                id: '2',
+                title: 'Blog'
+              },
+              null
+            ]
+          },
+          {
+            id: '4',
+            title: 'External',
+            externalLink: 'http://external.com/'
+          }
+        ]
+      }
+
+      expect(nav).toEqual(expectedNav)
+    })
   })
 
   /* Test getOutput */
@@ -285,26 +320,29 @@ describe('Navigation', () => {
         linkClass: 'z',
         internalLinkClass: 'in',
         linkAttr: 'data-z',
+        itemTag: 'div',
+        listTag: 'div',
+        dataAttr: 'data-test',
         depthAttr: true
       })
 
       const expected = `
-        <ul data-nav-depth="0" class="x" data-x>
-          <li data-nav-depth="0" class="y" data-y data-nav-current>
-            <a data-nav-depth="0" class="z in" href="/" data-z data-nav-current aria-current="page">Home</a>
-          </li>
-          <li data-nav-depth="0" class="y" data-y>
-            <a data-nav-depth="0" class="z in" href="/about/" data-z>About</a>
-            <ul data-nav-depth="1" class="x" data-x>
-              <li data-nav-depth="1" class="y" data-y>
-                <a data-nav-depth="1" class="z in" href="/blog/" data-z>Blog</a>
-              </li>
-            </ul>
-          </li>
-          <li data-nav-depth="0" class="y" data-y>
-            <a data-nav-depth="0" class="z" href="http://external.com/" data-z>External</a>
-          </li>
-        </ul>
+        <div data-test-depth="0" class="x" data-x>
+          <div data-test-depth="0" class="y" data-y data-test-current>
+            <a data-test-depth="0" class="z in" href="/" data-z data-test-current aria-current="page">Home</a>
+          </div>
+          <div data-test-depth="0" class="y" data-y>
+            <a data-test-depth="0" class="z in" href="/about/" data-z>About</a>
+            <div data-test-depth="1" class="x" data-x>
+              <div data-test-depth="1" class="y" data-y>
+                <a data-test-depth="1" class="z in" href="/blog/" data-z>Blog</a>
+              </div>
+            </div>
+          </div>
+          <div data-test-depth="0" class="y" data-y>
+            <a data-test-depth="0" class="z" href="http://external.com/" data-z>External</a>
+          </div>
+        </div>
       `
 
       const result = testMinify(res)
@@ -566,6 +604,25 @@ describe('Navigation', () => {
       expect(result).toBe(expectedResult)
     })
 
+    it('should return ordered list markup without current item', () => {
+      const res = home.getBreadcrumbs(breadcrumbItems)
+      const expected = `
+        <ol>
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li data-nav-last>
+            <a href="/about/">About</a>
+          </li>
+        </ol>
+      `
+
+      const result = testMinify(res)
+      const expectedResult = testMinify(expected)
+
+      expect(result).toBe(expectedResult)
+    })
+
     it('should return ordered list markup', () => {
       const res = home.getBreadcrumbs(breadcrumbItems, 'Current Page')
       const expected = `
@@ -601,6 +658,8 @@ describe('Navigation', () => {
         internalLinkClass: 'in',
         linkAttr: 'data-z',
         currentClass: 'c',
+        currentLabel: '(test)',
+        dataAttr: 'data-test',
         a11yClass: ''
       })
 
@@ -609,13 +668,13 @@ describe('Navigation', () => {
           <li class="y" data-y>
             <a class="z in" href="/" data-z>Home</a>
           </li>
-          <li class="y" data-y data-nav-last>
+          <li class="y" data-y data-test-last>
             <a class="z in" href="/about/" data-z>About</a>
           </li>
-          <li class="y" data-y data-nav-current>
+          <li class="y" data-y data-test-current>
             <span class="c">
               Current Page
-              <span> (current page)</span>
+              <span> (test)</span>
             </span>
           </li>
         </ol>

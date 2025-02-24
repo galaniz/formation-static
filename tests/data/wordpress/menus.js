@@ -21,6 +21,11 @@ export const menus = [
         id: '16',
         title: 'Example',
         menu_order: 4
+      },
+      {
+        id: '17',
+        title: 'Lorem',
+        menu_order: 5
       }
     ],
     meta: []

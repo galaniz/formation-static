@@ -63,10 +63,11 @@ export interface RichTextArgs extends Generic {
 }
 
 /**
- * @typedef {object} RichTextContent
+ * @typedef RichTextContent
+ * @type {Generic}
  * @prop {RenderRichText[]|string} [content]
  */
-export interface RichTextContent {
+export interface RichTextContent extends Generic {
   content?: RenderRichText[] | string
 }
 

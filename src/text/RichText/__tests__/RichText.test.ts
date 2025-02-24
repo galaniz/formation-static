@@ -6,9 +6,65 @@
 
 import { it, expect, describe, vi, afterEach } from 'vitest'
 import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
-import { RichText } from '../RichText.js'
+import { RichText, getPlainText } from '../RichText.js'
 
-/* Tests */
+/* Test getPlainText */
+
+describe('getPlainText()', () => {
+  it('should return empty string if no args', () => {
+    // @ts-expect-error - test no args
+    const result = getPlainText()
+    const expectedResult = ''
+
+    expect(result).toBe(expectedResult)
+  })
+
+  it('should return string if args is string', () => {
+    const result = getPlainText('test')
+    const expectedResult = 'test'
+
+    expect(result).toBe(expectedResult)
+  })
+
+  it('should return plain text if args is array with content', () => {
+    const result = getPlainText([
+      {
+        tag: 'p',
+        content: [
+          {
+            content: 'one '
+          },
+          // @ts-expect-error - test null content
+          null,
+          {
+            content: [
+              {
+                content: 'two '
+              }
+            ]
+          },
+          {
+            content: [
+              {
+                content: [
+                  {
+                    content: 'three'
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ])
+
+    const expectedResult = 'one two three'
+
+    expect(result).toBe(expectedResult)
+  })
+})
+
+/* Test RichText */
 
 describe('RichText()', () => {
   afterEach(() => {
@@ -345,11 +401,33 @@ describe('RichText()', () => {
     })
   })
 
-  it('should span with nested link and span', () => {
+  it('should return paragraph with nested span', () => {
+    const result = RichText({
+      args: {
+        tag: 'p',
+        dataAttr: false,
+        content: [
+          {
+            tag: 'span',
+            content: 'test'
+          }
+        ]
+      }
+    })
+
+    const expectedResult = '<p><span>test</span></p>'
+
+    expect(result).toBe(expectedResult)
+  })
+
+  it('should return span with nested link, span and attributes', () => {
     const result = RichText({
       args: {
         tag: 'span',
         dataAttr: false,
+        attr: {
+          'data-test': '1'
+        },
         content: [
           {
             tag: 'a',
@@ -362,9 +440,11 @@ describe('RichText()', () => {
             content: [
               {
                 tag: 'span',
+                attr: {
+                  'data-test': '2'
+                },
                 content: [
                   {
-                    attr: 'data-none',
                     content: 'Post One'
                   }
                 ]
@@ -376,7 +456,7 @@ describe('RichText()', () => {
     })
 
     const expectedResult =
-      '<span><a href="/post-1/"><span>Post One</span></a></span>'
+      '<span data-test="1"><a href="/post-1/"><span data-test="2">Post One</span></a></span>'
 
     expect(result).toBe(expectedResult)
   })

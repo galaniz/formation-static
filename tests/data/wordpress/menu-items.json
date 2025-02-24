@@ -723,6 +723,127 @@
     }
   },
   {
+    "id": 17,
+    "title": {
+      "rendered": "Lorem"
+    },
+    "status": "publish",
+    "url": "http://wp.com/lorem/",
+    "attr_title": "",
+    "description": "",
+    "type": "custom",
+    "type_label": "Custom Link",
+    "object": "custom",
+    "object_id": 17,
+    "parent": 0,
+    "menu_order": 5,
+    "target": "",
+    "classes": [
+      ""
+    ],
+    "xfn": [
+      ""
+    ],
+    "invalid": false,
+    "meta": [],
+    "menus": 3,
+    "_links": {
+      "self": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/menu-items/17",
+          "targetHints": {
+            "allow": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/menu-items"
+        }
+      ],
+      "about": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/types/nav_menu_item"
+        }
+      ],
+      "wp:term": [
+        {
+          "taxonomy": "nav_menu",
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/menus?post=17"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    },
+    "_embedded": {
+      "wp:term": [
+        [
+          {
+            "id": 3,
+            "name": "Primary",
+            "slug": "primary",
+            "_links": {
+              "self": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menus/3",
+                  "targetHints": {
+                    "allow": [
+                      "GET",
+                      "POST",
+                      "PUT",
+                      "PATCH",
+                      "DELETE"
+                    ]
+                  }
+                }
+              ],
+              "collection": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menus"
+                }
+              ],
+              "about": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/taxonomies/nav_menu"
+                }
+              ],
+              "wp:post_type": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/menu-items?menus=3"
+                }
+              ],
+              "wp:menu-location": [
+                {
+                  "embeddable": true,
+                  "href": "http://wp.com/wp-json/wp/v2/menu-locations/primary"
+                }
+              ],
+              "curies": [
+                {
+                  "name": "wp",
+                  "href": "https://api.w.org/{rel}",
+                  "templated": true
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    }
+  },
+  {
     "id": 20
   }
 ]

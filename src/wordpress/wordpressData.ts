@@ -12,7 +12,7 @@ import type {
 } from './wordpressDataTypes.js'
 import type { RenderAllData, RenderItem } from '../render/renderTypes.js'
 import type { CacheData, DataFilterArgs } from '../utils/filter/filterTypes.js'
-import { normalizeWordPressData } from './wordpressDataNormal.js'
+import { normalizeWordPressData, normalRoutes } from './wordpressDataNormal.js'
 import { applyFilters } from '../utils/filter/filter.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
@@ -27,18 +27,7 @@ import { config } from '../config/config.js'
  * @return {string}
  */
 const getRoute = (type: string): string => {
-  const routes: Record<string, string> = {
-    page: 'pages',
-    post: 'posts',
-    taxonomy: 'taxonomies',
-    category: 'categories',
-    tag: 'tags',
-    attachment: 'media',
-    nav_menu: 'menus',
-    nav_menu_item: 'menu-items'
-  }
-
-  const route = routes[type]
+  const route = normalRoutes.get(type)
 
   if (isString(route)) {
     return route

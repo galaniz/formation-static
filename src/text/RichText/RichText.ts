@@ -154,7 +154,7 @@ const getContent = (args: RichTextContentProps): string => {
     let inner = ''
 
     if (isStringStrict(tag) && outputStr.trim() !== '') {
-      opening = `<${tag}${(attrs.length > 0) ? ` ${attrs.join(' ')}` : ''}>`
+      opening = `<${tag}${attrs.length > 0 ? ` ${attrs.join(' ')}` : ''}>`
       closing = `</${tag}>`
       inner = outputStr
       outputStr = `${opening}${outputStr}${closing}`
@@ -208,7 +208,7 @@ const getPlainText = (
     }
 
     if (isArrayStrict(itemContent)) {
-      _output += getPlainText({ content: itemContent }, _output)
+      _output = getPlainText({ content: itemContent }, _output)
     }
   }
 
@@ -395,7 +395,7 @@ const RichText = (props: RichTextProps): string => {
   let inner = ''
 
   if (isStringStrict(tag) && output.trim() !== '') {
-    opening = `<${tag}${(attrs.length > 0) ? ` ${attrs.join(' ')}` : ''}>`
+    opening = `<${tag}${attrs.length > 0 ? ` ${attrs.join(' ')}` : ''}>`
     closing = `</${tag}>`
     inner = output
     output = `${opening}${output}${closing}`

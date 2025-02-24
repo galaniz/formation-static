@@ -8,7 +8,7 @@ import type { RenderItem } from '../../render/renderTypes.js'
 import type { CacheData } from '../../utils/filter/filterTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach, beforeAll } from 'vitest'
 import { getWordPressData, getAllWordPressData } from '../wordpressData.js'
-import { taxonomiesById } from '../wordpressDataNormal.js'
+import { normalMetaKeys, normalTaxonomies } from '../wordpressDataNormal.js'
 import { mockFetchErrorMessage } from '../../../tests/types.js'
 import { mockWordPressFetch } from './wordpressDataMock.js'
 import { addFilter, resetFilters } from '../../utils/filter/filter.js'
@@ -49,6 +49,8 @@ describe('getWordPressData()', () => {
       'nav_menu_item',
       'nav_menu'
     ]
+
+    normalMetaKeys.set('customMeta', 'custom')
   })
 
   afterEach(() => {
@@ -57,7 +59,8 @@ describe('getWordPressData()', () => {
     config.env.cache = false
     config.wholeTypes = []
     config.partialTypes = []
-    taxonomiesById.clear()
+    normalTaxonomies.clear()
+    normalMetaKeys.set('customMeta', 'custom')
     resetFilters()
   })
 
@@ -132,7 +135,10 @@ describe('getWordPressData()', () => {
   it('should return empty array if data is empty array', async () => {
     const result = await getWordPressData({
       key: 'emptyKey',
-      route: 'empty'
+      route: 'empty',
+      params: {
+        _embed: 'wp:term' // Embed param coverage
+      }
     })
     const expectedResult: RenderItem[] = []
 
@@ -221,12 +227,20 @@ describe('getWordPressData()', () => {
       'frm/custom': 'custom'
     }
 
+    const meta = { // Meta coverage
+      total: 0,
+      totalPages: 0
+    }
+
     const result = await getWordPressData({
       key: 'pagesKey',
-      route: 'pages'
+      route: 'pages',
+      meta
     })
 
     expect(result).toEqual(pages)
+    expect(meta.total).toEqual(1)
+    expect(meta.totalPages).toEqual(1)
   })
 
   it('should return array of one post with id 1', async () => {
@@ -351,7 +365,6 @@ describe('getWordPressData()', () => {
 describe('getAllWordPressData()', () => {
   beforeEach(() => {
     config.env.prodUrl = 'http://wp.com/'
-
     config.wholeTypes = ['page']
     config.partialTypes = [
       'nav_menu_item',
@@ -363,12 +376,15 @@ describe('getAllWordPressData()', () => {
       'core/paragraph': 'richText',
       'frm/custom': 'custom'
     }
+
+    normalMetaKeys.set('customMeta', 'custom')
   })
 
   afterEach(() => {
     resetFilters()
-    taxonomiesById.clear()
     setStoreItem('slugs', {})
+    normalTaxonomies.clear()
+    normalMetaKeys.clear()
     config.cms.ssl = true
     config.cms.prodHost = ''
     config.env.prod = false
@@ -404,7 +420,7 @@ describe('getAllWordPressData()', () => {
       }
     }
 
-    expect(result?.navigationItem).toEqual(expectedResult.navigationItem)
+    expect(result).toEqual(expectedResult)
   })
 
   it('should return menu items, menus and one post with id 1 from preview data', async () => {

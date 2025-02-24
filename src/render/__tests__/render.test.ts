@@ -272,6 +272,12 @@ describe('render()', () => {
           }
 
           return ''
+        },
+        testContentIsAttribute (props: RenderFunctionArgs<{ blocks: Array<{ content: string }> }>) {
+          const { args } = props
+          const { blocks } = args
+
+          return blocks[0]?.content ?? ''
         }
       },
       layout: (args) => {
@@ -1013,6 +1019,54 @@ describe('render()', () => {
         }
       ]
     ])
+  })
+
+  it('should return body output from content is attribute', async () => {
+    const result = await render({
+      allData: {
+        content: {
+          page: [
+            {
+              id: '9',
+              slug: 'test',
+              title: 'Test',
+              contentType: 'page',
+              content: [
+                {
+                  renderType: 'testContentIsAttribute',
+                  contentIsAttribute: 'blocks',
+                  content: [
+                    {
+                      content: 'Attribute test'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }) as RenderReturn[]
+
+    const expectedResult = [
+      {
+        slug: '/test/',
+        output: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Test</title>
+            </head>
+            <body>Attribute test</body>
+          </html>
+        `
+      }
+    ]
+
+    const resultMin = minifyOutput(result)
+    const expectedResultMin = minifyOutput(expectedResult)
+
+    expect(resultMin).toEqual(expectedResultMin)
   })
 
   it('should return item with unformatted slug', async () => {

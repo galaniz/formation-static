@@ -12,7 +12,8 @@ import type {
   NavigationItemsById,
   NavigationBreadcrumbItem,
   NavigationOutputArgs,
-  NavigationBreadcrumbOutputArgs
+  NavigationBreadcrumbOutputArgs,
+  NavigationByLocationItem
 } from './NavigationTypes.js'
 import type { HtmlString } from '../../global/globalTypes.js'
 import { getSlug, getPermalink, getLink } from '../../utils/link/link.js'
@@ -289,7 +290,7 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Return navigation items by id
+   * Navigation items by id
    *
    * @private
    * @param {NavigationItem[]} items
@@ -484,7 +485,7 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Return navigation html output
+   * Navigation html output
    *
    * @param {string} location
    * @param {NavigationOutputArgs} args
@@ -510,10 +511,10 @@ class Navigation<L extends string = string> {
     }
 
     args = Object.assign({
-      listTag: 'ul',
+      listTag: '',
       listClass: '',
       listAttr: '',
-      itemTag: 'li',
+      itemTag: '',
       itemClass: '',
       itemAttr: '',
       linkClass: '',
@@ -539,16 +540,16 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Return breadcrumbs html output
+   * Breadcrumbs html output
    *
    * @param {NavigationBreadcrumbItem[]} items
-   * @param {string} current
+   * @param {string} [current]
    * @param {NavigationBreadcrumbOutputArgs} [args]
    * @return {string} HTMLOListElement
    */
   getBreadcrumbs (
     items: NavigationBreadcrumbItem[],
-    current: string,
+    current?: string,
     args?: NavigationBreadcrumbOutputArgs
   ): string {
     /* Items required */
@@ -578,10 +579,6 @@ class Navigation<L extends string = string> {
     /* Data attributes */
 
     const dataAttr = isStringStrict(args.dataAttr) ? args.dataAttr : 'data-nav'
-
-    /* Current label */
-
-    const currentLabel = isStringStrict(args.currentLabel) ? args.currentLabel : '(current page)'
 
     /* List attributes */
 
@@ -670,23 +667,29 @@ class Navigation<L extends string = string> {
       return output.html
     })
 
-    /* Output */
+    /* Current item */
 
+    const currentLabel = isStringStrict(args.currentLabel) ? args.currentLabel : '(current page)'
     const currentClasses = isStringStrict(args.currentClass) ? ` class="${args.currentClass}"` : ''
     const a11yClasses = isStringStrict(args.a11yClass) ? ` class="${args.a11yClass}"` : ''
+    const currentItem = isStringStrict(current) ? `
+      <li${itemClasses}${itemAttrs} ${dataAttr}-current>
+        <span${currentClasses}>${current}<span${a11yClasses}> ${currentLabel}</span></span>
+      </li>
+    ` : ''
+
+    /* Output */
 
     return `
       <ol${listClasses}${listAttrs}>
         ${itemsArr.join('')}
-        <li${itemClasses}${itemAttrs} ${dataAttr}-current>
-          <span${currentClasses}>${current}<span${a11yClasses}> ${currentLabel}</span></span>
-        </li>
+        ${currentItem}
       </ol>
     `
   }
 
   /**
-   * Return object of items stored by id
+   * Items stored by id
    *
    * @return {NavigationItemsById}
    */
@@ -695,12 +698,22 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Return object of navigations stored by location
+   * All navigations stored by location
    *
    * @return {NavigationByLocation}
    */
   getNavigationsByLocation (): NavigationByLocation<L> {
     return this.#navigationsByLocation
+  }
+
+  /**
+   * Single navigation by location
+   *
+   * @param {string} location
+   * @return {NavigationByLocationItem|undefined}
+   */
+  getNavigationByLocation (location: L): NavigationByLocationItem | undefined {
+    return this.#navigationsByLocation.get(location)
   }
 }
 

@@ -49,7 +49,7 @@ const Ajax = async (context: ServerlessContext, setupServerless: ServerlessSetup
 
     const honeypotName = `${config.namespace}_asi`
 
-    if (isObjectStrict(data.inputs[honeypotName])) {
+    if (isObjectStrict(data.inputs?.[honeypotName])) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
       const honeypotValue = data.inputs[honeypotName].value
 
       if (isStringStrict(honeypotValue)) {

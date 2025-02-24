@@ -86,5 +86,20 @@ export const menuItems = [
       ''
     ],
     meta: []
+  },
+  {
+    id: '17',
+    title: 'Lorem',
+    link: 'http://wp.com/lorem/',
+    attr_title: '',
+    description: '',
+    target: '',
+    classes: [
+      ''
+    ],
+    xfn: [
+      ''
+    ],
+    meta: []
   }
 ]
