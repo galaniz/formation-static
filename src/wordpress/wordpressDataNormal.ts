@@ -25,6 +25,7 @@ import type { NavigationList, NavigationItem } from '../components/Navigation/Na
 import { parse } from '@wordpress/block-serialization-spec-parser'
 import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { getObjectKeys } from '../utils/object/objectUtils.js'
+import { getStoreItem, setStoreItem } from '../store/store.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
 import { isArrayStrict } from '../utils/array/array.js'
 import { isObjectStrict } from '../utils/object/object.js'
@@ -55,13 +56,6 @@ const normalRoutes: Map<string, string> = new Map([
 const normalMetaKeys: Map<string, string> = new Map()
 
 /**
- * Taxonomies grouped by id
- *
- * @type {Map<string, RenderItem>}
- */
-const normalTaxonomies: Map<string, RenderItem> = new Map()
-
-/**
  * Menu items grouped by menu id
  *
  * @private
@@ -88,7 +82,7 @@ const excludeProps: string[] = [
  * @return {Taxonomy}
  */
 const getTaxonomy = (id: string): Taxonomy => {
-  const taxonomy = normalTaxonomies.get(id)
+  const taxonomy = getStoreItem('taxonomies')[id]
 
   const {
     title = '',
@@ -761,11 +755,10 @@ const normalizeWordPressData = (
   }
 
   if (route === 'taxonomies') {
-    normalTaxonomies.clear()
+    setStoreItem('taxonomies', {})
 
     _newData.forEach(item => {
-      const { id = '' } = item
-      normalTaxonomies.set(id, item)
+      setStoreItem('taxonomies', item as Taxonomy, item.id)
     })
   }
 
@@ -779,6 +772,5 @@ const normalizeWordPressData = (
 export {
   normalizeWordPressData,
   normalRoutes,
-  normalMetaKeys,
-  normalTaxonomies
+  normalMetaKeys
 }

@@ -7,7 +7,7 @@
 import type { NavigationList, NavigationItem } from '../components/Navigation/NavigationTypes.js'
 import type { ImageProps } from '../utils/image/imageTypes.js'
 import type { FormMeta } from '../objects/Form/FormTypes.js'
-import type { Generic } from '../global/globalTypes.js'
+import type { Generic, Taxonomy } from '../global/globalTypes.js'
 
 /**
  * @typedef {object} StoreSlug
@@ -65,6 +65,7 @@ export interface StoreArchiveMeta {
  * @prop {Object<string, ImageProps>} imageMeta
  * @prop {NavigationList[]} navigations
  * @prop {NavigationItem[]} navigationItems
+ * @prop {Object<string, Taxonomy>} taxonomies
  */
 export interface Store extends Generic {
   slugs: Record<string, StoreSlug>
@@ -74,4 +75,5 @@ export interface Store extends Generic {
   imageMeta: Record<string, ImageProps>
   navigations: NavigationList[]
   navigationItems: NavigationItem[]
+  taxonomies: Record<string, Taxonomy>
 }

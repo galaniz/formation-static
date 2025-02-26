@@ -12,6 +12,7 @@ import type {
   Shortcodes,
   ShortcodesSet
 } from './shortcodeTypes.js'
+import type { RenderItem } from '../../render/renderTypes.js'
 import { isObjectStrict } from '../object/object.js'
 import { isArrayStrict } from '../array/array.js'
 import { isStringStrict } from '../string/string.js'
@@ -41,12 +42,14 @@ const attrReg: RegExp = /[\w-]+=".*?"/g
  * @param {string} content
  * @param {string} tagNames
  * @param {Shortcode} [props]
+ * @param {RenderItem} [pageData]
  * @return {ShortcodeData[]}
  */
 const getShortcodeData = (
   content: string,
   tagNames: string,
-  props?: Partial<Shortcode>
+  props?: Partial<Shortcode>,
+  pageData?: RenderItem
 ): ShortcodeData[] => {
   /* Content and tag names required */
 
@@ -157,7 +160,7 @@ const getShortcodeData = (
     let children: ShortcodeData[] = []
 
     if (hasChild) {
-      children = getShortcodeData(innerContent, child)
+      children = getShortcodeData(innerContent, child, props, pageData)
     }
 
     /* Add data */
@@ -167,7 +170,8 @@ const getShortcodeData = (
       replaceContent,
       content: innerContent,
       attributes,
-      children
+      children,
+      pageData
     })
   })
 
@@ -211,9 +215,10 @@ const removeShortcode = (name: string): boolean => {
  * Transform content string with shortcode callbacks
  *
  * @param {string} content
+ * @param {RenderItem} [pageData]
  * @return {Promise<string>}
  */
-const doShortcodes = async (content: string): Promise<string> => {
+const doShortcodes = async (content: string, pageData?: RenderItem): Promise<string> => {
   /* Check if any shortcodes */
 
   if (shortcodes.size === 0) {
@@ -223,7 +228,7 @@ const doShortcodes = async (content: string): Promise<string> => {
   /* Get data */
 
   const names = [...shortcodes.keys()].join('|')
-  const data = getShortcodeData(content, names)
+  const data = getShortcodeData(content, names, undefined, pageData)
 
   if (data.length === 0) {
     return content
@@ -233,12 +238,12 @@ const doShortcodes = async (content: string): Promise<string> => {
 
   let newContent = content
 
-  for (const d of data) {
-    const { name, replaceContent } = d
+  for (const datum of data) {
+    const { name, replaceContent } = datum
     const callback = shortcodes.get(name)?.callback
 
     if (isFunction(callback)) {
-      const res = await callback(d)
+      const res = await callback({ ...datum, pageData })
 
       if (isStringStrict(res)) {
         newContent = newContent.replace(replaceContent, res)

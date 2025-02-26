@@ -5,6 +5,7 @@
 /* Imports */
 
 import type { GenericStrings } from '../../global/globalTypes.js'
+import type { RenderItem } from '../../render/renderTypes.js'
 
 /**
  * @typedef {string|number|boolean} ShortcodeAttrValue
@@ -23,6 +24,7 @@ export type ShortcodeAttrs = Record<string, ShortcodeAttrValue>
  * @prop {string} content
  * @prop {ShortcodeAtts} attributes
  * @prop {ShortcodeData[]} children
+ * @prop {RenderItem} [pageData]
  */
 export interface ShortcodeData {
   name: string
@@ -30,6 +32,7 @@ export interface ShortcodeData {
   content: string
   attributes: ShortcodeAttrs
   children: ShortcodeData[]
+  pageData?: RenderItem
 }
 
 /**

@@ -154,7 +154,7 @@ export interface RenderRichText {
 /**
  * @typedef {object} RenderTemplate
  * @prop {RenderItem[]} content
- * @prop {Record<string, RenderItem>} namedContent
+ * @prop {Object<string, RenderItem>} namedContent
  * @prop {RenderItem[]} templates
  */
 export interface RenderTemplate {

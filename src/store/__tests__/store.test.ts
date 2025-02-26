@@ -54,6 +54,7 @@ describe('setStore()', () => {
       formMeta: {},
       archiveMeta: {},
       imageMeta: {},
+      taxonomies: {},
       test: []
     }
 
@@ -386,7 +387,8 @@ describe('setStoreData()', () => {
           plural: 'Categories'
         }
       },
-      imageMeta: {}
+      imageMeta: {},
+      taxonomies: {}
     }
 
     expect(result).toBe(expectedResult)
@@ -478,6 +480,7 @@ describe('createStoreFiles()', () => {
     const formMeta = await readFile('/files/formMeta.json', { encoding: 'utf8' })
     const archiveMeta = await readFile('/files/archiveMeta.json', { encoding: 'utf8' })
     const imageMeta = await readFile('/files/imageMeta.json', { encoding: 'utf8' })
+    const taxonomies = await readFile('/files/taxonomies.json', { encoding: 'utf8' })
     const test = await readFile('/files/test.json', { encoding: 'utf8' })
 
     expect(JSON.parse(slugs)).toEqual({})
@@ -487,6 +490,7 @@ describe('createStoreFiles()', () => {
     expect(JSON.parse(formMeta)).toEqual({})
     expect(JSON.parse(archiveMeta)).toEqual({})
     expect(JSON.parse(imageMeta)).toEqual({})
+    expect(JSON.parse(taxonomies)).toEqual({})
     expect(JSON.parse(test)).toEqual(testData)
   })
 })

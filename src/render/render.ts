@@ -205,7 +205,7 @@ const getContentTemplate = (
  * @private
  * @param {RenderItem[]} templates
  * @param {RenderItem[]} [content]
- * @param {Record<string, RenderItem>} [namedContent]
+ * @param {Object<string, RenderItem>} [namedContent]
  * @param {boolean} [named]
  * @return {RenderItem[]}
  */
@@ -532,9 +532,10 @@ const renderContent = async (
  * Output single post or page
  *
  * @param {RenderItemArgs} args
+ * @param {string} [_contentType] - Rest content type
  * @return {Promise<RenderItemReturn|null>}
  */
-const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn | null> => {
+const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<RenderItemReturn | null> => {
   /* Args required */
 
   if (!isObjectStrict(args)) {
@@ -678,7 +679,14 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn | null
     formattedSlug = slug
   }
 
-  setStoreItem('slugs', { contentType, id }, slugIsHtml ? `/${slug}` : formattedSlug)
+  setStoreItem(
+    'slugs',
+    {
+      id,
+      contentType: isStringStrict(_contentType) ? _contentType : contentType
+    },
+    slugIsHtml ? `/${slug}` : formattedSlug
+  )
 
   /* Check if index */
 
@@ -754,7 +762,7 @@ const renderItem = async (args: RenderItemArgs): Promise<RenderItemReturn | null
     })
   }
 
-  contentOutput = await doShortcodes(contentOutput)
+  contentOutput = await doShortcodes(contentOutput, pageData)
 
   /* Pagination variables for meta object */
 
@@ -927,7 +935,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
       const item = await renderItem({
         item: await applyFilters('renderItemData', contentItem, { contentType }, true),
         serverlessData
-      })
+      }, contentType)
 
       if (item == null) {
         continue

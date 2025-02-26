@@ -31,7 +31,8 @@ const defaultStore: Store = {
   navigationItems: [],
   formMeta: {},
   archiveMeta: {},
-  imageMeta: {}
+  imageMeta: {},
+  taxonomies: {}
 }
 
 /**

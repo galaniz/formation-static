@@ -40,7 +40,8 @@ const testDefaultStore = (): Store => {
     navigationItems: [],
     formMeta: {},
     archiveMeta: {},
-    imageMeta: {}
+    imageMeta: {},
+    taxonomies: {}
   }
 }
 
