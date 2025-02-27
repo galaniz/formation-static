@@ -746,17 +746,7 @@ const normalizeWordPressData = (
 
   /* Customize by route */
 
-  if (route === 'menu-items') {
-    _newData = normalizeWordPressMenuItems(_newData)
-  }
-
-  if (route === 'menus') {
-    _newData = normalizeWordPressMenus(_newData)
-  }
-
   if (route === 'taxonomies') {
-    setStoreItem('taxonomies', {})
-
     _newData.forEach(item => {
       setStoreItem('taxonomies', item as Taxonomy, item.id)
     })
@@ -771,6 +761,8 @@ const normalizeWordPressData = (
 
 export {
   normalizeWordPressData,
+  normalizeWordPressMenuItems,
+  normalizeWordPressMenus,
   normalRoutes,
   normalMetaKeys
 }

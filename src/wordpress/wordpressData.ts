@@ -12,7 +12,12 @@ import type {
 } from './wordpressDataTypes.js'
 import type { RenderAllData, RenderItem } from '../render/renderTypes.js'
 import type { CacheData, DataFilterArgs } from '../utils/filter/filterTypes.js'
-import { normalizeWordPressData, normalRoutes } from './wordpressDataNormal.js'
+import {
+  normalizeWordPressData,
+  normalizeWordPressMenuItems,
+  normalizeWordPressMenus,
+  normalRoutes
+} from './wordpressDataNormal.js'
 import { applyFilters } from '../utils/filter/filter.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
@@ -304,8 +309,9 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
     const partial = config.partialTypes
 
     for (const contentType of partial) {
-      const partialType =
-        contentType === 'nav_menu' ? 'navigation' : contentType === 'nav_menu_item' ? 'navigationItem' : contentType
+      const isMenu = contentType === 'nav_menu'
+      const isMenuItem = contentType === 'nav_menu_item'
+      const partialType = isMenu ? 'navigation' : isMenuItem ? 'navigationItem' : contentType
 
       allData[partialType] = []
 
@@ -318,6 +324,14 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
           per_page: -1
         }
       })
+
+      if (isMenuItem) {
+        data = normalizeWordPressMenuItems(data)
+      }
+
+      if (isMenu) {
+        data = normalizeWordPressMenus(data)
+      }
 
       data = applyFilters('wordpressData', data, {
         ...wordpressDataFilterArgs,
