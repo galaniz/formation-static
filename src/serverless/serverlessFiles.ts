@@ -81,14 +81,12 @@ const createServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> 
 
   if (isStringStrict(ajaxFile)) {
     const pathDepth = getPathDepth(`${serverlessDir}/${ajaxFile}`)
-    const content = `
-      import { Ajax } from '${ajaxExportFile.startsWith('@') ? '' : pathDepth}${ajaxExportFile}';
-      import { ${setupExport} } from '${pathDepth}${setupExportFile}';
-      const render = async (context) => {
-        return await Ajax(context, ${setupExport});
-      };
-      export const onRequestPost = [render];
-    `
+    const content = `import { Ajax } from '${ajaxExportFile.startsWith('@') ? '' : pathDepth}${ajaxExportFile}';
+import { ${setupExport} } from '${pathDepth}${setupExportFile}';
+const render = async (context) => {
+  return await Ajax(context, ${setupExport});
+};
+export const onRequestPost = [render];`
 
     const path = resolve(serverlessDir, ajaxFile)
     const dir = dirname(path)
@@ -103,15 +101,13 @@ const createServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> 
 
   if (config.env.dev && isStringStrict(previewFile)) {
     const pathDepth = getPathDepth(`${serverlessDir}/${previewFile}`)
-    const content = `
-      import { Preview } from '${previewExportFile.startsWith('@') ? '' : pathDepth}${previewExportFile}';
-      import { ${dataExport} } from '${dataExportFile.startsWith('@') ? '' : pathDepth}${dataExportFile}';
-      import { ${setupExport} } from '${pathDepth}${setupExportFile}';
-      const render = async (context) => {
-        return await Preview(context, ${setupExport}, ${dataExport});
-      };
-      export const onRequestGet = [render];
-    `
+    const content = `import { Preview } from '${previewExportFile.startsWith('@') ? '' : pathDepth}${previewExportFile}';
+import { ${dataExport} } from '${dataExportFile.startsWith('@') ? '' : pathDepth}${dataExportFile}';
+import { ${setupExport} } from '${pathDepth}${setupExportFile}';
+const render = async (context) => {
+  return await Preview(context, ${setupExport}, ${dataExport});
+};
+export const onRequestGet = [render];`
 
     const path = resolve(serverlessDir, previewFile)
     const dir = dirname(path)
@@ -123,6 +119,9 @@ const createServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> 
   }
 
   /* Routes */
+
+  const newRoutes: Array<{ path: string, content: string }> = []
+  const hasReloadFile = isStringStrict(reloadFile)
 
   for (const [type, routes] of Object.entries(serverlessRoutes)) {
     if (!isArrayStrict(routes)) {
@@ -136,34 +135,38 @@ const createServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> 
         continue
       }
 
-      if (type === 'reload' && isStringStrict(reloadFile)) {
+      if (type === 'reload' && hasReloadFile) {
         path = `${path}/${reloadFile}`
 
         const pathDepth = getPathDepth(`${serverlessDir}/${path}`)
 
-        content = `
-          import { Reload } from '${reloadExportFile.startsWith('@') ? '' : pathDepth}${reloadExportFile}';
-          import { ${dataExport} } from '${dataExportFile.startsWith('@') ? '' : pathDepth}${dataExportFile}';
-          import { ${setupExport} } from '${pathDepth}${setupExportFile}';
-          const render = async (context) => {
-            return await Reload(context, ${setupExport}, ${dataExport});
-          };
-          export const onRequestGet = [render];
-        `
+        content = `import { Reload } from '${reloadExportFile.startsWith('@') ? '' : pathDepth}${reloadExportFile}';
+import { ${dataExport} } from '${dataExportFile.startsWith('@') ? '' : pathDepth}${dataExportFile}';
+import { ${setupExport} } from '${pathDepth}${setupExportFile}';
+const render = async (context) => {
+  return await Reload(context, ${setupExport}, ${dataExport});
+};
+export const onRequestGet = [render];`
       }
 
-      if (isStringStrict(content)) {
-        path = resolve(serverlessDir, path)
-
-        const dir = dirname(path)
-
-        await mkdir(resolve(serverlessDir, dir), { recursive: true })
-        await writeFile(path, content)
-
-        print('[SSF] Successfully wrote', path, 'success')
+      if (!isStringStrict(content)) {
+        continue
       }
+
+      newRoutes.push({ path, content })
     }
   }
+
+  await Promise.all(newRoutes.map(async (route) => {
+    const { path, content } = route
+    const newPath = resolve(serverlessDir, path)
+    const dir = dirname(newPath)
+
+    await mkdir(resolve(serverlessDir, dir), { recursive: true })
+    await writeFile(newPath, content)
+
+    print('[SSF] Successfully wrote', newPath, 'success')
+  }))
 }
 
 /* Exports */

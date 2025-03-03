@@ -82,6 +82,10 @@ const getContent = (args: RichTextContentProps): string => {
     let { tag = '' } = itemObj
     let newContent = itemContent
 
+    /* Single tag */
+
+    const isSingleTag = tag === 'br' || tag === 'hr'
+
     /* Nested content */
 
     if (isArrayStrict(itemContent)) {
@@ -153,11 +157,15 @@ const getContent = (args: RichTextContentProps): string => {
     let closing = ''
     let inner = ''
 
-    if (isStringStrict(tag) && outputStr.trim() !== '') {
+    if (isStringStrict(tag) && outputStr.trim() !== '' && !isSingleTag) {
       opening = `<${tag}${attrs.length > 0 ? ` ${attrs.join(' ')}` : ''}>`
       closing = `</${tag}>`
       inner = outputStr
       outputStr = `${opening}${outputStr}${closing}`
+    }
+
+    if (isSingleTag) {
+      outputStr = `<${tag}>`
     }
 
     const richTextContentOutputArgs: RichTextContentOutputFilterArgs = {
@@ -257,10 +265,10 @@ const RichText = (props: RichTextProps): string => {
 
   let { tag = '' } = args
 
-  /* Hr */
+  /* Single tag */
 
-  if (tag === 'hr') {
-    return '<hr>'
+  if (tag === 'hr' || tag === 'br') {
+    return `<${tag}>`
   }
 
   /* Check if heading */

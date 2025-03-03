@@ -39,7 +39,7 @@ export interface RichTextElement {
  * @prop {string} [classes]
  * @prop {string} [textStyle]
  * @prop {string} [headingStyle]
- * @prop {string} [caption]
+ * @prop {RenderRichText[]|string} [caption]
  * @prop {string} [align]
  * @prop {string} [link]
  * @prop {InternalLink} [internalLink]
@@ -53,7 +53,7 @@ export interface RichTextArgs extends Generic {
   classes?: string
   textStyle?: string
   headingStyle?: string
-  caption?: string
+  caption?: RenderRichText[] | string
   align?: string
   link?: string
   internalLink?: InternalLink

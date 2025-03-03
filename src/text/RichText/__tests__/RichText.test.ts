@@ -113,6 +113,19 @@ describe('RichText()', () => {
     expect(result).toBe(expectedResult)
   })
 
+  it('should return br', () => {
+    const result = RichText({
+      args: {
+        tag: 'br',
+        content: 'test'
+      }
+    })
+
+    const expectedResult = '<br>'
+
+    expect(result).toBe(expectedResult)
+  })
+
   it('should return anchor', () => {
     const result = RichText({
       args: {
@@ -448,6 +461,9 @@ describe('RichText()', () => {
                     content: 'Post One'
                   }
                 ]
+              },
+              {
+                tag: 'br'
               }
             ]
           }
@@ -456,7 +472,7 @@ describe('RichText()', () => {
     })
 
     const expectedResult =
-      '<span data-test="1"><a href="/post-1/"><span data-test="2">Post One</span></a></span>'
+      '<span data-test="1"><a href="/post-1/"><span data-test="2">Post One</span><br></a></span>'
 
     expect(result).toBe(expectedResult)
   })
