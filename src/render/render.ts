@@ -282,14 +282,12 @@ const mapContentTemplate = (
     /* Replace slot with content */
 
     if (isSlot && content.length >= 1) {
-      let fill = content.shift()
+      let fill = null
 
       if (named) {
         fill = namedContent[t.name as string]
-
-        if (fill == null) {
-          return
-        }
+      } else {
+        fill = content.shift()
       }
 
       if (fill != null) {
