@@ -40,13 +40,8 @@ export interface ContainerProps<T = ContainerArgs, R = RenderItem> extends Rende
 /**
  * @typedef {function} ContainerPropsFilter
  * @param {ContainerProps} props
- * @param {object} args
- * @param {string} args.renderType
  * @return {ContainerProps}
  */
 export type ContainerPropsFilter<T = ContainerArgs, R = RenderItem> = (
-  props: ContainerProps<T, R>,
-  args: {
-    renderType: string
-  }
+  props: ContainerProps<T, R>
 ) => ContainerProps<T, R>

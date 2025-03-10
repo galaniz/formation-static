@@ -230,15 +230,15 @@ const getPlainText = (
  * @return {string}
  */
 const RichText = (props: RichTextProps): string => {
-  /* Props must be object */
+  /* Props required */
 
   if (!isObjectStrict(props)) {
     return ''
   }
 
-  props = applyFilters('richTextProps', props, { renderType: 'richText' })
+  props = applyFilters('richTextProps', props)
 
-  /* Filtered props must be object */
+  /* Filtered props required */
 
   if (!isObjectStrict(props)) {
     return ''

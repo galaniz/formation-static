@@ -11,7 +11,7 @@ import { Pagination } from '../Pagination.js'
 /* Tests */
 
 describe('Pagination()', () => {
-  const basePermaLink = 'http://example.com/'
+  const url = 'http://example.com/'
   const args = {
     listClass: 'list',
     listAttr: 'data-test="list"',
@@ -24,8 +24,7 @@ describe('Pagination()', () => {
     prevSpanClass: 'prev-span',
     prevLinkClass: 'prev-link',
     nextSpanClass: 'next-span',
-    nextLinkClass: 'next-link',
-    itemMaxWidth: true
+    nextLinkClass: 'next-link'
   }
 
   it('should return empty output and data if props are undefined', () => {
@@ -62,9 +61,9 @@ describe('Pagination()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return empty output and data if basePermaLink is empty', () => {
+  it('should return empty output and data if url is empty', () => {
     const result = Pagination({
-      basePermaLink: ''
+      url: ''
     })
 
     const expectedResult = {
@@ -80,16 +79,13 @@ describe('Pagination()', () => {
       total: 5,
       display: 3,
       current: 1,
-      basePermaLink,
-      args: {
-        itemMaxWidth: true
-      }
+      url
     })
 
     const { output, data } = result
 
     const expectedOutput = `
-      <ol style="--pag-item-max-width:20%">
+      <ol>
         <li data-pag-prev="text">
           <span></span>
         </li>
@@ -100,20 +96,20 @@ describe('Pagination()', () => {
           </span>
         </li>
         <li>
-          <a href="${basePermaLink}?page=2">
+          <a href="${url}?page=2">
             <span class="a-hide-vis">Page </span>
             2
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}?page=3">
+          <a href="${url}?page=3">
             <span class="a-hide-vis">Page </span>
             3
           </a>
         </li>
         <li data-pag-next="link">
           <a
-            href="${basePermaLink}?page=2"
+            href="${url}?page=2"
             aria-label="Next page"
           >
           </a>
@@ -138,28 +134,25 @@ describe('Pagination()', () => {
       total: 5,
       display: 3,
       current: 2,
-      basePermaLink,
+      url,
       prev: '&larr;',
-      next: '&rarr;',
-      args: {
-        itemMaxWidth: true
-      }
+      next: '&rarr;'
     })
 
     const { output, data } = result
 
     const expectedOutput = `
-      <ol style="--pag-item-max-width:20%">
+      <ol>
         <li data-pag-prev="link">
           <a
-            href="${basePermaLink}"
+            href="${url}"
             aria-label="Previous page"
           >
             &larr;
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}">
+          <a href="${url}">
             <span class="a-hide-vis">Page </span>
             1
           </a>
@@ -171,14 +164,14 @@ describe('Pagination()', () => {
           </span>
         </li>
         <li>
-          <a href="${basePermaLink}?page=3">
+          <a href="${url}?page=3">
             <span class="a-hide-vis">Page </span>
             3
           </a>
         </li>
         <li data-pag-next="link">
           <a
-            href="${basePermaLink}?page=3"
+            href="${url}?page=3"
             aria-label="Next page"
           >
             &rarr;
@@ -207,28 +200,25 @@ describe('Pagination()', () => {
       total: 5,
       display: 3,
       current: 3,
-      basePermaLink,
+      url,
       prev: '&larr;',
-      next: '&rarr;',
-      args: {
-        itemMaxWidth: true
-      }
+      next: '&rarr;'
     })
 
     const { output, data } = result
 
     const expectedOutput = `
-      <ol style="--pag-item-max-width:20%">
+      <ol>
         <li data-pag-prev="link">
           <a
-            href="${basePermaLink}?page=2"
+            href="${url}?page=2"
             aria-label="Previous page"
           >
             &larr;
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}?page=2">
+          <a href="${url}?page=2">
             <span class="a-hide-vis">Page </span>
             2
           </a>
@@ -240,14 +230,14 @@ describe('Pagination()', () => {
           </span>
         </li>
         <li>
-          <a href="${basePermaLink}?page=4">
+          <a href="${url}?page=4">
             <span class="a-hide-vis">Page </span>
             4
           </a>
         </li>
         <li data-pag-next="link">
           <a
-            href="${basePermaLink}?page=4"
+            href="${url}?page=4"
             aria-label="Next page"
           >
             &rarr;
@@ -276,28 +266,25 @@ describe('Pagination()', () => {
       total: 5,
       display: 3,
       current: 4,
-      basePermaLink,
+      url,
       prev: '&larr;',
-      next: '&rarr;',
-      args: {
-        itemMaxWidth: true
-      }
+      next: '&rarr;'
     })
 
     const { output, data } = result
 
     const expectedOutput = `
-      <ol style="--pag-item-max-width:20%">
+      <ol>
         <li data-pag-prev="link">
           <a
-            href="${basePermaLink}?page=3"
+            href="${url}?page=3"
             aria-label="Previous page"
           >
             &larr;
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}?page=3">
+          <a href="${url}?page=3">
             <span class="a-hide-vis">Page </span>
             3
           </a>
@@ -309,14 +296,14 @@ describe('Pagination()', () => {
           </span>
         </li>
         <li>
-          <a href="${basePermaLink}?page=5">
+          <a href="${url}?page=5">
             <span class="a-hide-vis">Page </span>
             5
           </a>
         </li>
         <li data-pag-next="link">
           <a
-            href="${basePermaLink}?page=5"
+            href="${url}?page=5"
             aria-label="Next page"
           >
             &rarr;
@@ -345,34 +332,31 @@ describe('Pagination()', () => {
       total: 5,
       display: 3,
       current: 5,
-      basePermaLink,
+      url,
       prev: '&larr;',
-      next: '&rarr;',
-      args: {
-        itemMaxWidth: true
-      }
+      next: '&rarr;'
     })
 
     const { output, data } = result
 
     const expectedOutput = `
-      <ol style="--pag-item-max-width:20%">
+      <ol>
         <li data-pag-prev="link">
           <a
-            href="${basePermaLink}?page=4"
+            href="${url}?page=4"
             aria-label="Previous page"
           >
             &larr;
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}?page=3">
+          <a href="${url}?page=3">
             <span class="a-hide-vis">Page </span>
             3
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}?page=4">
+          <a href="${url}?page=4">
             <span class="a-hide-vis">Page </span>
             4
           </a>
@@ -409,7 +393,7 @@ describe('Pagination()', () => {
       total: 5,
       display: 3,
       current: 1,
-      basePermaLink,
+      url,
       ellipsis: '&hellip;',
       filters: 'filters=cat:1',
       args: { ...args }
@@ -418,7 +402,7 @@ describe('Pagination()', () => {
     const { output, data } = result
 
     const expectedOutput = `
-      <ol class="list" data-test="list" style="--pag-item-max-width:16.6667%">
+      <ol class="list" data-test="list">
         <li class="item" data-test="item" data-pag-prev="text">
           <span class="prev-span"></span>
         </li>
@@ -429,13 +413,13 @@ describe('Pagination()', () => {
           </span>
         </li>
         <li class="item" data-test="item">
-          <a href="${basePermaLink}?page=2&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=2&filters=cat:1" class="link" data-test="link">
             <span class="a11y">Page </span>
             2
           </a>
         </li>
         <li class="item" data-test="item">
-          <a href="${basePermaLink}?page=3&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=3&filters=cat:1" class="link" data-test="link">
             <span class="a11y">Page </span>
             3
           </a>
@@ -443,7 +427,7 @@ describe('Pagination()', () => {
         <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
         <li class="item" data-test="item" data-pag-next="link">
           <a
-            href="${basePermaLink}?page=2&filters=cat:1"
+            href="${url}?page=2&filters=cat:1"
             aria-label="Next page"
             class="next-link"
           >
@@ -469,7 +453,7 @@ describe('Pagination()', () => {
       total: 5,
       display: 3,
       current: 2,
-      basePermaLink,
+      url,
       ellipsis: '&hellip;',
       prev: '&larr;',
       next: '&rarr;',
@@ -480,10 +464,10 @@ describe('Pagination()', () => {
     const { output, data } = result
 
     const expectedOutput = `
-      <ol class="list" data-test="list" style="--pag-item-max-width:16.6667%">
+      <ol class="list" data-test="list">
         <li class="item" data-test="item" data-pag-prev="link">
           <a
-            href="${basePermaLink}?filters=cat:1"
+            href="${url}?filters=cat:1"
             aria-label="Previous page"
             class="prev-link"
           >
@@ -491,7 +475,7 @@ describe('Pagination()', () => {
           </a>
         </li>
         <li class="item" data-test="item">
-          <a href="${basePermaLink}?filters=cat:1" class="link" data-test="link">
+          <a href="${url}?filters=cat:1" class="link" data-test="link">
             <span class="a11y">Page </span>
             1
           </a>
@@ -503,7 +487,7 @@ describe('Pagination()', () => {
           </span>
         </li>
         <li class="item" data-test="item">
-          <a href="${basePermaLink}?page=3&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=3&filters=cat:1" class="link" data-test="link">
             <span class="a11y">Page </span>
             3
           </a>
@@ -511,7 +495,7 @@ describe('Pagination()', () => {
         <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
         <li class="item" data-test="item" data-pag-next="link">
           <a
-            href="${basePermaLink}?page=3&filters=cat:1"
+            href="${url}?page=3&filters=cat:1"
             aria-label="Next page"
             class="next-link"
           >
@@ -541,7 +525,7 @@ describe('Pagination()', () => {
       total: 5,
       display: 3,
       current: 3,
-      basePermaLink,
+      url,
       ellipsis: '&hellip;',
       prev: '&larr;',
       next: '&rarr;',
@@ -552,10 +536,10 @@ describe('Pagination()', () => {
     const { output, data } = result
 
     const expectedOutput = `
-      <ol class="list" data-test="list" style="--pag-item-max-width:14.2857%">
+      <ol class="list" data-test="list">
         <li class="item" data-test="item" data-pag-prev="link">
           <a
-            href="${basePermaLink}?page=2&filters=cat:1"
+            href="${url}?page=2&filters=cat:1"
             aria-label="Previous page"
             class="prev-link"
           >
@@ -564,7 +548,7 @@ describe('Pagination()', () => {
         </li>
         <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
         <li class="item" data-test="item">
-          <a href="${basePermaLink}?page=2&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=2&filters=cat:1" class="link" data-test="link">
             <span class="a11y">Page </span>
             2
           </a>
@@ -576,7 +560,7 @@ describe('Pagination()', () => {
           </span>
         </li>
         <li class="item" data-test="item">
-          <a href="${basePermaLink}?page=4&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=4&filters=cat:1" class="link" data-test="link">
             <span class="a11y">Page </span>
             4
           </a>
@@ -584,7 +568,7 @@ describe('Pagination()', () => {
         <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
         <li class="item" data-test="item" data-pag-next="link">
           <a
-            href="${basePermaLink}?page=4&filters=cat:1"
+            href="${url}?page=4&filters=cat:1"
             aria-label="Next page"
             class="next-link"
           >
@@ -614,7 +598,7 @@ describe('Pagination()', () => {
       total: 5,
       display: 3,
       current: 4,
-      basePermaLink,
+      url,
       ellipsis: '&hellip;',
       prev: '&larr;',
       next: '&rarr;',
@@ -625,10 +609,10 @@ describe('Pagination()', () => {
     const { output, data } = result
 
     const expectedOutput = `
-      <ol class="list" data-test="list" style="--pag-item-max-width:16.6667%">
+      <ol class="list" data-test="list">
         <li class="item" data-test="item" data-pag-prev="link">
           <a
-            href="${basePermaLink}?page=3&filters=cat:1"
+            href="${url}?page=3&filters=cat:1"
             aria-label="Previous page"
             class="prev-link"
           >
@@ -637,7 +621,7 @@ describe('Pagination()', () => {
         </li>
         <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
         <li class="item" data-test="item">
-          <a href="${basePermaLink}?page=3&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=3&filters=cat:1" class="link" data-test="link">
             <span class="a11y">Page </span>
             3
           </a>
@@ -649,14 +633,14 @@ describe('Pagination()', () => {
           </span>
         </li>
         <li class="item" data-test="item">
-          <a href="${basePermaLink}?page=5&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=5&filters=cat:1" class="link" data-test="link">
             <span class="a11y">Page </span>
             5
           </a>
         </li>
         <li class="item" data-test="item" data-pag-next="link">
           <a
-            href="${basePermaLink}?page=5&filters=cat:1"
+            href="${url}?page=5&filters=cat:1"
             aria-label="Next page"
             class="next-link"
           >
@@ -686,7 +670,7 @@ describe('Pagination()', () => {
       total: 5,
       display: 3,
       current: 5,
-      basePermaLink,
+      url,
       ellipsis: '&hellip;',
       prev: '&larr;',
       next: '&rarr;',
@@ -697,10 +681,10 @@ describe('Pagination()', () => {
     const { output, data } = result
 
     const expectedOutput = `
-      <ol class="list" data-test="list" style="--pag-item-max-width:16.6667%">
+      <ol class="list" data-test="list">
         <li class="item" data-test="item" data-pag-prev="link">
           <a
-            href="${basePermaLink}?page=4&filters=cat:1"
+            href="${url}?page=4&filters=cat:1"
             aria-label="Previous page"
             class="prev-link"
           >
@@ -709,13 +693,13 @@ describe('Pagination()', () => {
         </li>
         <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
         <li class="item" data-test="item">
-          <a href="${basePermaLink}?page=3&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=3&filters=cat:1" class="link" data-test="link">
             <span class="a11y">Page </span>
             3
           </a>
         </li>
         <li class="item" data-test="item">
-          <a href="${basePermaLink}?page=4&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=4&filters=cat:1" class="link" data-test="link">
             <span class="a11y">Page </span>
             4
           </a>
@@ -752,7 +736,7 @@ describe('Pagination()', () => {
       total: 10,
       display: 15,
       current: 1,
-      basePermaLink,
+      url,
       ellipsis: '&hellip;'
     })
 
@@ -770,62 +754,62 @@ describe('Pagination()', () => {
           </span>
         </li>
         <li>
-          <a href="${basePermaLink}?page=2">
+          <a href="${url}?page=2">
             <span class="a-hide-vis">Page </span>
             2
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}?page=3">
+          <a href="${url}?page=3">
             <span class="a-hide-vis">Page </span>
             3
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}?page=4">
+          <a href="${url}?page=4">
             <span class="a-hide-vis">Page </span>
             4
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}?page=5">
+          <a href="${url}?page=5">
             <span class="a-hide-vis">Page </span>
             5
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}?page=6">
+          <a href="${url}?page=6">
             <span class="a-hide-vis">Page </span>
             6
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}?page=7">
+          <a href="${url}?page=7">
             <span class="a-hide-vis">Page </span>
             7
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}?page=8">
+          <a href="${url}?page=8">
             <span class="a-hide-vis">Page </span>
             8
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}?page=9">
+          <a href="${url}?page=9">
             <span class="a-hide-vis">Page </span>
             9
           </a>
         </li>
         <li>
-          <a href="${basePermaLink}?page=10">
+          <a href="${url}?page=10">
             <span class="a-hide-vis">Page </span>
             10
           </a>
         </li>
         <li data-pag-next="link">
           <a
-            href="${basePermaLink}?page=2"
+            href="${url}?page=2"
             aria-label="Next page"
           >
           </a>

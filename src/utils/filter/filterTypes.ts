@@ -7,8 +7,7 @@
 import type { GenericFunction } from '../../global/globalTypes.js'
 import type { ColumnPropsFilter } from '../../layouts/Column/ColumnTypes.js'
 import type { ContainerPropsFilter } from '../../layouts/Container/ContainerTypes.js'
-import type { FieldPropsFilter } from '../../objects/Field/FieldTypes.js'
-import type { FormPropsFilter } from '../../objects/Form/FormTypes.js'
+import type { FormPropsFilter, FormFieldPropsFilter, FormOptionPropsFilter } from '../../objects/Form/FormTypes.js'
 import type { AjaxResultFilter } from '../../serverless/Ajax/AjaxTypes.js'
 import type { LinkSlugPartsFilter, LinkSlugFilter } from '../link/linkTypes.js'
 import type { LocalData } from '../../local/localDataTypes.js'
@@ -133,7 +132,8 @@ export type StoreDataFilter = (
  * @typedef {Object<string, GenericFunction>} Filters
  * @prop {ColumnPropsFilter} columnProps
  * @prop {ContainerPropsFilter} containerProps
- * @prop {FieldPropsFilter} fieldProps
+ * @prop {FormOptionPropsFilter} formOptionProps
+ * @prop {FormFieldPropsFilter} formFieldProps
  * @prop {FormPropsFilter} formProps
  * @prop {RichTextPropsFilter} richTextProps
  * @prop {RichTextOutputFilter} richTextOutput
@@ -156,7 +156,8 @@ export type StoreDataFilter = (
 export interface Filters extends Record<string, GenericFunction> {
   columnProps: ColumnPropsFilter
   containerProps: ContainerPropsFilter
-  fieldProps: FieldPropsFilter
+  formOptionProps: FormOptionPropsFilter
+  formFieldProps: FormFieldPropsFilter
   formProps: FormPropsFilter
   richTextProps: RichTextPropsFilter
   richTextOutput: RichTextOutputFilter
@@ -182,7 +183,8 @@ export interface Filters extends Record<string, GenericFunction> {
  * @type {Map.<string, Set<Function>>}
  * @prop {Set<ColumnPropsFilter>} columnProps
  * @prop {Set<ContainerPropsFilter>} containerProps
- * @prop {Set<FieldPropsFilter>} fieldProps
+ * @prop {Set<FormOptionPropsFilter>} formOptionProps
+ * @prop {Set<FormFieldPropsFilter>} formFieldProps
  * @prop {Set<FormPropsFilter>} formProps
  * @prop {Set<RichTextPropsFilter>} richTextProps
  * @prop {Set<RichTextOutputFilter>} richTextOutput
@@ -205,7 +207,8 @@ export interface Filters extends Record<string, GenericFunction> {
 export type FilterMap = Map<string, Set<GenericFunction>> & Map<
 'columnProps' |
 'containerProps' |
-'fieldProps' |
+'formOptionProps' |
+'formFieldProps' |
 'formProps' |
 'richTextProps' |
 'richTextOutput' |
@@ -227,7 +230,8 @@ export type FilterMap = Map<string, Set<GenericFunction>> & Map<
 Set<
 ColumnPropsFilter |
 ContainerPropsFilter |
-FieldPropsFilter |
+FormOptionPropsFilter |
+FormFieldPropsFilter |
 FormPropsFilter |
 RichTextPropsFilter |
 RichTextOutputFilter |

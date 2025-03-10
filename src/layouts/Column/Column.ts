@@ -20,15 +20,15 @@ const Column = (props: ColumnProps): string[] => {
 
   const fallback: string[] = []
 
-  /* Props must be object */
+  /* Props required */
 
   if (!isObjectStrict(props)) {
     return fallback
   }
 
-  props = applyFilters('columnProps', props, { renderType: 'column' })
+  props = applyFilters('columnProps', props)
 
-  /* Filtered props must be object */
+  /* Filtered props required */
 
   if (!isObjectStrict(props)) {
     return fallback

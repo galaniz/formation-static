@@ -19,7 +19,8 @@ import { isFunction } from '../function/function.js'
 let filters: FilterMap = new Map([
   ['columnProps', new Set()],
   ['containerProps', new Set()],
-  ['fieldProps', new Set()],
+  ['formOptionProps', new Set()],
+  ['formFieldProps', new Set()],
   ['formProps', new Set()],
   ['richTextProps', new Set()],
   ['richTextOutput', new Set()],
@@ -152,7 +153,8 @@ const resetFilters = (): void => {
   filters = new Map([
     ['columnProps', new Set()],
     ['containerProps', new Set()],
-    ['fieldProps', new Set()],
+    ['formOptionProps', new Set()],
+    ['formFieldProps', new Set()],
     ['formProps', new Set()],
     ['richTextProps', new Set()],
     ['richTextOutput', new Set()],

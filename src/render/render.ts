@@ -43,7 +43,8 @@ import { scripts, styles } from '../utils/scriptStyle/scriptStyle.js'
 import { Container } from '../layouts/Container/Container.js'
 import { Column } from '../layouts/Column/Column.js'
 import { Form } from '../objects/Form/Form.js'
-import { Field } from '../objects/Field/Field.js'
+import { FormField } from '../objects/Form/FormField.js'
+import { FormOption } from '../objects/Form/FormOption.js'
 import { RichText } from '../text/RichText/RichText.js'
 
 /**
@@ -55,7 +56,8 @@ const defaultRenderFunctions: RenderFunctions = {
   container: Container,
   column: Column,
   form: Form,
-  field: Field,
+  formField: FormField,
+  formOption: FormOption,
   richText: RichText
 }
 
@@ -320,7 +322,7 @@ const renderContent = async (
   args: RenderContentArgs,
   _output: HtmlString = { html: '' }
 ): Promise<string> => {
-  /* Args must be object */
+  /* Args required */
 
   if (!isObjectStrict(args)) {
     return _output.html
@@ -403,6 +405,7 @@ const renderContent = async (
 
     if (isStringStrict(contentAttr)) {
       props[contentAttr] = children
+      props.content = undefined
       childrenArr = undefined
     }
 
@@ -665,7 +668,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
   const permalink = getPermalink(slug, !slugIsHtml)
   const parents = s.parents
 
-  item.basePermalink = permalink
+  item.baseUrl = permalink
   meta.url = permalink
   meta.canonical = permalink
 
@@ -867,7 +870,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
  * @return {Promise<RenderReturn[]|RenderReturn>}
  */
 const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> => {
-  /* Props must be object */
+  /* Props required */
 
   if (!isObjectStrict(args)) {
     return []

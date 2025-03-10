@@ -20,15 +20,15 @@ const Container = (props: ContainerProps): string[] => {
 
   const fallback: string[] = []
 
-  /* Props must be object */
+  /* Props required */
 
   if (!isObjectStrict(props)) {
     return fallback
   }
 
-  props = applyFilters('containerProps', props, { renderType: 'container' })
+  props = applyFilters('containerProps', props)
 
-  /* Filtered props must be object */
+  /* Filtered props required */
 
   if (!isObjectStrict(props)) {
     return fallback

@@ -42,13 +42,8 @@ export interface ColumnProps<T = ColumnArgs, R = RenderItem> extends RenderFunct
 /**
  * @typedef {function} ColumnPropsFilter
  * @param {ColumnProps} props
- * @param {Object<string, string>} args
- * @param {string} args.renderType
  * @return {ColumnProps}
  */
 export type ColumnPropsFilter<T = ColumnArgs, R = RenderItem> = (
-  props: ColumnProps<T, R>,
-  args: {
-    renderType: string
-  }
+  props: ColumnProps<T, R>
 ) => ColumnProps<T, R>

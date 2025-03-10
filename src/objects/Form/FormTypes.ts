@@ -13,25 +13,16 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
  * @prop {object} args
  * @prop {string} [id]
  * @prop {string} [action]
- * @prop {string} [subject]
- * @prop {string} [toEmail]
- * @prop {string} [senderEmail]
  * @prop {string} [submitLabel]
- * @prop {string} [successTitle]
- * @prop {string} [successText]
- * @prop {string} [successResult]
- * @prop {string} [errorTitle]
- * @prop {string} [errorText]
- * @prop {string} [errorSummary]
- * @prop {string} [errorResult]
  * @prop {string} [formClasses]
  * @prop {string} [formAttr]
+ * @prop {string} [formBefore]
+ * @prop {string} [formAfter]
  * @prop {string} [fieldsClasses]
  * @prop {string} [fieldsAttr]
  * @prop {string} [submitFieldClasses]
  * @prop {string} [submitClasses]
  * @prop {string} [submitAttr]
- * @prop {string} [submitLoader]
  * @prop {string} [honeypotFieldClasses]
  * @prop {string} [honeypotLabelClasses]
  * @prop {string} [honeypotClasses]
@@ -40,25 +31,16 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
 export interface FormArgs extends Generic {
   id?: string
   action?: string
-  subject?: string
-  toEmail?: string
-  senderEmail?: string
   submitLabel?: string
-  successTitle?: string
-  successText?: string
-  successResult?: string
-  errorTitle?: string
-  errorText?: string
-  errorSummary?: string
-  errorResult?: string
   formClasses?: string
   formAttr?: string
+  formBefore?: string
+  formAfter?: string
   fieldsClasses?: string
   fieldsAttr?: string
   submitFieldClasses?: string
   submitClasses?: string
   submitAttr?: string
-  submitLoader?: string
   honeypotFieldClasses?: string
   honeypotLabelClasses?: string
   honeypotClasses?: string
@@ -87,37 +69,133 @@ export interface FormMeta {
 }
 
 /**
- * @typedef {object} FormMessage
- * @prop {string} primary
- * @prop {string} secondary
- */
-export interface FormMessage {
-  primary: string
-  secondary: string
-}
-
-/**
- * @typedef {object} FormScriptMeta
- * @prop {string} [url]
- * @prop {FormMessage} [successMessage]
- * @prop {FormMessage} [errorMessage]
- */
-export interface FormScriptMeta {
-  url?: string
-  successMessage?: FormMessage
-  errorMessage?: FormMessage
-}
-
-/**
  * @typedef {function} FormPropsFilter
  * @param {FormProps} props
- * @param {object} args
- * @param {string} args.renderType
  * @return {FormProps}
  */
 export type FormPropsFilter<T = FormArgs, R = RenderItem> = (
-  props: FormProps<T, R>,
-  args: {
-    renderType: string
-  }
+  props: FormProps<T, R>
 ) => FormProps<T, R>
+
+/**
+ * @typedef {'text'|'email'|'checkbox'|'radio'|'number'|'password'|'tel'|'url'|'textarea'|'select'|'radio-group'|'checkbox-group'} FormFieldType
+ */
+export type FormFieldType =
+  'text' |
+  'email' |
+  'checkbox' |
+  'radio' |
+  'number' |
+  'password' |
+  'tel' |
+  'url' |
+  'textarea' |
+  'select' |
+  'radio-group' |
+  'checkbox-group'
+
+/**
+ * @typedef FormFieldArgs
+ * @type {Generic}
+ * @prop {FormFieldType} [type=text]
+ * @prop {string} [name]
+ * @prop {string} [label]
+ * @prop {string} [hint]
+ * @prop {string} [value]
+ * @prop {boolean} [required=false]
+ * @prop {string} [attributes]
+ * @prop {string} [emptyErrorMessage]
+ * @prop {string} [invalidErrorMessage]
+ * @prop {boolean} [fieldset=false]
+ * @prop {string} [fieldsetClasses] - Back end option
+ * @prop {string} [fieldClasses] - Back end option
+ * @prop {string} [labelClasses] - Back end option
+ * @prop {string} [classes] - Back end option
+ * @prop {string} [radioIcon] - Back end option
+ * @prop {string} [checkboxIcon] - Back end option
+ * @prop {string} [selectIcon] - Back end option
+ * @prop {string} [requiredIcon] - Back end option
+ */
+export interface FormFieldArgs extends Generic {
+  type?: FormFieldType
+  name?: string
+  label?: string
+  hint?: string
+  value?: string
+  required?: boolean
+  attributes?: string
+  emptyErrorMessage?: string
+  invalidErrorMessage?: string
+  fieldset?: boolean
+  fieldsetClasses?: string
+  fieldClasses?: string
+  labelClasses?: string
+  classes?: string
+  radioIcon?: string
+  checkboxIcon?: string
+  selectIcon?: string
+  requiredIcon?: string
+}
+
+/**
+ * @typedef FormFieldProps
+ * @type {RenderFunctionArgs}
+ * @prop {FormFieldArgs} args
+ */
+export interface FormFieldProps<T = FormFieldArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {
+  args: FormFieldArgs & T
+}
+
+/**
+ * @typedef {function} FormFieldPropsFilter
+ * @param {FormFieldProps} props
+ * @return {FormFieldProps}
+ */
+export type FormFieldPropsFilter<T = FormFieldArgs, R = RenderItem> = (
+  props: FormFieldProps<T, R>
+) => FormFieldPropsFilter<T, R>
+
+/**
+ * @typedef FormOptionArgs
+ * @type {Generic}
+ * @prop {string} [label]
+ * @prop {string} [value]
+ * @prop {string} [name]
+ * @prop {string} [hint]
+ * @prop {boolean} [selected]
+ * @prop {string} [optionClasses] - Back end option
+ * @prop {string} [labelClasses] - Back end option
+ * @prop {string} [classes] - Back end option
+ * @prop {string} [radioIcon] - Back end option
+ * @prop {string} [checkboxIcon] - Back end option
+ */
+export interface FormOptionArgs extends Generic {
+  label?: string
+  value?: string
+  name?: string
+  hint?: string
+  selected?: boolean
+  optionClasses?: string
+  labelClasses?: string
+  classes?: string
+  radioIcon?: string
+  checkboxIcon?: string
+}
+
+/**
+ * @typedef FormOptionProps
+ * @type {RenderFunctionArgs}
+ * @prop {FormOptionArgs} args
+ */
+export interface FormOptionProps<T = FormOptionArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {
+  args: FormOptionArgs & T
+}
+
+/**
+ * @typedef {function} FormFieldPropsFilter
+ * @param {FormFieldProps} props
+ * @return {FormFieldProps}
+ */
+export type FormOptionPropsFilter<T = FormOptionArgs, R = RenderItem> = (
+  props: FormOptionProps<T, R>
+) => FormOptionProps<T, R>

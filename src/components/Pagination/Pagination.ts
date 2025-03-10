@@ -22,7 +22,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     data: {}
   }
 
-  /* Props must be object */
+  /* Props required */
 
   if (!isObjectStrict(props)) {
     return fallback
@@ -33,7 +33,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     display = 5,
     current = 1,
     filters,
-    basePermaLink,
+    url,
     ellipsis,
     prev = '',
     next = '',
@@ -50,7 +50,6 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     listAttr,
     itemClass,
     itemAttr,
-    itemMaxWidth = false,
     linkClass,
     linkAttr,
     currentClass,
@@ -63,7 +62,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
 
   /* Total must be greater than 1 and base link required */
 
-  if (total <= 1 || !isStringStrict(basePermaLink)) {
+  if (total <= 1 || !isStringStrict(url)) {
     return fallback
   }
 
@@ -135,8 +134,6 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
 
   const totalPagesItems = start + limit
 
-  let totalListItems = 2 // 2 for prev and next buttons
-
   /* List attributes */
 
   const listAttrs: string[] = []
@@ -166,7 +163,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     isPrevLink = true
     prevItem = `
       <a
-        href="${basePermaLink}${current > 2 ? `?page=${current - 1}` : ''}${prevFilters}"
+        href="${url}${current > 2 ? `?page=${current - 1}` : ''}${prevFilters}"
         aria-label="${prevLabel}"${isStringStrict(prevLinkClass) ? ` class="${prevLinkClass}"` : ''}
       >
         ${prev}
@@ -186,10 +183,6 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
 
   if (center && current >= limit && current > half) {
     output += ellipsisOutput
-
-    if (hasEllipsis) {
-      totalListItems += 1
-    }
   }
 
   /* Items loop */
@@ -207,7 +200,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
         </span>
       `
     } else {
-      const link = i === 1 ? basePermaLink : `${basePermaLink}?page=${i}`
+      const link = i === 1 ? url : `${url}?page=${i}`
       const linkFilters = hasFilters ? i === 1 ? `?${filters}` : `&${filters}` : ''
 
       content = `
@@ -219,17 +212,12 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     }
 
     output += `<li${itemAttrs}${isCurrent ? ' data-pag-current' : ''}>${content}</li>`
-    totalListItems += 1
   }
 
   /* Ellipsis */
 
   if (center && current < total - maxHalf) {
     output += ellipsisOutput
-
-    if (hasEllipsis) {
-      totalListItems += 1
-    }
   }
 
   /* Next item */
@@ -241,7 +229,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     nextLink = true
     nextItem = `
       <a
-        href="${basePermaLink}?page=${current + 1}${nextFilters}"
+        href="${url}?page=${current + 1}${nextFilters}"
         aria-label="${nextLabel}"${isStringStrict(nextLinkClass) ? ` class="${nextLinkClass}"` : ''}
       >
         ${next}
@@ -251,22 +239,11 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
 
   output += `<li${itemAttrs} data-pag-next="${nextLink ? 'link' : 'text'}">${nextItem}</li>`
 
-  /* Item max width */
-
-  let maxWidth = ''
-
-  if (itemMaxWidth) {
-    const width = 100 / totalListItems
-    const widthPercent = Number.isInteger(width) ? width.toString() : width.toFixed(4)
-
-    maxWidth = ` style="--pag-item-max-width:${widthPercent}%"`
-  }
-
   /* Output */
 
   return {
     output: `
-      <ol${listAttrs.length > 0 ? ` ${listAttrs.join(' ')}` : ''}${maxWidth}>
+      <ol${listAttrs.length > 0 ? ` ${listAttrs.join(' ')}` : ''}>
         ${output}
       </ol>
     `,

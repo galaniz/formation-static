@@ -275,7 +275,7 @@ export interface RenderContentArgs extends RenderCommon {
  * @prop {string} [title]
  * @prop {RenderItem|RenderItem[]} [content]
  * @prop {RenderMeta} [meta]
- * @prop {string} [basePermalink]
+ * @prop {string} [baseUrl]
  * @prop {string} [archive]
  * @prop {RenderItem} [parent]
  * @prop {Taxonomy} [taxonomy]
@@ -293,7 +293,7 @@ export interface RenderItem extends Generic, Partial<Taxonomy> {
   title?: string
   content?: RenderItem[] | string
   meta?: RenderMeta
-  basePermalink?: string
+  baseUrl?: string
   archive?: string
   parent?: RenderItem
   taxonomy?: Taxonomy

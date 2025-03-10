@@ -8,7 +8,7 @@
  * @prop {number} [display]
  * @prop {number} [current]
  * @prop {string} [filters]
- * @prop {string} [basePermaLink]
+ * @prop {string} [url]
  * @prop {string} [ellipsis]
  * @prop {string} [prev]
  * @prop {string} [next]
@@ -24,7 +24,7 @@ export interface PaginationProps {
   display?: number
   current?: number
   filters?: string
-  basePermaLink?: string
+  url?: string
   ellipsis?: string
   prev?: string
   next?: string
@@ -42,7 +42,6 @@ export interface PaginationProps {
  * @prop {string} [listAttr]
  * @prop {string} [itemClass]
  * @prop {string} [itemAttr]
- * @prop {boolean} [itemMaxWidth] - Set list item max width
  * @prop {string} [linkClass]
  * @prop {string} [linkAttr]
  * @prop {string} [currentClass]
@@ -57,7 +56,6 @@ export interface PaginationArgs {
   listAttr?: string
   itemClass?: string
   itemAttr?: string
-  itemMaxWidth?: boolean
   linkClass?: string
   linkAttr?: string
   currentClass?: string

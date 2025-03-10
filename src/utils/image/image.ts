@@ -247,7 +247,7 @@ const getImageClosestSize = (size: number): number => {
  * @return {number}
  */
 const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
-  /* Args must be an object */
+  /* Args required */
 
   if (!isObjectStrict(args)) {
     return 0

@@ -689,7 +689,7 @@ describe('render()', () => {
         slug: 'page',
         contentType: 'page',
         title: 'Page Test',
-        basePermalink: '/page/',
+        baseUrl: '/page/',
         parents: [],
         content: undefined
       },
@@ -711,7 +711,7 @@ describe('render()', () => {
         slug: 'page',
         contentType: 'page',
         title: 'Page Test',
-        basePermalink: '/page/',
+        baseUrl: '/page/',
         parents: [],
         content: undefined
       },
