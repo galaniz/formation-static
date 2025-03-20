@@ -14,11 +14,11 @@ import { setStoreItem } from '../../store/store.js'
 import { config } from '../../config/config.js'
 
 /**
- * Get and transform local images (quality and sizes)
+ * Transform local images (quality and sizes)
  *
- * @return {Promise<PromiseSettledResult<sharp.OutputInfo>[]>}
+ * @return {Promise<sharp.OutputInfo[]>}
  */
-const setLocalImages = async (): Promise<Array<PromiseSettledResult<sharp.OutputInfo>>> => {
+const setLocalImages = async (): Promise<sharp.OutputInfo[]> => {
   /* Directory paths required */
 
   const inputDir = config.image.inputDir
@@ -67,7 +67,7 @@ const setLocalImages = async (): Promise<Array<PromiseSettledResult<sharp.Output
 
     const instance = sharp(path)
 
-    /* Store meta data */
+    /* Meta data */
 
     const metadata = await sharp(path).metadata()
     const stats = await stat(path)
@@ -120,7 +120,7 @@ const setLocalImages = async (): Promise<Array<PromiseSettledResult<sharp.Output
 
   /* Result */
 
-  return await Promise.allSettled(
+  return await Promise.all(
     images.map(async (image) => {
       const { size, instance, newPath, ext } = image
 

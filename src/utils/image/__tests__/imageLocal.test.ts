@@ -95,48 +95,36 @@ describe('setLocalImages()', () => {
     const result = await setLocalImages()
     const expectedResult = [
       {
-        status: 'fulfilled',
-        value: {
-          format: 'webp',
-          width: 4,
-          height: 4,
-          channels: 3,
-          premultiplied: false,
-          size: 44
-        }
+        format: 'webp',
+        width: 4,
+        height: 4,
+        channels: 3,
+        premultiplied: false,
+        size: 44
       },
       {
-        status: 'fulfilled',
-        value: {
-          format: 'webp',
-          width: 8,
-          height: 8,
-          channels: 3,
-          premultiplied: false,
-          size: 44
-        }
+        format: 'webp',
+        width: 8,
+        height: 8,
+        channels: 3,
+        premultiplied: false,
+        size: 44
       },
       {
-        status: 'fulfilled',
-        value: {
-          format: 'webp',
-          width: 4,
-          height: 4,
-          channels: 3,
-          premultiplied: false,
-          size: 44
-        }
+        format: 'webp',
+        width: 4,
+        height: 4,
+        channels: 3,
+        premultiplied: false,
+        size: 44
       },
       {
-        status: 'fulfilled',
-        value: {
-          format: 'webp',
-          width: 8,
-          height: 8,
-          channels: 3,
-          premultiplied: false,
-          size: 44
-        }
+        format: 'webp',
+        width: 8,
+        height: 8,
+        channels: 3,
+        premultiplied: false,
+        size: 44
       }
     ]
 
@@ -172,48 +160,36 @@ describe('setLocalImages()', () => {
     const result = await setLocalImages()
     const expectedResult = [
       {
-        status: 'fulfilled',
-        value: {
-          format: 'webp',
-          width: 4,
-          height: 4,
-          channels: 3,
-          premultiplied: false,
-          size: 44
-        }
+        format: 'webp',
+        width: 4,
+        height: 4,
+        channels: 3,
+        premultiplied: false,
+        size: 44
       },
       {
-        status: 'fulfilled',
-        value: {
-          format: 'webp',
-          width: 8,
-          height: 8,
-          channels: 3,
-          premultiplied: false,
-          size: 44
-        }
+        format: 'webp',
+        width: 8,
+        height: 8,
+        channels: 3,
+        premultiplied: false,
+        size: 44
       },
       {
-        status: 'fulfilled',
-        value: {
-          format: 'webp',
-          width: 4,
-          height: 4,
-          channels: 3,
-          premultiplied: false,
-          size: 44
-        }
+        format: 'webp',
+        width: 4,
+        height: 4,
+        channels: 3,
+        premultiplied: false,
+        size: 44
       },
       {
-        status: 'fulfilled',
-        value: {
-          format: 'webp',
-          width: 8,
-          height: 8,
-          channels: 3,
-          premultiplied: false,
-          size: 44
-        }
+        format: 'webp',
+        width: 8,
+        height: 8,
+        channels: 3,
+        premultiplied: false,
+        size: 44
       }
     ]
 

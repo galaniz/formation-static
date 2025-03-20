@@ -36,9 +36,9 @@ const createFile = async (path: string, buffer: Buffer): Promise<void> => {
  * Download remote images to local images directory
  *
  * @param {ImageRemote[]} images
- * @return {Promise<PromiseSettledResult<void>[]>}
+ * @return {Promise<string[]>}
  */
-const getRemoteImages = async (images: ImageRemote[]): Promise<Array<PromiseSettledResult<void>>> => {
+const getRemoteImages = async (images: ImageRemote[]): Promise<string[]> => {
   /* Input directory required */
 
   const inputDir = config.image.inputDir
@@ -55,26 +55,30 @@ const getRemoteImages = async (images: ImageRemote[]): Promise<Array<PromiseSett
 
   /* Fetch and write images */
 
-  return await Promise.allSettled(
+  return await Promise.all(
     images.map(async (image) => {
       const { path, url, ext = 'jpg' } = image
 
       if (!isStringStrict(path) || !isStringStrict(url) || !isStringStrict(ext)) {
-        return
+        throw new Error('No path, url or extension')
       }
 
       const resp = await fetch(url)
 
-      if (resp.ok) {
-        const buffer = await resp.arrayBuffer()
-        const fullPath = `${inputDir}/${path}.${ext}`
-        const folders = fullPath.split('/')
-
-        folders.pop()
-
-        await mkdir(resolve(folders.join('/')), { recursive: true })
-        await createFile(resolve(fullPath), Buffer.from(buffer))
+      if (!resp.ok) {
+        throw new Error('Failed to fetch image')
       }
+
+      const buffer = await resp.arrayBuffer()
+      const fullPath = `${inputDir}/${path}.${ext}`
+      const folders = fullPath.split('/')
+
+      folders.pop()
+
+      await mkdir(resolve(folders.join('/')), { recursive: true })
+      await createFile(resolve(fullPath), Buffer.from(buffer))
+
+      return fullPath
     })
   )
 }

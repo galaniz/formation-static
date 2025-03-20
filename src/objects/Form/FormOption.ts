@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { FormFieldProps, FormOptionProps } from './FormTypes.js'
+import type { FormOptionProps } from './FormTypes.js'
 import { v4 as uuid } from 'uuid'
 import { applyFilters } from '../../utils/filter/filter.js'
 import { isStringStrict } from '../../utils/string/string.js'
@@ -15,7 +15,7 @@ import { isArrayStrict } from '../../utils/array/array.js'
  * Output form option
  *
  * @param {FormOptionProps} props
- * @return {string}
+ * @return {string} HTMLOptionElement|HTMLDivElement
  */
 const FormOption = (props: FormOptionProps): string => {
   /* Props required */
@@ -58,18 +58,29 @@ const FormOption = (props: FormOptionProps): string => {
     return ''
   }
 
-  const fieldParent = parents[0] as FormFieldProps
+  const fieldParent = parents[0]
 
   if (!isObjectStrict(fieldParent)) {
     return ''
   }
 
-  const { args: fieldArgs } = fieldParent
-  const { name: fieldName, type } = fieldArgs
+  const {
+    renderType,
+    args: fieldArgs
+  } = fieldParent
 
-  const isRadioGroup = type === 'radio-group'
-  const isCheckboxGroup = type === 'checkbox-group'
-  const isSelect = type === 'select'
+  if (renderType !== 'formField') {
+    return ''
+  }
+
+  const {
+    name: fieldName,
+    type: fieldType
+  } = fieldArgs
+
+  const isRadioGroup = fieldType === 'radio-group'
+  const isCheckboxGroup = fieldType === 'checkbox-group'
+  const isSelect = fieldType === 'select'
 
   /* Field radio group, checkbox group or select required */
 
@@ -89,14 +100,14 @@ const FormOption = (props: FormOptionProps): string => {
 
   /* Icon */
 
-  let controlIcon = ''
+  let optionIcon = ''
 
   if (isRadioGroup && isStringStrict(radioIcon)) {
-    controlIcon = radioIcon
+    optionIcon = radioIcon
   }
 
   if (isCheckboxGroup && isStringStrict(checkboxIcon)) {
-    controlIcon = checkboxIcon
+    optionIcon = checkboxIcon
   }
 
   /* Hint */
@@ -104,24 +115,25 @@ const FormOption = (props: FormOptionProps): string => {
   let hintOutput = ''
 
   if (isStringStrict(hint)) {
-    hintOutput = `<span data-form-hint>${hint}</span>`
+    hintOutput = `<small data-form-hint>${hint}</small>`
   }
 
   /* Checkbox or radio */
 
   return `
-    <div${isStringStrict(optionClasses) ? ` class="${optionClasses}"` : ''} data-form-option>
+    <div${isStringStrict(optionClasses) ? ` class="${optionClasses}"` : ''}>
       <input
         type="${isRadioGroup ? 'radio' : 'checkbox'}"
         value="${value}"
-        name="${isRadioGroup ? fieldName : name}"
+        name="${isStringStrict(name) ? name : fieldName}"
         id="${id}"
         ${isStringStrict(classes) ? ` class="${classes}"` : ''}
+        data-form-input
         ${selected ? ' checked' : ''}
       >
       <label for="${id}"${isStringStrict(labelClasses) ? ` class="${labelClasses}"` : ''}>
-        <span data-form-control>
-          ${controlIcon}
+        <span data-form-option>
+          ${optionIcon}
           <span data-form-label>
             <span data-form-label-text>${label}</span>
             ${hintOutput}

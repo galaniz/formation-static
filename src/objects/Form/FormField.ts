@@ -42,7 +42,6 @@ const FormField = (props: FormFieldProps): string[] => {
     attributes,
     emptyErrorMessage,
     invalidErrorMessage,
-    fieldset = false,
     fieldsetClasses,
     labelClasses,
     classes,
@@ -58,8 +57,19 @@ const FormField = (props: FormFieldProps): string[] => {
 
   /* Name required if not fieldset */
 
-  if (!fieldset && !isStringStrict(name)) {
+  let isFieldset = type === 'fieldset'
+
+  if (!isFieldset && !isStringStrict(name)) {
     return []
+  }
+
+  /* Option types */
+
+  const isOption = type === 'checkbox' || type === 'radio'
+  const isOptionGroup = type === 'checkbox-group' || type === 'radio-group'
+
+  if (isOptionGroup) {
+    isFieldset = true
   }
 
   /* Id */
@@ -74,8 +84,6 @@ const FormField = (props: FormFieldProps): string[] => {
     fieldClassesArr.push(args.fieldClasses)
   }
 
-  const fieldClasses = fieldClassesArr.length > 0 ? ` class="${fieldClassesArr.join(' ')}"` : ''
-
   /* Classes */
 
   const classesArr: string[] = []
@@ -84,21 +92,17 @@ const FormField = (props: FormFieldProps): string[] => {
     classesArr.push(classes)
   }
 
-  /* Checkbox or radio */
-
-  const isControl = type === 'checkbox' || type === 'radio'
-
   /* Icons */
 
-  let controlIcon = ''
+  let optionIcon = ''
   let selectIcon = ''
 
   if (type === 'radio' && isStringStrict(radioIcon)) {
-    controlIcon = radioIcon
+    optionIcon = radioIcon
   }
 
   if (type === 'checkbox' && isStringStrict(checkboxIcon)) {
-    controlIcon = checkboxIcon
+    optionIcon = checkboxIcon
   }
 
   if (type === 'select' && isStringStrict(args.selectIcon)) {
@@ -109,7 +113,9 @@ const FormField = (props: FormFieldProps): string[] => {
 
   /* Attributes */
 
-  const attrs: string[] = []
+  const fieldAttrs: string[] = ['data-form-field']
+  const fieldsetAttrs: string[] = []
+  const attrs: string[] = ['data-form-input']
 
   if (isStringStrict(attributes)) {
     const attrsArr = attributes.split('\n')
@@ -125,26 +131,36 @@ const FormField = (props: FormFieldProps): string[] => {
     }
   }
 
-  if (required) {
-    attrs.push(fieldset ? 'data-aria-required="true"' : 'aria-required="true"')
-  }
-
   if (isStringStrict(value)) {
     attrs.push(`value="${value}"`)
-  }
-
-  if (isStringStrict(emptyErrorMessage)) {
-    attrs.push(`data-form-empty="${emptyErrorMessage}"`)
-  }
-
-  if (isStringStrict(invalidErrorMessage)) {
-    attrs.push(`data-form-invalid="${invalidErrorMessage}"`)
   }
 
   if (classesArr.length > 0) {
     attrs.push(`class="${classesArr.join(' ')}"`)
   }
 
+  if (fieldClassesArr.length > 0) {
+    fieldAttrs.push(`class="${fieldClassesArr.join(' ')}"`)
+  }
+
+  if (isStringStrict(fieldsetClasses)) {
+    fieldsetAttrs.push(`class="${fieldsetClasses}"`)
+  }
+
+  if (isStringStrict(emptyErrorMessage)) {
+    (isFieldset ? fieldsetAttrs : attrs).push(`data-form-empty="${emptyErrorMessage}"`)
+  }
+
+  if (isStringStrict(invalidErrorMessage)) {
+    (isFieldset ? fieldsetAttrs : attrs).push(`data-form-invalid="${invalidErrorMessage}"`)
+  }
+
+  if (required) {
+    (isFieldset ? fieldsetAttrs : attrs).push(isFieldset ? 'data-form-required' : 'required')
+  }
+
+  const fieldAttr = fieldAttrs.length > 0 ? ` ${fieldAttrs.join(' ')}` : ''
+  const fieldsetAttr = fieldsetAttrs.length > 0 ? ` ${fieldsetAttrs.join(' ')}` : ''
   const attr = attrs.length > 0 ? ` ${attrs.join(' ')}` : ''
 
   /* Hint */
@@ -152,7 +168,7 @@ const FormField = (props: FormFieldProps): string[] => {
   let hintOutput = ''
 
   if (isStringStrict(hint)) {
-    hintOutput = `<span data-form-hint>${hint}</span>`
+    hintOutput = `<small data-form-hint>${hint}</small>`
   }
 
   /* Label */
@@ -160,25 +176,24 @@ const FormField = (props: FormFieldProps): string[] => {
   let labelBefore = ''
   let labelAfter = ''
 
-  const labelRequired = required ? ' data-form-required' : ''
   const labelClass = isStringStrict(labelClasses) ? ` class="${labelClasses}"` : ''
 
-  if (fieldset) {
+  if (isFieldset) {
     labelBefore = `
       <legend id="${uuid()}"${labelClass}>
-        <span data-form-legend${labelRequired}>
+        <span data-form-legend>
           <span data-form-legend-text>${label}</span>
           ${requiredIcon}
         </span>
         ${hintOutput}
       </legend>
     `
-  } else if (isControl) {
+  } else if (isOption) {
     labelAfter = `
       <label for="${id}"${labelClass}>
-        <span data-form-control>
-          ${controlIcon}
-          <span data-form-label${labelRequired}>
+        <span data-form-option>
+          ${optionIcon}
+          <span data-form-label>
             <span data-form-label-text>${label}</span>
             ${requiredIcon}
           </span>
@@ -189,7 +204,7 @@ const FormField = (props: FormFieldProps): string[] => {
   } else {
     labelBefore = `
       <label for="${id}"${labelClass}>
-        <span data-form-label${labelRequired}>
+        <span data-form-label>
           <span data-form-label-text>${label}</span>
           ${requiredIcon}
         </span>
@@ -213,7 +228,6 @@ const FormField = (props: FormFieldProps): string[] => {
     case 'tel':
     case 'url': {
       beforeOutput = `<input type="${type}" name="${name}" id="${id}"${attr}>`
-
       break
     }
     case 'textarea': {
@@ -237,13 +251,14 @@ const FormField = (props: FormFieldProps): string[] => {
   /* Output */
 
   return [`
-    <div${fieldClasses} data-form-field="${type}">
-      ${fieldset ? `<fieldset${isStringStrict(fieldsetClasses) ? ` class="${fieldsetClasses}"` : ''}>` : ''}
+    <div${fieldAttr}>
+      ${isFieldset ? `<fieldset${fieldsetAttr}>` : ''}
       ${labelBefore}
+      ${isFieldset ? '<div data-form-group>' : ''}
       ${beforeOutput}`,
       `${afterOutput}
       ${labelAfter}
-      ${fieldset ? '</fieldset>' : ''}
+      ${isFieldset ? '</div></fieldset>' : ''}
     </div>
   `]
 }

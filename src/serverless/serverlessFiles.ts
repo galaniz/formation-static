@@ -157,7 +157,7 @@ export const onRequestGet = [render];`
     }
   }
 
-  await Promise.all(newRoutes.map(async (route) => {
+  for (const route of newRoutes) {
     const { path, content } = route
     const newPath = resolve(serverlessDir, path)
     const dir = dirname(newPath)
@@ -166,7 +166,7 @@ export const onRequestGet = [render];`
     await writeFile(newPath, content)
 
     print('[SSF] Successfully wrote', newPath, 'success')
-  }))
+  }
 }
 
 /* Exports */

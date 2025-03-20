@@ -12,7 +12,7 @@ import { isObjectStrict } from '../object/object.js'
 import { isFunction } from '../function/function.js'
 
 /**
- * Store filter callbacks by name
+ * Filter callbacks by name
  *
  * @type {FilterMap}
  */

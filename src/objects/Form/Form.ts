@@ -42,8 +42,6 @@ const Form = (props: FormProps): string[] => {
     submitLabel = 'Submit',
     formClasses,
     formAttr,
-    formBefore,
-    formAfter,
     fieldsClasses,
     fieldsAttr,
     submitFieldClasses,
@@ -75,7 +73,6 @@ const Form = (props: FormProps): string[] => {
   /* Output */
 
   return [`
-    ${isStringStrict(formBefore) ? formBefore : ''}
     <form${isStringStrict(formClasses) ? ` class="${formClasses}"` : ''} id="${id}"${isStringStrict(formAttr) ? ` ${formAttr}` : ''}>
       <div${isStringStrict(fieldsClasses) ? ` class="${fieldsClasses}"` : ''}${isStringStrict(fieldsAttr) ? ` ${fieldsAttr}` : ''}>`,
         `${honeypot}
@@ -86,7 +83,6 @@ const Form = (props: FormProps): string[] => {
         </div>
       </div>
     </form>
-    ${isStringStrict(formAfter) ? formAfter : ''}
   `]
 }
 

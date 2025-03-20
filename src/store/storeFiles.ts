@@ -17,14 +17,14 @@ import { storeDir, store } from './store.js'
 const createStoreFiles = async (): Promise<void> => {
   await mkdir(resolve(storeDir), { recursive: true })
 
-  await Promise.all(Object.entries(store).map(async ([key, data]) => {
+  for (const [key, data] of Object.entries(store)) {
     const fileName = `${key}.json`
     const path = resolve(storeDir, fileName)
 
     await writeFile(path, JSON.stringify(data))
 
     print('[SSF] Successfully wrote', path, 'success')
-  }))
+  }
 }
 
 /* Exports */
