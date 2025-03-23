@@ -156,7 +156,7 @@ const mockSendFormFetch = vi.fn(async (
       },
       json: async () => {
         return await new Promise((resolve) => {
-          resolve(res)
+          resolve(data)
         })
       }
     })

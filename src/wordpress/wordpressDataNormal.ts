@@ -535,16 +535,18 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
     if (k === 'media_details' && isObj) {
       const valObj = val as WordPressDataMediaDetails
       const valFull = valObj.sizes?.full
+      const sourceUrl = item.source_url
+      const mimeType = item.mime_type
 
       val = normalizeFile({
-        url: item.source_url,
-        filename: item.source_url?.split('/').pop(),
+        url: sourceUrl,
+        filename: sourceUrl?.split('/').pop(),
         alt: item.alt_text,
         width: valFull?.width,
         height: valFull?.height,
         filesizeInBytes: valObj.filesize,
-        subtype: item.mime_type?.split('/')[1],
-        mime: item.mime_type,
+        subtype: mimeType?.split('/')[1],
+        mime: mimeType,
         sizes: valObj.sizes
       })
     }

@@ -15,21 +15,51 @@ export interface MockFetchOptions {
 }
 
 /**
+ * @typedef {function} MockFetchText
+ * @return {Promise<string>}
+ */
+export type MockFetchText = () => Promise<string>
+
+/**
+ * @typedef {function} MockFetchJson
+ * @return {Promise<object>}
+ */
+export type MockFetchJson = () => Promise<object>
+
+/**
+ * @typedef {function} MockFetchArrayBuffer
+ * @return {Promise<ArrayBuffer>}
+ */
+export type MockFetchArrayBuffer = () => Promise<ArrayBuffer>
+
+/**
  * @typedef {object} MockFetchResult
  * @prop {boolean} ok
  * @prop {number} status
  * @prop {Headers} headers
  * @prop {string} body
- * @prop {function} text
- * @prop {function} json
+ * @prop {MockFetchText} text
+ * @prop {MockFetchJson} json
  */
 export interface MockFetchResult {
   ok: boolean
   status: number
   headers: Headers
   body: string
-  text: Function
-  json: Function
+  text: MockFetchText
+  json: MockFetchJson
+}
+
+/**
+ * @typedef {object} MockFetchImageResult
+ * @prop {boolean} ok
+ * @prop {number} status
+ * @prop {MockFetchArrayBuffer} arrayBuffer
+ */
+export interface MockFetchImageResult {
+  ok: boolean
+  status: number
+  arrayBuffer: MockFetchArrayBuffer
 }
 
 /**

@@ -248,7 +248,7 @@ describe('SendForm()', () => {
 
     const message = result.error?.message
     const expectedMessage = 'Error sending email'
-    const error = JSON.parse(await result.error?.response?.json() as string) as {
+    const error = await result.error?.response?.json() as {
       data: {
         error: string
       }

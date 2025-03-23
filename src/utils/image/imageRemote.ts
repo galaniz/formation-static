@@ -5,32 +5,11 @@
 /* Imports */
 
 import type { ImageRemote } from './imageTypes.js'
-import { mkdir } from 'node:fs/promises'
+import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { createWriteStream } from 'node:fs'
 import { config } from '../../config/config.js'
 import { isStringStrict } from '../string/string.js'
 import { isArrayStrict } from '../array/array.js'
-
-/**
- * Promisify write function
- *
- * @private
- * @param {string} path
- * @param {Buffer} buffer
- * @return {Promise<void>}
- */
-const createFile = async (path: string, buffer: Buffer): Promise<void> => {
-  await new Promise((resolve, reject) => {
-    createWriteStream(path).write(buffer, (error) => {
-      if (error instanceof Error) {
-        reject(error)
-      } else {
-        resolve(path)
-      }
-    })
-  })
-}
 
 /**
  * Download remote images to local images directory
@@ -76,7 +55,7 @@ const getRemoteImages = async (images: ImageRemote[]): Promise<string[]> => {
       folders.pop()
 
       await mkdir(resolve(folders.join('/')), { recursive: true })
-      await createFile(resolve(fullPath), Buffer.from(buffer))
+      await writeFile(resolve(fullPath), Buffer.from(buffer))
 
       return fullPath
     })
