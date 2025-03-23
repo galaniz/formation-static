@@ -12,7 +12,7 @@ import type { Config, ConfigSet, ConfigSetFilter } from './configTypes.js'
  * @type {Config}
  */
 let config: Config = {
-  namespace: 'ssf',
+  namespace: 'frm',
   source: 'cms',
   title: '',
   meta: {

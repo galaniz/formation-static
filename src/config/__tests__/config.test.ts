@@ -57,10 +57,10 @@ describe('setConfig()', () => {
         'test': 'test'
       },
       normalTypes: {
-        'ssf-test': 'test'
+        'frm-test': 'test'
       },
       renderTypes: {
-        'ssf-test': 'test'
+        'frm-test': 'test'
       },
       env: {
         dev: true,
@@ -121,7 +121,7 @@ describe('setConfigFilter()', () => {
   it('should filter config namespace with default value', () => {
     setConfig({
       filter: (con, env) => {
-        con.namespace = env?.NAMESPACE ?? 'ssf' // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+        con.namespace = env?.NAMESPACE ?? 'frm' // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 
         return con
       }
@@ -131,7 +131,7 @@ describe('setConfigFilter()', () => {
     setConfigFilter()
 
     const namespace = config.namespace
-    const expectedNamespace = 'ssf'
+    const expectedNamespace = 'frm'
 
     expect(namespace).toBe(expectedNamespace)
   })

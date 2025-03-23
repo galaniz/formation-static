@@ -168,7 +168,7 @@ describe('Reload()', () => {
     const status = response.status
     const expectedStatus = 200
     const expectedBody =
-      '<html><body>10 cat \n<p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p>\n</body></html>'
+      '<html><body>10 cat <p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p></body></html>'
 
     expect(body).toBe(expectedBody)
     expect(status).toBe(expectedStatus)

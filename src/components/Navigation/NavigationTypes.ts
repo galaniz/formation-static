@@ -21,8 +21,8 @@ export interface NavigationProps {
 }
 
 /**
- * @typedef NavigationList
- * @type {Generic}
+ * @typedef {object} NavigationList
+ * @extends {Generic}
  * @prop {string} title
  * @prop {string|string[]} location
  * @prop {NavigationItem[]} items
@@ -49,8 +49,8 @@ export interface NavigationByLocationItem {
 export type NavigationByLocation<L extends string = string> = Map<L, NavigationByLocationItem>
 
 /**
- * @typedef NavigationItem
- * @type {Generic}
+ * @typedef {object} NavigationItem
+ * @extends {Generic}
  * @prop {string} id
  * @prop {string} title
  * @prop {string} [link]
@@ -81,8 +81,8 @@ export interface NavigationItem extends Generic {
 export type NavigationItemsById = Map<string, NavigationItem>
 
 /**
- * @typedef NavigationBreadcrumbItem
- * @type {NavigationItem}
+ * @typedef {object} NavigationBreadcrumbItem
+ * @extends {NavigationItem}
  * @prop {string} slug
  * @prop {string} contentType
  */
@@ -162,8 +162,8 @@ export type NavigationOutputListFilter = (args: NavigationOutputListFilterArgs) 
 export type NavigationFilter = (args: NavigationOutputFilterArgs) => void
 
 /**
- * @typedef NavigationOutputArgs
- * @type {NavigationOutputBaseArgs}
+ * @typedef {object} NavigationOutputArgs
+ * @extends {NavigationOutputBaseArgs}
  * @prop {string} [listTag]
  * @prop {string} [itemTag]
  * @prop {NavigationOutputListFilter} [filterBeforeList]
@@ -206,8 +206,8 @@ export interface NavigationBreadcrumbOutputFilterArgs {
 export type NavigationBreadcrumbOutputFilter = (args: NavigationBreadcrumbOutputFilterArgs) => void
 
 /**
- * @typedef NavigationBreadcrumbOutputArgs
- * @type {NavigationOutputBaseArgs}
+ * @typedef {object} NavigationBreadcrumbOutputArgs
+ * @extends {NavigationOutputBaseArgs}
  * @prop {string} [currentClass]
  * @prop {string} [currentLabel]
  * @prop {string} [a11yClass]

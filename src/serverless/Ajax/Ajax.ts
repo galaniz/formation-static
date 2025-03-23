@@ -129,7 +129,7 @@ const Ajax = async (context: ServerlessContext, setupServerless: ServerlessSetup
 
     return new Response(JSON.stringify({ success: message }), options)
   } catch (error) {
-    print('[SSF] Error with ajax function', error)
+    print('[FRM] Error with ajax function', error)
 
     let statusCode = 500
     let message = error instanceof Error ? error.message : 'Unknown error'

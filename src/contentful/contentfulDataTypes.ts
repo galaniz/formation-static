@@ -62,8 +62,8 @@ export interface ContentfulDataFile {
 }
 
 /**
- * @typedef ContentfulDataFields
- * @type {Generic}
+ * @typedef {object} ContentfulDataFields
+ * @extends {Generic}
  * @prop {ContentfulDataItem[]|ContentfulDataItem} [content]
  * @prop {ContentfulDataFile} [file]
  * @prop {ContentfulDataItem} [internalLink]
@@ -127,8 +127,8 @@ export interface ContentfulDataItem {
 }
 
 /**
- * @typedef ContentfulData
- * @type {Generic}
+ * @typedef {object} ContentfulData
+ * @extends {Generic}
  * @prop {ContentfulDataItem[]} [items]
  * @prop {Generic[]} [errors]
  */
@@ -138,8 +138,8 @@ export interface ContentfulData extends Generic {
 }
 
 /**
- * @typedef ContentfulDataReturn
- * @type {Generic}
+ * @typedef {object} ContentfulDataReturn
+ * @extends {Generic}
  * @prop {RenderItem[]} [items]
  * @prop {Generic[]} [errors]
  */

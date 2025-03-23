@@ -18,14 +18,10 @@ import { config } from '../../config/config.js'
  * @return {string[]} HTMLFormElement
  */
 const Form = (props: FormProps): string[] => {
-  /* Fallback output */
-
-  const fallback: string[] = []
-
   /* Props required */
 
   if (!isObjectStrict(props)) {
-    return fallback
+    return []
   }
 
   props = applyFilters('formProps', props)
@@ -33,56 +29,98 @@ const Form = (props: FormProps): string[] => {
   /* Filtered props required */
 
   if (!isObjectStrict(props)) {
-    return fallback
+    return []
   }
 
   const { args } = props
   const {
     id,
-    submitLabel = 'Submit',
+    formTag = 'form',
     formClasses,
     formAttr,
     fieldsClasses,
     fieldsAttr,
     submitFieldClasses,
+    submitFieldAttr,
+    submitLabel = 'Submit',
     submitClasses,
     submitAttr,
+    honeypot = false,
     honeypotFieldClasses,
+    honeypotFieldAttr,
     honeypotLabelClasses,
+    honeypotLabel = 'Website',
     honeypotClasses,
-    honeypotLabel = 'Website'
+    honeypotAttr
   } = isObjectStrict(args) ? args : {}
 
-  /* Id required */
+  /* Id, form tag and label required */
 
-  if (!isStringStrict(id)) {
-    return fallback
+  if (!isStringStrict(id) || !isStringStrict(formTag) || !isStringStrict(submitLabel)) {
+    return []
   }
+
+  /* Form */
+
+  const formAttrs =
+    (isStringStrict(formClasses) ? ` class="${formClasses}"` : '') +
+    (isStringStrict(formAttr) ? ` ${formAttr}` : '')
+
+  /* Fields */
+
+  const fieldsTag = formTag === 'form' ? 'div' : 'form'
+  const fieldsAttrs =
+    (isStringStrict(fieldsClasses) ? ` class="${fieldsClasses}"` : '') +
+    (isStringStrict(fieldsAttr) ? ` ${fieldsAttr}` : '')
 
   /* Honeypot */
 
-  const honeypotId: string = uuid()
-  const honeypotName = `${config.namespace}_asi`
-  const honeypot = `
-    <div${isStringStrict(honeypotFieldClasses) ? ` class="${honeypotFieldClasses}"` : ''}>
-      <label${isStringStrict(honeypotLabelClasses) ? ` class="${honeypotLabelClasses}"` : ''} for="${honeypotId}">${honeypotLabel}</label>
-      <input${isStringStrict(honeypotClasses) ? ` class="${honeypotClasses}"` : ''} type="url" name="${honeypotName}" id="${honeypotId}" autocomplete="off">
-    </div>
-  `
+  let honeypotOutput = ''
+
+  if (honeypot) {
+    const honeypotId: string = uuid()
+    const honeypotName = `${config.namespace}_asi`
+    const honeypotFieldAttrs =
+      (isStringStrict(honeypotFieldClasses) ? ` class="${honeypotFieldClasses}"` : '') +
+      (isStringStrict(honeypotFieldAttr) ? ` ${honeypotFieldAttr}` : '')
+
+    const honeypotAttrs =
+      (isStringStrict(honeypotClasses) ? ` class="${honeypotClasses}"` : '') +
+      (isStringStrict(honeypotAttr) ? ` ${honeypotAttr}` : '')
+
+    honeypotOutput = `
+      <div${honeypotFieldAttrs}>
+        <label for="${honeypotId}"${isStringStrict(honeypotLabelClasses) ? ` class="${honeypotLabelClasses}"` : ''}>
+          ${honeypotLabel}
+        </label>
+        <input type="url" name="${honeypotName}" id="${honeypotId}" autocomplete="off"${honeypotAttrs}>
+      </div>
+    `  
+  }
+
+  /* Submit */
+
+  const submitFieldAttrs =
+    (isStringStrict(submitFieldClasses) ? ` class="${submitFieldClasses}"` : '') +
+    (isStringStrict(submitFieldAttr) ? ` ${submitFieldAttr}` : '')
+
+  const submitAttrs =
+    (isStringStrict(submitClasses) ? ` class="${submitClasses}"` : '') +
+    (isStringStrict(submitAttr) ? ` ${submitAttr}` : '')
 
   /* Output */
 
   return [`
-    <form${isStringStrict(formClasses) ? ` class="${formClasses}"` : ''} id="${id}"${isStringStrict(formAttr) ? ` ${formAttr}` : ''}>
-      <div${isStringStrict(fieldsClasses) ? ` class="${fieldsClasses}"` : ''}${isStringStrict(fieldsAttr) ? ` ${fieldsAttr}` : ''}>`,
-        `${honeypot}
-        <div${isStringStrict(submitFieldClasses) ? ` class="${submitFieldClasses}"` : ''}>
-          <button${isStringStrict(submitClasses) ? ` class="${submitClasses}"` : ''}${isStringStrict(submitAttr) ? ` ${submitAttr}` : ''} type="submit">
+    <${formTag} id="${id}"${formAttrs}>
+      <${fieldsTag}${fieldsAttrs}>`,
+        `${honeypotOutput}
+        <div${submitFieldAttrs}>
+          <button type="submit"${submitAttrs}>
             ${submitLabel}
           </button>
         </div>
-      </div>
-    </form>
+      </${fieldsTag}>
+    </${formTag}>
   `]
 }
 

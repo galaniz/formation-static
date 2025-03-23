@@ -23,7 +23,7 @@ const createStoreFiles = async (): Promise<void> => {
 
     await writeFile(path, JSON.stringify(data))
 
-    print('[SSF] Successfully wrote', path, 'success')
+    print('[FRM] Successfully wrote', path, 'success')
   }
 }
 

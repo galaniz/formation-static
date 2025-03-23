@@ -24,8 +24,8 @@ export interface LinkSlugArgs {
 }
 
 /**
- * @typedef LinkSlugParent
- * @type {StoreParent}
+ * @typedef {object} LinkSlugParent
+ * @extends {StoreParent}
  * @prop {string} contentType
  */
 export interface LinkSlugParent extends StoreParent {

@@ -56,8 +56,8 @@ export interface StoreArchiveMeta {
 }
 
 /**
- * @typedef Store
- * @type {Generic}
+ * @typedef {object} Store
+ * @extends {Generic}
  * @prop {Object<string, RenderSlug>} slugs
  * @prop {Object<string, Object<string, StoreParent>>} parents
  * @prop {Object<string, StoreArchiveMeta>} archiveMeta

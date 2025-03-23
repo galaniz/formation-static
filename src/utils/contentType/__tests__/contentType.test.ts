@@ -13,9 +13,9 @@ import { config } from '../../../config/config.js'
 describe('normalizeContentType()', () => {
   beforeEach(() => {
     config.normalTypes = {
-      'ssf/content-type': 'normalContentType',
+      'frm/content-type': 'normalContentType',
       // @ts-expect-error - test null value
-      'ssf/content-null': null
+      'frm/content-null': null
     }
   })
 
@@ -32,15 +32,15 @@ describe('normalizeContentType()', () => {
   })
 
   it('should return initial content type if normal type is null', () => {
-    const contentType = 'ssf/content-null'
+    const contentType = 'frm/content-null'
     const result = normalizeContentType(contentType)
-    const expectedResult = 'ssf/content-null'
+    const expectedResult = 'frm/content-null'
 
     expect(result).toBe(expectedResult)
   })
 
   it('should return normal content type', () => {
-    const contentType = 'ssf/content-type'
+    const contentType = 'frm/content-type'
     const result = normalizeContentType(contentType)
     const expectedResult = 'normalContentType'
 

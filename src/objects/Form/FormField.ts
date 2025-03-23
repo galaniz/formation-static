@@ -40,18 +40,25 @@ const FormField = (props: FormFieldProps): string[] => {
     value,
     required = false,
     attributes,
-    emptyErrorMessage,
-    invalidErrorMessage,
+    emptyError,
+    invalidError,
+    fieldClasses,
+    fieldAttr,
     fieldsetClasses,
+    fieldsetAttr,
     labelClasses,
     classes,
     radioIcon,
     checkboxIcon
   } = isObjectStrict(args) ? args : {}
 
+  /* Hidden */
+
+  const isHidden = type === 'hidden'
+
   /* Label required */
 
-  if (!isStringStrict(label)) {
+  if (!isStringStrict(label) && !isHidden) {
     return []
   }
 
@@ -67,30 +74,23 @@ const FormField = (props: FormFieldProps): string[] => {
 
   const isOption = type === 'checkbox' || type === 'radio'
   const isOptionGroup = type === 'checkbox-group' || type === 'radio-group'
+  const isSelect = type === 'select'
 
   if (isOptionGroup) {
     isFieldset = true
   }
 
+  /* Textarea */
+
+  const isTextarea = type === 'textarea'
+
+  /* Value */
+
+  const hasValue = isStringStrict(value)
+
   /* Id */
 
   const id: string = uuid()
-
-  /* Field classes */
-
-  const fieldClassesArr: string[] = []
-
-  if (isStringStrict(args.fieldClasses)) {
-    fieldClassesArr.push(args.fieldClasses)
-  }
-
-  /* Classes */
-
-  const classesArr: string[] = []
-
-  if (isStringStrict(classes)) {
-    classesArr.push(classes)
-  }
 
   /* Icons */
 
@@ -131,37 +131,45 @@ const FormField = (props: FormFieldProps): string[] => {
     }
   }
 
-  if (isStringStrict(value)) {
+  if (!isTextarea && !isSelect && hasValue) {
     attrs.push(`value="${value}"`)
   }
 
-  if (classesArr.length > 0) {
-    attrs.push(`class="${classesArr.join(' ')}"`)
+  if (isStringStrict(classes)) {
+    attrs.push(`class="${classes}"`)
   }
 
-  if (fieldClassesArr.length > 0) {
-    fieldAttrs.push(`class="${fieldClassesArr.join(' ')}"`)
+  if (isStringStrict(fieldClasses)) {
+    fieldAttrs.push(`class="${fieldClasses}"`)
   }
 
   if (isStringStrict(fieldsetClasses)) {
     fieldsetAttrs.push(`class="${fieldsetClasses}"`)
   }
 
-  if (isStringStrict(emptyErrorMessage)) {
-    (isFieldset ? fieldsetAttrs : attrs).push(`data-form-empty="${emptyErrorMessage}"`)
+  if (isStringStrict(fieldAttr)) {
+    fieldAttrs.push(fieldAttr)
   }
 
-  if (isStringStrict(invalidErrorMessage)) {
-    (isFieldset ? fieldsetAttrs : attrs).push(`data-form-invalid="${invalidErrorMessage}"`)
+  if (isStringStrict(fieldsetAttr)) {
+    fieldsetAttrs.push(fieldsetAttr)
   }
 
-  if (required) {
+  if (isStringStrict(emptyError) && !isHidden) {
+    (isFieldset ? fieldsetAttrs : attrs).push(`data-form-empty="${emptyError}"`)
+  }
+
+  if (isStringStrict(invalidError) && !isHidden) {
+    (isFieldset ? fieldsetAttrs : attrs).push(`data-form-invalid="${invalidError}"`)
+  }
+
+  if (required && !isHidden) {
     (isFieldset ? fieldsetAttrs : attrs).push(isFieldset ? 'data-form-required' : 'required')
   }
 
-  const fieldAttr = fieldAttrs.length > 0 ? ` ${fieldAttrs.join(' ')}` : ''
-  const fieldsetAttr = fieldsetAttrs.length > 0 ? ` ${fieldsetAttrs.join(' ')}` : ''
-  const attr = attrs.length > 0 ? ` ${attrs.join(' ')}` : ''
+  const fieldAtts = ` ${fieldAttrs.join(' ')}` // Always at least one attribute
+  const fieldsetAtts = fieldsetAttrs.length > 0 ? ` ${fieldsetAttrs.join(' ')}` : ''
+  const atts = ` ${attrs.join(' ')}` // Always at least one attribute
 
   /* Hint */
 
@@ -226,18 +234,19 @@ const FormField = (props: FormFieldProps): string[] => {
     case 'number':
     case 'password':
     case 'tel':
-    case 'url': {
-      beforeOutput = `<input type="${type}" name="${name}" id="${id}"${attr}>`
+    case 'url':
+    case 'hidden': {
+      beforeOutput = `<input type="${type}" name="${name}" id="${id}"${atts}>`
       break
     }
     case 'textarea': {
-      beforeOutput = `<textarea name="${name}" id="${id}"${attr}></textarea>`
+      beforeOutput = `<textarea name="${name}" id="${id}"${atts}>${hasValue ? value : ''}</textarea>`
       break
     }
     case 'select': {
       beforeOutput = `
         <div data-form-select>
-          <select name="${name}" id="${id}"${attr}>`
+          <select name="${name}" id="${id}"${atts}>`
 
       afterOutput = `
           </select>
@@ -250,9 +259,13 @@ const FormField = (props: FormFieldProps): string[] => {
 
   /* Output */
 
+  if (isHidden) {
+    return [beforeOutput]
+  }
+
   return [`
-    <div${fieldAttr}>
-      ${isFieldset ? `<fieldset${fieldsetAttr}>` : ''}
+    <div${fieldAtts}>
+      ${isFieldset ? `<fieldset${fieldsetAtts}>` : ''}
       ${labelBefore}
       ${isFieldset ? '<div data-form-group>' : ''}
       ${beforeOutput}`,

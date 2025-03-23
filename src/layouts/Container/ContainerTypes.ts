@@ -8,15 +8,15 @@ import type { Generic } from '../../global/globalTypes.js'
 import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js'
 
 /**
- * @typedef ContainerArgs
- * @type {Generic}
+ * @typedef {object} ContainerArgs
+ * @extends {Generic}
  * @prop {string} [tag=div]
  * @prop {string|number} [maxWidth] - Used in getImageMaxWidth()
- * @prop {string} [layoutClasses] - Back end option
- * @prop {string} [classes] - Back end option
- * @prop {string} [style] - Back end option
- * @prop {string} [attr] - Back end option
- * @prop {boolean} [nest] - Back end option
+ * @prop {string} [layoutClasses]
+ * @prop {string} [classes]
+ * @prop {string} [style]
+ * @prop {string} [attr]
+ * @prop {boolean} [nest]
  */
 export interface ContainerArgs extends Generic {
   tag?: string
@@ -29,8 +29,8 @@ export interface ContainerArgs extends Generic {
 }
 
 /**
- * @typedef ContainerProps
- * @type {RenderFunctionArgs}
+ * @typedef {object} ContainerProps
+ * @extends {RenderFunctionArgs}
  * @prop {ContainerArgs} args
  */
 export interface ContainerProps<T = ContainerArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {

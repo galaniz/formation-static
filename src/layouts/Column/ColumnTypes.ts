@@ -8,16 +8,16 @@ import type { Generic } from '../../global/globalTypes.js'
 import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js'
 
 /**
- * @typedef ColumnArgs
- * @type {Generic}
+ * @typedef {object} ColumnArgs
+ * @extends {Generic}
  * @prop {string} [tag=div]
  * @prop {string|number} [width] - Used in getImageMaxWidth()
  * @prop {string|number} [widthSmall] - Used in getImageMaxWidth()
  * @prop {string|number} [widthMedium] - Used in getImageMaxWidth()
  * @prop {string|number} [widthLarge] - Used in getImageMaxWidth()
- * @prop {string} [classes] - Back end option
- * @prop {string} [style] - Back end option
- * @prop {string} [attr] - Back end option
+ * @prop {string} [classes]
+ * @prop {string} [style]
+ * @prop {string} [attr]
  */
 export interface ColumnArgs extends Generic {
   tag?: string
@@ -31,8 +31,8 @@ export interface ColumnArgs extends Generic {
 }
 
 /**
- * @typedef ColumnProps
- * @type {RenderFunctionArgs}
+ * @typedef {object} ColumnProps
+ * @extends {RenderFunctionArgs}
  * @prop {ColumnArgs} args
  */
 export interface ColumnProps<T = ColumnArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {

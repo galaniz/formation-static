@@ -62,8 +62,8 @@ export interface WordPressDataRenderedProtected {
 }
 
 /**
- * @typedef WordPressDataMenuChild
- * @type {NavigationItem}
+ * @typedef {object} WordPressDataMenuChild
+ * @extends {NavigationItem}
  * @prop {number} menu_order
  */
 export interface WordPressDataMenuChild extends NavigationItem {
@@ -71,8 +71,8 @@ export interface WordPressDataMenuChild extends NavigationItem {
 }
 
 /**
- * @typedef WordPressDataMenuItem
- * @type {RenderItem}
+ * @typedef {object} WordPressDataMenuItem
+ * @extends {RenderItem}
  * @prop {WordPressDataMenuChild[]} [children]
  */
 export interface WordPressDataMenuItem extends RenderItem {
@@ -80,8 +80,8 @@ export interface WordPressDataMenuItem extends RenderItem {
 }
 
 /**
- * @typedef WordPressDataMenu
- * @type {RenderItem}
+ * @typedef {object} WordPressDataMenu
+ * @extends {RenderItem}
  * @prop {string} [name]
  * @prop {string[]} [locations]
  */
@@ -370,8 +370,8 @@ export interface WordPressDataFile {
 }
 
 /**
- * @typedef WordPressDataMeta
- * @type {Generic}
+ * @typedef {object} WordPressDataMeta
+ * @extends {Generic}
  * @prop {string} [footnotes]
  */
 export interface WordPressDataMeta extends Generic {

@@ -4,14 +4,17 @@
 
 /* Imports */
 
-import type { ContainerPropsFilter } from '../ContainerTypes.js'
-import { it, expect, describe } from 'vitest'
-import { addFilter, removeFilter } from '../../../utils/filter/filter.js'
+import { it, expect, describe, afterEach, vi } from 'vitest'
+import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
 import { Container } from '../Container.js'
 
 /* Tests */
 
 describe('Container()', () => {
+  afterEach(() => {
+    resetFilters()
+  })
+
   it('should return empty array if props are undefined', () => {
     // @ts-expect-error - test undefined props
     const result = Container(undefined)
@@ -21,13 +24,14 @@ describe('Container()', () => {
   })
 
   it('should return empty array if filtered props are undefined', () => {
-    const filterName = 'containerProps'
-    // @ts-expect-error - test undefined filtered props
-    const filter: ContainerPropsFilter = () => {
-      return undefined
-    }
+    const containerProps = vi.fn()
 
-    addFilter(filterName, filter)
+    // @ts-expect-error - test undefined filtered props
+    addFilter('containerProps', (props) => {
+      containerProps(props)
+
+      return undefined
+    })
 
     const result = Container({
       args: {
@@ -35,11 +39,15 @@ describe('Container()', () => {
       }
     })
 
-    removeFilter(filterName, filter)
-
     const expectedResult: string[] = []
 
     expect(result).toEqual(expectedResult)
+    expect(containerProps).toHaveBeenCalledTimes(1)
+    expect(containerProps).toHaveBeenCalledWith({
+      args: {
+        tag: 'div'
+      }
+    })
   })
 
   it('should return empty array if tag is an empty string', () => {
@@ -158,14 +166,22 @@ describe('Container()', () => {
   })
 
   it('should return filtered header tags and attributes', () => {
-    const filterName = 'containerProps'
-    const filter: ContainerPropsFilter = (props) => {
-      props.args.tag = 'header'
-      props.args.attr = 'data-attr="true"'
-      return props
-    }
+    const containerProps = vi.fn()
 
-    addFilter(filterName, filter)
+    addFilter('containerProps', (props) => {
+      containerProps(props)
+
+      const newProps = {
+        ...props,
+        args: {
+          ...props.args,
+          tag: 'header',
+          attr: 'data-attr="true"'
+        }
+      }
+
+      return newProps
+    })
 
     const result = Container({
       args: {
@@ -173,8 +189,6 @@ describe('Container()', () => {
         classes: 'x'
       }
     })
-
-    removeFilter(filterName, filter)
 
     const expectedResult = [
       '<header class="x" data-attr="true">',

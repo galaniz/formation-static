@@ -4,14 +4,17 @@
 
 /* Imports */
 
-import type { ColumnPropsFilter } from '../ColumnTypes.js'
-import { it, expect, describe } from 'vitest'
-import { addFilter, removeFilter } from '../../../utils/filter/filter.js'
+import { it, expect, describe, afterEach, vi } from 'vitest'
+import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
 import { Column } from '../Column.js'
 
 /* Tests */
 
 describe('Column()', () => {
+  afterEach(() => {
+    resetFilters()
+  })
+
   it('should return empty array if props are undefined', () => {
     // @ts-expect-error - test undefined props
     const result = Column(undefined)
@@ -21,13 +24,14 @@ describe('Column()', () => {
   })
 
   it('should return empty array if filtered props are undefined', () => {
-    const filterName = 'columnProps'
-    // @ts-expect-error - test undefined filtered props
-    const filter: ColumnPropsFilter = () => {
-      return undefined
-    }
+    const columnProps = vi.fn()
 
-    addFilter(filterName, filter)
+    // @ts-expect-error - test undefined filtered props
+    addFilter('columnProps', (props) => {
+      columnProps(props)
+
+      return undefined
+    })
 
     const result = Column({
       args: {
@@ -35,11 +39,15 @@ describe('Column()', () => {
       }
     })
 
-    removeFilter(filterName, filter)
-
     const expectedResult: string[] = []
 
     expect(result).toEqual(expectedResult)
+    expect(columnProps).toHaveBeenCalledTimes(1)
+    expect(columnProps).toHaveBeenCalledWith({
+      args: {
+        tag: 'div'
+      }
+    })
   })
 
   it('should return empty array if tag is an empty string', () => {
@@ -119,16 +127,24 @@ describe('Column()', () => {
   })
 
   it('should return filtered footer tags and attributes', () => {
-    const filterName = 'columnProps'
-    const filter: ColumnPropsFilter = (props) => {
-      props.args.tag = 'footer'
-      props.args.attr = 'data-attr="true"'
-      props.args.style = 'background:black'
+    const columnProps = vi.fn()
 
-      return props
-    }
+    addFilter('columnProps', (props) => {
+      columnProps(props)
 
-    addFilter(filterName, filter)
+      const newProps = {
+        ...props,
+        args: {
+          ...props.args,
+          tag: 'footer',
+          attr: 'data-attr="true"',
+          style: 'background:black'
+        }
+      }
+
+      return newProps
+    })
+
 
     const result = Column({
       args: {
@@ -137,13 +153,18 @@ describe('Column()', () => {
       }
     })
 
-    removeFilter(filterName, filter)
-
     const expectedResult = [
       '<footer class="x" data-attr="true" style="background:black">',
       '</footer>'
     ]
 
     expect(result).toEqual(expectedResult)
+    expect(columnProps).toHaveBeenCalledTimes(1)
+    expect(columnProps).toHaveBeenCalledWith({
+      args: {
+        tag: 'address',
+        classes: 'x'
+      }
+    })
   })
 })

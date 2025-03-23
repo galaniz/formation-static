@@ -16,14 +16,10 @@ import { isObjectStrict } from '../../utils/object/object.js'
  * @return {string[]}
  */
 const Column = (props: ColumnProps): string[] => {
-  /* Fallback output */
-
-  const fallback: string[] = []
-
   /* Props required */
 
   if (!isObjectStrict(props)) {
-    return fallback
+    return []
   }
 
   props = applyFilters('columnProps', props)
@@ -31,7 +27,7 @@ const Column = (props: ColumnProps): string[] => {
   /* Filtered props required */
 
   if (!isObjectStrict(props)) {
-    return fallback
+    return []
   }
 
   const { args } = props
@@ -45,7 +41,7 @@ const Column = (props: ColumnProps): string[] => {
   /* Tag required */
 
   if (!isStringStrict(tag)) {
-    return fallback
+    return []
   }
 
   /* Style */

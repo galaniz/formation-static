@@ -16,14 +16,10 @@ import { isStringStrict } from '../../utils/string/string.js'
  * @return {string[]}
  */
 const Container = (props: ContainerProps): string[] => {
-  /* Fallback output */
-
-  const fallback: string[] = []
-
   /* Props required */
 
   if (!isObjectStrict(props)) {
-    return fallback
+    return []
   }
 
   props = applyFilters('containerProps', props)
@@ -31,7 +27,7 @@ const Container = (props: ContainerProps): string[] => {
   /* Filtered props required */
 
   if (!isObjectStrict(props)) {
-    return fallback
+    return []
   }
 
   const { args } = props
@@ -47,7 +43,7 @@ const Container = (props: ContainerProps): string[] => {
   /* Tag required */
 
   if (!isStringStrict(tag)) {
-    return fallback
+    return []
   }
 
   /* Semantically specific */

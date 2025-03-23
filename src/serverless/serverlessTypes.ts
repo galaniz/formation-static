@@ -36,8 +36,8 @@ export type ServerlessContext = EventContext<GenericStrings, string, unknown>
 export type ServerlessSetup = (context: ServerlessContext, type?: string) => Promise<void> | void
 
 /**
- * @typedef ServerlessActionInput
- * @type {Generic}
+ * @typedef {object} ServerlessActionInput
+ * @extends {Generic}
  * @prop {string} type
  * @prop {string} label
  * @prop {string|string[]} value

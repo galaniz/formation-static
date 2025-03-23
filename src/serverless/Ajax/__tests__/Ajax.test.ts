@@ -82,7 +82,7 @@ describe('Ajax()', () => {
   it('should return success if honeypot exists', async () => {
     const result = await Ajax(testContext('http://test.com/', 'GET', {
       inputs: {
-        ssf_asi: {
+        frm_asi: {
           value: 'test'
         }
       }
@@ -103,7 +103,7 @@ describe('Ajax()', () => {
     const result = await Ajax(testContext('http://test.com/', 'GET', {
       action: 'test',
       inputs: {
-        ssf_asi: {
+        frm_asi: {
           value: ''
         },
         test: {
@@ -158,7 +158,7 @@ describe('Ajax()', () => {
     const ajaxContext = testContext('http://test.com/', 'GET', {
       action: 'test',
       inputs: {
-        ssf_asi: {
+        frm_asi: {
           value: ''
         },
         test: {
@@ -200,7 +200,7 @@ describe('Ajax()', () => {
         data: {
           action: 'test',
           inputs: {
-            ssf_asi: {
+            frm_asi: {
               exclude: true,
               value: ''
             },
@@ -218,7 +218,7 @@ describe('Ajax()', () => {
     const result = await Ajax(testContext('http://test.com/', 'GET', {
       action: 'test',
       inputs: {
-        ssf_asi: {
+        frm_asi: {
           value: ''
         },
         test: {
@@ -255,7 +255,7 @@ describe('Ajax()', () => {
     const result = await Ajax(testContext('http://test.com/', 'GET', {
       action: 'test',
       inputs: {
-        ssf_asi: {
+        frm_asi: {
           value: ''
         },
         test: {

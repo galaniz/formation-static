@@ -164,8 +164,8 @@ export interface RenderTemplate {
 }
 
 /**
- * @typedef RenderNavigationsArgs
- * @type {NavigationProps}
+ * @typedef {object} RenderNavigationsArgs
+ * @extends {NavigationProps}
  * @prop {string} [title]
  * @prop {StoreParent[]} parents
  */
@@ -183,7 +183,7 @@ export type RenderNavigations = (args: RenderNavigationsArgs) => Navigation | un
 
 /**
  * @typedef {object} RenderHttpErrorArgs
- * @type {Generic}
+ * @extends {Generic}
  * @prop {number} code
  */
 export interface RenderHttpErrorArgs extends Generic {
@@ -249,8 +249,8 @@ export interface RenderFunctionsArgs {
 }
 
 /**
- * @typedef RenderContentArgs
- * @type {RenderCommon}
+ * @typedef {object} RenderContentArgs
+ * @extends {RenderCommon}
  * @prop {RenderItem[]} content
  * @prop {ParentArgs[]} parents
  * @prop {Navigation} [navigations]
@@ -266,8 +266,9 @@ export interface RenderContentArgs extends RenderCommon {
 }
 
 /**
- * @typedef RenderItem
- * @type {Generic|Taxonomy}
+ * @typedef {object} RenderItem
+ * @extends {Generic}
+ * @extends {Taxonomy}
  * @prop {string} [id]
  * @prop {string} [contentType]
  * @prop {string} [renderType]
@@ -329,8 +330,8 @@ export interface RenderItemReturn {
 }
 
 /**
- * @typedef RenderInlineItem
- * @type {RenderItem}
+ * @typedef {object} RenderInlineItem
+ * @extends {RenderItem}
  */
 export interface RenderInlineItem extends Omit<RenderItem, 'id' | 'slug' | 'contentType' | 'content'> {
   id: string
@@ -340,8 +341,8 @@ export interface RenderInlineItem extends Omit<RenderItem, 'id' | 'slug' | 'cont
 }
 
 /**
- * @typedef RenderItemStartActionArgs
- * @type {RenderCommon}
+ * @typedef {object} RenderItemStartActionArgs
+ * @extends {RenderCommon}
  * @prop {string} id
  * @prop {string} contentType
  */
@@ -351,8 +352,8 @@ export interface RenderItemStartActionArgs extends RenderCommon {
 }
 
 /**
- * @typedef RenderItemActionArgs
- * @type {RenderCommon}
+ * @typedef {object} RenderItemActionArgs
+ * @extends {RenderCommon}
  * @prop {string} id
  * @prop {string} contentType
  * @prop {string} slug
@@ -399,8 +400,8 @@ export interface RenderLayoutArgs {
 export type RenderLayout = (args: RenderLayoutArgs) => string | Promise<string>
 
 /**
- * @typedef RenderAllData
- * @type {Generic}
+ * @typedef {object} RenderAllData
+ * @extends {Generic}
  * @prop {NavigationList[]} [navigation]
  * @prop {NavigationItem[]} [navigationItem]
  * @prop {RenderRedirect[]} [redirect]
@@ -475,8 +476,8 @@ export type RenderItemDataFilter = (
 export type RenderStartAction = (args: RenderArgs) => Promise<void> | void
 
 /**
- * @typedef RenderEndActionArgs
- * @type {RenderArgs}
+ * @typedef {object} RenderEndActionArgs
+ * @extends {RenderArgs}
  * @prop {RenderReturn[]|RenderReturn} data
  */
 export interface RenderEndActionArgs extends RenderArgs {

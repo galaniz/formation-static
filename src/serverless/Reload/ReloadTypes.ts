@@ -7,8 +7,8 @@
 import type { Generic } from '../../global/globalTypes.js'
 
 /**
- * @typedef ReloadQuery
- * @type {Generic}
+ * @typedef {object} ReloadQuery
+ * @extends {Generic}
  * @prop {string} [page]
  * @prop {string} [filters]
  */

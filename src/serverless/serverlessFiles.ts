@@ -94,7 +94,7 @@ export const onRequestPost = [render];`
     await mkdir(resolve(serverlessDir, dir), { recursive: true })
     await writeFile(path, minify(content))
 
-    print('[SSF] Successfully wrote', path, 'success')
+    print('[FRM] Successfully wrote', path, 'success')
   }
 
   /* Preview file */
@@ -115,7 +115,7 @@ export const onRequestGet = [render];`
     await mkdir(resolve(serverlessDir, dir), { recursive: true })
     await writeFile(path, minify(content))
 
-    print('[SSF] Successfully wrote', path, 'success')
+    print('[FRM] Successfully wrote', path, 'success')
   }
 
   /* Routes */
@@ -165,7 +165,7 @@ export const onRequestGet = [render];`
     await mkdir(resolve(serverlessDir, dir), { recursive: true })
     await writeFile(newPath, content)
 
-    print('[SSF] Successfully wrote', newPath, 'success')
+    print('[FRM] Successfully wrote', newPath, 'success')
   }
 }
 

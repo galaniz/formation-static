@@ -46,9 +46,9 @@ const FormOption = (props: FormOptionProps): string => {
     classes
   } = isObjectStrict(args) ? args : {}
 
-  /* Label required */
+  /* Label and value required */
 
-  if (!isStringStrict(label)) {
+  if (!isStringStrict(label) || !isStringStrict(value)) {
     return ''
   }
 
@@ -94,6 +94,14 @@ const FormOption = (props: FormOptionProps): string => {
     return `<option value="${value}"${selected ? ' selected' : ''}>${label}</option>`
   }
 
+  /* Name */
+
+  const inputName = name ?? fieldName
+
+  if (!isStringStrict(inputName)) {
+    return ''
+  }
+
   /* Id */
 
   const id = uuid()
@@ -125,7 +133,7 @@ const FormOption = (props: FormOptionProps): string => {
       <input
         type="${isRadioGroup ? 'radio' : 'checkbox'}"
         value="${value}"
-        name="${isStringStrict(name) ? name : fieldName}"
+        name="${inputName}"
         id="${id}"
         ${isStringStrict(classes) ? ` class="${classes}"` : ''}
         data-form-input

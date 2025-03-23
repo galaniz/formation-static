@@ -72,7 +72,7 @@ const Preview = async (
     html = await renderHttpError({ code: status })
   }
 
-  return new Response(html, {
+  return new Response(html.replace(/\s+/g, ' ').replace(/>\s+</g, '><').trim(), {
     status,
     headers: {
       'Content-Type': 'text/html;charset=UTF-8'

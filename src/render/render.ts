@@ -171,7 +171,7 @@ const getContentTemplate = (
     /* Check if template */
 
     if (tagExists(c, 'template')) {
-      templates.push(structuredClone(c))
+      templates.push({ ...c })
 
       /* Replace template with template break */
 
@@ -250,10 +250,11 @@ const mapContentTemplate = (
 
     /* Check for repeatable template item */
 
-    const children = t.content
+    let children = t.content
 
     if (isArrayStrict(children) && !isSlot) {
       let repeat: RenderItem | undefined
+      const newChildren = [...children]
 
       const repeatIndex = children.findIndex((c) => {
         const isRepeat = tagExists(c, 'templateRepeat')
@@ -274,11 +275,13 @@ const mapContentTemplate = (
         let insertIndex = repeatIndex
 
         for (let j = insertIndex; j < breakIndex - 1; j += 1) {
-          children.splice(insertIndex, 0, structuredClone(repeat))
+          newChildren.splice(insertIndex, 0, { ...repeat })
 
           insertIndex = j
         }
       }
+
+      children = newChildren
     }
 
     /* Replace slot with content */
@@ -358,7 +361,7 @@ const renderContent = async (
 
     /* Render props */
 
-    const props = structuredClone(item)
+    const props = { ...item }
     const renderType = isString(props.renderType) ? props.renderType : ''
     const contentAttr = props.contentIsAttribute
     const isRichText = renderType === 'richText'

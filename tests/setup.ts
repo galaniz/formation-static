@@ -12,6 +12,12 @@ import { fs, vol } from 'memfs'
 vi.mock('node:fs', () => fs)
 vi.mock('node:fs/promises', () => fs.promises)
 
+/* Mock uuid */
+
+vi.mock('uuid', () => ({
+  v4: vi.fn(() => 'mock-uuid'),
+}))
+
 /* Reset virtual files */
 
 afterEach(() => {

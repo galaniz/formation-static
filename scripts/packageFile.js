@@ -22,9 +22,9 @@ const init = async () => {
     await writeFile(`${libDir}/package.json`, '{"type": "module"}')
     await writeFile(`${cjsDir}/package.json`, '{"type": "commonjs"}')
 
-    console.info('[SSF] Success creating package json files')
+    console.info('[FRM] Success creating package json files')
   } catch (error) {
-    console.error('[SSF] Error creating package json files: ', error)
+    console.error('[FRM] Error creating package json files: ', error)
   }
 }
 

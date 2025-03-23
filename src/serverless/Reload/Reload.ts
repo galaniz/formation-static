@@ -35,7 +35,7 @@ const getErrorHtml = async (
       return await renderHttpError({ code: status })
     }
   } catch (error) {
-    print('[SSF] Error rendering http error', error)
+    print('[FRM] Error rendering http error', error)
   }
 
   return ''
@@ -119,14 +119,14 @@ const Reload = async (
       html = await renderHttpError({ code: status })
     }
 
-    return new Response(html, {
+    return new Response(html.replace(/\s+/g, ' ').replace(/>\s+</g, '><').trim(), {
       status,
       headers: {
         'Content-Type': 'text/html;charset=UTF-8'
       }
     })
   } catch (error) {
-    print('[SSF] Error with reload function', error)
+    print('[FRM] Error with reload function', error)
 
     const status = 500
     const html = await getErrorHtml(context, setupServerless, status)

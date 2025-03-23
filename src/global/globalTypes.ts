@@ -41,8 +41,9 @@ export interface InternalLinkBase {
 }
 
 /**
- * @typedef InternalLink
- * @type {InternalLinkBase|Taxonomy|Generic}
+ * @typedef {Object<string, *>} InternalLink
+ * @extends {InternalLinkBase}
+ * @extends {Taxonomy}
  */
 export interface InternalLink extends InternalLinkBase, Partial<Taxonomy> {
   [key: string]: unknown

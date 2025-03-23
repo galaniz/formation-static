@@ -118,7 +118,7 @@ describe('Preview()', () => {
     const status = response.status
     const expectedStatus = 200
     const expectedBody =
-      '<html><body>\n<p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p>\n</body></html>'
+      '<html><body><p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p></body></html>'
 
     expect(body).toBe(expectedBody)
     expect(status).toBe(expectedStatus)

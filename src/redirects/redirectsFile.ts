@@ -22,7 +22,7 @@ const createRedirectsFile = async (path: string = 'site/_redirects'): Promise<vo
   await mkdir(redirectsDir, { recursive: true })
   await writeFile(redirectsPath, redirects.join('\n').trimEnd())
 
-  print('[SSF] Successfully wrote', redirectsPath, 'success')
+  print('[FRM] Successfully wrote', redirectsPath, 'success')
 }
 
 /* Exports */

@@ -32,8 +32,8 @@ export interface RichTextElement {
 }
 
 /**
- * @typedef RichTextArgs
- * @type {Generic}
+ * @typedef {object} RichTextArgs
+ * @extends {Generic}
  * @prop {string} [tag]
  * @prop {RenderRichText[]|string} [content]
  * @prop {string} [classes]
@@ -63,8 +63,8 @@ export interface RichTextArgs extends Generic {
 }
 
 /**
- * @typedef RichTextContent
- * @type {Generic}
+ * @typedef {object} RichTextContent
+ * @extends {Generic}
  * @prop {RenderRichText[]|string} [content]
  */
 export interface RichTextContent extends Generic {
@@ -72,8 +72,8 @@ export interface RichTextContent extends Generic {
 }
 
 /**
- * @typedef RichTextProps
- * @type {RenderFunctionArgs}
+ * @typedef {object} RichTextProps
+ * @extends {RenderFunctionArgs}
  * @prop {RichTextArgs} args
  */
 export interface RichTextProps<T = RichTextArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {
@@ -105,8 +105,8 @@ export interface RichTextContentFilterArgs {
 }
 
 /**
- * @typedef RichTextContentOutputFilterArgs
- * @type {RichTextContentFilterArgs}
+ * @typedef {object} RichTextContentOutputFilterArgs
+ * @extends {RichTextContentFilterArgs}
  * @prop {RichTextElement} element
  */
 export interface RichTextContentOutputFilterArgs extends RichTextContentFilterArgs {
@@ -114,7 +114,7 @@ export interface RichTextContentOutputFilterArgs extends RichTextContentFilterAr
 }
 
 /**
- * @typedef RichTextOutputFilterArgs
+ * @typedef {object} RichTextOutputFilterArgs
  * @prop {RichTextProps} props
  * @prop {RichTextElement} element
  */

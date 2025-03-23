@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import { it, expect, describe, afterEach } from 'vitest'
+import { it, expect, describe, afterEach, vi } from 'vitest'
 import {
   shortcodes,
   addShortcode,
@@ -151,8 +151,12 @@ describe('doShortcodes()', () => {
   )
 
   it('should return content with shortcodes replaced', async () => {
+    const pageDataProps = vi.fn()
+
     addShortcode('test', {
-      callback ({ attributes, content = '' }) {
+      callback ({ attributes, content = '', pageData }) {
+        pageDataProps(pageData)
+
         const {
           type = 'default',
           required = false,
@@ -178,9 +182,17 @@ describe('doShortcodes()', () => {
     const expectedResult =
       'This is <default false 0 /> content <test true 10 continued />.'
 
-    const result = await doShortcodes(content)
+    const result = await doShortcodes(content, {
+      id: 'test-id',
+      contentType: 'test'
+    })
 
     expect(result).toBe(expectedResult)
+    expect(pageDataProps).toHaveBeenCalledTimes(2)
+    expect(pageDataProps).toHaveBeenCalledWith({
+      id: 'test-id',
+      contentType: 'test'
+    })
   })
 
   it('should return content with parent and child shortcodes replaced', async () => {
