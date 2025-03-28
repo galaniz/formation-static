@@ -141,6 +141,7 @@ describe('renderContent()', () => {
       // @ts-expect-error - test null content
       content: null,
       serverlessData: undefined,
+      previewData: undefined,
       pageData: {},
       pageContains: [],
       pageHeadings: [],
@@ -157,6 +158,7 @@ describe('renderContent()', () => {
     const result = await renderContent({
       content: [],
       serverlessData: undefined,
+      previewData: undefined,
       pageData: {},
       pageContains: [],
       pageHeadings: [],
@@ -698,7 +700,8 @@ describe('render()', () => {
         'testScript'
       ],
       pageHeadings: [],
-      serverlessData: undefined
+      serverlessData: undefined,
+      previewData: undefined
     })
 
     expect(renderItemEnd).toHaveBeenCalledWith({
@@ -720,7 +723,8 @@ describe('render()', () => {
         'testScript'
       ],
       pageHeadings: [],
-      serverlessData: undefined
+      serverlessData: undefined,
+      previewData: undefined
     })
 
     expect(renderItemStart).toHaveBeenCalledWith({
@@ -745,7 +749,8 @@ describe('render()', () => {
       contentType: 'page',
       pageContains: [],
       pageHeadings: [],
-      serverlessData: undefined
+      serverlessData: undefined,
+      previewData: undefined
     })
 
     expect(renderContent).toHaveBeenCalledWith({

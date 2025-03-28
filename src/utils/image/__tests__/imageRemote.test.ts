@@ -60,16 +60,16 @@ describe('getRemoteImages()', () => {
     await expect(async () => await getRemoteImages([])).rejects.toThrowError('No images array')
   })
 
-  it('should throw an error if empty path, url or extension', async () => {
+  it('should throw an error if empty path, url or format', async () => {
     await expect(async () => await getRemoteImages([
       {
         // @ts-expect-error - test undefined path
         path: undefined,
         url: '',
-        // @ts-expect-error - test null extension
-        ext: null
+        // @ts-expect-error - test null format
+        format: null
       }
-    ])).rejects.toThrowError('No path, url or extension')
+    ])).rejects.toThrowError('No path, url or format')
   })
 
   it('should throw an error if image does not exist', async () => {
@@ -77,7 +77,7 @@ describe('getRemoteImages()', () => {
       {
         path: 'test',
         url: 'https://test.com/404.png',
-        ext: 'png'
+        format: 'png'
       }
     ])).rejects.toThrowError('Failed to fetch image')
   })
@@ -87,7 +87,7 @@ describe('getRemoteImages()', () => {
       {
         path: 'test/test',
         url: 'https://test.com/test.jpg',
-        ext: 'jpg'
+        format: 'jpg'
       }
     ])
 

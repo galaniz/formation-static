@@ -50,17 +50,19 @@ export interface RenderMeta {
 }
 
 /**
- * @typedef {object} RenderCommon
+ * @typedef {object} RenderBase
  * @prop {RenderItem} pageData
  * @prop {string[]} pageContains
  * @prop {Array.<RichTextHeading[]>} pageHeadings
  * @prop {RenderServerlessData} [serverlessData]
+ * @prop {RenderPreviewData} [previewData]
  */
-export interface RenderCommon {
+export interface RenderBase {
   pageData: RenderItem
   pageHeadings: RichTextHeading[][]
   pageContains: string[]
   serverlessData?: RenderServerlessData
+  previewData?: RenderPreviewData
 }
 
 /**
@@ -205,6 +207,7 @@ export type RenderHttpError = (args: RenderHttpErrorArgs) => string | Promise<st
  * @prop {string[]} [pageContains]
  * @prop {Navigation} [navigations]
  * @prop {RenderServerlessData} [serverlessData]
+ * @prop {RenderPreviewData} [previewData]
  * @prop {RichTextHeading[]} [headings]
  * @prop {RenderItem[]} [children]
  */
@@ -215,6 +218,7 @@ export interface RenderFunctionArgs<T = any, R = RenderItem, P = ParentArgs> { /
   pageContains?: string[]
   navigations?: Navigation
   serverlessData?: RenderServerlessData
+  previewData?: RenderPreviewData
   headings?: RichTextHeading[]
   children?: R[]
 }
@@ -250,14 +254,14 @@ export interface RenderFunctionsArgs {
 
 /**
  * @typedef {object} RenderContentArgs
- * @extends {RenderCommon}
+ * @extends {RenderBase}
  * @prop {RenderItem[]} content
  * @prop {ParentArgs[]} parents
  * @prop {Navigation} [navigations]
  * @prop {number} [headingsIndex]
  * @prop {number} [depth]
  */
-export interface RenderContentArgs extends RenderCommon {
+export interface RenderContentArgs extends RenderBase {
   content: RenderItem[]
   parents: ParentArgs[]
   navigations?: Navigation
@@ -306,10 +310,12 @@ export interface RenderItem extends Generic, Partial<Taxonomy> {
  * @typedef {object} RenderItemArgs
  * @prop {RenderItem} item
  * @prop {RenderServerlessData} [serverlessData]
+ * @prop {RenderPreviewData} [previewData]
  */
 export interface RenderItemArgs {
   item: RenderItem
   serverlessData?: RenderServerlessData
+  previewData?: RenderPreviewData
 }
 
 /**
@@ -342,24 +348,24 @@ export interface RenderInlineItem extends Omit<RenderItem, 'id' | 'slug' | 'cont
 
 /**
  * @typedef {object} RenderItemStartActionArgs
- * @extends {RenderCommon}
+ * @extends {RenderBase}
  * @prop {string} id
  * @prop {string} contentType
  */
-export interface RenderItemStartActionArgs extends RenderCommon {
+export interface RenderItemStartActionArgs extends RenderBase {
   id: string
   contentType: string
 }
 
 /**
  * @typedef {object} RenderItemActionArgs
- * @extends {RenderCommon}
+ * @extends {RenderBase}
  * @prop {string} id
  * @prop {string} contentType
  * @prop {string} slug
  * @prop {string} output
  */
-export interface RenderItemActionArgs extends RenderCommon {
+export interface RenderItemActionArgs extends RenderBase {
   id: string
   contentType: string
   slug: string
@@ -378,6 +384,7 @@ export interface RenderItemActionArgs extends RenderCommon {
  * @prop {string[]} [pageContains]
  * @prop {Array.<RichTextHeading[]>} [pageHeadings]
  * @prop {RenderServerlessData} [serverlessData]
+ * @prop {RenderPreviewData} [previewData]
  */
 export interface RenderLayoutArgs {
   id: string
@@ -390,6 +397,7 @@ export interface RenderLayoutArgs {
   pageHeadings?: RichTextHeading[][]
   pageContains?: string[]
   serverlessData?: RenderServerlessData
+  previewData?: RenderPreviewData
 }
 
 /**

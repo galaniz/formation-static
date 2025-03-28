@@ -235,6 +235,28 @@ describe('FormOption()', () => {
     expect(result).toEqual(expectedResult)
   })
 
+  it('should return select option with empty value', () => {
+    const result = FormOption({
+      args: {
+        label: 'Option'
+      },
+      parents: [
+        {
+          renderType: 'formField',
+          args: {
+            type: 'select',
+            name: 'select',
+            label: 'Select'
+          }
+        }
+      ]
+    })
+
+    const expectedResult = '<option value="">Option</option>'
+
+    expect(result).toEqual(expectedResult)
+  })
+
   it('should return selected select option', () => {
     const result = FormOption({
       args: {
@@ -264,6 +286,7 @@ describe('FormOption()', () => {
       args: {
         label: 'Option',
         value: 'option',
+        name: '',
         ...icons
       },
       parents: [
@@ -290,6 +313,48 @@ describe('FormOption()', () => {
         <label for="mock-uuid">
           <span data-form-option>
             <span data-form-radio-icon></span>
+            <span data-form-label>
+              <span data-form-label-text>Option</span>
+            </span>
+          </span>
+        </label>
+      </div>
+    `
+
+    expect(testMinify(result)).toEqual(testMinify(expectedResult))
+  })
+
+  it('should return checkbox input with field name', () => {
+    const result = FormOption({
+      args: {
+        label: 'Option',
+        value: 'option',
+        ...icons
+      },
+      parents: [
+        {
+          renderType: 'formField',
+          args: {
+            type: 'checkbox-group',
+            name: 'test',
+            label: 'Test'
+          }
+        }
+      ]
+    })
+
+    const expectedResult = `
+      <div>
+        <input
+          type="checkbox"
+          value="option"
+          name="test"
+          id="mock-uuid"
+          data-form-input
+        >
+        <label for="mock-uuid">
+          <span data-form-option>
+            <span data-form-checkbox-icon></span>
             <span data-form-label>
               <span data-form-label-text>Option</span>
             </span>

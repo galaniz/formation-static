@@ -131,7 +131,7 @@ class Navigation<L extends string = string> {
     /* Items by id */
 
     this.items.forEach(item => {
-      if (item == null) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+      if (!item) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
         return
       }
 
@@ -141,7 +141,7 @@ class Navigation<L extends string = string> {
     this.items.forEach(item => {
       const info = this.#getItemInfo(item)
 
-      if (info != null) {
+      if (info) {
         this.#itemsById.set(info.id, info)
       }
     })
@@ -270,7 +270,7 @@ class Navigation<L extends string = string> {
     children.forEach(child => {
       const info = this.#getItemInfo(this.#itemsById.get(child?.id)) // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 
-      if (info == null) {
+      if (!info) {
         return
       }
 
@@ -307,7 +307,7 @@ class Navigation<L extends string = string> {
       const { id } = item
       const storedItem = this.#itemsById.get(id)
 
-      if (storedItem != null) {
+      if (storedItem) {
         resItems.push(storedItem)
       }
     })
@@ -499,7 +499,7 @@ class Navigation<L extends string = string> {
   ): string {
     const nav = this.#navigationsByLocation.get(location)
 
-    if (nav == null) {
+    if (!nav) {
       return ''
     }
 

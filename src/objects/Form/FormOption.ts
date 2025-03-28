@@ -35,7 +35,7 @@ const FormOption = (props: FormOptionProps): string => {
   const { args, parents } = props
   const {
     label,
-    value,
+    value = '',
     name,
     hint,
     selected,
@@ -46,9 +46,9 @@ const FormOption = (props: FormOptionProps): string => {
     classes
   } = isObjectStrict(args) ? args : {}
 
-  /* Label and value required */
+  /* Label required */
 
-  if (!isStringStrict(label) || !isStringStrict(value)) {
+  if (!isStringStrict(label)) {
     return ''
   }
 
@@ -96,7 +96,7 @@ const FormOption = (props: FormOptionProps): string => {
 
   /* Name */
 
-  const inputName = name ?? fieldName
+  const inputName = name || fieldName
 
   if (!isStringStrict(inputName)) {
     return ''

@@ -64,7 +64,7 @@ describe('getWordPressData()', () => {
     resetFilters()
   })
 
-  it('should throw an error if no arguments are provided', async () => {
+  it('should throw an error if no args are provided', async () => {
     // @ts-expect-error - test undefined params
     await expect(async () => await getWordPressData()).rejects.toThrowError('No args')
   })

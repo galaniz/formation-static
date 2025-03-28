@@ -4,88 +4,182 @@
 
 /* Imports */
 
-import { isArray } from '../utils/array/array.js'
-import { isString } from '../utils/string/string.js'
-import { isObject } from '../utils/object/object.js'
-import { getObjectKeys } from '../utils/object/objectUtils.js'
-import { isFunction } from '../utils/function/function.js'
+import type { LocalData, LocalDataItem } from './localDataTypes.js'
+import type { RenderItem } from '../render/renderTypes.js'
+import { isObject, isObjectStrict } from '../utils/object/object.js'
+import { isArray, isArrayStrict } from '../utils/array/array.js'
+import { isStringStrict } from '../utils/string/string.js'
+import { getStoreItem } from '../store/store.js'
+import { StoreImageMeta } from '../store/storeTypes.js'
 
 /**
- * Recursively set internal props from outer data
+ * Link object and image references
  *
- * @param {object} data
- * @param {object} currentData
- * @param {string[]} [props]
- * @param {function} [filterValue]
- * @return {void}
+ * @param {LocalDataItem} data
+ * @param {LocalData} refData
+ * @param {StoreImageMeta} imageData
+ * @param {string[]} [refProps=['internalLink', 'term', 'taxonomy']]
+ * @param {string[]} [imageProps=['image']]
+ * @param {string[]} [unsetProps=['content']]
+ * @param {string} [contentType]
+ * @return {LocalDataItem}
  */
-const resolveInternalLinks = <T, U>( // eslint-disable-line @typescript-eslint/no-unnecessary-type-parameters
-  data: T,
-  currentData: U,
-  props: string[] = ['internalLink'],
-  filterValue?: (prop: string | number | symbol, value: unknown) => T
-): void => {
-  if (!isObject(data) || !isObject(currentData) || !isArray(props)) {
-    return
+const normalizeLocalRefs = (
+  data: LocalDataItem,
+  refData: LocalData,
+  imageData: StoreImageMeta,
+  refProps: string[] = ['internalLink', 'term', 'taxonomy'],
+  imageProps: string[] = ['image'],
+  unsetProps: string[] = ['content'],
+  contentType?: string
+): LocalDataItem => {
+  const newData = isArray(data) ? [] : {} as LocalDataItem
+  const isTemplate = data.renderType === 'contentTemplate'
+  const isNavigation = contentType === 'navigation'
+  const isNavigationItem = contentType === 'navigationItem'
+
+  for (const [key, value] of Object.entries(data)) {
+    const isRef = refProps.includes(key)
+    const isImage = imageProps.includes(key)
+    const isStr = isStringStrict(value)
+    const isArr = isArrayStrict(value)
+
+    let newValue = value
+
+    if (isTemplate && key === 'content' && isArr) {
+      newValue = value.map(item => {
+        if (!isStringStrict(item)) {
+          return item
+        }
+
+        const ref = refData[item]
+
+        if (isObjectStrict(ref)) {
+          return { ...ref }
+        }
+      })
+    }
+
+    if (((isNavigation && key === 'items') || (isNavigationItem && key === 'children')) && isArr) {
+      newValue = value.map(id => {
+        if (!isStringStrict(id)) {
+          return null
+        }
+
+        return {
+          id,
+          title: refData[id]?.title
+        }
+      }).filter(Boolean)
+    }
+
+    if (isImage && isStr) {
+      newValue = imageData[value] ? { ...imageData[value] } : null
+    }
+
+    if (isRef && isStr) {
+      const ref = refData[value]
+
+      if (isArrayStrict(ref)) {
+        newValue = [...ref]
+      }
+
+      if (isObjectStrict(ref)) {
+        newValue = { ...ref }
+
+        unsetProps.forEach(prop => {
+          if ((newValue as LocalDataItem)[prop]) {
+            (newValue as LocalDataItem)[prop] = undefined
+          }
+        })
+      }
+    }
+
+    if (isRef && isArrayStrict(value)) {
+      newValue = value.map(refKey => {
+        if (!isStringStrict(refKey)) {
+          return null
+        }
+
+        const ref = refData[refKey]
+
+        if (isObjectStrict(ref)) {
+          const newRef = { ...ref }
+
+          unsetProps.forEach(prop => {
+            if ((newRef as LocalDataItem)[prop]) {
+              (newRef as LocalDataItem)[prop] = undefined
+            }
+          })
+        }
+
+        return ref
+      }).filter(Boolean)
+    }
+
+    if (isObject(newValue)) {
+      newValue = normalizeLocalRefs(
+        newValue as RenderItem,
+        refData,
+        imageData,
+        refProps,
+        imageProps,
+        unsetProps
+      )
+    }
+
+    (newData as LocalDataItem)[key] = newValue
   }
 
-  getObjectKeys(currentData).forEach(prop => {
-    const value = currentData[prop]
-
-    if (props.includes(prop.toString())) {
-      let v
-
-      if (isArray(value)) {
-        v = value.map(k => data[k as keyof T])
-      }
-
-      if (isString(value)) {
-        v = data[value as keyof T]
-      }
-
-      if (isFunction(filterValue)) {
-        v = filterValue(prop, v)
-      }
-
-      // @ts-expect-error - type 'undefined' is not assignable to type '(object & U)[keyof U]'
-      currentData[prop] = v
-    } else if (isObject(value)) {
-      resolveInternalLinks(data, value, props, filterValue)
-    }
-  })
+  return newData as LocalDataItem
 }
 
 /**
- * Set property in object or array of objects to undefined
+ * Transform and link local data
  *
- * @param {object|object[]} obj
- * @param {string[]} props
- * @return {object|object[]}
+ * @param {LocalData} data
+ * @param {string[]} [refProps]
+ * @param {string[]} [imageProps]
+ * @param {string[]} [unsetProps]
+ * @return {LocalData}
  */
-const undefineProps = <T>(obj: T, props: string[] = []): T => {
-  if (!isObject(obj)) {
-    return obj
+const normalizeLocalData = (
+  data: LocalData,
+  refProps?: string[],
+  imageProps?: string[],
+  unsetProps?: string[]
+): LocalData => {
+  /* Transformed data */
+
+  const newData: LocalData = {}
+
+  /* Image data */
+
+  const imageMeta = getStoreItem('imageMeta')
+
+  /* Items */
+
+  for (const [key, item] of Object.entries(data)) {
+    if (!isObjectStrict(item)) {
+      continue
+    }
+
+    newData[key] = normalizeLocalRefs(
+      item,
+      data,
+      imageMeta,
+      refProps,
+      imageProps,
+      unsetProps,
+      item.contentType
+    )
   }
 
-  const clone = structuredClone(obj)
+  /* Result */
 
-  getObjectKeys(clone).forEach(prop => {
-    const value = clone[prop]
-
-    if (props.includes(prop.toString())) {
-      // @ts-expect-error - type 'undefined' is not assignable to type 'T[keyof T]'
-      clone[prop] = undefined
-    } else if (isObject(value)) {
-      undefineProps(value, props)
-    }
-  })
-
-  return clone
+  return newData
 }
 
 /* Exports */
 
-export {
-  resolveInternalLinks,
-  undefineProps
-}
+export { normalizeLocalData }

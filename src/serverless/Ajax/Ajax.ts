@@ -93,11 +93,11 @@ const Ajax = async (context: ServerlessContext, setupServerless: ServerlessSetup
 
     /* Result error */
 
-    if (res == null) {
+    if (!res) {
       throw new Error('No result')
     }
 
-    if (res.error != null) {
+    if (res.error) {
       throw new ResponseError(res.error.message, res.error.response)
     }
 
@@ -112,7 +112,7 @@ const Ajax = async (context: ServerlessContext, setupServerless: ServerlessSetup
 
     let message = ''
 
-    if (res.success != null) {
+    if (res.success) {
       const {
         message: successMessage,
         headers

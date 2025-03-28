@@ -104,7 +104,7 @@ const setLocalImages = async (): Promise<sharp.OutputInfo[]> => {
     sizes.forEach(size => {
       images.push({
         size,
-        ext: format,
+        format,
         path: resolve(path),
         newPath: resolve(outputDir, folders, `${base}${size !== width ? `@${size}` : ''}`),
         instance
@@ -122,12 +122,12 @@ const setLocalImages = async (): Promise<sharp.OutputInfo[]> => {
 
   return await Promise.all(
     images.map(async (image) => {
-      const { size, instance, newPath, ext } = image
+      const { size, instance, newPath, format } = image
 
       await instance
         .clone()
         .resize(size)
-        .toFile(`${newPath}.${ext}`)
+        .toFile(`${newPath}.${format}`)
 
       return await instance
         .clone()

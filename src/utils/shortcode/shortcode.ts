@@ -84,7 +84,7 @@ const getShortcodeData = (
 
     /* Shortcode info */
 
-    const info = props != null ? props : shortcodes.get(name)
+    const info = props || shortcodes.get(name)
 
     if (!isObjectStrict(info)) {
       return

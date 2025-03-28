@@ -230,7 +230,7 @@ const mapContentTemplate = (
   templates.forEach((t, i) => {
     /* Remove template break */
 
-    if (content[0] != null && tagExists(content[0], 'templateBreak') && content.length >= 1) {
+    if (content[0] && tagExists(content[0], 'templateBreak') && content.length >= 1) {
       content.shift()
     }
 
@@ -266,7 +266,7 @@ const mapContentTemplate = (
         return isRepeat
       })
 
-      if (repeatIndex !== -1 && repeat != null) {
+      if (repeatIndex !== -1 && repeat) {
         let breakIndex = content.findIndex((c) => {
           return tagExists(c, 'templateBreak')
         })
@@ -295,7 +295,7 @@ const mapContentTemplate = (
         fill = content.shift()
       }
 
-      if (fill != null) {
+      if (fill) {
         templates[i] = fill
       }
 
@@ -304,7 +304,7 @@ const mapContentTemplate = (
 
     /* Recurse children */
 
-    if (isArray(children) && templates[i] != null) {
+    if (isArray(children) && templates[i]) {
       templates[i].content = mapContentTemplate(children, content, namedContent, named)
     }
   })
@@ -334,6 +334,7 @@ const renderContent = async (
   const {
     content = [],
     serverlessData,
+    previewData,
     pageData,
     pageContains = [],
     pageHeadings = [],
@@ -428,10 +429,11 @@ const renderContent = async (
         pageData,
         pageContains,
         navigations,
-        serverlessData
+        serverlessData,
+        previewData
       }
 
-      if (childrenArr != null) {
+      if (childrenArr) {
         renderArgs.children = childrenArr
       }
 
@@ -494,7 +496,7 @@ const renderContent = async (
 
     /* Recurse through children */
 
-    if (childrenArr != null) {
+    if (childrenArr) {
       const parentsCopy = [...parents]
 
       if (renderType !== '') { // Skip non rendering parents
@@ -512,6 +514,7 @@ const renderContent = async (
         {
           content: childrenArr,
           serverlessData,
+          previewData,
           parents: parentsCopy,
           pageData,
           pageContains,
@@ -548,7 +551,8 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
 
   const {
     item,
-    serverlessData
+    serverlessData,
+    previewData
   } = args
 
   /* Item must be object */
@@ -613,7 +617,8 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     contentType,
     pageContains: [],
     pageHeadings: [],
-    serverlessData
+    serverlessData,
+    previewData
   }
 
   await doActions('renderItemStart', renderItemStartArgs, true)
@@ -762,7 +767,8 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
       pageData,
       pageContains,
       pageHeadings,
-      navigations
+      navigations,
+      previewData
     })
   }
 
@@ -820,7 +826,8 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
       pageContains,
       pageHeadings,
       pageData,
-      serverlessData
+      serverlessData,
+      previewData
     }
 
     layoutOutput = await renderLayout(layoutArgs)
@@ -834,7 +841,8 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     pageData,
     pageContains,
     pageHeadings,
-    serverlessData
+    serverlessData,
+    previewData
   }
 
   layoutOutput = await applyFilters('renderItem', layoutOutput, renderItemFilterArgs, true)
@@ -849,7 +857,8 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     pageData,
     pageContains,
     pageHeadings,
-    serverlessData
+    serverlessData,
+    previewData
   }
 
   await doActions('renderItemEnd', renderItemEndArgs, true)
@@ -941,7 +950,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
         serverlessData
       }, contentType)
 
-      if (item == null) {
+      if (!item) {
         continue
       }
 
@@ -950,7 +959,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
         data: itemData
       } = item
 
-      if (itemData == null) {
+      if (!itemData) {
         continue
       }
 
@@ -967,7 +976,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
   /* Output */
 
   const [outputItem] = data
-  const output = (isServerless || isPreview) && outputItem != null ? outputItem : data
+  const output = (isServerless || isPreview) && outputItem ? outputItem : data
 
   await doActions('renderEnd', { ...args, data: output }, true)
 

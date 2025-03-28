@@ -68,7 +68,7 @@ const mockSendFormFetch = vi.fn(async (
 
       /* Check if api key is correct */
 
-      if (apiKey !== 'test' && data == null) {
+      if (apiKey !== 'test' && !data) {
         status = 401
         data = {
           data: {
@@ -79,7 +79,7 @@ const mockSendFormFetch = vi.fn(async (
 
       /* Check to emails */
 
-      if ((!isArrayStrict(toEmails) && !isStringStrict(toEmails)) && data == null) {
+      if ((!isArrayStrict(toEmails) && !isStringStrict(toEmails)) && !data) {
         status = 400
         data = {
           data: {
@@ -90,7 +90,7 @@ const mockSendFormFetch = vi.fn(async (
 
       /* Check sender email */
 
-      if (!isStringStrict(senderEmail) && data == null) {
+      if (!isStringStrict(senderEmail) && !data) {
         status = 400
         data = {
           data: {
@@ -101,7 +101,7 @@ const mockSendFormFetch = vi.fn(async (
 
       /* Check subject */
 
-      if (!isStringStrict(subject) && data == null) {
+      if (!isStringStrict(subject) && !data) {
         status = 400
         data = {
           data: {
@@ -112,7 +112,7 @@ const mockSendFormFetch = vi.fn(async (
 
       /* Check text body */
 
-      if ((!isStringStrict(textBody) && !isStringStrict(htmlBody)) && data == null) {
+      if ((!isStringStrict(textBody) && !isStringStrict(htmlBody)) && !data) {
         status = 400
         data = {
           data: {
@@ -122,7 +122,7 @@ const mockSendFormFetch = vi.fn(async (
       }
     }
 
-    if (!isBodyString && data == null) {
+    if (!isBodyString && !data) {
       status = 402
       data = {
         data: {
@@ -133,7 +133,7 @@ const mockSendFormFetch = vi.fn(async (
 
     /* Result */
 
-    if (data == null) {
+    if (!data) {
       data = {
         data: {
           succeeded: 1

@@ -119,7 +119,7 @@ const getContent = (args: RichTextContentProps): string => {
     if (tag === 'a') {
       let anchorLink = link
 
-      if (internalLink != null) {
+      if (internalLink) {
         anchorLink = getLink(internalLink)
       }
 

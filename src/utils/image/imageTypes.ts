@@ -21,9 +21,10 @@ import type sharp from 'sharp'
  * @prop {boolean} [lazy]
  * @prop {boolean} [picture]
  * @prop {number} [quality]
- * @prop {Source} [source]
+ * @prop {Source|'remote'} [source]
  * @prop {number} [maxWidth]
  * @prop {number} [viewportWidth]
+ * @prop {string} [format=webp]
  */
 export interface ImageArgs {
   data?: RenderFile
@@ -35,9 +36,10 @@ export interface ImageArgs {
   lazy?: boolean
   picture?: boolean
   quality?: number
-  source?: Source
+  source?: Source | 'remote'
   maxWidth?: number
   viewportWidth?: number
+  format?: string
 }
 
 /**
@@ -92,14 +94,14 @@ export interface ImageMaxWidthArgs<T = ImageMaxWidthParents> {
  * @typedef {object} ImageLocal
  * @prop {Sharp} instance
  * @prop {number} size
- * @prop {string} ext
+ * @prop {string} format
  * @prop {string} path
  * @prop {string} newPath
  */
 export interface ImageLocal {
   instance: sharp.Sharp
   size: number
-  ext: string
+  format: string
   path: string
   newPath: string
 }
@@ -108,12 +110,12 @@ export interface ImageLocal {
  * @typedef {object} ImageRemote
  * @prop {string} path
  * @prop {string} url
- * @prop {string} [ext]
+ * @prop {string} [format]
  */
 export interface ImageRemote {
   path: string
   url: string
-  ext?: string
+  format?: string
 }
 
 /**

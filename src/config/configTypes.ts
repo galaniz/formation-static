@@ -83,7 +83,7 @@ export interface ConfigAsset {
  * @prop {string} inputDir
  * @prop {string} outputDir
  * @prop {string} localUrl
- * @prop {string} cmsUrl
+ * @prop {string} remoteUrl
  * @prop {number[]} sizes
  * @prop {number} quality
  */
@@ -91,7 +91,7 @@ export interface ConfigImage {
   inputDir: string
   outputDir: string
   localUrl: string
-  cmsUrl: string
+  remoteUrl: string
   sizes: number[]
   quality: number
 }

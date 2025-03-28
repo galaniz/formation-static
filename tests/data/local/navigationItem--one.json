@@ -1,0 +1,8 @@
+{
+  "contentType": "navigationItem",
+  "title": "One",
+  "internalLink": "page--one",
+  "children": [
+    "navigationItem--three"
+  ]
+}

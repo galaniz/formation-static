@@ -27,7 +27,7 @@ const getParentSlug = (id: string, contentType: string, parents: LinkSlugParent[
   const storeParents = getStoreItem('parents')
   const parent = storeParents[contentType]?.[id]
 
-  if (parent != null) {
+  if (parent) {
     parents.unshift({ ...parent, contentType })
     getParentSlug(parent.id, contentType, parents)
   }

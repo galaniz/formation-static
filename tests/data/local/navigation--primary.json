@@ -1,0 +1,10 @@
+{
+  "contentType": "navigation",
+  "title": "Primary",
+  "location": "primary",
+  "items": [
+    "navigationItem--one",
+    "navigationItem--two",
+    "navigationItem--three"
+  ]
+}

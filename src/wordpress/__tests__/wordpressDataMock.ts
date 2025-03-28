@@ -86,7 +86,7 @@ const mockWordPressFetch = vi.fn(async (
     /* Headers */
 
     const page = urlObj.searchParams.get('page')
-    const allPages = page != null && route === 'pages'
+    const allPages = page && route === 'pages'
 
     headers.set('X-WP-TotalPages', allPages ? '2' : '')
     headers.set('X-WP-Total', allPages ? '2' : '')

@@ -36,10 +36,10 @@ const getRemoteImages = async (images: ImageRemote[]): Promise<string[]> => {
 
   return await Promise.all(
     images.map(async (image) => {
-      const { path, url, ext = 'jpg' } = image
+      const { path, url, format = 'jpg' } = image
 
-      if (!isStringStrict(path) || !isStringStrict(url) || !isStringStrict(ext)) {
-        throw new Error('No path, url or extension')
+      if (!isStringStrict(path) || !isStringStrict(url) || !isStringStrict(format)) {
+        throw new Error('No path, url or format')
       }
 
       const resp = await fetch(url)
@@ -49,7 +49,7 @@ const getRemoteImages = async (images: ImageRemote[]): Promise<string[]> => {
       }
 
       const buffer = await resp.arrayBuffer()
-      const fullPath = `${inputDir}/${path}.${ext}`
+      const fullPath = `${inputDir}/${path}.${format}`
       const folders = fullPath.split('/')
 
       folders.pop()

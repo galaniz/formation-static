@@ -151,7 +151,7 @@ describe('Reload()', () => {
           let page = ''
           let filters = ''
 
-          if (serverlessData != null) {
+          if (serverlessData) {
             const { query } = serverlessData
 
             page = isStringStrict(query?.page) ? query.page : ''

@@ -39,7 +39,8 @@ const getImage = <V extends boolean = false>(
     quality = 75,
     source = config.source,
     maxWidth = 1200,
-    viewportWidth = 100
+    viewportWidth = 100,
+    format = 'webp'
   } = isObjectStrict(args) ? args : {}
 
   /* Fallback */
@@ -68,10 +69,10 @@ const getImage = <V extends boolean = false>(
     alt: dataAlt = '',
     width: naturalWidth = 1,
     height: naturalHeight = 1,
-    format = 'jpg'
+    format: naturalFormat = 'jpg'
   } = data
 
-  let { url = config.image.cmsUrl } = data
+  let { url = config.image.remoteUrl } = data
 
   /* Alt */
 
@@ -84,7 +85,7 @@ const getImage = <V extends boolean = false>(
   /* Source */
 
   const isLocal = source === 'local'
-  const isContentful = dataSource.isContentful(source)
+  const isRemote = dataSource.isContentful(source) || source === 'remote'
   const isWordpress = dataSource.isWordPress(source)
 
   /* Local url */
@@ -125,16 +126,16 @@ const getImage = <V extends boolean = false>(
   let src = url
   let srcFallback = url
 
-  if (dataSource.isLocal(source)) {
-    src = `${url}.webp`
-    srcFallback = `${url}.${format}`
+  if (isLocal) {
+    src = `${url}.${format}`
+    srcFallback = `${url}.${naturalFormat}`
   }
 
-  if (isContentful) {
-    const common = `&q=${quality}&w=${w}&h=${h}`
+  if (isRemote) {
+    const params = `&q=${quality}&w=${w}&h=${h}`
 
-    src = `${url}?fm=webp${common}`
-    srcFallback = `${url}?fm=${format}${common}`
+    src = `${url}?fm=${format}${params}`
+    srcFallback = `${url}?fm=${naturalFormat}${params}`
   }
 
   const sizes = `(min-width: ${w / 16}rem) ${w / 16}rem, ${viewportWidth}vw`
@@ -153,17 +154,17 @@ const getImage = <V extends boolean = false>(
 
   srcset.forEach(s => {
     if (isLocal) {
-      const common = `${url}${s !== naturalWidth ? `@${s}` : ''}`
+      const base = `${url}${s !== naturalWidth ? `@${s}` : ''}`
 
-      srcsetFallback.push(`${common}.${format} ${s}w`)
-      srcsetSource.push(`${common}.webp ${s}w`)
+      srcsetFallback.push(`${base}.${naturalFormat} ${s}w`)
+      srcsetSource.push(`${base}.${format} ${s}w`)
     }
 
-    if (isContentful) {
-      const common = `&q=${quality}&w=${s}&h=${Math.round(s * aspectRatio)} ${s}w`
+    if (isRemote) {
+      const params = `&q=${quality}&w=${s}&h=${Math.round(s * aspectRatio)} ${s}w`
 
-      srcsetFallback.push(`${url}?fm=${format}${common}`)
-      srcsetSource.push(`${url}?fm=webp${common}`)
+      srcsetFallback.push(`${url}?fm=${naturalFormat}${params}`)
+      srcsetSource.push(`${url}?fm=${format}${params}`)
     }
 
     if (isWordpress) {
@@ -180,7 +181,7 @@ const getImage = <V extends boolean = false>(
   let sourceOutput = ''
 
   if (picture) {
-    sourceOutput = `<source srcset="${srcsetSource.join(', ')}" sizes="${sizes}" type="image/webp">`
+    sourceOutput = `<source srcset="${srcsetSource.join(', ')}" sizes="${sizes}" type="image/${format}">`
   }
 
   let eagerHackOutput = ''

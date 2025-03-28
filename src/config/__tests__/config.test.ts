@@ -96,7 +96,7 @@ describe('setConfig()', () => {
         inputDir: 'input/assets/test',
         outputDir: 'output/assets/test',
         localUrl: '/assets/test/',
-        cmsUrl: 'http://test.com/assets/img/',
+        remoteUrl: 'http://test.com/assets/img/',
         quality: 80,
         sizes: [
           300,

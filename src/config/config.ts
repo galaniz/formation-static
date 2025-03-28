@@ -61,7 +61,7 @@ let config: Config = {
     inputDir: 'src/assets/img',
     outputDir: 'site/assets/img',
     localUrl: '/assets/img/',
-    cmsUrl: '',
+    remoteUrl: '',
     quality: 75,
     sizes: [
       200, 400, 600, 800, 1000, 1200, 1600, 2000

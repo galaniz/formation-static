@@ -148,7 +148,7 @@ const normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
 
     /* Output */
 
-    if (contentValue == null) {
+    if (!contentValue) {
       return
     }
 

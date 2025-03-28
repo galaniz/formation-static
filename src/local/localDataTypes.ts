@@ -13,36 +13,32 @@ import type { RenderItem } from '../render/renderTypes.js'
 export type LocalData = Record<string, RenderItem>
 
 /**
- * @typedef {object} LocalDataParams
- * @prop {boolean} [all]
- * @prop {string} [id]
+ * @typedef {Object<string|number, *>} LocalDataItem
  */
-export interface LocalDataParams {
-  all?: boolean
-  id?: string
+export type LocalDataItem = Record<string | number, unknown>
+
+/**
+ * @typedef {object} LocalDataArgs
+ * @prop {string} key
+ * @prop {string[]} [refProps]
+ * @prop {string[]} [imageProps]
+ * @prop {string[]} [unsetProps]
+ */
+export interface LocalDataArgs {
+  key: string
+  refProps?: string[]
+  imageProps?: string[]
+  unsetProps?: string[]
 }
 
 /**
  * @typedef {object} AllLocalDataArgs
- * @prop {object} [resolveProps]
- * @prop {string[]} resolveProps.image
- * @prop {string[]} resolveProps.data
- * @prop {object} [excludeProps]
- * @prop {string[]} excludeProps.data
- * @prop {object} excludeProps.archive
- * @prop {string[]} excludeProps.archive.posts
- * @prop {string[]} excludeProps.archive.terms
+ * @prop {string[]} [refProps]
+ * @prop {string[]} [imageProps]
+ * @prop {string[]} [unsetProps]
  */
 export interface AllLocalDataArgs {
-  resolveProps?: {
-    image: string[]
-    data: string[]
-  }
-  excludeProps?: {
-    data: string[]
-    archive: {
-      posts: string[]
-      terms: string[]
-    }
-  }
+  refProps?: string[]
+  imageProps?: string[]
+  unsetProps?: string[]
 }

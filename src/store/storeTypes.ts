@@ -56,13 +56,18 @@ export interface StoreArchiveMeta {
 }
 
 /**
+ * @typedef {Object<string, ImageProps>} StoreImageMeta
+ */
+export type StoreImageMeta = Record<string, ImageProps>
+
+/**
  * @typedef {object} Store
  * @extends {Generic}
  * @prop {Object<string, RenderSlug>} slugs
  * @prop {Object<string, Object<string, StoreParent>>} parents
  * @prop {Object<string, StoreArchiveMeta>} archiveMeta
  * @prop {Object<string, FormMeta>} formMeta
- * @prop {Object<string, ImageProps>} imageMeta
+ * @prop {StoreImageMeta} imageMeta
  * @prop {NavigationList[]} navigations
  * @prop {NavigationItem[]} navigationItems
  * @prop {Object<string, Taxonomy>} taxonomies
@@ -72,7 +77,7 @@ export interface Store extends Generic {
   parents: Record<string, Record<string, StoreParent>>
   archiveMeta: Record<string, StoreArchiveMeta>
   formMeta: Record<string, FormMeta>
-  imageMeta: Record<string, ImageProps>
+  imageMeta: StoreImageMeta
   navigations: NavigationList[]
   navigationItems: NavigationItem[]
   taxonomies: Record<string, Taxonomy>

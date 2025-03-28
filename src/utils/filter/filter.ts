@@ -196,7 +196,7 @@ const setFilters = (args: Partial<Filters>): boolean => {
   resetFilters()
 
   newFilters.forEach(([name, filter]) => {
-    if (filter == null) {
+    if (!filter) {
       return
     }
 

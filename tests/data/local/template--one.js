@@ -1,0 +1,30 @@
+export const templateOne = {
+  renderType: 'container',
+  tag: 'section',
+  metadata: {
+    tags: [
+      {
+        id: 'template',
+        name: 'Template'
+      }
+    ]
+  },
+  content: [
+    {
+      renderType: 'container',
+      tag: 'div',
+      content: [
+        {
+          metadata: {
+            tags: [
+              {
+                id: 'templateSlot',
+                name: 'Template Slot'
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

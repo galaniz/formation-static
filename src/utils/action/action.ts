@@ -155,7 +155,7 @@ const setActions = (args: Partial<Actions>): boolean => {
   resetActions()
 
   newActions.forEach(([name, action]) => {
-    if (action == null) {
+    if (!action) {
       return
     }
 
