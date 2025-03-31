@@ -34,7 +34,7 @@ const Ajax = async (context: ServerlessContext, setupServerless: ServerlessSetup
 
     await setupServerless(context, 'ajax')
 
-    /* Get form data */
+    /* Form data */
 
     const request = context.request
     const data: ServerlessActionData | undefined = await request.json()

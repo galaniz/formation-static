@@ -77,7 +77,7 @@ describe('getWordPressData()', () => {
   it('should throw an error if only key is provided', async () => {
     // @ts-expect-error - test undefined params
     await expect(async () => await getWordPressData({
-      key: 'key1'
+      key: 'key_1'
     })).rejects.toThrowError('No route')
   })
 
@@ -94,7 +94,7 @@ describe('getWordPressData()', () => {
     }
 
     await expect(async () => await getWordPressData({
-      key: 'key2',
+      key: 'key_2',
       route: 'route'
     })).rejects.toThrowError('No credentials')
   })
@@ -103,7 +103,7 @@ describe('getWordPressData()', () => {
     config.cms.devHost = 'wp'
 
     await expect(async () => await getWordPressData({
-      key: 'key3',
+      key: 'key_3',
       route: 'route'
     })).rejects.toThrowError(mockFetchErrorMessage.url)
   })
@@ -113,28 +113,28 @@ describe('getWordPressData()', () => {
     config.cms.devCredential = 'pass1'
 
     await expect(async () => await getWordPressData({
-      key:'key4',
+      key: 'key_4',
       route: 'route'
     })).rejects.toThrowError(mockFetchErrorMessage.auth)
   })
 
   it('should throw an error if route does not exist', async () => {
     await expect(async () => await getWordPressData({
-      key: 'key5',
+      key: 'key_5',
       route: 'does_not_exist'
     })).rejects.toThrowError(mockFetchErrorMessage.route)
   })
 
   it('should throw an error if id does not exist', async () => {
     await expect(async () => await getWordPressData({
-      key: 'postsKey1',
+      key: 'posts_key_1',
       route: 'posts/0'
     })).rejects.toThrowError(mockFetchErrorMessage.data)
   })
 
   it('should return empty array if data is empty array', async () => {
     const result = await getWordPressData({
-      key: 'emptyKey',
+      key: 'empty_key',
       route: 'empty',
       params: {
         _embed: 'wp:term' // Embed param coverage
@@ -147,7 +147,7 @@ describe('getWordPressData()', () => {
 
   it('should return empty array if data is array of null', async () => {
     const result = await getWordPressData({
-      key: 'nullKey',
+      key: 'null_key',
       route: 'null'
     })
     const expectedResult: RenderItem[] = []
@@ -155,28 +155,25 @@ describe('getWordPressData()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return array of posts and run cache filter', async () => {
+  it('should return array of posts and set cache', async () => {
     config.env.cache = true
     const cacheSet = vi.fn((data) => new Promise(resolve => { resolve(data) }))
 
     addFilter('cacheData', async (data, args): Promise<undefined> => {
       const { key, type } = args
 
-      if (key === 'postsKey2' && type === 'set') {
+      if (key === 'posts_key_2' && type === 'set') {
         await cacheSet(data)
       }
     })
 
     const result = await getWordPressData({
-      key: 'postsKey2',
+      key: 'posts_key_2',
       route: 'posts'
     })
 
     expect(cacheSet).toHaveBeenCalledTimes(1)
-    expect(cacheSet).toHaveBeenCalledWith({
-      items: posts,
-      meta: undefined
-    })
+    expect(cacheSet).toHaveBeenCalledWith({ items: posts, meta: undefined })
     expect(result).toEqual(posts)
   })
 
@@ -187,7 +184,7 @@ describe('getWordPressData()', () => {
     addFilter('cacheData', async (data, args): Promise<CacheData | undefined> => {
       const { key, type } = args
 
-      if (key === 'postsKey3' && type === 'get') {
+      if (key === 'posts_key_3' && type === 'get') {
         await cacheGet(data)
         return {
           items: posts,
@@ -207,7 +204,7 @@ describe('getWordPressData()', () => {
     }
 
     const result = await getWordPressData({
-      key: 'postsKey3',
+      key: 'posts_key_3',
       route: 'posts',
       meta
     })
@@ -233,7 +230,7 @@ describe('getWordPressData()', () => {
     }
 
     const result = await getWordPressData({
-      key: 'pagesKey',
+      key: 'pages_key',
       route: 'pages',
       meta
     })
@@ -245,7 +242,7 @@ describe('getWordPressData()', () => {
 
   it('should return array of one post with id 1', async () => {
     const result = await getWordPressData({
-      key: 'postsKey4',
+      key: 'posts_key_4',
       route: 'posts/1'
     })
 
@@ -254,7 +251,7 @@ describe('getWordPressData()', () => {
 
   it('should return array of categories', async () => {
     const result = await getWordPressData({
-      key: 'categoriesKey1',
+      key: 'categories_key_1',
       route: 'categories'
     })
 
@@ -263,7 +260,7 @@ describe('getWordPressData()', () => {
 
   it('should return array of tags', async () => {
     const result = await getWordPressData({
-      key: 'tagsKey',
+      key: 'tags_key',
       route: 'tags'
     })
 
@@ -272,7 +269,7 @@ describe('getWordPressData()', () => {
 
   it('should return array of media', async () => {
     const result = await getWordPressData({
-      key: 'mediaKey',
+      key: 'media_key',
       route: 'media'
     })
 
@@ -281,7 +278,7 @@ describe('getWordPressData()', () => {
 
   it('should return array of taxonomies', async () => {
     const result = await getWordPressData({
-      key: 'taxonomiesKey1',
+      key: 'taxonomies_key_1',
       route: 'taxonomies'
     })
 
@@ -290,17 +287,17 @@ describe('getWordPressData()', () => {
 
   it('should return categories and posts with taxonomies linked', async () => {
     await getWordPressData({
-      key: 'taxonomiesKey2',
+      key: 'taxonomies_key_2',
       route: 'taxonomies'
     })
 
     const categoriesResult = await getWordPressData({
-      key: 'categoriesKey2',
+      key: 'categories_key_2',
       route: 'categories'
     })
 
     const postsResult = await getWordPressData({
-      key: 'postsKey5',
+      key: 'posts_key_5',
       route: 'posts'
     })
 
@@ -496,7 +493,7 @@ describe('getAllWordPressData()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should run filter on data to include test attribute', async () => {
+  it('should filter data to include test attribute', async () => {
     addFilter('wordpressData', (data) => {
       return data.map(item => {
         return {
@@ -533,7 +530,7 @@ describe('getAllWordPressData()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should run filter on all data to include test array', async () => {
+  it('should filter all data to include test array', async () => {
     addFilter('allData', (data, args) => {
       const { type } = args
 

@@ -1,11 +1,11 @@
 /**
- * Serverless - Send Form
+ * Serverless - Contact
  */
 
 /* Imports */
 
-import type { SendFormOutputData, SendFormRequestBody } from './SendFormTypes.js'
-import type { ServerlessAction } from '../serverlessTypes.js'
+import type { ContactData, ContactBody } from './ContactTypes.js'
+import type { ServerlessAction, ServerlessActionReturn } from '../serverlessTypes.js'
 import { config } from '../../config/config.js'
 import { escape } from '../../utils/escape/escape.js'
 import { isArray } from '../../utils/array/array.js'
@@ -13,15 +13,16 @@ import { isString, isStringStrict } from '../../utils/string/string.js'
 import { isObject, isObjectStrict } from '../../utils/object/object.js'
 import { isBoolean } from '../../utils/boolean/boolean.js'
 import { getObjectKeys } from '../../utils/object/objectUtils.js'
+import { applyFilters } from '../../utils/filter/filter.js'
 import { getPermalink } from '../../utils/link/link.js'
 import { getStoreItem } from '../../store/store.js'
-import { serverlessApiKeys } from '../serverless.js'
+import { minify } from '../../utils/minify/minify.js'
 
 /**
  * Recurse through data to output plain and html email body
  *
  * @private
- * @param {SendFormOutputData} data
+ * @param {ContactData} data
  * @param {Object<string, string>} output
  * @param {string} output.html
  * @param {string} output.plain
@@ -29,7 +30,7 @@ import { serverlessApiKeys } from '../serverless.js'
  * @return {void}
  */
 const recurseEmailHtml = (
-  data: SendFormOutputData,
+  data: ContactData,
   output: {
     html: string
     plain: string
@@ -64,7 +65,7 @@ const recurseEmailHtml = (
       output.plain += `${l}\n`
     }
 
-    recurseEmailHtml(value as SendFormOutputData, output, depth + 1)
+    recurseEmailHtml(value as ContactData, output, depth + 1)
 
     if (isString(value)) {
       output.html += `
@@ -90,26 +91,14 @@ const recurseEmailHtml = (
 }
 
 /**
- * Generate email from form fields and send with Smtp2go
+ * Generate email from contac form fields
  *
  * @type {ServerlessAction}
  */
-const SendForm: ServerlessAction = async (args) => {
-  /* Api key */
-
-  const apiKey = serverlessApiKeys.smtp2go
-
-  if (!isStringStrict(apiKey)) {
-    return {
-      error: {
-        message: 'No api key'
-      }
-    }
-  }
-
+const Contact: ServerlessAction = async (args) => {
   /* Args */
 
-  const { id, inputs } = args
+  const { id, action, inputs } = args
 
   /* Id required */
 
@@ -191,7 +180,7 @@ const SendForm: ServerlessAction = async (args) => {
 
   const header = `${config.title} contact form submission`
   const footer = `This email was sent from a contact form on ${config.title} (${getPermalink()})`
-  const outputData: SendFormOutputData = {}
+  const outputData: ContactData = {}
   const output = {
     html: '',
     plain: ''
@@ -328,55 +317,28 @@ const SendForm: ServerlessAction = async (args) => {
     subject = `${config.title} Contact Form`
   }
 
-  /* Smtp2go request */
+  /* Request body */
 
-  const body: SendFormRequestBody = {
-    api_key: apiKey,
+  const body: ContactBody = {
+    id,
+    action,
+    inputs,
     to: toEmails,
     sender: senderEmail,
     subject,
-    text_body: outputPlain,
-    html_body: outputHtml
+    text: minify(outputPlain),
+    html: minify(outputHtml)
   }
 
   if (replyToEmail !== '') {
-    body.custom_headers = [
-      {
-        header: 'Reply-To',
-        value: `<${replyToEmail}>`
-      }
-    ]
+    body.replyTo = replyToEmail
   }
 
-  const res = await fetch(
-    'https://api.smtp2go.com/v3/email/send',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    }
-  )
+  /* Result */
 
-  /* Success */
-
-  if (res.ok) {
-    return {
-      success: {
-        message: 'Form successully sent'
-      }
-    }
-  } else {
-    return {
-      error: {
-        message: 'Error sending email',
-        response: res
-      }
-    }
-  }
+  return await applyFilters('contactResult', {} as ServerlessActionReturn, body, true)
 }
 
 /* Exports */
 
-export { SendForm }
+export { Contact }

@@ -51,6 +51,32 @@ describe('renderInlineContent()', () => {
 
     expect(result).toBe(expectedResult)
   })
+
+  it('should return heading with page data title', async () => {
+    setRenderFunctions({
+      functions: {
+        test: ({ pageData }) => `<h1>${pageData?.title}</h1>`
+      },
+      layout: () => '',
+      navigations: () => undefined,
+      httpError: () => ''
+    })
+
+    const result = await renderInlineContent([
+      {
+        renderType: 'test'
+      }
+    ],
+    {
+      pageData: {
+        title: 'Page title'
+      }
+    })
+
+    const expectedResult = '<h1>Page title</h1>'
+
+    expect(result).toBe(expectedResult)
+  })
 })
 
 /* Test renderInlineItem */

@@ -5,7 +5,9 @@
   "date": "2025-03-24T00:00:00",
   "featuredMedia": "2025/04/hero",
   "term": [
-    "term--category-one"
+    "term--category-one",
+    "does-not-exist",
+    null
   ],
   "content": [
     {

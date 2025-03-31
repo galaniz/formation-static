@@ -167,7 +167,7 @@ describe('Form()', () => {
         id: 'frm-id',
         formTag: 'frm-form',
         formClasses: 'form',
-        formAttr: 'type="send"',
+        formAttr: 'type="contact"',
         fieldsClasses: 'fields',
         fieldsAttr: 'novalidate',
         submitLabel: 'Enviar',
@@ -186,7 +186,7 @@ describe('Form()', () => {
     })
 
     const expectedResult = [`
-      <frm-form id="frm-id" class="form" type="send">
+      <frm-form id="frm-id" class="form" type="contact">
         <form class="fields" novalidate>`,
           `<div class="field-honeypot" data-field="honeypot">
             <label for="mock-uuid" class="label-honeypot">Sitio</label>

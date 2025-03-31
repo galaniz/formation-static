@@ -100,7 +100,7 @@ const mockWordPressFetch = vi.fn(async (
         data = posts.find((post) => post.id === 1) as WordPressDataItem
       }
 
-      if (id == null) {
+      if (!id) {
         data = posts
       }
     }

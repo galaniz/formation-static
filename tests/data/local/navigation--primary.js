@@ -1,4 +1,5 @@
 export const navigationPrimary = {
+  id: 'navigation--primary',
   contentType: 'navigation',
   title: 'Primary',
   location: 'primary',

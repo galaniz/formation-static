@@ -131,10 +131,8 @@ export interface ServerlessFilesArgs {
  * @typedef {object} ServerlessArgs
  * @prop {ServerlessActions} [actions]
  * @prop {ServerlessRoutes} [routes]
- * @prop {GenericStrings} [apiKeys]
  */
 export interface ServerlessArgs {
   actions?: ServerlessActions
   routes?: ServerlessRoutes
-  apiKeys?: GenericStrings
 }

@@ -2,5 +2,6 @@
   "contentType": "term",
   "title": "Category One",
   "slug": "category-one",
-  "taxonomy": "taxonomy--category"
+  "taxonomy": "taxonomy--category",
+  "unset": "test"
 }

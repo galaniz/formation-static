@@ -38,7 +38,7 @@ import {
  * @param {RenderReturn[]} items
  * @return {RenderReturn[]}
  */
-const minifyOutput = (items: RenderReturn[]): RenderReturn[] => {
+const testMinifyOutput = (items: RenderReturn[]): RenderReturn[] => {
   return items.map(item => {
     item.output = testMinify(item.output)
     return item
@@ -487,8 +487,8 @@ describe('render()', () => {
       }
     ]
 
-    const resultMin = minifyOutput(result)
-    const expectedResultMin = minifyOutput(expectedResult)
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
 
     expect(resultMin).toEqual(expectedResultMin)
     expect(getStoreItem('navigations')).toEqual(navigations)
@@ -624,8 +624,8 @@ describe('render()', () => {
 
     const result = await render({ allData }) as RenderReturn[]
     const expectedResult = [{ slug: '/page/', output: expectedOutput }]
-    const resultMin = minifyOutput(result)
-    const expectedResultMin = minifyOutput(expectedResult)
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
     const expectedScriptsMeta = { test: 'test' }
 
     expect(resultMin).toEqual(expectedResultMin)
@@ -797,8 +797,8 @@ describe('render()', () => {
       }
     ]
 
-    const resultMin = minifyOutput(result)
-    const expectedResultMin = minifyOutput(expectedResult)
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
 
     expect(resultMin).toEqual(expectedResultMin)
   })
@@ -870,8 +870,8 @@ describe('render()', () => {
       }
     ]
 
-    const resultMin = minifyOutput(result)
-    const expectedResultMin = minifyOutput(expectedResult)
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
 
     expect(resultMin).toEqual(expectedResultMin)
   })
@@ -987,8 +987,8 @@ describe('render()', () => {
       }
     ]
 
-    const resultMin = minifyOutput(result)
-    const expectedResultMin = minifyOutput(expectedResult)
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
     const slugs = getStoreItem('slugs')
     const expectedSlugs = {
       '/parent/': {
@@ -1068,8 +1068,8 @@ describe('render()', () => {
       }
     ]
 
-    const resultMin = minifyOutput(result)
-    const expectedResultMin = minifyOutput(expectedResult)
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
 
     expect(resultMin).toEqual(expectedResultMin)
   })
@@ -1106,8 +1106,8 @@ describe('render()', () => {
       }
     ]
 
-    const resultMin = minifyOutput(result)
-    const expectedResultMin = minifyOutput(expectedResult)
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
     const slugs = getStoreItem('slugs')
     const expectedSlugs = {
       '/lorem.html': {
@@ -1352,8 +1352,8 @@ describe('render()', () => {
       }
     ]
 
-    const resultMin = minifyOutput(result)
-    const expectedResultMin = minifyOutput(expectedResult)
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
 
     expect(resultMin).toEqual(expectedResultMin)
   })
@@ -1493,8 +1493,8 @@ describe('render()', () => {
       }
     ]
 
-    const resultMin = minifyOutput(result)
-    const expectedResultMin = minifyOutput(expectedResult)
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
 
     expect(resultMin).toEqual(expectedResultMin)
   })
@@ -1754,8 +1754,8 @@ describe('render()', () => {
       }
     ]
 
-    const resultMin = minifyOutput(result)
-    const expectedResultMin = minifyOutput(expectedResult)
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
 
     expect(resultMin).toEqual(expectedResultMin)
   })

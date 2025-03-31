@@ -9,8 +9,8 @@ import type { ColumnPropsFilter } from '../../layouts/Column/ColumnTypes.js'
 import type { ContainerPropsFilter } from '../../layouts/Container/ContainerTypes.js'
 import type { FormPropsFilter, FormFieldPropsFilter, FormOptionPropsFilter } from '../../objects/Form/FormTypes.js'
 import type { AjaxResultFilter } from '../../serverless/Ajax/AjaxTypes.js'
+import type { ContactResultFilter } from '../../serverless/Contact/ContactTypes.js'
 import type { LinkSlugPartsFilter, LinkSlugFilter } from '../link/linkTypes.js'
-import type { LocalData } from '../../local/localDataTypes.js'
 import type {
   RichTextPropsFilter,
   RichTextOutputFilter,
@@ -71,10 +71,10 @@ export type WordpressDataFilter = (data: RenderItem[], args: DataFilterArgs) => 
 
 /**
  * @typedef {function} LocalDataFilter
- * @param {LocalData} data
- * @return {LocalData}
+ * @param {RenderItem} data
+ * @return {RenderItem}
  */
-export type LocalDataFilter = (data: LocalData) => LocalData
+export type LocalDataFilter = (data: RenderItem) => RenderItem
 
 /**
  * @typedef {function} AllDataFilter
@@ -86,12 +86,14 @@ export type AllDataFilter = (allData: RenderAllData, args: AllDataFilterArgs) =>
 
 /**
  * @typedef {object} CacheData
- * @prop {RenderItem[]} [data]
+ * @prop {RenderItem[]} [items]
  * @prop {RenderDataMeta} [meta]
+ * @prop {Object<string, RenderItem>} [data]
  */
 export interface CacheData {
   items?: RenderItem[]
   meta?: RenderDataMeta
+  data?: Record<string, RenderItem>
 }
 
 /**
@@ -144,6 +146,7 @@ export type StoreDataFilter = (
  * @prop {RenderItemDataFilter} renderItemData
  * @prop {RenderContentFilter} renderContent
  * @prop {AjaxResultFilter} ajaxResult
+ * @prop {ContactResultFilter} contactResult
  * @prop {CacheDataFilter} cacheData
  * @prop {StoreDataFilter} storeData
  * @prop {ContentfulDataFilter} contentfulData
@@ -168,6 +171,7 @@ export interface Filters extends Record<string, GenericFunction> {
   renderItemData: RenderItemDataFilter
   renderContent: RenderContentFilter
   ajaxResult: AjaxResultFilter
+  contactResult: ContactResultFilter
   cacheData: CacheDataFilter
   storeData: StoreDataFilter
   contentfulData: ContentfulDataFilter
@@ -194,6 +198,7 @@ export interface Filters extends Record<string, GenericFunction> {
  * @prop {Set<RenderItemDataFilter>} renderItemData
  * @prop {Set<RenderContentFilter>} renderContent
  * @prop {Set<AjaxResultFilter>} ajaxResult
+ * @prop {Set<ContactResultFilter>} contactResult
  * @prop {Set<CacheDataFilter>} cacheData
  * @prop {Set<StoreDataFilter>} storeData
  * @prop {Set<ContentfulDataFilter>} contentfulData
@@ -218,6 +223,7 @@ export type FilterMap = Map<string, Set<GenericFunction>> & Map<
 'renderItemData' |
 'renderContent' |
 'ajaxResult' |
+'contactResult' |
 'cacheData' |
 'storeData' |
 'contentfulData' |
@@ -241,6 +247,7 @@ RenderItemFilter |
 RenderItemDataFilter |
 RenderContentFilter |
 AjaxResultFilter |
+ContactResultFilter |
 CacheDataFilter |
 StoreDataFilter |
 ContentfulDataFilter |

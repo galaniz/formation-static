@@ -6,12 +6,12 @@
 
 import type { LocalData, LocalDataArgs, AllLocalDataArgs } from './localDataTypes.js'
 import type { RenderItem, RenderAllData } from '../render/renderTypes.js'
-import type { AllDataFilterArgs } from '../utils/filter/filterTypes.js'
+import type { AllDataFilterArgs, CacheData } from '../utils/filter/filterTypes.js'
 import { readdir, readFile } from 'node:fs/promises'
 import { extname, basename, resolve } from 'node:path'
-import { applyFilters } from '../utils/filter/filter.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
+import { applyFilters } from '../utils/filter/filter.js'
 import { getJson } from '../utils/json/json.js'
 import { config } from '../config/config.js'
 import { normalizeLocalData } from './localDataNormal.js'
@@ -50,10 +50,11 @@ const getLocalData = async (args: LocalDataArgs): Promise<LocalData> => {
       type: 'get'
     }
 
-    const cacheData = await applyFilters('cacheData', undefined as LocalData | undefined, cacheDataFilterArgs, true)
+    const cacheData = await applyFilters('cacheData', undefined as CacheData | undefined, cacheDataFilterArgs, true)
+    const cacheObj = cacheData?.data
 
-    if (isObject(cacheData)) {
-      return structuredClone(cacheData)
+    if (isObject(cacheObj)) {
+      return structuredClone(cacheObj)
     }
   }
 
@@ -103,10 +104,10 @@ const getLocalData = async (args: LocalDataArgs): Promise<LocalData> => {
     const cacheDataFilterArgs = {
       key,
       type: 'set',
-      data: newData
+      data
     }
 
-    await applyFilters('cacheData', newData, cacheDataFilterArgs, true)
+    await applyFilters('cacheData', { data: newData }, cacheDataFilterArgs, true)
   }
 
   /* Output */
@@ -115,7 +116,7 @@ const getLocalData = async (args: LocalDataArgs): Promise<LocalData> => {
 }
 
 /**
- * Data from file system
+ * All data from file system
  *
  * @param {AllLocalDataArgs} [args]
  * @return {Promise<RenderAllData|undefined>}
@@ -123,7 +124,7 @@ const getLocalData = async (args: LocalDataArgs): Promise<LocalData> => {
 const getAllLocalData = async (args?: AllLocalDataArgs): Promise<RenderAllData | undefined> => {
   /* Data */
 
-  let data = await getLocalData({
+  const data = await getLocalData({
     key: 'all_file_data',
     refProps: args?.refProps,
     imageProps: args?.imageProps,
@@ -135,17 +136,45 @@ const getAllLocalData = async (args?: AllLocalDataArgs): Promise<RenderAllData |
   let allData: RenderAllData = {
     navigationItem: [],
     navigation: [],
-    redirect: [],
     content: {
       page: []
     }
   }
 
-  /* Filter data */
+  /* Append data to all data */
 
-  data = applyFilters('localData', data)
+  for (const [, value] of Object.entries(data)) {
+    const { contentType } = value
 
-  console.log(data)
+    if (!isStringStrict(contentType)) {
+      continue
+    }
+
+    const isPartial = config.partialTypes.includes(contentType)
+    const isWhole = config.wholeTypes.includes(contentType)
+
+    if (!isPartial && !isWhole) {
+      continue
+    }
+
+    const val = applyFilters('localData', value)
+
+    if (isPartial) {
+      if (allData[contentType] == null) {
+        allData[contentType] = []
+      }
+
+      (allData[contentType] as RenderItem[]).push(val)
+    }
+
+    if (isWhole) {
+      if (allData.content[contentType] == null) {
+        allData.content[contentType] = []
+      }
+
+      allData.content[contentType].push(val)
+    }
+  }
 
   /* Filter all data */
 

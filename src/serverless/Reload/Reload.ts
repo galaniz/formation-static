@@ -11,8 +11,9 @@ import type { getAllWordPressData } from '../../wordpress/wordpressData.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isFunction } from '../../utils/function/function.js'
-import { print } from '../../utils/print/print.js'
 import { render, renderHttpError } from '../../render/render.js'
+import { minify } from '../../utils/minify/minify.js'
+import { print } from '../../utils/print/print.js'
 
 /**
  * Error html output
@@ -119,7 +120,7 @@ const Reload = async (
       html = await renderHttpError({ code: status })
     }
 
-    return new Response(html.replace(/\s+/g, ' ').replace(/>\s+</g, '><').trim(), {
+    return new Response(minify(html), {
       status,
       headers: {
         'Content-Type': 'text/html;charset=UTF-8'

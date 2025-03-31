@@ -1,4 +1,5 @@
 export const templateOne = {
+  id: 'template--one',
   renderType: 'container',
   tag: 'section',
   metadata: {

@@ -268,7 +268,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
     previewData
   }
 
-  /* Get single entry data if serverless or preview data */
+  /* Single entry data if serverless or preview data */
 
   if (isServerless || isPreview) {
     let contentType = ''
@@ -303,7 +303,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
     }
   }
 
-  /* Get partial data - not serverless */
+  /* Partial data - not serverless */
 
   if (!isServerless) {
     const partial = config.partialTypes
@@ -344,7 +344,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
     }
   }
 
-  /* Get whole data (for page generation) - not serverless or preview */
+  /* Whole data (for page generation) - not serverless or preview */
 
   if (!isServerless && !isPreview) {
     const whole = config.wholeTypes

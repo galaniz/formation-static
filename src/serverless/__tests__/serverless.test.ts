@@ -13,7 +13,6 @@ import { createServerlessFiles } from '../serverlessFiles.js'
 import {
   serverlessDir,
   serverlessRoutes,
-  serverlessApiKeys,
   serverlessActions,
   setServerless
 } from '../serverless.js'
@@ -30,14 +29,12 @@ describe('setServerless()', () => {
     const result = setServerless()
     const expectedResult = false
     const expectedDir = 'functions'
-    const expectedApiKeys = { smtp2go: '' }
     const expectedRoutes = { reload: [] }
     const expectedActions = {}
 
     expect(result).toBe(expectedResult)
     expect(serverlessDir).toBe(expectedDir)
     expect(serverlessRoutes).toEqual(expectedRoutes)
-    expect(serverlessApiKeys).toEqual(expectedApiKeys)
     expect(serverlessActions).toEqual(expectedActions)
   })
 
@@ -47,9 +44,6 @@ describe('setServerless()', () => {
         test: () => new Promise(resolve => {
           resolve({})
         })
-      },
-      apiKeys: {
-        test: 'test'
       },
       routes: {
         test: []
@@ -63,11 +57,6 @@ describe('setServerless()', () => {
 
     const expectedResult = true
     const expectedDir = 'test'
-    const expectedApiKeys = {
-      test: 'test',
-      smtp2go: ''
-    }
-
     const expectedRoutes = {
       test: [],
       reload: []
@@ -76,7 +65,6 @@ describe('setServerless()', () => {
     expect(result).toBe(expectedResult)
     expect(serverlessDir).toBe(expectedDir)
     expect(serverlessRoutes).toEqual(expectedRoutes)
-    expect(serverlessApiKeys).toEqual(expectedApiKeys)
     expect(resultAction).toEqual({})
   })
 })

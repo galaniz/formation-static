@@ -2,6 +2,8 @@
   "contentType": "page",
   "title": "One",
   "slug": "index",
+  "featuredMedia": "does-not-exist",
+  "ref": "post--one",
   "content": [
     {
       "renderType": "contentTemplate",

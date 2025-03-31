@@ -225,7 +225,7 @@ const doShortcodes = async (content: string, pageData?: RenderItem): Promise<str
     return content
   }
 
-  /* Get data */
+  /* Data */
 
   const names = [...shortcodes.keys()].join('|')
   const data = getShortcodeData(content, names, undefined, pageData)

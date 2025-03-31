@@ -3,6 +3,7 @@
   "title": "One",
   "internalLink": "page--one",
   "children": [
-    "navigationItem--three"
+    "navigationItem--three",
+    null
   ]
 }

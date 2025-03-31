@@ -5,7 +5,6 @@
 /* Import */
 
 import type { ServerlessRoutes, ServerlessActions, ServerlessArgs } from './serverlessTypes.js'
-import type { GenericStrings } from '../global/globalTypes.js'
 import { isStringStrict } from '../utils/string/string.js'
 import { isObjectStrict } from '../utils/object/object.js'
 
@@ -23,15 +22,6 @@ let serverlessDir: string = 'functions'
  */
 let serverlessRoutes: ServerlessRoutes = {
   reload: []
-}
-
-/**
- * Api keys for use in serverless functions
- *
- * @type {GenericStrings}
- */
-let serverlessApiKeys: GenericStrings = {
-  smtp2go: ''
 }
 
 /**
@@ -57,8 +47,7 @@ const setServerless = (
 
   const {
     actions,
-    routes,
-    apiKeys
+    routes
   } = args
 
   if (isObjectStrict(actions)) {
@@ -69,13 +58,6 @@ const setServerless = (
     serverlessRoutes = {
       ...{ reload: [] },
       ...routes
-    }
-  }
-
-  if (isObjectStrict(apiKeys)) {
-    serverlessApiKeys = {
-      ...{ smtp2go: '' },
-      ...apiKeys
     }
   }
 
@@ -91,7 +73,6 @@ const setServerless = (
 export {
   serverlessDir,
   serverlessRoutes,
-  serverlessApiKeys,
   serverlessActions,
   setServerless
 }

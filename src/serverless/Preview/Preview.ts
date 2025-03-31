@@ -11,6 +11,7 @@ import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isFunction } from '../../utils/function/function.js'
 import { render, renderHttpError } from '../../render/render.js'
+import { minify } from '../../utils/minify/minify.js'
 
 /**
  * Output preview from contentful or wordpress
@@ -72,7 +73,7 @@ const Preview = async (
     html = await renderHttpError({ code: status })
   }
 
-  return new Response(html.replace(/\s+/g, ' ').replace(/>\s+</g, '><').trim(), {
+  return new Response(minify(html), {
     status,
     headers: {
       'Content-Type': 'text/html;charset=UTF-8'

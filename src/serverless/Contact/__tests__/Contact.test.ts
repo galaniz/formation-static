@@ -1,28 +1,21 @@
 /**
- * Serverless - Send Form Test
+ * Serverless - Contact Test
  */
 
 /* Imports */
 
-import type { SendFormRequestBody } from '../SendFormTypes.js'
-import { it, expect, describe, vi, beforeEach, afterEach, beforeAll } from 'vitest'
-import { testContext, testResetStore, testMinify } from '../../../../tests/utils.js'
-import { mockSendFormFetch } from './SendFormMock.js'
+import { it, expect, describe, beforeEach, afterEach, vi } from 'vitest'
+import { testContext, testResetStore } from '../../../../tests/utils.js'
 import { store, setStoreItem } from '../../../store/store.js'
+import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
 import { config } from '../../../config/config.js'
-import { setServerless } from '../../serverless.js'
-import { SendForm } from '../SendForm.js'
-
-/* Mock fetch */
-
-beforeAll(() => {
-  vi.stubGlobal('fetch', mockSendFormFetch)
-})
+import { Contact } from '../Contact.js'
+import { minify } from '../../../utils/minify/minify.js'
 
 /* Tests */
 
-describe('SendForm()', () => {
-  const action = 'sendForm'
+describe('Contact()', () => {
+  const action = 'contact'
   const context = testContext()
   const inputs = {
     name: {
@@ -63,19 +56,8 @@ describe('SendForm()', () => {
     }
   }
 
-  const successResult = {
-    success: {
-      message: 'Form successully sent'
-    }
-  }
-
   beforeEach(() => {
     config.title = 'Test'
-    setServerless({
-      apiKeys: {
-        smtp2go: 'test'
-      }
-    })
   })
 
   afterEach(() => {
@@ -83,28 +65,11 @@ describe('SendForm()', () => {
     config.env.prod = false
     config.env.prodUrl = ''
     testResetStore()
-  })
-
-  it('should return error if no api key', async () => {
-    setServerless({
-      apiKeys: {
-        smtp2go: ''
-      }
-    })
-
-    // @ts-expect-error - test empty params
-    const result = await SendForm()
-    const expectedResult = {
-      error: {
-        message: 'No api key'
-      }
-    }
-
-    expect(result).toEqual(expectedResult)
+    resetFilters()
   })
 
   it('should return error if id is empty string', async () => {
-    const result = await SendForm({
+    const result = await Contact({
       action,
       id: '',
       inputs: {}
@@ -120,7 +85,7 @@ describe('SendForm()', () => {
   })
 
   it('should return error if inputs is null', async () => {
-    const result = await SendForm({
+    const result = await Contact({
       action,
       id: 'test',
       // @ts-expect-error - test null inputs
@@ -140,7 +105,7 @@ describe('SendForm()', () => {
     // @ts-expect-error - test null form meta
     store.formMeta = null
 
-    const result = await SendForm({
+    const result = await Contact({
       action,
       id: 'test',
       inputs
@@ -164,7 +129,7 @@ describe('SendForm()', () => {
       }
     })
 
-    const result = await SendForm({
+    const result = await Contact({
       action,
       id: 'doesNotExist',
       inputs
@@ -187,7 +152,7 @@ describe('SendForm()', () => {
       }
     })
 
-    const result = await SendForm({
+    const result = await Contact({
       action,
       id: 'test',
       inputs
@@ -210,7 +175,7 @@ describe('SendForm()', () => {
       }
     })
 
-    const result = await SendForm({
+    const result = await Contact({
       action,
       id: 'test',
       inputs
@@ -225,7 +190,7 @@ describe('SendForm()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return error if incorrect api key', async () => {
+  it('should return empty object if no filters', async () => {
     setStoreItem('formMeta', {
       test: {
         subject: 'Meta Subject',
@@ -233,39 +198,31 @@ describe('SendForm()', () => {
         senderEmail: 'from@test.com'
       }
     })
-
-    setServerless({
-      apiKeys: {
-        smtp2go: 'incorrect'
-      }
-    })
-
-    const result = await SendForm({
+  
+    config.env.prod = true
+    config.env.prodUrl = 'http://test.com'
+  
+    const result = await Contact({
       action,
       id: 'test',
       inputs
     }, context)
 
-    const message = result.error?.message
-    const expectedMessage = 'Error sending email'
-    const error = await result.error?.response?.json() as {
-      data: {
-        error: string
-      }
-    }
-
-    const expectedError = {
-      data: {
-        error: 'Authorization is invalid'
-      }
-    }
-
-    expect(message).toEqual(expectedMessage)
-    expect(error).toEqual(expectedError)
+    expect(result).toEqual({})
   })
 
-  it('should return success with specified body object', async () => {
-    const fetchSpy = vi.spyOn(global, 'fetch')
+  it('should return filtered success result', async () => {
+    const contactResult = vi.fn()
+
+    addFilter('contactResult', async (result, args) => {
+      contactResult(result, args)
+
+      return await Promise.resolve({
+        success: {
+          message: 'Form successully sent'
+        }
+      })
+    })
 
     setStoreItem('formMeta', {
       test: {
@@ -274,11 +231,11 @@ describe('SendForm()', () => {
         senderEmail: 'from@test.com'
       }
     })
-
+  
     config.env.prod = true
     config.env.prodUrl = 'http://test.com'
-
-    const result = await SendForm({
+  
+    const result = await Contact({
       action,
       id: 'test',
       inputs
@@ -290,17 +247,15 @@ describe('SendForm()', () => {
       }
     }
 
-    const fetchBody = JSON.parse(fetchSpy.mock.calls[0]?.[1]?.body as string) as SendFormRequestBody
-
-    fetchBody.text_body = testMinify(fetchBody.text_body)
-    fetchBody.html_body = testMinify(fetchBody.html_body)
-
-    const expectedBody = {
-      api_key: 'test',
+    const expectedArgs = {
+      id: 'test',
+      action,
+      inputs,
       to: ['to@test.com'],
       sender: 'from@test.com',
       subject: 'Meta Subject - Test Subject',
-      text_body: testMinify(`
+      replyTo: 'email@test.com',
+      text: minify(`
         Test contact form submission\n\n
         Name\n
         Name\n
@@ -315,7 +270,7 @@ describe('SendForm()', () => {
         Three\n
         This email was sent from a contact form on Test (http://test.com)
       `),
-      html_body: testMinify(`
+      html: minify(`
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
             <td align="center" width="100%" style="padding: 0 16px 16px 16px;">
@@ -369,9 +324,7 @@ describe('SendForm()', () => {
                             Options
                           </h3>
                           <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
-                            One<br>
-                            Two<br>
-                            Three
+                            One<br>Two<br>Three
                           </p>
                         </td>
                       </tr>
@@ -389,21 +342,22 @@ describe('SendForm()', () => {
             </td>
           </tr>
         </table>
-      `),
-      custom_headers: [
-        {
-          header: 'Reply-To',
-          value: '<email@test.com>'
-        }
-      ]
+      `)
     }
 
+    expect(contactResult).toHaveBeenCalledTimes(1)
+    expect(contactResult).toHaveBeenCalledWith({}, expectedArgs)
     expect(result).toEqual(expectedResult)
-    expect(fetchBody).toEqual(expectedBody)
   })
 
-  it('should return success with default subject', async () => {
-    const fetchSpy = vi.spyOn(global, 'fetch')
+  it('should pass default subject to filter', async () => {
+    let subject = ''
+
+    addFilter('contactResult', async (_result, args) => {
+      subject = args.subject
+
+      return await Promise.resolve({})
+    })
 
     setStoreItem('formMeta', {
       test: {
@@ -413,7 +367,7 @@ describe('SendForm()', () => {
       }
     })
 
-    const result = await SendForm({
+    await Contact({
       action,
       id: 'test',
       inputs: {
@@ -431,16 +385,21 @@ describe('SendForm()', () => {
       }
     }, context)
 
-    const fetchBody = JSON.parse(fetchSpy.mock.calls[0]?.[1]?.body as string) as SendFormRequestBody
-    const subject = fetchBody.subject
     const expectedSubject = 'Test Contact Form'
 
-    expect(result).toEqual(successResult)
     expect(subject).toEqual(expectedSubject)
   })
 
-  it('should return success with meta subject and two to emails', async () => {
-    const fetchSpy = vi.spyOn(global, 'fetch')
+  it('should pass meta subject and two to emails to filter', async () => {
+    let toEmails: string[] = []
+    let subject = ''
+
+    addFilter('contactResult', async (_result, args) => {
+      toEmails = args.to
+      subject = args.subject
+
+      return await Promise.resolve({})
+    })
 
     setStoreItem('formMeta', {
       test: {
@@ -449,8 +408,8 @@ describe('SendForm()', () => {
         senderEmail: 'from@test.com'
       }
     })
-
-    const result = await SendForm({
+  
+    await Contact({
       action,
       id: 'test',
       inputs: {
@@ -463,19 +422,21 @@ describe('SendForm()', () => {
       }
     }, context)
 
-    const fetchBody = JSON.parse(fetchSpy.mock.calls[0]?.[1]?.body as string) as SendFormRequestBody
-    const toEmails = fetchBody.to
     const expectedToEmails = ['to@test.com', 'test@test.com']
-    const subject = fetchBody.subject
     const expectedSubject = 'Meta Subject'
 
-    expect(result).toEqual(successResult)
     expect(toEmails).toEqual(expectedToEmails)
     expect(subject).toEqual(expectedSubject)
   })
 
-  it('should return success with input subject', async () => {
-    const fetchSpy = vi.spyOn(global, 'fetch')
+  it('should pass input subject to filter', async () => {
+    let subject = ''
+
+    addFilter('contactResult', async (_result, args) => {
+      subject = args.subject
+
+      return await Promise.resolve({})
+    })
 
     setStoreItem('formMeta', {
       test: {
@@ -484,18 +445,15 @@ describe('SendForm()', () => {
         senderEmail: 'from@test.com'
       }
     })
-
-    const result = await SendForm({
+  
+    await Contact({
       action,
       id: 'test',
       inputs
     }, context)
-
-    const fetchBody = JSON.parse(fetchSpy.mock.calls[0]?.[1]?.body as string) as SendFormRequestBody
-    const subject = fetchBody.subject
+    
     const expectedSubject = 'Test Subject'
 
-    expect(result).toEqual(successResult)
     expect(subject).toEqual(expectedSubject)
   })
 })

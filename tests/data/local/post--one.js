@@ -1,4 +1,5 @@
 export const postOne = {
+  id: 'post--one',
   contentType: 'post',
   title: 'Post One',
   slug: 'post-one',
@@ -14,10 +15,13 @@ export const postOne = {
   },
   term: [
     {
+      id: 'term--category-one',
       contentType: 'term',
       title: 'Category One',
       slug: 'category-one',
+      unset: undefined,
       taxonomy: {
+        id: 'taxonomy--category',
         contentType: 'taxonomy',
         title: 'Category',
         slug: 'category',

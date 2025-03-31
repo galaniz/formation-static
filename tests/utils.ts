@@ -155,8 +155,7 @@ const testWordPressConfig = (): Config['cms'] => {
 const testResetServerless = (): void => {
   setServerless({
     actions: {},
-    routes: {},
-    apiKeys: {}
+    routes: {}
   }, 'functions')
 }
 

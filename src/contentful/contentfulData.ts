@@ -147,7 +147,7 @@ const getAllContentfulData = async (
     previewData
   }
 
-  /* Get single entry data if serverless or preview data */
+  /* Single entry data if serverless or preview data */
 
   if (isServerless || isPreview) {
     let contentType = ''
@@ -184,7 +184,7 @@ const getAllContentfulData = async (
     }
   }
 
-  /* Get partial data - not serverless */
+  /* Partial data - not serverless */
 
   if (!isServerless) {
     const partial = config.partialTypes
@@ -207,7 +207,7 @@ const getAllContentfulData = async (
     }
   }
 
-  /* Get whole data (for page generation) - not serverless or preview */
+  /* Whole data (for page generation) - not serverless or preview */
 
   if (!isServerless && !isPreview) {
     const whole = config.wholeTypes

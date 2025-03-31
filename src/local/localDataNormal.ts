@@ -80,10 +80,6 @@ const normalizeLocalRefs = (
     if (isRef && isStr) {
       const ref = refData[value]
 
-      if (isArrayStrict(ref)) {
-        newValue = [...ref]
-      }
-
       if (isObjectStrict(ref)) {
         newValue = { ...ref }
 
@@ -103,17 +99,19 @@ const normalizeLocalRefs = (
 
         const ref = refData[refKey]
 
-        if (isObjectStrict(ref)) {
-          const newRef = { ...ref }
-
-          unsetProps.forEach(prop => {
-            if ((newRef as LocalDataItem)[prop]) {
-              (newRef as LocalDataItem)[prop] = undefined
-            }
-          })
+        if (!isObjectStrict(ref)) {
+          return null
         }
 
-        return ref
+        const newRef = { ...ref }
+
+        unsetProps.forEach(prop => {
+          if ((newRef as LocalDataItem)[prop]) {
+            (newRef as LocalDataItem)[prop] = undefined
+          }
+        })
+
+        return newRef
       }).filter(Boolean)
     }
 
@@ -159,14 +157,20 @@ const normalizeLocalData = (
 
   /* Items */
 
+  const refData: LocalData = {}
+
   for (const [key, item] of Object.entries(data)) {
     if (!isObjectStrict(item)) {
       continue
     }
 
+    refData[key] = { id: key, ...item }
+  }
+
+  for (const [key, item] of Object.entries(refData)) {
     newData[key] = normalizeLocalRefs(
       item,
-      data,
+      refData,
       imageMeta,
       refProps,
       imageProps,

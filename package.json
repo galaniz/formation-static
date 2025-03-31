@@ -21,7 +21,8 @@
   "scripts": {
     "build:lib": "npx tsc --project tsconfig.build.json",
     "build:cjs": "npx tsc --project tsconfig.build.json --moduleResolution node --module commonjs --esModuleInterop --outDir cjs/",
-    "build": "pnpm build:lib && pnpm build:cjs && node scripts/packageFile.js",
+    "build": "pnpm build:lib && pnpm build:cjs && node scripts/packageFile.js && pnpm minify",
+    "minify": "find lib cjs -name \"*.js\" -exec terser {} -o {} --compress \\;",
     "test": "vitest --run --reporter verbose --coverage",
     "lint": "npx eslint .",
     "release": "release-it",
@@ -47,6 +48,7 @@
     "eslint": "9.22.0",
     "memfs": "4.17.0",
     "release-it": "^18.1.2",
+    "terser": "5.37.0",
     "typescript": "^5.8.2",
     "typescript-eslint": "8.26.1",
     "vitest": "^3.0.8"

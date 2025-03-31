@@ -13,20 +13,20 @@ import { config, setConfig, setConfigFilter } from '../config.js'
  *
  * @type {Config}
  */
-const defaultConfig: Config = { ...config }
+const testConfig: Config = { ...config }
 
 /* Test setConfig */
 
 describe('setConfig()', () => {
   afterEach(() => {
-    setConfig(defaultConfig)
+    setConfig(testConfig)
   })
 
   it('should return default config', () => {
     // @ts-expect-error - test empty args
     const newConfig = setConfig()
 
-    expect(newConfig).toEqual(defaultConfig)
+    expect(newConfig).toEqual(testConfig)
   })
 
   it('should update config', () => {
@@ -115,7 +115,7 @@ describe('setConfig()', () => {
 
 describe('setConfigFilter()', () => {
   afterEach(() => {
-    setConfig(defaultConfig)
+    setConfig(testConfig)
   })
 
   it('should filter config namespace with default value', () => {
