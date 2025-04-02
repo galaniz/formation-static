@@ -14,7 +14,7 @@ class ResponseError extends Error {
   response: Response | undefined
 
   /**
-   * Set properties
+   * Initialize and set properties
    *
    * @param {string} message
    * @param {Response} [res]

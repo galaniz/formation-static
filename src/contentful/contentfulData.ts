@@ -169,7 +169,7 @@ const getAllContentfulData = async (
       contentType = previewData.contentType
     }
 
-    if (id !== '') {
+    if (id) {
       const key = `serverless_${id}_${contentType}`
       const params = {
         'sys.id': id,

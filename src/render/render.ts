@@ -92,7 +92,7 @@ let renderHttpError: RenderHttpError = () => ''
 let renderNavigations: RenderNavigations = () => undefined
 
 /**
- * Set content, layout and navigation output functions
+ * Content, layout and navigation output functions
  *
  * @param {RenderFunctionsArgs} args
  * @return {boolean}
@@ -132,7 +132,7 @@ const setRenderFunctions = (args: RenderFunctionsArgs): boolean => {
 }
 
 /**
- * Get content and templates in expected format to map
+ * Content and templates in expected format to map
  *
  * @private
  * @param {RenderItem[]} content
@@ -499,7 +499,7 @@ const renderContent = async (
     if (childrenArr) {
       const parentsCopy = [...parents]
 
-      if (renderType !== '') { // Skip non rendering parents
+      if (renderType) { // Skip non rendering parents
         parentsCopy.unshift({
           renderType,
           args: {

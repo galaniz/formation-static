@@ -78,7 +78,7 @@ const setLocalImages = async (): Promise<sharp.OutputInfo[]> => {
       format: fileFormat = 'jpeg'
     } = metadata
 
-    const id = `${folders !== '' ? `${folders}/` : ''}${base}`
+    const id = `${folders ? `${folders}/` : ''}${base}`
     const format = ext.replace('.', '')
 
     meta[id] = {

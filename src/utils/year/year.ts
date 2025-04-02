@@ -3,7 +3,7 @@
  */
 
 /**
- * Get current year as YYYY
+ * Current year as YYYY
  *
  * @return {number}
  */

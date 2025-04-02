@@ -32,7 +32,7 @@ let serverlessRoutes: ServerlessRoutes = {
 let serverlessActions: ServerlessActions = {}
 
 /**
- * Set serverless options
+ * Serverless options
  *
  * @param {ServerlessArgs} args
  * @param {string} [dir]

@@ -120,7 +120,7 @@ const Container = (props: ContainerProps): string[] => {
   let start = `<${outerTag}${(attrs.length > 0) ? ` ${attrs.join(' ')}` : ''}>`
   let end = `</${outerTag}>`
 
-  if (innerTag !== '') {
+  if (innerTag) {
     start = `${start}<${innerTag}${(innerAttrs.length > 0) ? ` ${innerAttrs.join(' ')}` : ''}>`
     end = `</${innerTag}>${end}`
   }

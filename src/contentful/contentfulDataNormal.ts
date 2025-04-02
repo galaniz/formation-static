@@ -20,7 +20,7 @@ import { isNumber } from '../utils/number/number.js'
 import { config } from '../config/config.js'
 
 /**
- * Get html tag from type
+ * Html tag from type
  *
  * @private
  * @param {string} type
@@ -186,7 +186,7 @@ const normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
  */
 const normalizeFile = (file: ContentfulDataFile, fields: ContentfulDataFields): RenderFile => {
   const type = isString(file.contentType) ? file.contentType : ''
-  const format = type !== '' ? type.split('/')[1] : ''
+  const format = type ? type.split('/')[1] : ''
 
   return {
     url: isString(file.url) ? `https:${file.url}` : '',
@@ -238,7 +238,7 @@ const normalizeItem = (
     type = itemCopy.sys.contentType.sys.id
   }
 
-  if (type !== '' && type !== 'Link') {
+  if (type && type !== 'Link') {
     newItem.contentType = normalizeContentType(type)
 
     if (isString(config.renderTypes[type])) {

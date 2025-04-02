@@ -290,7 +290,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
       contentType = previewData.contentType
     }
 
-    if (id !== '') {
+    if (id) {
       const key = `serverless_${id}_${contentType}`
       const data = await getWordPressData({
         key,

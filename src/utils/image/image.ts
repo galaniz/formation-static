@@ -17,7 +17,7 @@ import { isObjectStrict } from '../object/object.js'
 import { dataSource } from '../dataSource/dataSource.js'
 
 /**
- * Get responsive image output
+ * Responsive image output
  *
  * @param {ImageArgs} args
  * @param {boolean} [returnDetails]
@@ -230,7 +230,7 @@ const getImage = <V extends boolean = false>(
 }
 
 /**
- * Get closest value in config sizes
+ * Closest value in config sizes
  *
  * @param {number} size
  * @return {number}

@@ -15,7 +15,7 @@ import { normalizeContentType } from '../contentType/contentType.js'
 import { getSlug, getPermalink } from '../link/link.js'
 
 /**
- * Get archive id, slug and title
+ * Archive id, slug and title
  *
  * @param {string} contentType
  * @return {ArchiveInfo}
@@ -51,7 +51,7 @@ const getArchiveInfo = (contentType: string): ArchiveInfo => {
 }
 
 /**
- * Get taxonomy attributes
+ * Taxonomy attributes
  *
  * @param {string} contentType
  * @param {RenderItem} [pageData]
@@ -103,7 +103,7 @@ const getTaxonomyInfo = (contentType: string, pageData?: RenderItem): ArchiveTax
 }
 
 /**
- * Get archive link by content type or taxonomy
+ * Archive link by content type or taxonomy
  *
  * @param {string} contentType
  * @param {RenderItem} [pageData]
@@ -158,7 +158,7 @@ const getArchiveLink = (contentType: string, pageData?: RenderItem): ArchiveLink
     contentType: archiveType
   } = archiveInfo
 
-  if (archiveSlug !== '' && archiveId !== '') {
+  if (archiveSlug && archiveId) {
     slug = getSlug({
       id: archiveId,
       slug: archiveSlug,

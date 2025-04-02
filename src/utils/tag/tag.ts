@@ -10,7 +10,7 @@ import { isStringStrict } from '../string/string.js'
 import { isArrayStrict } from '../array/array.js'
 
 /**
- * Get data from metadata object
+ * Data from metadata object
  *
  * @type {TagGet}
  */

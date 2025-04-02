@@ -1,3 +1,3 @@
-# Static Site Formation
+# Formation Static
  
 Docs coming soon

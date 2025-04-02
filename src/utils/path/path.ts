@@ -10,7 +10,7 @@ import { storeDir } from '../../store/store.js'
 import { serverlessDir } from '../../serverless/serverless.js'
 
 /**
- * Get absolute path to file
+ * Absolute path to file
  *
  * @param {string} file
  * @param {string} [type]

@@ -23,7 +23,7 @@ const shareLinks: LinkShare = {
 }
 
 /**
- * Get social share links
+ * Social share links
  *
  * @param {string} url
  * @param {string[]} platforms

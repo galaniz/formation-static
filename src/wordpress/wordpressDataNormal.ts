@@ -551,7 +551,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
       })
     }
 
-    /* Set value */
+    /* New value */
 
     newItem[k as keyof RenderItem] = val
   }

@@ -55,7 +55,7 @@ const recurseEmailHtml = (
       `
     }
 
-    if (label !== '' && !isArr) {
+    if (label && !isArr) {
       output.html += `
         <h${h} style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
           ${l}
@@ -217,13 +217,13 @@ const Contact: ServerlessAction = async (args) => {
     /* Subject */
 
     if (name === 'subject') {
-      subject = inputValueStr !== '' ? `${isStringStrict(subject) ? `${subject} - ` : ''}${inputValueStr}` : subject
+      subject = inputValueStr ? `${isStringStrict(subject) ? `${subject} - ` : ''}${inputValueStr}` : subject
       continue
     }
 
     /* Reply to email */
 
-    if (inputType === 'email' && inputValueStr !== '') {
+    if (inputType === 'email' && inputValueStr) {
       replyToEmail = inputValueStr
       inputValueStr = `<a href="mailto:${inputValueStr}">${inputValueStr}</a>`
     }
@@ -313,7 +313,7 @@ const Contact: ServerlessAction = async (args) => {
 
   /* Subjext fallback */
 
-  if (subject === '') {
+  if (!subject) {
     subject = `${config.title} Contact Form`
   }
 
@@ -330,7 +330,7 @@ const Contact: ServerlessAction = async (args) => {
     html: minify(outputHtml)
   }
 
-  if (replyToEmail !== '') {
+  if (replyToEmail) {
     body.replyTo = replyToEmail
   }
 

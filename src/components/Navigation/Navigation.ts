@@ -81,7 +81,7 @@ class Navigation<L extends string = string> {
   #navigationsByLocation: NavigationByLocation<L> = new Map()
 
   /**
-   * Set properties and initialize
+   * Initialize and set properties
    *
    * @param {NavigationProps} props
    */
@@ -118,7 +118,7 @@ class Navigation<L extends string = string> {
       return false
     }
 
-    /* Set variables */
+    /* Props */
 
     this.navigations = navigations
     this.items = items

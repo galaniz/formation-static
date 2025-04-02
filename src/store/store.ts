@@ -96,7 +96,7 @@ const setStoreItem = <T extends Store, K extends keyof T, V extends keyof T[K] |
 }
 
 /**
- * Set build time data (navigations, archive meta, parents)
+ * Build time data (navigations, archive meta, parents)
  *
  * @param {RenderAllData} allData
  * @return {boolean}
@@ -197,7 +197,7 @@ const setStoreData = (allData: RenderAllData): boolean => {
 }
 
 /**
- * Get individual store property
+ * Individual store property
  *
  * @param {string} prop
  * @return {object}

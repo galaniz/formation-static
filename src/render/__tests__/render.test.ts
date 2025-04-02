@@ -297,12 +297,12 @@ describe('render()', () => {
 
         const isPag = paginationTitle !== ''
         const paginationMeta = isPag ? ` - ${paginationTitle}` : ''
-        const descriptionMeta = description !== '' ? `<meta name="description" content="${description}">` : ''
-        const imageMeta = image !== '' ? `<meta property="og:image" content="${image}">` : ''
-        const prevMeta = prev !== '' ? `<link rel="prev" href="${prev}">` : ''
-        const nextMeta = next !== '' ? `<link rel="next" href="${next}">` : ''
+        const descriptionMeta = description ? `<meta name="description" content="${description}">` : ''
+        const imageMeta = image ? `<meta property="og:image" content="${image}">` : ''
+        const prevMeta = prev ? `<link rel="prev" href="${prev}">` : ''
+        const nextMeta = next ? `<link rel="next" href="${next}">` : ''
         const canonicalMeta =
-          canonical !== '' && isPag ? `<link rel="canonical" href="${canonical}${canonicalParams}">` : ''
+          canonical && isPag ? `<link rel="canonical" href="${canonical}${canonicalParams}">` : ''
 
         const primary = navigations?.getOutput('primary')
         let nav = ''

@@ -34,7 +34,7 @@ const getParentSlug = (id: string, contentType: string, parents: LinkSlugParent[
 }
 
 /**
- * Get slug with archive/taxonomy base and parents
+ * Slug with archive/taxonomy base and parents
  *
  * @param {LinkSlugArgs} args
  * @param {boolean} [returnParents]
@@ -111,7 +111,7 @@ const getSlug = <T extends boolean = false>(
 
   const archiveParents: LinkSlugParent[] = []
 
-  if (archiveSlug !== '' && archiveId !== '') {
+  if (archiveSlug && archiveId) {
     typeSlug = archiveSlug
 
     archiveParents.push({
@@ -126,7 +126,7 @@ const getSlug = <T extends boolean = false>(
     typeSlug = ''
   }
 
-  if (isTerm && taxonomySlug !== '' && taxonomyId !== '') {
+  if (isTerm && taxonomySlug && taxonomyId) {
     taxSlug = taxonomySlug
 
     const taxInSlug = taxonomyInSlug[taxSlug]
@@ -210,11 +210,11 @@ const getSlug = <T extends boolean = false>(
     parts.push(parentSlugs)
   }
 
-  if (typeSlug !== '') {
+  if (typeSlug) {
     parts.push(typeSlug)
   }
 
-  if (taxSlug !== '') {
+  if (taxSlug) {
     parts.push(taxSlug)
   }
 
@@ -250,7 +250,7 @@ const getSlug = <T extends boolean = false>(
 }
 
 /**
- * Get absolute or relative url
+ * Absolute or relative url
  *
  * @param {string} [slug]
  * @param {boolean} [trailingSlash]
@@ -271,7 +271,7 @@ const getPermalink = (slug: string = '', trailingSlash: boolean = true): string 
 }
 
 /**
- * Get permalink from external or internal source
+ * Permalink from external or internal source
  *
  * @param {InternalLink} [internalLink]
  * @param {string} [externalLink]

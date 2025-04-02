@@ -157,7 +157,7 @@ const getContent = (args: RichTextContentProps): string => {
     let closing = ''
     let inner = ''
 
-    if (isStringStrict(tag) && outputStr.trim() !== '' && !isSingleTag) {
+    if (isStringStrict(tag) && outputStr.trim() && !isSingleTag) {
       opening = `<${tag}${attrs.length > 0 ? ` ${attrs.join(' ')}` : ''}>`
       closing = `</${tag}>`
       inner = outputStr
@@ -347,7 +347,7 @@ const RichText = (props: RichTextProps): string => {
       .replace(/\s+/g, '-')
       .toLowerCase()
 
-    if (headingContents !== '' && id !== '') {
+    if (headingContents && id) {
       attrs.push(`id="${id}"`)
 
       if (isArray(props.headings)) {
@@ -402,7 +402,7 @@ const RichText = (props: RichTextProps): string => {
   let closing = ''
   let inner = ''
 
-  if (isStringStrict(tag) && output.trim() !== '') {
+  if (isStringStrict(tag) && output.trim()) {
     opening = `<${tag}${attrs.length > 0 ? ` ${attrs.join(' ')}` : ''}>`
     closing = `</${tag}>`
     inner = output

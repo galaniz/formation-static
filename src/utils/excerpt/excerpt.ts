@@ -10,7 +10,7 @@ import { isStringStrict } from '../string/string.js'
 import { stripShortcodes } from '../shortcode/shortcode.js'
 
 /**
- * Get words from object or array of content
+ * Words from object or array of content
  *
  * @private
  * @param {ExcerptContentWordArgs} args
@@ -61,7 +61,7 @@ const getContentWords = <T>(args: ExcerptContentWordArgs<T>): string[] => {
 }
 
 /**
- * Get exercept from content and limit by words
+ * Excerpt from content limited by word count
  *
  * @param {ExcerptArgs} args
  * @return {string}
@@ -101,7 +101,7 @@ const getExcerpt = <T extends object>(args: ExcerptArgs<T>): string => {
     const wordsLen = words.length
 
     if (wordsLen > 0) {
-      if (wordsLen > limit && more !== '') {
+      if (wordsLen > limit && more) {
         words.pop()
       }
 

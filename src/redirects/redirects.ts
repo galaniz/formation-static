@@ -16,7 +16,7 @@ import { isObjectStrict } from '../utils/object/object.js'
 let redirects: string[] = []
 
 /**
- * Set redirects with normalized data
+ * Clear redirects and append new data
  *
  * @param {RenderRedirect[]} data
  * @return {boolean}
