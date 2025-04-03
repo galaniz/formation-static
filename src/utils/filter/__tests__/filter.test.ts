@@ -93,7 +93,7 @@ describe('applyFilters()', () => {
     filters.delete(testNameTwo)
   })
 
-  it('filter should be called and return true', () => {
+  it('should call filter and return true', () => {
     addFilter(testNameOne, (value: boolean): boolean => !value)
 
     const result = applyFilters(testNameOne, false)
@@ -102,7 +102,7 @@ describe('applyFilters()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('filter one should be called and filter two should not run', () => {
+  it('should only call filter two', () => {
     const testFilterOne = vi.fn((value: boolean): boolean => !value)
     const testFilterTwo = vi.fn((value: boolean): boolean => !value)
 
@@ -119,7 +119,7 @@ describe('applyFilters()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('filter should not be called if different filter name called', () => {
+  it('should not call filter if different filter name called', () => {
     const testFilter = vi.fn((value: string) => `${value}1`)
     const exists = filters.has(testNameTwo)
     const expectExists = false
@@ -134,7 +134,7 @@ describe('applyFilters()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('async filters should be called and return cumulative number', async () => {
+  it('should call async filters and return cumulative number', async () => {
     const testFilterOne = vi.fn((value: number) => new Promise(resolve => {
       resolve(value + 4)
     }))
@@ -156,7 +156,7 @@ describe('applyFilters()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('mixed filters should be called and result in cumulative string', async () => {
+  it('should call mixed filters and return cumulative string', async () => {
     const testFilterOne = vi.fn((
       value: string,
       arg: string

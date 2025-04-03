@@ -58,11 +58,7 @@ const addFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boolea
     filters.set(name, new Set())
   }
 
-  const filterSet = filters.get(name)
-
-  if (isSet(filterSet)) {
-    filterSet.add(filter)
-  }
+  filters.get(name)?.add(filter)
 
   return true
 }

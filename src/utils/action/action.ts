@@ -39,11 +39,7 @@ const addAction = <T extends keyof Actions>(name: T, action: Actions[T]): boolea
     actions.set(name, new Set())
   }
 
-  const actionSet = actions.get(name)
-
-  if (isSet(actionSet)) {
-    actionSet.add(action)
-  }
+  actions.get(name)?.add(action)
 
   return true
 }

@@ -93,7 +93,7 @@ describe('doActions()', () => {
     actions.delete(testNameTwo)
   })
 
-  it('action should be called and return true', () => {
+  it('should call action and return true', () => {
     const testAction = vi.fn((arg: boolean): boolean => arg)
 
     addAction(testNameOne, testAction)
@@ -103,7 +103,7 @@ describe('doActions()', () => {
     expect(testAction).toHaveReturnedWith(true)
   })
 
-  it('action one should be called and action two should not run', () => {
+  it('should only call action two', () => {
     const testActionOne = vi.fn()
     const testActionTwo = vi.fn()
 
@@ -116,7 +116,7 @@ describe('doActions()', () => {
     expect(testActionOne).not.toHaveBeenCalled()
   })
 
-  it('action should not be called if different action name called', () => {
+  it('should not call action if different action name called', () => {
     const testAction = vi.fn()
     const exists = actions.has(testNameTwo)
     const expectExists = false
@@ -128,7 +128,7 @@ describe('doActions()', () => {
     expect(testAction).not.toHaveBeenCalled()
   })
 
-  it('async action should be called and return arg value', async () => {
+  it('should call async action and return arg value', async () => {
     const testAction = vi.fn((arg: boolean) => new Promise(resolve => {
       resolve(arg)
     }))
@@ -140,7 +140,7 @@ describe('doActions()', () => {
     expect(testAction).toHaveResolvedWith(false)
   })
 
-  it('mixed actions should be called and return arg value', async () => {
+  it('should call mixed actions and return arg value', async () => {
     const testActionOne = vi.fn((arg: string) => new Promise(resolve => {
       resolve(arg)
     }))
