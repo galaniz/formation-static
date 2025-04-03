@@ -36,7 +36,7 @@ describe('filters', () => {
     let allEmpty = true
 
     for (const [, value] of filters) {
-      if (value.size !== 0) {
+      if (value.size) {
         allEmpty = false
         break
       }
@@ -297,7 +297,7 @@ describe('resetFilters()', () => {
     let allEmpty = true
 
     for (const [, value] of filters) {
-      if (value.size !== 0) {
+      if (value.size) {
         allEmpty = false
         break
       }

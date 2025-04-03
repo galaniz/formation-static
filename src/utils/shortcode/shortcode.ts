@@ -62,7 +62,7 @@ const getShortcodeData = (
   const reg = new RegExp(String.raw`\[(?:\/)?(?<name>${tagNames})(?:\s[^\]]*?)?\]`, 'g')
   const matches = [...content.matchAll(reg)]
 
-  if (matches.length === 0) {
+  if (!matches.length) {
     return []
   }
 
@@ -221,7 +221,7 @@ const removeShortcode = (name: string): boolean => {
 const doShortcodes = async (content: string, pageData?: RenderItem): Promise<string> => {
   /* Check if any shortcodes */
 
-  if (shortcodes.size === 0) {
+  if (!shortcodes.size) {
     return content
   }
 
@@ -230,7 +230,7 @@ const doShortcodes = async (content: string, pageData?: RenderItem): Promise<str
   const names = [...shortcodes.keys()].join('|')
   const data = getShortcodeData(content, names, undefined, pageData)
 
-  if (data.length === 0) {
+  if (!data.length) {
     return content
   }
 
@@ -276,7 +276,7 @@ const setShortcodes = <T extends ShortcodesSet>(args: T): boolean => {  // eslin
 
   const names = Object.entries(args)
 
-  if (names.length === 0) {
+  if (!names.length) {
     return false
   }
 
@@ -298,7 +298,7 @@ const setShortcodes = <T extends ShortcodesSet>(args: T): boolean => {  // eslin
 const stripShortcodes = (content: string): string => {
   /* Check if any shortcodes */
 
-  if (shortcodes.size === 0) {
+  if (!shortcodes.size) {
     return content
   }
 

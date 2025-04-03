@@ -506,7 +506,7 @@ class Navigation<L extends string = string> {
     const items = nav.items
     const normalizedItems = this.#getItems(items)
 
-    if (normalizedItems.length === 0) {
+    if (!normalizedItems.length) {
       return ''
     }
 

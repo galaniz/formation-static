@@ -133,7 +133,7 @@ const outputScriptsStyles = (type: 'styles' | 'scripts', link: string): string =
 
   /* Check if scripts exist */
 
-  if (item.size === 0) {
+  if (!item.size) {
     return ''
   }
 

@@ -316,7 +316,7 @@ const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
     }
   })
 
-  if (w.length === 0 && m === 0) {
+  if (!w.length && m === 0) {
     return 0
   }
 

@@ -187,7 +187,7 @@ const setFilters = (args: Partial<Filters>): boolean => {
 
   const newFilters = Object.entries(args)
 
-  if (newFilters.length === 0) {
+  if (!newFilters.length) {
     return false
   }
 

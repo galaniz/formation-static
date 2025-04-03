@@ -112,7 +112,7 @@ const setLocalImages = async (): Promise<sharp.OutputInfo[]> => {
     })
   }
 
-  if (images.length === 0) {
+  if (!images.length) {
     throw new Error('No local images to transform')
   }
 

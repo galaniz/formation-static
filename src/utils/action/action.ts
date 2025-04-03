@@ -144,7 +144,7 @@ const setActions = (args: Partial<Actions>): boolean => {
 
   const newActions = Object.entries(args)
 
-  if (newActions.length === 0) {
+  if (!newActions.length) {
     return false
   }
 

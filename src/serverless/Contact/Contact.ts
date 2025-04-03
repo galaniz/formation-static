@@ -112,7 +112,7 @@ const Contact: ServerlessAction = async (args) => {
 
   /* Inputs required */
 
-  if (!isObjectStrict(inputs) || Object.keys(inputs).length === 0) {
+  if (!isObjectStrict(inputs) || !Object.keys(inputs).length) {
     return {
       error: {
         message: 'No inputs'

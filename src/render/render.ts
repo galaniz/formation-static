@@ -238,7 +238,7 @@ const mapContentTemplate = (
 
     const isOptional = tagExists(t, 'templateOptional')
 
-    if (isOptional && i === lastTemplateIndex && content.length === 0) {
+    if (isOptional && i === lastTemplateIndex && !content.length) {
       templates.pop()
 
       return
