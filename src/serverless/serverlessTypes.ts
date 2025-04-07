@@ -103,12 +103,12 @@ export type ServerlessActions = Record<string, ServerlessAction>
 /**
  * @typedef {object} ServerlessFilesArgs
  * @prop {string} [dataExport=getAllContentfulData]
- * @prop {string} [dataExportFile=@alanizcreative/static-site-formation/contentful/contentfulData.js]
+ * @prop {string} [dataExportFile=@alanizcreative/formation-static/contentful/contentfulData.js]
  * @prop {string} [setupExportFile=setupServerless]
  * @prop {string} [setupExportFile=lib/setup/setupServerless.js]
- * @prop {string} [previewExportFile=@alanizcreative/static-site-formation/serverless/Preview/Preview.js]
- * @prop {string} [reloadExportFile=@alanizcreative/static-site-formation/serverless/Reload/Reload.js]
- * @prop {string} [ajaxExportFile=@alanizcreative/static-site-formation/serverless/Ajax/Ajax.js]
+ * @prop {string} [previewExportFile=@alanizcreative/formation-static/serverless/Preview/Preview.js]
+ * @prop {string} [reloadExportFile=@alanizcreative/formation-static/serverless/Reload/Reload.js]
+ * @prop {string} [ajaxExportFile=@alanizcreative/formation-static/serverless/Ajax/Ajax.js]
  * @prop {string} [ajaxFile=ajax/index.js]
  * @prop {string} [previewFile=_middleware.js]
  * @prop {string} [reloadFile=_middleware.js]

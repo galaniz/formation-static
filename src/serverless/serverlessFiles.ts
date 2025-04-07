@@ -40,11 +40,11 @@ const createServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> 
   /* Defaults and args */
 
   let defaultDataExport = 'getAllContentfulData'
-  let defaultDataFile = '@alanizcreative/static-site-formation/contentful/contentfulData.js'
+  let defaultDataFile = '@alanizcreative/formation-static/contentful/contentfulData.js'
 
   if (dataSource.isWordPress()) {
     defaultDataExport = 'getAllWordPressData'
-    defaultDataFile = '@alanizcreative/static-site-formation/wordpress/wordpressData.js'
+    defaultDataFile = '@alanizcreative/formation-static/wordpress/wordpressData.js'
   }
 
   const defaults = {
@@ -52,9 +52,9 @@ const createServerlessFiles = async (args?: ServerlessFilesArgs): Promise<void> 
     dataExportFile: defaultDataFile,
     setupExport: 'setupServerless',
     setupExportFile: 'lib/setup/setupServerless.js',
-    previewExportFile: '@alanizcreative/static-site-formation/serverless/Preview/Preview.js',
-    reloadExportFile: '@alanizcreative/static-site-formation/serverless/Reload/Reload.js',
-    ajaxExportFile: '@alanizcreative/static-site-formation/serverless/Ajax/Ajax.js',
+    previewExportFile: '@alanizcreative/formation-static/serverless/Preview/Preview.js',
+    reloadExportFile: '@alanizcreative/formation-static/serverless/Reload/Reload.js',
+    ajaxExportFile: '@alanizcreative/formation-static/serverless/Ajax/Ajax.js',
     ajaxFile: 'ajax/index.js',
     previewFile: '_middleware.js',
     reloadFile: '_middleware.js'

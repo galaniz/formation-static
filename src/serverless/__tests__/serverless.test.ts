@@ -118,7 +118,7 @@ describe('createServerlessFiles()', () => {
     const lorem = await readFile('/files/lorem.js', { encoding: 'utf8' })
 
     const expectedAjax = testMinify(`
-      import { Ajax } from '@alanizcreative/static-site-formation/serverless/Ajax/Ajax.js';
+      import { Ajax } from '@alanizcreative/formation-static/serverless/Ajax/Ajax.js';
       import { setupServerless } from '../../../lib/setup/setupServerless.js';
       const render = async (context) => {
         return await Ajax(context, setupServerless);
@@ -127,8 +127,8 @@ describe('createServerlessFiles()', () => {
     `)
 
     const expectedPreview = testMinify(`
-      import { Preview } from '@alanizcreative/static-site-formation/serverless/Preview/Preview.js';
-      import { getAllContentfulData } from '@alanizcreative/static-site-formation/contentful/contentfulData.js';
+      import { Preview } from '@alanizcreative/formation-static/serverless/Preview/Preview.js';
+      import { getAllContentfulData } from '@alanizcreative/formation-static/contentful/contentfulData.js';
       import { setupServerless } from '../../lib/setup/setupServerless.js';
       const render = async (context) => {
         return await Preview(context, setupServerless, getAllContentfulData);
@@ -176,8 +176,8 @@ describe('createServerlessFiles()', () => {
     const lorem = fs.existsSync('/files/lorem.js')
 
     const expectedTestReload = testMinify(`
-      import { Reload } from '@alanizcreative/static-site-formation/serverless/Reload/Reload.js';
-      import { getAllWordPressData } from '@alanizcreative/static-site-formation/wordpress/wordpressData.js';
+      import { Reload } from '@alanizcreative/formation-static/serverless/Reload/Reload.js';
+      import { getAllWordPressData } from '@alanizcreative/formation-static/wordpress/wordpressData.js';
       import { setupServerless } from '../../../lib/setup/setupServerless.js';
       const render = async (context) => {
         return await Reload(context, setupServerless, getAllWordPressData);
@@ -186,8 +186,8 @@ describe('createServerlessFiles()', () => {
     `)
 
     const expectedChildReload = testMinify(`
-      import { Reload } from '@alanizcreative/static-site-formation/serverless/Reload/Reload.js';
-      import { getAllWordPressData } from '@alanizcreative/static-site-formation/wordpress/wordpressData.js';
+      import { Reload } from '@alanizcreative/formation-static/serverless/Reload/Reload.js';
+      import { getAllWordPressData } from '@alanizcreative/formation-static/wordpress/wordpressData.js';
       import { setupServerless } from '../../../../lib/setup/setupServerless.js';
       const render = async (context) => {
         return await Reload(context, setupServerless, getAllWordPressData);
