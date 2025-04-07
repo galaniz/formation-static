@@ -8,7 +8,7 @@ import type { Generic } from '../../global/globalTypes.js'
 
 /**
  * @typedef {object} Scripts
- * @prop {Map.<string, Set<string>>} deps
+ * @prop {Map<string, Set<string>>} deps
  * @prop {Map<string, string>} item - Current render item scripts or styles
  * @prop {Map<string, string>} build
  * @prop {Generic} meta
@@ -22,7 +22,7 @@ export interface Scripts {
 
 /**
  * @typedef {object} Styles
- * @prop {Map.<string, Set<string>>} deps
+ * @prop {Map<string, Set<string>>} deps
  * @prop {Map<string, string>} item - Current render item scripts or styles
  * @prop {Map<string, string>} build
  */

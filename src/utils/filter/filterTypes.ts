@@ -183,7 +183,7 @@ export interface Filters extends Record<string, GenericFunction> {
 }
 
 /**
- * @typedef {Map.<string, Set<Function>>} FilterMap
+ * @typedef {Map<string, Set<GenericFunction>>} FilterMap
  * @prop {Set<ColumnPropsFilter>} columnProps
  * @prop {Set<ContainerPropsFilter>} containerProps
  * @prop {Set<FormOptionPropsFilter>} formOptionProps

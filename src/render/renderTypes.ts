@@ -53,7 +53,7 @@ export interface RenderMeta {
  * @typedef {object} RenderBase
  * @prop {RenderItem} pageData
  * @prop {string[]} pageContains
- * @prop {Array.<RichTextHeading[]>} pageHeadings
+ * @prop {Array<RichTextHeading[]>} pageHeadings
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]
  */
@@ -382,7 +382,7 @@ export interface RenderItemActionArgs extends RenderBase {
  * @prop {string} slug
  * @prop {RenderItem} pageData
  * @prop {string[]} [pageContains]
- * @prop {Array.<RichTextHeading[]>} [pageHeadings]
+ * @prop {Array<RichTextHeading[]>} [pageHeadings]
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]
  */
