@@ -200,10 +200,6 @@ describe('Ajax()', () => {
         data: {
           action: 'test',
           inputs: {
-            frm_asi: {
-              exclude: true,
-              value: ''
-            },
             test: {
               value: 'ipsum'
             }

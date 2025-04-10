@@ -63,7 +63,7 @@ const Ajax = async (context: ServerlessContext, setupServerless: ServerlessSetup
         return new Response(JSON.stringify({ success: 'Form successully sent' }), options)
       }
 
-      data.inputs[honeypotName].exclude = true
+      delete data.inputs[honeypotName] // eslint-disable-line @typescript-eslint/no-dynamic-delete
     }
 
     /* Action required */

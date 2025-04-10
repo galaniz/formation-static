@@ -38,18 +38,16 @@ export type ServerlessSetup = (context: ServerlessContext, type?: string) => Pro
 /**
  * @typedef {object} ServerlessActionInput
  * @extends {Generic}
- * @prop {string} type
- * @prop {string} label
- * @prop {string|string[]} value
+ * @prop {string|string[]} type
+ * @prop {string|boolean|number|string[]|number[]} value
+ * @prop {string} [label]
  * @prop {string} [legend]
- * @prop {boolean} [exclude]
  */
 export interface ServerlessActionInput extends Generic {
-  type: string
-  label: string
-  value: string | string[]
+  type: string | string[]
+  value: string | boolean | number | string[] | number[]
+  label?: string
   legend?: string
-  exclude?: boolean
 }
 
 /**

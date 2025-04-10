@@ -11,7 +11,6 @@ import { escape } from '../../utils/escape/escape.js'
 import { isArray } from '../../utils/array/array.js'
 import { isString, isStringStrict } from '../../utils/string/string.js'
 import { isObject, isObjectStrict } from '../../utils/object/object.js'
-import { isBoolean } from '../../utils/boolean/boolean.js'
 import { getObjectKeys } from '../../utils/object/objectUtils.js'
 import { applyFilters } from '../../utils/filter/filter.js'
 import { getPermalink } from '../../utils/link/link.js'
@@ -91,7 +90,7 @@ const recurseEmailHtml = (
 }
 
 /**
- * Generate email from contac form fields
+ * Generate email from contact form fields
  *
  * @type {ServerlessAction}
  */
@@ -187,19 +186,8 @@ const Contact: ServerlessAction = async (args) => {
   }
 
   for (const [name, input] of Object.entries(inputs)) {
-    /* Skip if exclude true */
-
-    const inputExclude = input.exclude
-    const exclude = isBoolean(inputExclude) ? inputExclude : false
-
-    if (exclude) {
-      continue
-    }
-
-    /* Variables */
-
     const inputType = input.type
-    const inputLabel = input.label.trim()
+    const inputLabel = input.label?.trim() || ''
     const inputValue = input.value
 
     /* Escape value */
@@ -207,11 +195,9 @@ const Contact: ServerlessAction = async (args) => {
     let inputValueStr = ''
 
     if (isArray(inputValue)) {
-      inputValueStr = inputValue.map(v => escape(v.trim() + '')).join('<br>')
-    }
-
-    if (isString(inputValue)) {
-      inputValueStr = escape(inputValue.trim() + '')
+      inputValueStr = inputValue.map(v => escape(v.toString().trim())).join('<br>')
+    } else {
+      inputValueStr = escape(inputValue.toString().trim())
     }
 
     /* Subject */

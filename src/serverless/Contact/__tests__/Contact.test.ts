@@ -38,12 +38,6 @@ describe('Contact()', () => {
       value: 'Message',
       label: 'Message'
     },
-    exclude: {
-      type: 'text',
-      value: 'test',
-      label: 'Exclude',
-      exclude: true
-    },
     legend: {
       type: 'text',
       legend: 'Legend',
