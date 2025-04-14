@@ -344,7 +344,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
     }
   }
 
-  /* Whole data (for page generation) - not serverless or preview */
+  /* Whole data (for item render) - not serverless or preview */
 
   if (!isServerless && !isPreview) {
     const whole = config.wholeTypes

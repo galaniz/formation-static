@@ -24,7 +24,7 @@ export type ShortcodeAttrs = Record<string, ShortcodeAttrValue>
  * @prop {string} content
  * @prop {ShortcodeAtts} attributes
  * @prop {ShortcodeData[]} children
- * @prop {RenderItem} [pageData]
+ * @prop {RenderItem} [itemData]
  */
 export interface ShortcodeData {
   name: string
@@ -32,7 +32,7 @@ export interface ShortcodeData {
   content: string
   attributes: ShortcodeAttrs
   children: ShortcodeData[]
-  pageData?: RenderItem
+  itemData?: RenderItem
 }
 
 /**

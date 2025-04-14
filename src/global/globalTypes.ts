@@ -23,7 +23,8 @@ export interface Taxonomy {
 }
 
 /**
- * @typedef {object} InternalLinkBase
+ * @typedef {object} InternalLink
+ * @extends {Generic}
  * @prop {string} [id]
  * @prop {string} [contentType]
  * @prop {string} [slug]
@@ -31,22 +32,13 @@ export interface Taxonomy {
  * @prop {string} [title]
  * @prop {Taxonomy} [taxonomy]
  */
-export interface InternalLinkBase {
+export interface InternalLink extends Generic {
   id?: string
   contentType?: string
   slug?: string
   link?: string
   title?: string
   taxonomy?: Taxonomy
-}
-
-/**
- * @typedef {Object<string, *>} InternalLink
- * @extends {InternalLinkBase}
- * @extends {Taxonomy}
- */
-export interface InternalLink extends InternalLinkBase, Partial<Taxonomy> {
-  [key: string]: unknown
 }
 
 /**

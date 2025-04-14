@@ -142,9 +142,9 @@ describe('renderContent()', () => {
       content: null,
       serverlessData: undefined,
       previewData: undefined,
-      pageData: {},
-      pageContains: [],
-      pageHeadings: [],
+      itemData: {},
+      itemContains: [],
+      itemHeadings: [],
       navigations: undefined,
       parents: []
     })
@@ -159,9 +159,9 @@ describe('renderContent()', () => {
       content: [],
       serverlessData: undefined,
       previewData: undefined,
-      pageData: {},
-      pageContains: [],
-      pageHeadings: [],
+      itemData: {},
+      itemContains: [],
+      itemHeadings: [],
       navigations: undefined,
       parents: []
     })
@@ -686,7 +686,7 @@ describe('render()', () => {
       contentType: 'page',
       slug: '/page/',
       output: testMinify(initialOutput),
-      pageData: {
+      itemData: {
         id: '123',
         slug: 'page',
         contentType: 'page',
@@ -695,11 +695,11 @@ describe('render()', () => {
         parents: [],
         content: undefined
       },
-      pageContains: [
+      itemContains: [
         'test',
         'testScript'
       ],
-      pageHeadings: [],
+      itemHeadings: [],
       serverlessData: undefined,
       previewData: undefined
     })
@@ -709,7 +709,7 @@ describe('render()', () => {
       contentType: 'page',
       slug: '/page/',
       output: testMinify(expectedOutput),
-      pageData: {
+      itemData: {
         id: '123',
         slug: 'page',
         contentType: 'page',
@@ -718,18 +718,18 @@ describe('render()', () => {
         parents: [],
         content: undefined
       },
-      pageContains: [
+      itemContains: [
         'test',
         'testScript'
       ],
-      pageHeadings: [],
+      itemHeadings: [],
       serverlessData: undefined,
       previewData: undefined
     })
 
     expect(renderItemStart).toHaveBeenCalledWith({
       id: '123',
-      pageData: {
+      itemData: {
         id: '123',
         slug: 'page',
         contentType: 'page',
@@ -747,8 +747,8 @@ describe('render()', () => {
         ]
       },
       contentType: 'page',
-      pageContains: [],
-      pageHeadings: [],
+      itemContains: [],
+      itemHeadings: [],
       serverlessData: undefined,
       previewData: undefined
     })
@@ -877,16 +877,16 @@ describe('render()', () => {
   })
 
   it('should return parent and child output items with rich text content', async () => {
-    const pageHeadingsTest = vi.fn()
+    const itemHeadingsTest = vi.fn()
 
     addAction('renderItemEnd', (args) => {
-      const { id, pageHeadings } = args
+      const { id, itemHeadings } = args
 
       if (id !== '1') {
         return
       }
 
-      pageHeadingsTest(pageHeadings)
+      itemHeadingsTest(itemHeadings)
     })
 
     const result = await render({
@@ -1003,7 +1003,7 @@ describe('render()', () => {
 
     expect(slugs).toEqual(expectedSlugs)
     expect(resultMin).toEqual(expectedResultMin)
-    expect(pageHeadingsTest).toHaveBeenCalledWith([
+    expect(itemHeadingsTest).toHaveBeenCalledWith([
       [
         {
           id: 'test-two',

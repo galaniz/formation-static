@@ -600,7 +600,7 @@ class Navigation<L extends string = string> {
         id: item.id,
         slug: item.slug,
         contentType: item.contentType,
-        pageData: item.internalLink
+        itemData: item.internalLink
       })
 
       return true

@@ -15,6 +15,36 @@ import { normalizeContentType } from '../contentType/contentType.js'
 import { getSlug, getPermalink } from '../link/link.js'
 
 /**
+ * Check if item is given term
+ *
+ * @param {string} contentType
+ * @param {RenderItem} itemData
+ * @return {boolean}
+ */
+const isTerm = (contentType: string, itemData: RenderItem): boolean => {
+  const { contentType: type, taxonomy } = itemData
+
+  if (type !== 'term' || !isObjectStrict(taxonomy)) {
+    return false
+  }
+
+  return taxonomy.contentTypes.includes(contentType)
+}
+
+/**
+ * Check if item is given archive or term
+ *
+ * @param {string} contentType
+ * @param {RenderItem} itemData
+ * @return {boolean}
+ */
+const isArchive = (contentType: string, itemData: RenderItem): boolean => {
+  const { archive } = itemData
+
+  return archive === contentType || isTerm(contentType, itemData)
+}
+
+/**
  * Archive id, slug and title
  *
  * @param {string} contentType
@@ -54,10 +84,10 @@ const getArchiveInfo = (contentType: string): ArchiveInfo => {
  * Taxonomy attributes
  *
  * @param {string} contentType
- * @param {RenderItem} [pageData]
+ * @param {RenderItem} [itemData]
  * @return {ArchiveTaxonomy}
  */
-const getTaxonomyInfo = (contentType: string, pageData?: RenderItem): ArchiveTaxonomy => {
+const getTaxonomyInfo = (contentType: string, itemData?: RenderItem): ArchiveTaxonomy => {
   const value: ArchiveTaxonomy = {
     id: '',
     slug: '',
@@ -68,7 +98,7 @@ const getTaxonomyInfo = (contentType: string, pageData?: RenderItem): ArchiveTax
     isPage: false
   }
 
-  const taxObj = contentType === 'taxonomy' ? pageData : pageData?.taxonomy
+  const taxObj = contentType === 'taxonomy' ? itemData : itemData?.taxonomy
 
   if (!isObjectStrict(taxObj)) {
     return value
@@ -106,10 +136,10 @@ const getTaxonomyInfo = (contentType: string, pageData?: RenderItem): ArchiveTax
  * Archive link by content type or taxonomy
  *
  * @param {string} contentType
- * @param {RenderItem} [pageData]
+ * @param {RenderItem} [itemData]
  * @return {ArchiveLink}
  */
-const getArchiveLink = (contentType: string, pageData?: RenderItem): ArchiveLink => {
+const getArchiveLink = (contentType: string, itemData?: RenderItem): ArchiveLink => {
   /* Defaults */
 
   let title = ''
@@ -117,7 +147,7 @@ const getArchiveLink = (contentType: string, pageData?: RenderItem): ArchiveLink
 
   /* Taxonomy */
 
-  const taxonomyInfo = getTaxonomyInfo(contentType, pageData)
+  const taxonomyInfo = getTaxonomyInfo(contentType, itemData)
 
   const {
     title: taxonomyTitle,
@@ -130,7 +160,7 @@ const getArchiveLink = (contentType: string, pageData?: RenderItem): ArchiveLink
     slug = getSlug({
       slug: '',
       contentType,
-      pageData
+      itemData
     })
 
     title = taxonomyTitle
@@ -165,9 +195,7 @@ const getArchiveLink = (contentType: string, pageData?: RenderItem): ArchiveLink
       contentType: archiveType
     })
 
-    const plural = getStoreItem('archiveMeta')[contentType]?.plural
-
-    title = isStringStrict(plural) ? plural : archiveTitle
+    title = getArchiveLabel(contentType, itemData, 'plural', archiveTitle) 
   }
 
   /* Output */
@@ -179,13 +207,37 @@ const getArchiveLink = (contentType: string, pageData?: RenderItem): ArchiveLink
 }
 
 /**
+ * Localized archive label
+ *
+ * @param {string} contentType
+ * @param {RenderItem} [itemData]
+ * @param {string} [labelType='singular']
+ * @param {string} [fallback]
+ * @return {string}
+ */
+const getArchiveLabel = (
+  contentType: string,
+  itemData?: RenderItem,
+  labelType: 'singular' | 'plural' = 'singular',
+  fallback?: string
+): string => {
+  fallback = isStringStrict(fallback) ? fallback : (labelType === 'singular' ? 'Post' : 'Posts')
+
+  const locale = itemData?.locale
+  const label = getStoreItem('archiveMeta')[contentType]?.[labelType]
+  const labelText = isObjectStrict(label) && isStringStrict(locale) ? label[locale] : label
+
+  return isStringStrict(labelText) ? labelText : fallback
+}
+
+/**
  * Singular and plural labels by content/taxonomy type
  *
  * @param {string} contentType
- * @param {RenderItem} [pageData]
+ * @param {RenderItem} [itemData]
  * @return {ArchiveLabels}
  */
-const getArchiveLabels = (contentType: string, pageData?: RenderItem): ArchiveLabels => {
+const getArchiveLabels = (contentType: string, itemData?: RenderItem): ArchiveLabels => {
   /* Defaults */
 
   let singular = 'Post'
@@ -193,7 +245,7 @@ const getArchiveLabels = (contentType: string, pageData?: RenderItem): ArchiveLa
 
   /* Taxonomy */
 
-  const taxonomyInfo = getTaxonomyInfo(contentType, pageData)
+  const taxonomyInfo = getTaxonomyInfo(contentType, itemData)
 
   const {
     title: taxonomyTitle,
@@ -221,13 +273,8 @@ const getArchiveLabels = (contentType: string, pageData?: RenderItem): ArchiveLa
 
   if (isStringStrict(contentType)) {
     contentType = normalizeContentType(contentType)
-
-    const archiveType = getStoreItem('archiveMeta')[contentType]
-    const s = archiveType?.singular
-    const p = archiveType?.plural
-
-    singular = isStringStrict(s) ? s : 'Post'
-    plural = isStringStrict(p) ? p : 'Posts'
+    singular = getArchiveLabel(contentType, itemData)
+    plural = getArchiveLabel(contentType, itemData, 'plural')
   }
 
   return {
@@ -239,6 +286,8 @@ const getArchiveLabels = (contentType: string, pageData?: RenderItem): ArchiveLa
 /* Exports */
 
 export {
+  isTerm,
+  isArchive,
   getArchiveInfo,
   getTaxonomyInfo,
   getArchiveLink,

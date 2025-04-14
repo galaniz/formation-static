@@ -13,14 +13,14 @@ import type { StoreParent } from '../../store/storeTypes.js'
  * @prop {string} slug
  * @prop {number} [page]
  * @prop {string} [contentType]
- * @prop {RenderItem} [pageData]
+ * @prop {RenderItem} [itemData]
  */
 export interface LinkSlugArgs {
   id?: string
   slug: string
   page?: number
   contentType?: string
-  pageData?: RenderItem
+  itemData?: RenderItem
 }
 
 /**

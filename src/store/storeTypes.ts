@@ -20,6 +20,11 @@ export interface StoreSlug {
 }
 
 /**
+ * @typedef {Object<string, StoreSlug>} StoreSlugs
+ */
+export type StoreSlugs = Record<string, StoreSlug>
+
+/**
  * @typedef {object} StoreParent
  * @prop {string} id
  * @prop {string} slug
@@ -32,28 +37,43 @@ export interface StoreParent {
 }
 
 /**
- * @typedef {object} StoreArchiveMeta
+ * @typedef {Object<string, Object<string, StoreParent>>} StoreParents
+ */
+export type StoreParents = Record<string, Record<string, StoreParent>>
+
+/**
+ * @typedef {object} StoreArchiveMetaItem
  * @prop {string} [id]
  * @prop {string} [slug]
  * @prop {string} [title]
  * @prop {string} [contentType]
- * @prop {string} [singular]
- * @prop {string} [plural]
+ * @prop {string|Object<string, string>} [singular]
+ * @prop {string|Object<string, string>} [plural]
  * @prop {string} [layout]
  * @prop {string} [order]
  * @prop {number} [display]
  */
-export interface StoreArchiveMeta {
+export interface StoreArchiveMetaItem {
   id?: string
   slug?: string
   title?: string
   contentType?: string
-  singular?: string
-  plural?: string
+  singular?: string | Record<string, string>
+  plural?: string | Record<string, string>
   layout?: string
   order?: string
   display?: number
 }
+
+/**
+ * @typedef {Object<string, StoreArchiveMetaItem>} StoreArchiveMeta
+ */
+export type StoreArchiveMeta = Record<string, StoreArchiveMetaItem>
+
+/**
+ * @typedef {Object<string, FormMeta>} StoreFormMeta
+ */
+export type StoreFormMeta = Record<string, FormMeta>
 
 /**
  * @typedef {Object<string, ImageProps>} StoreImageMeta
@@ -61,24 +81,29 @@ export interface StoreArchiveMeta {
 export type StoreImageMeta = Record<string, ImageProps>
 
 /**
+ * @typedef {Object<string, Taxonomy>} StoreTaxonomies
+ */
+export type StoreTaxonomies = Record<string, Taxonomy>
+
+/**
  * @typedef {object} Store
  * @extends {Generic}
- * @prop {Object<string, RenderSlug>} slugs
- * @prop {Object<string, Object<string, StoreParent>>} parents
- * @prop {Object<string, StoreArchiveMeta>} archiveMeta
- * @prop {Object<string, FormMeta>} formMeta
+ * @prop {StoreSlugs} slugs
+ * @prop {StoreParents} parents
+ * @prop {StoreArchiveMeta} archiveMeta
+ * @prop {StoreFormMeta} formMeta
  * @prop {StoreImageMeta} imageMeta
  * @prop {NavigationList[]} navigations
  * @prop {NavigationItem[]} navigationItems
- * @prop {Object<string, Taxonomy>} taxonomies
+ * @prop {StoreTaxonomies} taxonomies
  */
 export interface Store extends Generic {
-  slugs: Record<string, StoreSlug>
-  parents: Record<string, Record<string, StoreParent>>
-  archiveMeta: Record<string, StoreArchiveMeta>
-  formMeta: Record<string, FormMeta>
+  slugs: StoreSlugs
+  parents: StoreParents
+  archiveMeta: StoreArchiveMeta
+  formMeta: StoreFormMeta
   imageMeta: StoreImageMeta
   navigations: NavigationList[]
   navigationItems: NavigationItem[]
-  taxonomies: Record<string, Taxonomy>
+  taxonomies: StoreTaxonomies
 }

@@ -335,9 +335,9 @@ const renderContent = async (
     content = [],
     serverlessData,
     previewData,
-    pageData,
-    pageContains = [],
-    pageHeadings = [],
+    itemData,
+    itemContains = [],
+    itemHeadings = [],
     navigations,
     parents = [],
     depth = 0
@@ -402,7 +402,7 @@ const renderContent = async (
     /* Rich text area headings */
 
     if (renderType === 'content' && depth === 0) {
-      headingsIndex = pageHeadings.push([]) - 1
+      headingsIndex = itemHeadings.push([]) - 1
     }
 
     /* Content is attribute */
@@ -426,8 +426,8 @@ const renderContent = async (
       const renderArgs: RenderFunctionArgs = {
         args: props,
         parents,
-        pageData,
-        pageContains,
+        itemData,
+        itemContains,
         navigations,
         serverlessData,
         previewData
@@ -438,7 +438,7 @@ const renderContent = async (
       }
 
       if (renderType === 'richText') {
-        renderArgs.headings = pageHeadings[headingsIndex]
+        renderArgs.headings = itemHeadings[headingsIndex]
       }
 
       let renderOutput = await renderFunction(renderArgs)
@@ -463,7 +463,7 @@ const renderContent = async (
         renderStart = renderOutput
       }
 
-      pageContains.push(renderType)
+      itemContains.push(renderType)
 
       filterType = renderType
       filterArgs = {
@@ -516,9 +516,9 @@ const renderContent = async (
           serverlessData,
           previewData,
           parents: parentsCopy,
-          pageData,
-          pageContains,
-          pageHeadings,
+          itemData,
+          itemContains,
+          itemHeadings,
           navigations,
           headingsIndex,
           depth: depth + 1
@@ -595,11 +595,11 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
 
   /* Components contained in page  */
 
-  const pageContains: string[] = []
+  const itemContains: string[] = []
 
   /* Rich text headings in page */
 
-  const pageHeadings: RichTextHeading[][] = []
+  const itemHeadings: RichTextHeading[][] = []
 
   /* Reset script and style files */
 
@@ -613,10 +613,10 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
 
   const renderItemStartArgs: RenderItemStartActionArgs = {
     id,
-    pageData: { ...item },
+    itemData: { ...item },
     contentType,
-    pageContains: [],
-    pageHeadings: [],
+    itemContains: [],
+    itemHeadings: [],
     serverlessData,
     previewData
   }
@@ -666,7 +666,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     contentType,
     slug: item.slug,
     returnParents: true,
-    pageData: item,
+    itemData: item,
     page: 0
   }
 
@@ -743,11 +743,11 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
 
   /* Page data (props) for layout and actions */
 
-  const pageData = { ...item }
+  const itemData = { ...item }
 
-  pageData.id = id
-  pageData.parents = parents
-  pageData.content = undefined
+  itemData.id = id
+  itemData.parents = parents
+  itemData.content = undefined
 
   /* Content loop */
 
@@ -764,19 +764,19 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
       content: contentData,
       serverlessData: itemServerlessData,
       parents: [],
-      pageData,
-      pageContains,
-      pageHeadings,
+      itemData,
+      itemContains,
+      itemHeadings,
       navigations,
       previewData
     })
   }
 
-  contentOutput = await doShortcodes(contentOutput, pageData)
+  contentOutput = await doShortcodes(contentOutput, itemData)
 
   /* Pagination variables for meta object */
 
-  const pag = pageData.pagination
+  const pag = itemData.pagination
 
   if (isObjectStrict(pag)) {
     const {
@@ -823,9 +823,9 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
       contentType,
       content: contentOutput,
       slug: formattedSlug,
-      pageContains,
-      pageHeadings,
-      pageData,
+      itemContains,
+      itemHeadings,
+      itemData,
       serverlessData,
       previewData
     }
@@ -838,9 +838,9 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     contentType,
     slug: formattedSlug,
     output: layoutOutput,
-    pageData,
-    pageContains,
-    pageHeadings,
+    itemData,
+    itemContains,
+    itemHeadings,
     serverlessData,
     previewData
   }
@@ -854,9 +854,9 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     contentType,
     slug: formattedSlug,
     output: layoutOutput,
-    pageData,
-    pageContains,
-    pageHeadings,
+    itemData,
+    itemContains,
+    itemHeadings,
     serverlessData,
     previewData
   }
@@ -867,7 +867,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
 
   return {
     serverlessRender,
-    pageData,
+    itemData,
     data: {
       slug: formattedSlug,
       output: layoutOutput

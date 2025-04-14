@@ -15,9 +15,9 @@ import { isString } from '../utils/string/string.js'
  * @param {RenderItem[]} content
  * @param {object} [args]
  * @param {ParentArgs[]} [args.parents]
- * @param {RenderItem} [args.pageData]
- * @param {string[]} [args.pageContains]
- * @param {RichTextHeading[][]} [args.pageHeadings]
+ * @param {RenderItem} [args.itemData]
+ * @param {string[]} [args.itemContains]
+ * @param {RichTextHeading[][]} [args.itemHeadings]
  * @param {GenericStrings} [args.navigations]
  * @return {Promise<string>}
  */
@@ -28,9 +28,9 @@ const renderInlineContent = async (
   return await renderContent({
     content,
     parents: [],
-    pageData: {},
-    pageContains: [],
-    pageHeadings: [],
+    itemData: {},
+    itemContains: [],
+    itemHeadings: [],
     navigations: undefined,
     ...args
   })

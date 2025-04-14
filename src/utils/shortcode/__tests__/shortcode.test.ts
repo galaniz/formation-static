@@ -151,11 +151,11 @@ describe('doShortcodes()', () => {
   )
 
   it('should return content with shortcodes replaced', async () => {
-    const pageDataProps = vi.fn()
+    const itemDataProps = vi.fn()
 
     addShortcode('test', {
-      callback ({ attributes, content = '', pageData }) {
-        pageDataProps(pageData)
+      callback ({ attributes, content = '', itemData }) {
+        itemDataProps(itemData)
 
         const {
           type = 'default',
@@ -188,8 +188,8 @@ describe('doShortcodes()', () => {
     })
 
     expect(result).toBe(expectedResult)
-    expect(pageDataProps).toHaveBeenCalledTimes(2)
-    expect(pageDataProps).toHaveBeenCalledWith({
+    expect(itemDataProps).toHaveBeenCalledTimes(2)
+    expect(itemDataProps).toHaveBeenCalledWith({
       id: 'test-id',
       contentType: 'test'
     })

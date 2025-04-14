@@ -55,7 +55,7 @@ describe('renderInlineContent()', () => {
   it('should return heading with page data title', async () => {
     setRenderFunctions({
       functions: {
-        test: ({ pageData }) => `<h1>${pageData?.title}</h1>`
+        test: ({ itemData }) => `<h1>${itemData?.title}</h1>`
       },
       layout: () => '',
       navigations: () => undefined,
@@ -68,7 +68,7 @@ describe('renderInlineContent()', () => {
       }
     ],
     {
-      pageData: {
+      itemData: {
         title: 'Page title'
       }
     })

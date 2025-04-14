@@ -51,16 +51,16 @@ export interface RenderMeta {
 
 /**
  * @typedef {object} RenderBase
- * @prop {RenderItem} pageData
- * @prop {string[]} pageContains
- * @prop {Array<RichTextHeading[]>} pageHeadings
+ * @prop {RenderItem} itemData
+ * @prop {string[]} itemContains
+ * @prop {Array<RichTextHeading[]>} itemHeadings
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]
  */
 export interface RenderBase {
-  pageData: RenderItem
-  pageHeadings: RichTextHeading[][]
-  pageContains: string[]
+  itemData: RenderItem
+  itemHeadings: RichTextHeading[][]
+  itemContains: string[]
   serverlessData?: RenderServerlessData
   previewData?: RenderPreviewData
 }
@@ -203,8 +203,8 @@ export type RenderHttpError = (args: RenderHttpErrorArgs) => string | Promise<st
  * @typedef {object} RenderFunctionArgs
  * @prop {object} args
  * @prop {ParentArgs[]} [parents]
- * @prop {RenderItem} [pageData]
- * @prop {string[]} [pageContains]
+ * @prop {RenderItem} [itemData]
+ * @prop {string[]} [itemContains]
  * @prop {Navigation} [navigations]
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]
@@ -214,8 +214,8 @@ export type RenderHttpError = (args: RenderHttpErrorArgs) => string | Promise<st
 export interface RenderFunctionArgs<T = any, R = RenderItem, P = ParentArgs> { // eslint-disable-line @typescript-eslint/no-explicit-any
   args: 0 extends (1 & T) ? any : T // eslint-disable-line @typescript-eslint/no-explicit-any
   parents?: P[]
-  pageData?: R
-  pageContains?: string[]
+  itemData?: R
+  itemContains?: string[]
   navigations?: Navigation
   serverlessData?: RenderServerlessData
   previewData?: RenderPreviewData
@@ -321,14 +321,14 @@ export interface RenderItemArgs {
 /**
  * @typedef {object} RenderItemReturn
  * @prop {boolean} [serverlessRender]
- * @prop {RenderItem} [pageData]
+ * @prop {RenderItem} [itemData]
  * @prop {object} [data]
  * @prop {string} data.slug
  * @prop {string} data.output
  */
 export interface RenderItemReturn {
   serverlessRender?: boolean
-  pageData?: RenderItem
+  itemData?: RenderItem
   data?: {
     slug: string
     output: string
@@ -380,9 +380,9 @@ export interface RenderItemActionArgs extends RenderBase {
  * @prop {string} contentType
  * @prop {string} content
  * @prop {string} slug
- * @prop {RenderItem} pageData
- * @prop {string[]} [pageContains]
- * @prop {Array<RichTextHeading[]>} [pageHeadings]
+ * @prop {RenderItem} itemData
+ * @prop {string[]} [itemContains]
+ * @prop {Array<RichTextHeading[]>} [itemHeadings]
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]
  */
@@ -393,9 +393,9 @@ export interface RenderLayoutArgs {
   contentType: string
   content: string
   slug: string
-  pageData: RenderItem
-  pageHeadings?: RichTextHeading[][]
-  pageContains?: string[]
+  itemData: RenderItem
+  itemHeadings?: RichTextHeading[][]
+  itemContains?: string[]
   serverlessData?: RenderServerlessData
   previewData?: RenderPreviewData
 }

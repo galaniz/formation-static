@@ -49,7 +49,7 @@ describe('getSlug()', () => {
   it('should return locale if locale exists and slug is index', () => {
     const result = getSlug({
       slug: 'index',
-      pageData: {
+      itemData: {
         locale: 'en-CA'
       }
     }, true)
@@ -90,7 +90,7 @@ describe('getSlug()', () => {
     const result = getSlug({
       slug: 'purple',
       contentType: 'color',
-      pageData: {
+      itemData: {
         locale: 'es-CL'
       }
     }, true)
@@ -237,7 +237,7 @@ describe('getSlug()', () => {
     const result = getSlug({
       slug: 'purple',
       contentType: 'color',
-      pageData: {
+      itemData: {
         locale: 'en-CA'
       }
     }, true)
@@ -276,7 +276,7 @@ describe('getSlug()', () => {
     const result = getSlug({
       slug: 'index',
       contentType: 'color',
-      pageData: {
+      itemData: {
         locale: 'en-CA'
       }
     }, true)
@@ -310,7 +310,7 @@ describe('getSlug()', () => {
       id: '456',
       slug: 'types',
       contentType: 'taxonomy',
-      pageData: {
+      itemData: {
         id: '789',
         slug: 'types',
         title: 'Color Types',
@@ -348,7 +348,7 @@ describe('getSlug()', () => {
       id: '456',
       slug: 'types',
       contentType: 'taxonomy',
-      pageData: {
+      itemData: {
         id: '789',
         slug: 'types',
         title: 'Color Types',
@@ -386,7 +386,7 @@ describe('getSlug()', () => {
       id: '456',
       slug: 'types',
       contentType: 'taxonomy',
-      pageData: {
+      itemData: {
         id: '789',
         slug: 'types',
         title: 'Color Types',
@@ -440,7 +440,7 @@ describe('getSlug()', () => {
       id: '456',
       slug: 'types',
       contentType: 'taxonomy',
-      pageData: {
+      itemData: {
         id: '789',
         slug: 'types',
         title: 'Color Types',
@@ -490,7 +490,7 @@ describe('getSlug()', () => {
     const result = getSlug({
       slug: 'cold',
       contentType: 'term',
-      pageData: {
+      itemData: {
         taxonomy: {
           id: '456',
           slug: 'types',
@@ -526,7 +526,7 @@ describe('getSlug()', () => {
     const result = getSlug({
       slug: 'cold',
       contentType: 'term',
-      pageData: {
+      itemData: {
         locale: 'es-CL',
         taxonomy: {
           id: '456',
@@ -559,7 +559,7 @@ describe('getSlug()', () => {
     const result = getSlug({
       slug: 'cold',
       contentType: 'term',
-      pageData: {
+      itemData: {
         taxonomy: {
           id: '456',
           slug: 'types',
@@ -611,7 +611,7 @@ describe('getSlug()', () => {
       id: '789',
       slug: 'icy',
       contentType: 'term',
-      pageData: {
+      itemData: {
         taxonomy: {
           id: '456',
           slug: 'types',

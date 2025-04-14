@@ -42,14 +42,14 @@ const attrReg: RegExp = /[\w-]+=".*?"/g
  * @param {string} content
  * @param {string} tagNames
  * @param {Shortcode} [props]
- * @param {RenderItem} [pageData]
+ * @param {RenderItem} [itemData]
  * @return {ShortcodeData[]}
  */
 const getShortcodeData = (
   content: string,
   tagNames: string,
   props?: Partial<Shortcode>,
-  pageData?: RenderItem
+  itemData?: RenderItem
 ): ShortcodeData[] => {
   /* Content and tag names required */
 
@@ -160,7 +160,7 @@ const getShortcodeData = (
     let children: ShortcodeData[] = []
 
     if (hasChild) {
-      children = getShortcodeData(innerContent, child, props, pageData)
+      children = getShortcodeData(innerContent, child, props, itemData)
     }
 
     /* Add data */
@@ -171,7 +171,7 @@ const getShortcodeData = (
       content: innerContent,
       attributes,
       children,
-      pageData
+      itemData
     })
   })
 
@@ -215,10 +215,10 @@ const removeShortcode = (name: string): boolean => {
  * Transform content string with shortcode callbacks
  *
  * @param {string} content
- * @param {RenderItem} [pageData]
+ * @param {RenderItem} [itemData]
  * @return {Promise<string>}
  */
-const doShortcodes = async (content: string, pageData?: RenderItem): Promise<string> => {
+const doShortcodes = async (content: string, itemData?: RenderItem): Promise<string> => {
   /* Check if any shortcodes */
 
   if (!shortcodes.size) {
@@ -228,7 +228,7 @@ const doShortcodes = async (content: string, pageData?: RenderItem): Promise<str
   /* Data */
 
   const names = [...shortcodes.keys()].join('|')
-  const data = getShortcodeData(content, names, undefined, pageData)
+  const data = getShortcodeData(content, names, undefined, itemData)
 
   if (!data.length) {
     return content
@@ -243,7 +243,7 @@ const doShortcodes = async (content: string, pageData?: RenderItem): Promise<str
     const callback = shortcodes.get(name)?.callback
 
     if (isFunction(callback)) {
-      const res = await callback({ ...datum, pageData })
+      const res = await callback({ ...datum, itemData })
 
       if (isStringStrict(res)) {
         newContent = newContent.replace(replaceContent, res)

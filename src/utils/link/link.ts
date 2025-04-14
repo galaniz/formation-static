@@ -49,7 +49,7 @@ const getSlug = <T extends boolean = false>(
     page = 0,
     slug: initSlug = '',
     contentType = 'page',
-    pageData
+    itemData
   } = isObjectStrict(args) ? args : {}
 
   let slug = initSlug
@@ -75,14 +75,14 @@ const getSlug = <T extends boolean = false>(
 
   /* Locale */
 
-  const pageLocale = pageData?.locale
+  const pageLocale = itemData?.locale
   const hasPageLocale = isStringStrict(pageLocale)
   const locale = hasPageLocale ? localeInSlug[pageLocale] : ''
   const hasLocale = isStringStrict(locale)
 
   /* Term/taxonomy */
 
-  const taxonomyInfo = getTaxonomyInfo(contentType, pageData)
+  const taxonomyInfo = getTaxonomyInfo(contentType, itemData)
   const isTaxonomy = contentType === 'taxonomy'
   const isTerm = contentType === 'term'
 
@@ -284,7 +284,7 @@ const getLink = (internalLink?: InternalLink, externalLink?: string): string => 
     const res = getSlug({
       id: internalLink.id,
       contentType: internalLink.contentType,
-      pageData: internalLink,
+      itemData: internalLink,
       slug: isString(slug) ? slug : ''
     })
 
