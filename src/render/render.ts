@@ -151,7 +151,7 @@ const getContentTemplate = (
     return {
       content: [],
       namedContent: {},
-      templates
+      templates: []
     }
   }
 
@@ -195,9 +195,9 @@ const getContentTemplate = (
   /* Output */
 
   return {
-    content: newContent,
     namedContent,
-    templates
+    content: newContent,
+    templates: structuredClone(templates)
   }
 }
 

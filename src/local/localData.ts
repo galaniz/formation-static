@@ -51,10 +51,10 @@ const getLocalData = async (args: LocalDataArgs): Promise<LocalData> => {
     }
 
     const cacheData = await applyFilters('cacheData', undefined as CacheData | undefined, cacheDataFilterArgs, true)
-    const cacheObj = cacheData?.data
+    const cacheItems = cacheData?.data
 
-    if (isObject(cacheObj)) {
-      return structuredClone(cacheObj)
+    if (isObject(cacheItems)) {
+      return structuredClone(cacheItems)
     }
   }
 
