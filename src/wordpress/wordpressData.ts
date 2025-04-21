@@ -163,7 +163,7 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
     url += '&_embed'
   }
 
-  /* Check and transform data */
+  /* Request */
 
   const headers = new Headers()
   headers.set('Authorization', `Basic ${btoa(`${user}:${pass}`)}`)
@@ -344,7 +344,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
     }
   }
 
-  /* Whole data (for item render) - not serverless or preview */
+  /* Whole data (render items) - not serverless or preview */
 
   if (!isServerless && !isPreview) {
     const whole = config.wholeTypes

@@ -4,18 +4,13 @@
 
 /* Imports */
 
-import type {
-  ContentfulDataParams,
-  ContentfulData,
-  ContentfulDataItem,
-  AllContentfulDataArgs
-} from './contentfulDataTypes.js'
-import type { RenderAllData, RenderItem } from '../render/renderTypes.js'
-import type { DataFilterArgs } from '../utils/filter/filterTypes.js'
+import type { ContentfulDataParams, ContentfulData, AllContentfulDataArgs } from './contentfulDataTypes.js'
+import type { RenderAllData, RenderDataMeta, RenderItem } from '../render/renderTypes.js'
+import type { CacheData, DataFilterArgs } from '../utils/filter/filterTypes.js'
 import resolveResponse from 'contentful-resolve-response'
 import { ResponseError } from '../utils/ResponseError/ResponseError.js'
 import { applyFilters } from '../utils/filter/filter.js'
-import { isObject, isObjectStrict } from '../utils/object/object.js'
+import { isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
 import { isArray } from '../utils/array/array.js'
 import { config } from '../config/config.js'
@@ -27,17 +22,23 @@ import { normalizeContentfulData } from './contentfulDataNormal.js'
  *
  * @param {string} key
  * @param {ContentfulDataParams} params
+ * @param {RenderDataMeta} [meta]
  * @return {Promise<RenderItem[]>}
  */
 const getContentfulData = async (
   key: string,
-  params: ContentfulDataParams = {}
+  params: ContentfulDataParams,
+  meta?: RenderDataMeta
 ): Promise<RenderItem[]> => {
   /* Key required for cache */
 
   if (!isStringStrict(key)) {
     throw new Error('No key')
   }
+
+  /* Meta check */
+
+  const hasMeta = isObjectStrict(meta)
 
   /* Check cache */
 
@@ -47,10 +48,16 @@ const getContentfulData = async (
       type: 'get'
     }
 
-    const cacheData = await applyFilters('cacheData', undefined as RenderItem[] | undefined, cacheDataFilterArgs, true)
+    const cacheData = await applyFilters('cacheData', undefined as CacheData | undefined, cacheDataFilterArgs, true)
+    const cacheItems = cacheData?.items
+    const cacheMeta = cacheData?.meta
 
-    if (isObject(cacheData)) {
-      return structuredClone(cacheData)
+    if (isObjectStrict(cacheMeta) && hasMeta) {
+      meta.total = cacheMeta.total
+    }
+
+    if (isArray(cacheItems)) {
+      return structuredClone(cacheItems)
     }
   }
 
@@ -61,7 +68,8 @@ const getContentfulData = async (
     devCredential,
     prodCredential,
     devHost,
-    prodHost
+    prodHost,
+    env = 'master'
   } = config.cms
 
   let accessToken = devCredential
@@ -78,22 +86,31 @@ const getContentfulData = async (
 
   /* Params */
 
-  let url = `https://${host}/spaces/${space}/environments/master/entries?access_token=${accessToken}`
+  let url = `https://${host}/spaces/${space}/environments/${env}/entries?access_token=${accessToken}`
 
   for (const [key, value] of Object.entries(params)) {
     url += `&${key}=${value.toString()}`
   }
 
-  /* Check and transform data */
+  /* Request */
 
   const resp = await fetch(url)
-  const data: ContentfulData | undefined = await resp.json()
 
   if (!resp.ok) {
     throw new ResponseError('Bad fetch response', resp)
   }
 
-  const resolvedData = resolveResponse(data) as { items: ContentfulDataItem[] }
+  const data: ContentfulData = await resp.json()
+
+  /* Total */
+
+  if (hasMeta) {
+    meta.total = data.total
+  }
+
+  /* Normalize */
+
+  const resolvedData = resolveResponse(data) as ContentfulData
   const newData = normalizeContentfulData(resolvedData.items)
 
   /* Add to cache */
@@ -105,7 +122,10 @@ const getContentfulData = async (
       data
     }
 
-    await applyFilters('cacheData', newData, cacheDataFilterArgs, true)
+    await applyFilters('cacheData', {
+      items: newData,
+      meta
+    }, cacheDataFilterArgs, true)
   }
 
   /* Output */
@@ -207,7 +227,7 @@ const getAllContentfulData = async (
     }
   }
 
-  /* Whole data (for item render) - not serverless or preview */
+  /* Whole data (render items) - not serverless or preview */
 
   if (!isServerless && !isPreview) {
     const whole = config.wholeTypes

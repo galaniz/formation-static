@@ -8,7 +8,8 @@ export const menuItems = [
     internalLink: {
       contentType: 'page',
       slug: 'home',
-      id: '7'
+      id: '7',
+      locale: 'en-CA'
     },
     children: [
       {

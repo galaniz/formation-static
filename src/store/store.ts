@@ -5,11 +5,13 @@
 /* Imports */
 
 import type { Store } from './storeTypes.js'
+import type { ArchiveMeta } from '../utils/archive/archiveTypes.js'
 import type { RenderAllData, RenderItem } from '../render/renderTypes.js'
 import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
 import { isArrayStrict } from '../utils/array/array.js'
+import { getArchiveMeta } from '../utils/archive/archive.js'
 import { config } from '../config/config.js'
 
 /**
@@ -145,7 +147,8 @@ const setStoreData = (allData: RenderAllData): boolean => {
         parent,
         archive,
         slug,
-        title
+        title,
+        locale
       } = item as RenderItem
 
       /* Id required */
@@ -159,15 +162,24 @@ const setStoreData = (allData: RenderAllData): boolean => {
       const archiveType = normalizeContentType(archive)
 
       if (isStringStrict(archiveType)) {
-        const archiveObj =
-          isObjectStrict(store.archiveMeta[archiveType]) ? store.archiveMeta[archiveType] : {}
-
-        store.archiveMeta[archiveType] = {
+        const hasLocale = isStringStrict(locale)
+        const archiveMeta = getArchiveMeta(archiveType, locale)
+        const newArchive = {
           id,
           slug,
           title,
           contentType: type,
-          ...archiveObj
+          ...archiveMeta
+        }
+
+        if (hasLocale) {
+          if (!store.archiveMeta[archiveType]) {
+            store.archiveMeta[archiveType] = {}
+          }
+
+          (store.archiveMeta[archiveType] as Record<string, ArchiveMeta>)[locale] = newArchive
+        } else {
+          store.archiveMeta[archiveType] = newArchive
         }
       }
 

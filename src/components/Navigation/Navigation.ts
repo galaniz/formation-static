@@ -23,7 +23,7 @@ import { isStringStrict, isString } from '../../utils/string/string.js'
 import { isFunction } from '../../utils/function/function.js'
 import { isNumber } from '../../utils/number/number.js'
 import { normalizeContentType } from '../../utils/contentType/contentType.js'
-import { getStoreItem } from '../../store/store.js'
+import { getArchiveMeta } from '../../utils/archive/archive.js'
 
 /**
  * Recursively generate navigation output
@@ -222,7 +222,7 @@ class Navigation<L extends string = string> {
       let isArchiveCurrent = false
 
       for (const type of this.currentType) {
-        const hasArchive = internalId === getStoreItem('archiveMeta')[type]?.id
+        const hasArchive = internalId === getArchiveMeta(type, internalLink?.locale).id
 
         if (hasArchive) {
           isArchiveCurrent = true

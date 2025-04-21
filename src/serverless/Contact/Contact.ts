@@ -187,7 +187,7 @@ const Contact: ServerlessAction = async (args) => {
 
   for (const [name, input] of Object.entries(inputs)) {
     const inputType = input.type
-    const inputLabel = input.label?.trim() || ''
+    const inputLabel = input.label?.trim() || `[${name}]`
     const inputValue = input.value
 
     /* Escape value */

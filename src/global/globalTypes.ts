@@ -42,6 +42,19 @@ export interface InternalLink extends Generic {
 }
 
 /**
+ * @typedef {object} Parent
+ * @extends {InternalLink}
+ * @prop {string} id
+ * @prop {string} slug
+ * @prop {string} title
+ */
+export interface Parent extends InternalLink {
+  id: string
+  slug: string
+  title: string
+}
+
+/**
  * @typedef {object} ParentArgs
  * @prop {string} renderType
  * @prop {object} args

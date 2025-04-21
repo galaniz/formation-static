@@ -36,7 +36,22 @@ describe('Contact()', () => {
     message: {
       type: 'textarea',
       value: 'Message',
-      label: 'Message'
+      label: ''
+    },
+    boolean: {
+      type: 'checkbox',
+      value: false,
+      label: 'Boolean'
+    },
+    number: {
+      type: 'number',
+      value: 123,
+      label: 'Number'
+    },
+    numbers: {
+      type: 'number',
+      value: [1, 2, 3],
+      label: 'Numbers'
     },
     legend: {
       type: 'text',
@@ -255,8 +270,16 @@ describe('Contact()', () => {
         Name\n
         Email\n
         email@test.com\n
+        [message]\n
         Message\n
-        Message\n
+        Boolean\n
+        false\n
+        Number\n
+        123\n
+        Numbers\n
+        1\n
+        2\n
+        3\n
         Legend\n
         Options\n
         One\n
@@ -302,10 +325,40 @@ describe('Contact()', () => {
                       <tr>
                         <td style="padding: 16px 0; border-bottom: 2px solid #ccc;">
                           <h2 style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
-                            Message
+                            [message]
                           </h2>
                           <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
                             Message
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 16px 0; border-bottom: 2px solid #ccc;">
+                          <h2 style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
+                            Boolean
+                          </h2>
+                          <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
+                            false
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 16px 0; border-bottom: 2px solid #ccc;">
+                          <h2 style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
+                            Number
+                          </h2>
+                          <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
+                            123
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 16px 0; border-bottom: 2px solid #ccc;">
+                          <h2 style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
+                            Numbers
+                          </h2>
+                          <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
+                            1<br>2<br>3
                           </p>
                         </td>
                       </tr>

@@ -7,6 +7,30 @@
 import type { Taxonomy } from '../../global/globalTypes.js'
 
 /**
+ * @typedef {object} ArchiveMeta
+ * @prop {string} [id]
+ * @prop {string} [slug]
+ * @prop {string} [title]
+ * @prop {string} [singular]
+ * @prop {string} [plural]
+ * @prop {string} [contentType]
+ * @prop {string} [layout]
+ * @prop {string} [order]
+ * @prop {number} [display]
+ */
+export interface ArchiveMeta {
+  id?: string
+  slug?: string
+  title?: string
+  singular?: string
+  plural?: string
+  contentType?: string
+  layout?: string
+  order?: string
+  display?: number
+}
+
+/**
  * @typedef {object} ArchiveInfo
  * @prop {string} id
  * @prop {string} slug

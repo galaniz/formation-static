@@ -9,6 +9,7 @@ import type {
   GenericStrings,
   InternalLink,
   Taxonomy,
+  Parent,
   ParentArgs
 } from '../global/globalTypes.js'
 import type {
@@ -18,8 +19,7 @@ import type {
 } from '../components/Navigation/NavigationTypes.js'
 import type { Navigation } from '../components/Navigation/Navigation.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
-import type { StoreParent } from '../store/storeTypes.js'
-import { PaginationData } from '../components/Pagination/PaginationTypes.js'
+import type { PaginationData } from '../components/Pagination/PaginationTypes.js'
 
 /**
  * @typedef {object} RenderMeta
@@ -169,11 +169,11 @@ export interface RenderTemplate {
  * @typedef {object} RenderNavigationsArgs
  * @extends {NavigationProps}
  * @prop {string} [title]
- * @prop {StoreParent[]} parents
+ * @prop {Parent[]} parents
  */
 export interface RenderNavigationsArgs extends NavigationProps {
   title?: string
-  parents: StoreParent[]
+  parents: Parent[]
 }
 
 /**

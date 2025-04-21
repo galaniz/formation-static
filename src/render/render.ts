@@ -741,7 +741,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     itemServerlessData = serverlessData
   }
 
-  /* Page data (props) for layout and actions */
+  /* Item data (props) for layout and actions */
 
   const itemData = { ...item }
 

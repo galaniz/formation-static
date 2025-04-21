@@ -52,7 +52,7 @@ describe('renderInlineContent()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return heading with page data title', async () => {
+  it('should return heading with item data title', async () => {
     setRenderFunctions({
       functions: {
         test: ({ itemData }) => `<h1>${itemData?.title}</h1>`

@@ -4,8 +4,8 @@
 
 /* Imports */
 
-import type { LinkSlugArgs, LinkSlugParent, LinkSlugReturnType } from './linkTypes.js'
-import type { InternalLink } from '../../global/globalTypes.js'
+import type { LinkSlugArgs, LinkSlugReturnType } from './linkTypes.js'
+import type { InternalLink, Taxonomy } from '../../global/globalTypes.js'
 import { isNumber } from '../number/number.js'
 import { isObjectStrict } from '../object/object.js'
 import { isString, isStringStrict } from '../string/string.js'
@@ -20,16 +20,34 @@ import { config } from '../../config/config.js'
  * @private
  * @param {string} id
  * @param {string} contentType
- * @param {LinkSlugParent[]} parents
+ * @param {InternalLink[]} parents
+ * @param {Taxonomy} [taxonomy]
+ * @param {string} [locale]
  * @return {void}
  */
-const getParentSlug = (id: string, contentType: string, parents: LinkSlugParent[]): void => {
+const getParentSlug = (
+  id: string,
+  contentType: string,
+  parents: InternalLink[],
+  taxonomy?: Taxonomy,
+  locale?: string
+): void => {
   const storeParents = getStoreItem('parents')
   const parent = storeParents[contentType]?.[id]
 
   if (parent) {
-    parents.unshift({ ...parent, contentType })
-    getParentSlug(parent.id, contentType, parents)
+    const newParent: InternalLink = {
+      ...parent,
+      contentType,
+      locale
+    }
+
+    if (contentType === 'term') {
+      newParent.taxonomy = taxonomy
+    }
+
+    parents.unshift(newParent)
+    getParentSlug(parent.id, contentType, parents, taxonomy, locale)
   }
 }
 
@@ -75,9 +93,9 @@ const getSlug = <T extends boolean = false>(
 
   /* Locale */
 
-  const pageLocale = itemData?.locale
-  const hasPageLocale = isStringStrict(pageLocale)
-  const locale = hasPageLocale ? localeInSlug[pageLocale] : ''
+  const itemLocale = isStringStrict(itemData?.locale) ? itemData.locale : undefined
+  const hasItemLocale = itemLocale != null
+  const locale = hasItemLocale ? localeInSlug[itemLocale] : ''
   const hasLocale = isStringStrict(locale)
 
   /* Term/taxonomy */
@@ -89,7 +107,6 @@ const getSlug = <T extends boolean = false>(
   const {
     id: taxonomyId,
     slug: taxonomySlug,
-    title: taxonomyTitle,
     primaryContentType: taxonomyType,
     usePrimaryContentTypeSlug: taxonomyUseTypeSlug,
     isPage: taxonomyIsPage
@@ -98,7 +115,7 @@ const getSlug = <T extends boolean = false>(
   /* Archive */
 
   const archiveType = isStringStrict(taxonomyType) ? taxonomyType : contentType
-  const archiveInfo = getArchiveInfo(archiveType)
+  const archiveInfo = getArchiveInfo(archiveType, itemLocale)
 
   const {
     id: archiveId,
@@ -109,7 +126,7 @@ const getSlug = <T extends boolean = false>(
 
   /* Archive and/or taxonomy parent */
 
-  const archiveParents: LinkSlugParent[] = []
+  const archiveParents: InternalLink[] = []
 
   if (archiveSlug && archiveId) {
     typeSlug = archiveSlug
@@ -118,7 +135,8 @@ const getSlug = <T extends boolean = false>(
       contentType: archiveContentType,
       title: archiveTitle,
       slug: archiveSlug,
-      id: archiveId
+      id: archiveId,
+      locale: itemLocale
     })
   }
 
@@ -135,8 +153,8 @@ const getSlug = <T extends boolean = false>(
       taxSlug = taxInSlug
     }
 
-    if (isObjectStrict(taxInSlug) && hasPageLocale) {
-      const localizedTaxSlug = taxInSlug[pageLocale]
+    if (isObjectStrict(taxInSlug) && hasItemLocale) {
+      const localizedTaxSlug = taxInSlug[itemLocale]
 
       if (isString(localizedTaxSlug)) {
         taxSlug = localizedTaxSlug
@@ -146,9 +164,8 @@ const getSlug = <T extends boolean = false>(
     if (taxonomyIsPage) {
       archiveParents.push({
         contentType: 'taxonomy',
-        title: taxonomyTitle,
-        slug: taxSlug,
-        id: taxonomyId
+        locale: itemLocale,
+        ...taxonomyInfo
       })
     }
   }
@@ -161,24 +178,26 @@ const getSlug = <T extends boolean = false>(
     typeSlug = contentTypeInSlug
   }
 
-  if (isObjectStrict(contentTypeInSlug) && hasPageLocale) {
-    const localizedTypeSlug = contentTypeInSlug[pageLocale]
+  if (isObjectStrict(contentTypeInSlug) && hasItemLocale) {
+    const localizedTypeSlug = contentTypeInSlug[itemLocale]
 
     if (isString(localizedTypeSlug)) {
       typeSlug = localizedTypeSlug
     }
   }
 
-  /* Page parents */
+  /* Item parents */
 
   const isHierarchical = hierarchicalTypes.includes(contentType)
-  let parents: LinkSlugParent[] = []
+  let parents: InternalLink[] = []
   let hasParents = false
 
   getParentSlug(
     isHierarchical ? id : archiveId,
     isHierarchical ? contentType : archiveContentType,
-    parents
+    parents,
+    taxonomyInfo,
+    itemLocale
   )
 
   if (parents.length > 0) {

@@ -196,7 +196,7 @@ describe('setStoreData()', () => {
     expect(store).toEqual(expectedStore)
   })
 
-  it('should set navigation, parent and archive meta items', () => {
+  it('should set navigation, parent and localized archive meta items', () => {
     setStore({
       archiveMeta: {
         term: {
@@ -325,7 +325,8 @@ describe('setStoreData()', () => {
             contentType: 'page',
             slug: 'blog',
             content: 'archive',
-            archive: 'Post'
+            archive: 'Post',
+            locale: 'en-CA'
           },
           {
             id: '4',
@@ -373,10 +374,12 @@ describe('setStoreData()', () => {
       formMeta: {},
       archiveMeta: {
         post: {
-          id: '10',
-          title: 'Blog',
-          contentType: 'page',
-          slug: 'blog'
+          'en-CA': {
+            id: '10',
+            title: 'Blog',
+            contentType: 'page',
+            slug: 'blog'
+          }
         },
         term: {
           id: '4',

@@ -5,8 +5,157 @@
 /* Imports */
 
 import { it, expect, describe, beforeEach, afterEach, beforeAll, afterAll } from 'vitest'
-import { getArchiveInfo, getTaxonomyInfo, getArchiveLink, getArchiveLabels } from '../archive.js'
+import { testResetStore } from '../../../../tests/utils.js'
+import {
+  isTerm,
+  isArchive,
+  getArchiveMeta,
+  getArchiveInfo,
+  getTaxonomyInfo,
+  getArchiveLink,
+  getArchiveLabels
+} from '../archive.js'
 import { setStoreItem } from '../../../store/store.js'
+
+/* Test isTerm */
+
+describe('isTerm()', () => {
+  it('should return false if item data is null', () => {
+    // @ts-expect-error - test null item data
+    const result = isTerm('test', null)
+
+    expect(result).toBe(false)
+  })
+
+  it('should return false if content type is not term', () => {
+    const result = isTerm('test', { contentType: 'post' })
+
+    expect(result).toBe(false)
+  })
+
+  it('should return true if term and taxonomy content type matches', () => {
+    const result = isTerm('test', {
+      contentType: 'term',
+      taxonomy: {
+        id: '123',
+        title: 'Taxonomy',
+        slug: 'taxonomy',
+        contentTypes: ['test']
+      }
+    })
+
+    expect(result).toBe(true)
+  })
+})
+
+/* Test isArchive */
+
+describe('isArchive()', () => {
+  it('should return false if item data is null', () => {
+    // @ts-expect-error - test null item data
+    const result = isArchive('test', null)
+
+    expect(result).toBe(false)
+  })
+
+  it('should return true if archive matches content type', () => {
+    const result = isArchive('post', {
+      archive: 'post'
+    })
+
+    expect(result).toBe(true)
+  })
+
+  it('should return true if term and taxonomy content type matches', () => {
+    const result = isArchive('post', {
+      contentType: 'term',
+      taxonomy: {
+        id: '456',
+        title: 'Taxonomy',
+        slug: 'taxonomy',
+        contentTypes: ['post']
+      }
+    })
+
+    expect(result).toBe(true)
+  })
+})
+
+/* Test getArchiveMeta */
+
+describe('getArchiveMeta()', () => {
+  afterEach(() => {
+    testResetStore()
+  })
+
+  it('should return empty object if content type not found in archive meta', () => {
+    const result = getArchiveMeta('test')
+
+    expect(result).toEqual({})
+  })
+
+  it('should return archive meta', () => {
+    setStoreItem('archiveMeta', {
+      post: {
+        id: '123',
+        slug: 'posts',
+        title: 'Posts',
+        contentType: 'post'
+      }
+    })
+
+    const result = getArchiveMeta('post')
+
+    expect(result).toEqual({
+      id: '123',
+      slug: 'posts',
+      title: 'Posts',
+      contentType: 'post'
+    })
+  })
+
+  it('should return archive meta if localized archive meta not found', () => {
+    setStoreItem('archiveMeta', {
+      post: {
+        id: '456',
+        slug: 'posts',
+        title: 'Posts',
+        contentType: 'post'
+      }
+    })
+
+    const result = getArchiveMeta('post', 'es-CL')
+
+    expect(result).toEqual({
+      id: '456',
+      slug: 'posts',
+      title: 'Posts',
+      contentType: 'post'
+    })
+  })
+
+  it('should return localized archive meta', () => {
+    setStoreItem('archiveMeta', {
+      post: {
+        'en-CA': {
+          id: '789',
+          slug: 'posts',
+          title: 'Posts',
+          contentType: 'post'
+        }
+      }
+    })
+
+    const result = getArchiveMeta('post', 'en-CA')
+
+    expect(result).toEqual({
+      id: '789',
+      slug: 'posts',
+      title: 'Posts',
+      contentType: 'post'
+    })
+  })
+})
 
 /* Test getArchiveInfo */
 
@@ -33,7 +182,7 @@ describe('getArchiveInfo()', () => {
   })
 
   afterAll(() => {
-    setStoreItem('archiveMeta', {})
+    testResetStore()
   })
 
   it('should return object with empty values if no content type is provided', () => {
@@ -101,7 +250,7 @@ describe('getArchiveInfo()', () => {
 /* Test getTaxonomyInfo */
 
 describe('getTaxonomyInfo()', () => {
-  it('should return object with empty values if no content type or page data is provided', () => {
+  it('should return object with empty values if no content type or item data is provided', () => {
     // @ts-expect-error - test undefined content type
     const result = getTaxonomyInfo()
     const expectedResult = {
@@ -117,7 +266,7 @@ describe('getTaxonomyInfo()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return object with empty values if no page data is provided', () => {
+  it('should return object with empty values if no item data is provided', () => {
     const result = getTaxonomyInfo('test', {
       id: '123',
       title: 'Test',
@@ -243,7 +392,7 @@ describe('getArchiveLink()', () => {
   })
 
   afterAll(() => {
-    setStoreItem('archiveMeta', {})
+    testResetStore()
   })
 
   it('should return object with empty values if no content type is provided', () => {
@@ -396,7 +545,7 @@ describe('getArchiveLabels()', () => {
   })
 
   afterEach(() => {
-    setStoreItem('archiveMeta', {})
+    testResetStore()
   })
 
   it('should return default labels if content type is null', () => {

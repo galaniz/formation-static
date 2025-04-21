@@ -15,6 +15,7 @@
     "parent": 0,
     "menu_order": 1,
     "target": "",
+    "locale": "en-CA",
     "classes": [
       ""
     ],

@@ -5,7 +5,7 @@
 /* Imports */
 
 import type { RenderItem } from '../../render/renderTypes.js'
-import type { StoreParent } from '../../store/storeTypes.js'
+import type { Parent } from '../../global/globalTypes.js'
 
 /**
  * @typedef {object} LinkSlugArgs
@@ -24,22 +24,13 @@ export interface LinkSlugArgs {
 }
 
 /**
- * @typedef {object} LinkSlugParent
- * @extends {StoreParent}
- * @prop {string} contentType
- */
-export interface LinkSlugParent extends StoreParent {
-  contentType: string
-}
-
-/**
  * @typedef {object} LinkSlugReturn
  * @prop {string} slug
- * @prop {StoreParent[]} parents
+ * @prop {Parent[]} parents
  */
 export interface LinkSlugReturn {
   slug: string
-  parents: LinkSlugParent[]
+  parents: Parent[]
 }
 
 /**

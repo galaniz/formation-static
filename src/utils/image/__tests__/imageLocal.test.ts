@@ -9,8 +9,9 @@ import { rm, mkdtemp, mkdir, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import sharp from 'sharp'
+import { testResetStore } from '../../../../tests/utils.js'
 import { setLocalImages } from '../imageLocal.js'
-import { setStoreItem, getStoreItem } from '../../../store/store.js'
+import { getStoreItem } from '../../../store/store.js'
 import { config } from '../../../config/config.js'
 
 /* Use temporary fs instead of memfs */
@@ -67,7 +68,7 @@ describe('setLocalImages()', () => {
   })
 
   afterEach(() => {
-    setStoreItem('imageMeta', {})
+    testResetStore()
     config.image.inputDir = ''
     config.image.outputDir = ''
     config.image.sizes = [

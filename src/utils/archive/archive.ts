@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { ArchiveInfo, ArchiveTaxonomy, ArchiveLink, ArchiveLabels } from './archiveTypes.js'
+import type { ArchiveInfo, ArchiveTaxonomy, ArchiveLink, ArchiveLabels, ArchiveMeta } from './archiveTypes.js'
 import type { RenderItem } from '../../render/renderTypes.js'
 import { getStoreItem } from '../../store/store.js'
 import { isObjectStrict } from '../object/object.js'
@@ -22,6 +22,10 @@ import { getSlug, getPermalink } from '../link/link.js'
  * @return {boolean}
  */
 const isTerm = (contentType: string, itemData: RenderItem): boolean => {
+  if (!isObjectStrict(itemData)) {
+    return false
+  }
+
   const { contentType: type, taxonomy } = itemData
 
   if (type !== 'term' || !isObjectStrict(taxonomy)) {
@@ -39,18 +43,44 @@ const isTerm = (contentType: string, itemData: RenderItem): boolean => {
  * @return {boolean}
  */
 const isArchive = (contentType: string, itemData: RenderItem): boolean => {
+  if (!isObjectStrict(itemData)) {
+    return false
+  }
+
   const { archive } = itemData
 
   return archive === contentType || isTerm(contentType, itemData)
 }
 
 /**
+ * Archive meta by content type and locale
+ *
+ * @param {string} contentType
+ * @param {string} [locale]
+ * @return {ArchiveMeta}
+ */
+const getArchiveMeta = (contentType: string, locale?: unknown): ArchiveMeta => {
+  const archiveMeta = getStoreItem('archiveMeta')[contentType]
+
+  if (!isObjectStrict(archiveMeta)) {
+    return {}
+  }
+
+  if (isStringStrict(locale) && isObjectStrict((archiveMeta as Record<string, ArchiveMeta>)[locale])) {
+    return (archiveMeta as Record<string, ArchiveMeta>)[locale] as ArchiveMeta
+  }
+
+  return archiveMeta
+}
+
+/**
  * Archive id, slug and title
  *
  * @param {string} contentType
+ * @param {string} [locale]
  * @return {ArchiveInfo}
  */
-const getArchiveInfo = (contentType: string): ArchiveInfo => {
+const getArchiveInfo = (contentType: string, locale?: unknown): ArchiveInfo => {
   const value = {
     id: '',
     slug: '',
@@ -64,13 +94,12 @@ const getArchiveInfo = (contentType: string): ArchiveInfo => {
     return value
   }
 
-  const info = getStoreItem('archiveMeta')[contentType]
-
-  if (!isObjectStrict(info)) {
-    return value
-  }
-
-  const { id, slug, title, contentType: type } = info
+  const {
+    id,
+    slug,
+    title,
+    contentType: type
+  } = getArchiveMeta(contentType, locale)
 
   value.id = isStringStrict(id) ? id : ''
   value.slug = isStringStrict(slug) ? slug : ''
@@ -211,7 +240,7 @@ const getArchiveLink = (contentType: string, itemData?: RenderItem): ArchiveLink
  *
  * @param {string} contentType
  * @param {RenderItem} [itemData]
- * @param {string} [labelType='singular']
+ * @param {string} [labelType=singular]
  * @param {string} [fallback]
  * @return {string}
  */
@@ -223,11 +252,9 @@ const getArchiveLabel = (
 ): string => {
   fallback = isStringStrict(fallback) ? fallback : (labelType === 'singular' ? 'Post' : 'Posts')
 
-  const locale = itemData?.locale
-  const label = getStoreItem('archiveMeta')[contentType]?.[labelType]
-  const labelText = isObjectStrict(label) && isStringStrict(locale) ? label[locale] : label
+  const label = getArchiveMeta(contentType, itemData?.locale)[labelType]
 
-  return isStringStrict(labelText) ? labelText : fallback
+  return isStringStrict(label) ? label : fallback
 }
 
 /**
@@ -288,6 +315,7 @@ const getArchiveLabels = (contentType: string, itemData?: RenderItem): ArchiveLa
 export {
   isTerm,
   isArchive,
+  getArchiveMeta,
   getArchiveInfo,
   getTaxonomyInfo,
   getArchiveLink,

@@ -7,6 +7,7 @@
 import type { RenderItem } from '../../render/renderTypes.js'
 import type { CacheData } from '../../utils/filter/filterTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach, beforeAll } from 'vitest'
+import { testResetStore } from '../../../tests/utils.js'
 import { getWordPressData, getAllWordPressData } from '../wordpressData.js'
 import { normalMetaKeys } from '../wordpressDataNormal.js'
 import { mockFetchErrorMessage } from '../../../tests/types.js'
@@ -60,7 +61,7 @@ describe('getWordPressData()', () => {
     config.wholeTypes = []
     config.partialTypes = []
     normalMetaKeys.set('customMeta', 'custom')
-    setStoreItem('taxonomies', {})
+    testResetStore()
     resetFilters()
   })
 
@@ -379,8 +380,7 @@ describe('getAllWordPressData()', () => {
 
   afterEach(() => {
     resetFilters()
-    setStoreItem('slugs', {})
-    setStoreItem('taxonomies', {})
+    testResetStore()
     normalMetaKeys.clear()
     config.cms.ssl = true
     config.cms.prodHost = ''

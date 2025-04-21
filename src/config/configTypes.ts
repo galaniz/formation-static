@@ -40,24 +40,26 @@ export interface ConfigEnv {
  * @typedef {object} ConfigCms
  * @prop {string} name
  * @prop {string} space
- * @prop {boolean} [ssl]
  * @prop {string} prodUser
  * @prop {string} prodCredential
  * @prop {string} prodHost
  * @prop {string} devUser
  * @prop {string} devCredential
  * @prop {string} devHost
+ * @prop {string} [env]
+ * @prop {boolean} [ssl]
  */
 export interface ConfigCms {
   name: string
   space: string
-  ssl?: boolean
   prodUser: string
   prodCredential: string
   prodHost: string
   devUser: string
   devCredential: string
   devHost: string
+  env?: string
+  ssl?: boolean
 }
 
 /**

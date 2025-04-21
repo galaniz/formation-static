@@ -4,10 +4,11 @@
 
 /* Imports */
 
+import type { Generic, Parent, Taxonomy } from '../global/globalTypes.js'
 import type { NavigationList, NavigationItem } from '../components/Navigation/NavigationTypes.js'
+import type { ArchiveMeta } from '../utils/archive/archiveTypes.js'
 import type { ImageProps } from '../utils/image/imageTypes.js'
 import type { FormMeta } from '../objects/Form/FormTypes.js'
-import type { Generic, Taxonomy } from '../global/globalTypes.js'
 
 /**
  * @typedef {object} StoreSlug
@@ -25,50 +26,14 @@ export interface StoreSlug {
 export type StoreSlugs = Record<string, StoreSlug>
 
 /**
- * @typedef {object} StoreParent
- * @prop {string} id
- * @prop {string} slug
- * @prop {string} title
+ * @typedef {Object<string, Object<string, Parent>>} StoreParents
  */
-export interface StoreParent {
-  id: string
-  slug: string
-  title: string
-}
+export type StoreParents = Record<string, Record<string, Parent>>
 
 /**
- * @typedef {Object<string, Object<string, StoreParent>>} StoreParents
+ * @typedef {Object<string, ArchiveMeta|Object<string, ArchiveMeta>>} StoreArchiveMeta
  */
-export type StoreParents = Record<string, Record<string, StoreParent>>
-
-/**
- * @typedef {object} StoreArchiveMetaItem
- * @prop {string} [id]
- * @prop {string} [slug]
- * @prop {string} [title]
- * @prop {string} [contentType]
- * @prop {string|Object<string, string>} [singular]
- * @prop {string|Object<string, string>} [plural]
- * @prop {string} [layout]
- * @prop {string} [order]
- * @prop {number} [display]
- */
-export interface StoreArchiveMetaItem {
-  id?: string
-  slug?: string
-  title?: string
-  contentType?: string
-  singular?: string | Record<string, string>
-  plural?: string | Record<string, string>
-  layout?: string
-  order?: string
-  display?: number
-}
-
-/**
- * @typedef {Object<string, StoreArchiveMetaItem>} StoreArchiveMeta
- */
-export type StoreArchiveMeta = Record<string, StoreArchiveMetaItem>
+export type StoreArchiveMeta = Record<string, ArchiveMeta | Record<string, ArchiveMeta>>
 
 /**
  * @typedef {Object<string, FormMeta>} StoreFormMeta

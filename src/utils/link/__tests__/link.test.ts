@@ -5,6 +5,7 @@
 /* Imports */
 
 import { it, expect, describe, beforeEach, afterEach, vi } from 'vitest'
+import { testResetStore } from '../../../../tests/utils.js'
 import { getSlug, getLink, getPermalink } from '../link.js'
 import { setStoreItem } from '../../../store/store.js'
 import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
@@ -21,8 +22,7 @@ describe('getSlug()', () => {
   })
 
   afterEach(() => {
-    setStoreItem('archiveMeta', {})
-    setStoreItem('parents', {})
+    testResetStore()
     resetFilters()
     config.hierarchicalTypes = []
     config.localeInSlug = {}
@@ -134,13 +134,15 @@ describe('getSlug()', () => {
           id: '789',
           slug: 'design',
           title: 'Design',
-          contentType: 'hierarchical'
+          contentType: 'hierarchical',
+          locale: undefined
         },
         {
           id: '456',
           slug: 'colors',
           title: 'Colors',
-          contentType: 'hierarchical'
+          contentType: 'hierarchical',
+          locale: undefined
         }
       ]
     }
@@ -170,7 +172,8 @@ describe('getSlug()', () => {
           id: '123',
           slug: 'colors',
           title: 'Colors',
-          contentType: 'page'
+          contentType: 'page',
+          locale: undefined
         }
       ]
     }
@@ -210,13 +213,15 @@ describe('getSlug()', () => {
           id: '456',
           slug: 'art',
           title: 'Art',
-          contentType: 'page'
+          contentType: 'page',
+          locale: undefined
         },
         {
           id: '123',
           slug: 'colors',
           title: 'Colors',
-          contentType: 'page'
+          contentType: 'page',
+          locale: undefined
         }
       ]
     }
@@ -249,7 +254,8 @@ describe('getSlug()', () => {
           id: '123',
           slug: 'colors',
           title: 'Colors',
-          contentType: 'page'
+          contentType: 'page',
+          locale: 'en-CA'
         }
       ]
     }
@@ -288,7 +294,8 @@ describe('getSlug()', () => {
           id: '123',
           slug: 'colors',
           title: 'Colors',
-          contentType: 'page'
+          contentType: 'page',
+          locale: 'en-CA'
         }
       ]
     }
@@ -326,7 +333,8 @@ describe('getSlug()', () => {
           id: '123',
           slug: 'colors',
           title: 'Colors',
-          contentType: 'page'
+          contentType: 'page',
+          locale: undefined
         }
       ]
     }
@@ -364,7 +372,8 @@ describe('getSlug()', () => {
           id: '123',
           slug: 'colors',
           title: 'Colors',
-          contentType: 'page'
+          contentType: 'page',
+          locale: undefined
         }
       ]
     }
@@ -403,7 +412,8 @@ describe('getSlug()', () => {
           id: '123',
           slug: 'colors',
           title: 'Colors',
-          contentType: 'page'
+          contentType: 'page',
+          locale: 'en-CA'
         }
       ]
     }
@@ -457,19 +467,22 @@ describe('getSlug()', () => {
           id: '789',
           slug: 'all',
           title: 'All',
-          contentType: 'page'
+          contentType: 'page',
+          locale: 'en-CA'
         },
         {
           id: '456',
           slug: 'art',
           title: 'Art',
-          contentType: 'page'
+          contentType: 'page',
+          locale: 'en-CA'
         },
         {
           id: '123',
           slug: 'colors',
           title: 'Colors',
-          contentType: 'page'
+          contentType: 'page',
+          locale: 'en-CA'
         }
       ]
     }
@@ -508,7 +521,8 @@ describe('getSlug()', () => {
           id: '123',
           slug: 'colors',
           title: 'Colors',
-          contentType: 'page'
+          contentType: 'page',
+          locale: undefined
         }
       ]
     }
@@ -556,18 +570,20 @@ describe('getSlug()', () => {
       }
     })
 
+    const taxonomy = {
+      id: '456',
+      slug: 'types',
+      title: 'Color Types',
+      contentTypes: ['color'],
+      usePrimaryContentTypeSlug: true,
+      isPage: true
+    }
+
     const result = getSlug({
       slug: 'cold',
       contentType: 'term',
       itemData: {
-        taxonomy: {
-          id: '456',
-          slug: 'types',
-          title: 'Color Types',
-          contentTypes: ['color'],
-          usePrimaryContentTypeSlug: true,
-          isPage: true
-        }
+        taxonomy
       }
     }, true)
 
@@ -578,13 +594,19 @@ describe('getSlug()', () => {
           id: '123',
           slug: 'colors',
           title: 'Colors',
-          contentType: 'page'
+          contentType: 'page',
+          locale: undefined
         },
         {
           id: '456',
           slug: 'types',
           title: 'Color Types',
-          contentType: 'taxonomy'
+          contentTypes: ['color'],
+          primaryContentType: 'color',
+          usePrimaryContentTypeSlug: true,
+          isPage: true,
+          contentType: 'taxonomy',
+          locale: undefined
         }
       ]
     }
@@ -607,19 +629,21 @@ describe('getSlug()', () => {
       }
     })
 
+    const taxonomy = {
+      id: '456',
+      slug: 'types',
+      title: 'Color Types',
+      contentTypes: ['color'],
+      usePrimaryContentTypeSlug: true,
+      isPage: true
+    }
+
     const result = getSlug({
       id: '789',
       slug: 'icy',
       contentType: 'term',
       itemData: {
-        taxonomy: {
-          id: '456',
-          slug: 'types',
-          title: 'Color Types',
-          contentTypes: ['color'],
-          usePrimaryContentTypeSlug: true,
-          isPage: true
-        }
+        taxonomy
       }
     }, true)
 
@@ -627,16 +651,21 @@ describe('getSlug()', () => {
       slug: 'colors/kind/cold/icy',
       parents: [
         {
-          id: '456',
-          slug: 'kind',
-          title: 'Color Types',
-          contentType: 'taxonomy'
+          contentType: 'taxonomy',
+          primaryContentType: 'color',
+          locale: undefined,
+          ...taxonomy
         },
         {
           id: '101',
           slug: 'cold',
           title: 'Cold',
-          contentType: 'term'
+          contentType: 'term',
+          locale: undefined,
+          taxonomy: {
+            ...taxonomy,
+            primaryContentType: 'color'
+          }
         }
       ]
     }

@@ -5,11 +5,7 @@
 /* Imports */
 
 import type { Generic } from '../global/globalTypes.js'
-import type {
-  RenderServerlessData,
-  RenderPreviewData,
-  RenderItem
-} from '../render/renderTypes.js'
+import type { RenderServerlessData, RenderPreviewData } from '../render/renderTypes.js'
 
 /**
  * @typedef {Object<string, (string|number|boolean)>} ContentfulDataParams
@@ -128,24 +124,12 @@ export interface ContentfulDataItem {
 
 /**
  * @typedef {object} ContentfulData
- * @extends {Generic}
- * @prop {ContentfulDataItem[]} [items]
- * @prop {Generic[]} [errors]
+ * @prop {ContentfulDataItem[]} items
+ * @prop {number} total
  */
-export interface ContentfulData extends Generic {
-  items?: ContentfulDataItem[]
-  errors?: Generic[]
-}
-
-/**
- * @typedef {object} ContentfulDataReturn
- * @extends {Generic}
- * @prop {RenderItem[]} [items]
- * @prop {Generic[]} [errors]
- */
-export interface ContentfulDataReturn extends Generic {
-  items?: RenderItem[]
-  errors?: Generic[]
+export interface ContentfulData {
+  items: ContentfulDataItem[]
+  total: number
 }
 
 /**

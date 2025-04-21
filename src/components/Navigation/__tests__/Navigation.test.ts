@@ -6,7 +6,7 @@
 
 import type { NavigationBreadcrumbItem, NavigationProps } from '../NavigationTypes.js'
 import { it, expect, describe, beforeEach, afterEach } from 'vitest'
-import { testMinify } from '../../../../tests/utils.js'
+import { testMinify, testResetStore } from '../../../../tests/utils.js'
 import { Navigation } from '../Navigation.js'
 import { setStore } from '../../../store/store.js'
 
@@ -35,7 +35,8 @@ const testNavProps = (
     title: 'Blog',
     internalLink: {
       id: 'blog',
-      slug: 'blog'
+      slug: 'blog',
+      locale: 'en-CA'
     }
   }
 
@@ -112,16 +113,16 @@ describe('Navigation', () => {
   let blogPost: Navigation
 
   afterEach(() => {
-    setStore({
-      archiveMeta: {}
-    })
+    testResetStore()
   })
 
   beforeEach(() => {
     setStore({
       archiveMeta: {
         blog: {
-          id: 'blog'
+          'en-CA': {
+            id: 'blog'
+          }
         }
       }
     })
@@ -531,7 +532,7 @@ describe('Navigation', () => {
       expect(result).toBe(expectedResult)
     })
 
-    it('should return list markup string with blog as archive current', () => {
+    it('should return list markup string with localized blog as archive current', () => {
       const res = blogPost.getOutput('header', { depthAttr: true })
       const expected = `
         <ul data-nav-depth="0">

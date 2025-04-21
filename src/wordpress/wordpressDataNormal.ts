@@ -616,6 +616,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
       object = '',
       object_id = '',
       target = '',
+      locale = '',
       classes = [],
       xfn = [],
       meta = []
@@ -644,6 +645,10 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
         contentType: isTerm ? 'term' : object,
         id: object_id,
         slug
+      }
+
+      if (isStringStrict(locale)) {
+        internalLink.locale = locale
       }
 
       if (isTerm) {
