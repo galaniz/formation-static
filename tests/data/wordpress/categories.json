@@ -98,11 +98,12 @@
   {
     "id": 1,
     "count": 2,
-    "description": "",
+    "description": "Test description",
     "link": "http://wp.com/category/uncategorized/",
     "name": "Uncategorized",
     "slug": "uncategorized",
     "taxonomy": "category",
+    "locale": "en-CA",
     "parent": 0,
     "meta": [],
     "_links": {

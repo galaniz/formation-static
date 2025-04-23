@@ -5,7 +5,7 @@
 /* Imports */
 
 import type { Block } from '@wordpress/block-serialization-spec-parser'
-import type { InternalLink, Taxonomy } from '../global/globalTypes.js'
+import type { InternalLink, Taxonomy, Generic } from '../global/globalTypes.js'
 import type {
   WordPressDataFile,
   WordPressDataItem,
@@ -183,32 +183,32 @@ const normalizeEmbedded = (
     /* Author */
 
     if (k === 'author') {
+      const exclude = [...excludeProps, 'id', 'avatar_urls']
+
       embeds.forEach(embed => {
         if (!isObjectStrict(embed)) {
           return
         }
 
-        const {
-          id,
-          name,
-          url,
-          description,
-          link,
-          slug
-        } = embed as WordPressDataAuthor
+        const { id } = embed as WordPressDataAuthor
 
         if (item.author !== id) {
           return
         }
 
-        newItem.author = {
-          id: id.toString(),
-          name,
-          url,
-          description,
-          link,
-          slug
+        const newAuthor: Generic = {
+          id: id.toString()
         }
+
+        Object.entries(embed).forEach(([key, val]) => {
+          if (exclude.includes(key)) {
+            return
+          }
+
+          newAuthor[key] = val
+        })
+
+        newItem.author = newAuthor
       })
     }
 
@@ -301,6 +301,8 @@ const normalizeEmbedded = (
     /* Term */
 
     if (k === 'wp:term') {
+      const exclude = [...excludeProps, 'id', 'name', 'taxonomy']
+
       embeds.forEach(embed => {
         if (!isArrayStrict(embed)) {
           return
@@ -313,9 +315,7 @@ const normalizeEmbedded = (
 
           const {
             id,
-            link,
             name,
-            slug,
             taxonomy = ''
           } = e
 
@@ -340,14 +340,22 @@ const normalizeEmbedded = (
               return taxonomyId
             }
 
-            return {
+            const newTerm: Generic = {
               id: id.toString(),
-              link,
               title: name,
-              slug,
               contentType: 'term',
               taxonomy: getTaxonomy(taxonomy)
             }
+
+            Object.entries(e).forEach(([key, val]) => {
+              if (exclude.includes(key)) {
+                return
+              }
+
+              newTerm[key] = val
+            })
+
+            return newTerm
           })
         })
       })

@@ -24,11 +24,12 @@ export const categories = [
   {
     id: '1',
     count: 2,
-    description: '',
+    description: 'Test description',
     link: 'http://wp.com/category/uncategorized/',
     title: 'Uncategorized',
     slug: 'uncategorized',
     contentType: 'term',
+    locale: 'en-CA',
     taxonomy: {
       id: 'category',
       title: '',
