@@ -51,8 +51,7 @@ export const pageOne = {
           metadata: {
             tags: [
               {
-                id: 'template',
-                name: 'Template'
+                id: 'template'
               }
             ]
           },
@@ -65,8 +64,7 @@ export const pageOne = {
                   metadata: {
                     tags: [
                       {
-                        id: 'templateSlot',
-                        name: 'Template Slot'
+                        id: 'templateSlot'
                       }
                     ]
                   }

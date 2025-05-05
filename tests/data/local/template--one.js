@@ -5,8 +5,7 @@ export const templateOne = {
   metadata: {
     tags: [
       {
-        id: 'template',
-        name: 'Template'
+        id: 'template'
       }
     ]
   },
@@ -19,8 +18,7 @@ export const templateOne = {
           metadata: {
             tags: [
               {
-                id: 'templateSlot',
-                name: 'Template Slot'
+                id: 'templateSlot'
               }
             ]
           }

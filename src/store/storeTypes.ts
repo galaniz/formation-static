@@ -14,10 +14,12 @@ import type { FormMeta } from '../objects/Form/FormTypes.js'
  * @typedef {object} StoreSlug
  * @prop {string} contentType
  * @prop {string} id
+ * @prop {string} [locale]
  */
 export interface StoreSlug {
   contentType: string
   id: string
+  locale?: string
 }
 
 /**

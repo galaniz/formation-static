@@ -26,6 +26,7 @@ import type {
 import type { ParentArgs, HtmlString } from '../global/globalTypes.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
 import type { Navigation } from '../components/Navigation/Navigation.js'
+import type { StoreSlug } from '../store/storeTypes.js'
 import { doActions } from '../utils/action/action.js'
 import { applyFilters } from '../utils/filter/filter.js'
 import { getSlug, getPermalink } from '../utils/link/link.js'
@@ -46,6 +47,7 @@ import { Form } from '../objects/Form/Form.js'
 import { FormField } from '../objects/Form/FormField.js'
 import { FormOption } from '../objects/Form/FormOption.js'
 import { RichText } from '../text/RichText/RichText.js'
+import { config } from '../config/config.js'
 
 /**
  * Default render functions
@@ -179,8 +181,7 @@ const getContentTemplate = (
         metadata: {
           tags: [
             {
-              id: 'templateBreak',
-              name: ''
+              id: 'templateBreak'
             }
           ]
         }
@@ -252,7 +253,7 @@ const mapContentTemplate = (
 
     let children = t.content
 
-    if (isArrayStrict(children) && !isSlot) {
+    if (isArrayStrict(children) && !isSlot && !named) {
       let repeat: RenderItem | undefined
       const newChildren = [...children]
 
@@ -275,7 +276,7 @@ const mapContentTemplate = (
         let insertIndex = repeatIndex
 
         for (let j = insertIndex; j < breakIndex - 1; j += 1) {
-          newChildren.splice(insertIndex, 0, { ...repeat })
+          newChildren.splice(insertIndex, 0, structuredClone(repeat))
 
           insertIndex = j
         }
@@ -688,14 +689,21 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     formattedSlug = slug
   }
 
-  setStoreItem(
-    'slugs',
-    {
-      id,
-      contentType: isStringStrict(_contentType) ? _contentType : contentType
-    },
-    slugIsHtml ? `/${slug}` : formattedSlug
-  )
+  const cmsLocales = config.cms.locales
+  const slugData: StoreSlug = {
+    id,
+    contentType: isStringStrict(_contentType) ? _contentType : contentType
+  }
+
+  if (isStringStrict(item.locale) && cmsLocales) {
+    const locale = item.locale
+
+    if (cmsLocales.includes(locale) && locale !== cmsLocales[0]) {
+      slugData.locale = locale
+    }
+  }
+
+  setStoreItem('slugs', slugData, slugIsHtml ? `/${slug}` : formattedSlug)
 
   /* Check if index */
 
@@ -947,7 +955,8 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
     for (const contentItem of contentItems) {
       const item = await renderItem({
         item: await applyFilters('renderItemData', contentItem, { contentType }, true),
-        serverlessData
+        serverlessData,
+        previewData
       }, contentType)
 
       if (!item) {

@@ -4,11 +4,16 @@
 
 /* Imports */
 
-import type { ContentfulDataParams, ContentfulData, AllContentfulDataArgs } from './contentfulDataTypes.js'
+import type {
+  ContentfulData,
+  ContentfulDataParams,
+  ContentfulDataError,
+  ContentfulDataItem,
+  AllContentfulDataArgs
+} from './contentfulDataTypes.js'
 import type { RenderAllData, RenderDataMeta, RenderItem } from '../render/renderTypes.js'
 import type { CacheData, DataFilterArgs } from '../utils/filter/filterTypes.js'
 import resolveResponse from 'contentful-resolve-response'
-import { ResponseError } from '../utils/ResponseError/ResponseError.js'
 import { applyFilters } from '../utils/filter/filter.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
@@ -21,13 +26,13 @@ import { normalizeContentfulData } from './contentfulDataNormal.js'
  * Fetch data from contentful cms or cache
  *
  * @param {string} key
- * @param {ContentfulDataParams} params
+ * @param {ContentfulDataParams} [params]
  * @param {RenderDataMeta} [meta]
  * @return {Promise<RenderItem[]>}
  */
 const getContentfulData = async (
   key: string,
-  params: ContentfulDataParams,
+  params?: ContentfulDataParams,
   meta?: RenderDataMeta
 ): Promise<RenderItem[]> => {
   /* Key required for cache */
@@ -53,7 +58,11 @@ const getContentfulData = async (
     const cacheMeta = cacheData?.meta
 
     if (isObjectStrict(cacheMeta) && hasMeta) {
-      meta.total = cacheMeta.total
+      const { total, limit, skip } = cacheMeta
+
+      meta.total = total
+      meta.limit = limit
+      meta.skip = skip
     }
 
     if (isArray(cacheItems)) {
@@ -88,30 +97,40 @@ const getContentfulData = async (
 
   let url = `https://${host}/spaces/${space}/environments/${env}/entries?access_token=${accessToken}`
 
-  for (const [key, value] of Object.entries(params)) {
-    url += `&${key}=${value.toString()}`
+  if (isObjectStrict(params)) {
+    for (const [key, value] of Object.entries(params)) {
+      url += `&${key}=${value.toString()}`
+    }
   }
 
   /* Request */
 
   const resp = await fetch(url)
+  const data: ContentfulData | ContentfulDataError = await resp.json()
+
+  /* Check if error */
 
   if (!resp.ok) {
-    throw new ResponseError('Bad fetch response', resp)
-  }
+    const message =
+      isStringStrict((data as ContentfulDataError).message) ? (data as ContentfulDataError).message : 'Bad fetch response'
 
-  const data: ContentfulData = await resp.json()
+    throw new Error(message, { cause: data })
+  }
 
   /* Total */
 
   if (hasMeta) {
-    meta.total = data.total
+    const { total, limit, skip } = data as ContentfulData
+
+    meta.total = total
+    meta.limit = limit
+    meta.skip = skip
   }
 
   /* Normalize */
 
-  const resolvedData = resolveResponse(data) as ContentfulData
-  const newData = normalizeContentfulData(resolvedData.items)
+  const resolvedData = resolveResponse(data) as ContentfulDataItem[]
+  const newData = normalizeContentfulData(resolvedData)
 
   /* Add to cache */
 
@@ -136,23 +155,22 @@ const getContentfulData = async (
 /**
  * Fetch data from all content types or single entry if serverless
  *
- * @param {AllContentfulDataArgs} args
+ * @param {AllContentfulDataArgs} [args]
  * @return {Promise<RenderAllData|undefined>}
  */
-const getAllContentfulData = async (
-  args: AllContentfulDataArgs = {}
-): Promise<RenderAllData | undefined> => {
-  /* All data */
+const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<RenderAllData | undefined> => {
+  /* Args */
 
   const {
     serverlessData,
     previewData
-  } = args
+  } = isObjectStrict(args) ? args : {}
+
+  /* All data */
 
   let allData: RenderAllData = {
     navigationItem: [],
     navigation: [],
-    redirect: [],
     content: {
       page: []
     }
@@ -167,11 +185,22 @@ const getAllContentfulData = async (
     previewData
   }
 
+  /* Locale */
+
+  const cmsLocales = config.cms.locales || []
+  const defaultLocale = cmsLocales[0]
+  const paramLocales = isPreview ? [] : [...cmsLocales]
+
+  if (paramLocales.length === 0) { // At least one param locale required
+    paramLocales.push('')
+  }
+
   /* Single entry data if serverless or preview data */
 
   if (isServerless || isPreview) {
     let contentType = ''
     let id = ''
+    let locale: string | undefined
 
     if (isServerless) {
       const slugs = getStoreItem('slugs')
@@ -181,19 +210,27 @@ const getAllContentfulData = async (
       if (isObjectStrict(item)) {
         id = isStringStrict(item.id) ? item.id : ''
         contentType = isStringStrict(item.contentType) ? item.contentType : ''
+        locale = isStringStrict(item.locale) ? item.locale : ''
       }
     }
 
     if (isPreview) {
       id = previewData.id
       contentType = previewData.contentType
+      locale = previewData.locale
     }
 
     if (id) {
       const key = `serverless_${id}_${contentType}`
-      const params = {
+      const params: ContentfulDataParams = {
+        content_type: contentType,
         'sys.id': id,
         include: 10
+      }
+
+      if (locale && locale !== defaultLocale) {
+        params.locale = locale
+        paramLocales[0] = locale
       }
 
       const data = await getContentfulData(key, params)
@@ -210,20 +247,31 @@ const getAllContentfulData = async (
     const partial = config.partialTypes
 
     for (const contentType of partial) {
-      allData[contentType] = []
-
       const key = `all_${contentType}`
-      const params = {
-        content_type: contentType
+      let data: RenderItem[] = []
+
+      for (const locale of paramLocales) {
+        const params: ContentfulDataParams = {
+          content_type: contentType
+        }
+
+        if (locale && locale !== defaultLocale) {
+          params.locale = locale
+        }
+
+        let newData = await getContentfulData(key, params)
+
+        newData = applyFilters('contentfulData', newData, contentfulDataFilterArgs)
+
+        if (isArray(newData)) {
+          data = [
+            ...data,
+            ...newData
+          ]
+        }
       }
 
-      let data = await getContentfulData(key, params)
-
-      data = applyFilters('contentfulData', data, contentfulDataFilterArgs)
-
-      if (isArray(data)) {
-        allData[contentType] = data
-      }
+      allData[contentType] = data
     }
   }
 
@@ -233,21 +281,32 @@ const getAllContentfulData = async (
     const whole = config.wholeTypes
 
     for (const contentType of whole) {
-      allData.content[contentType] = []
-
       const key = `all_${contentType}`
-      const params = {
-        content_type: contentType,
-        include: 10
+      let data: RenderItem[] = []
+
+      for (const locale of paramLocales) {
+        const params: ContentfulDataParams = {
+          content_type: contentType,
+          include: 10
+        }
+
+        if (locale && locale !== defaultLocale) {
+          params.locale = locale
+        }
+
+        let newData = await getContentfulData(key, params)
+
+        newData = applyFilters('contentfulData', newData, contentfulDataFilterArgs)
+
+        if (isArray(newData)) {
+          data = [
+            ...data,
+            ...newData
+          ]
+        }
       }
 
-      let data = await getContentfulData(key, params)
-
-      data = applyFilters('contentfulData', data, contentfulDataFilterArgs)
-
-      if (isArray(data)) {
-        allData.content[contentType] = data
-      }
+      allData.content[contentType] = data
     }
   }
 

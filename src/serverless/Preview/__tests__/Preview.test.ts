@@ -104,12 +104,12 @@ describe('Preview()', () => {
   it('should return 200 response with render layout output', async () => {
     vi.stubGlobal('fetch', mockWordPressFetch)
 
-    const context = testContext('http://wp.com/?content_type=post&preview=1')
+    const context = testContext('http://wp.com/?content_type=post&preview=1&locale=en-CA')
     const response = await Preview(context, () => {
       setConfig({ cms: testWordPressConfig() })
       setRenderFunctions({
         functions: {},
-        layout: ({ content }) => `<html><body>${content}</body></html>`,
+        layout: ({ content, previewData }) => `<html lang="${previewData?.locale}"><body>${content}</body></html>`,
         httpError: ({ code }) => `<html><body><h1>${code}</h1></body></html>`
       })
     }, getAllWordPressData)
@@ -118,7 +118,7 @@ describe('Preview()', () => {
     const status = response.status
     const expectedStatus = 200
     const expectedBody =
-      '<html><body><p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p></body></html>'
+      '<html lang="en-CA"><body><p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p></body></html>'
 
     expect(body).toBe(expectedBody)
     expect(status).toBe(expectedStatus)

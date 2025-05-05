@@ -87,10 +87,10 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
     const cacheMeta = cacheData?.meta
 
     if (isObjectStrict(cacheMeta) && hasMeta) {
-      const { total, totalPages } = cacheMeta
+      const { total, pages } = cacheMeta
 
       meta.total = total
-      meta.totalPages = totalPages
+      meta.pages = pages
     }
 
     if (isArray(cacheItems)) {
@@ -189,7 +189,7 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
 
   if (hasMeta) {
     meta.total = totalNum
-    meta.totalPages = totalPagesNum
+    meta.pages = totalPagesNum
   }
 
   /* Normalize */

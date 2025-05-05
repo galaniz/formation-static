@@ -64,20 +64,22 @@ export interface MockFetchImageResult {
 
 /**
  * @typedef {object} MockErrorMessage
- * @prop {string} url
  * @prop {string} data
  * @prop {string} route
+ * @prop {string} contentType
+ * @prop {string} auth
+ * @prop {string} body
  */
 export const mockFetchErrorMessage: {
-  url: string
   data: string
   route: string
+  contentType: string
   auth: string
   body: string
 } = {
-  url: 'URL not valid',
   data: 'Data not found',
   route: 'Route does not exist',
+  contentType: 'Content type does not exist',
   auth: 'Authorization is invalid',
   body: 'Body is not a string'
 }

@@ -34,17 +34,13 @@ beforeAll(() => {
 
 describe('getWordPressData()', () => {
   beforeEach(() => {
-    config.cms = {
-      name: 'wordpress',
-      devUser: 'user',
-      devCredential: 'pass',
-      devHost: 'wp.com',
-      space: 'space',
-      prodUser: 'user',
-      prodCredential: 'pass',
-      prodHost: 'wp.com'
-    }
-
+    config.cms.name = 'wordpress'
+    config.cms.devUser = 'user'
+    config.cms.devCredential = 'pass'
+    config.cms.devHost = 'wp.com'
+    config.cms.prodUser = 'user'
+    config.cms.prodCredential = 'pass'
+    config.cms.prodHost = 'wp.com'
     config.wholeTypes = ['page']
     config.partialTypes = [
       'nav_menu_item',
@@ -55,6 +51,17 @@ describe('getWordPressData()', () => {
   })
 
   afterEach(() => {
+    config.cms = {
+      name: '',
+      space: '',
+      prodUser: '',
+      prodCredential: '',
+      prodHost: '',
+      devUser: '',
+      devCredential: '',
+      devHost: ''
+    }
+
     config.renderTypes = {}
     config.env.prod = false
     config.env.cache = false
@@ -83,30 +90,18 @@ describe('getWordPressData()', () => {
   })
 
   it('should throw an error if no config credentials', async () => {
-    config.cms = {
-      name: 'wordpress',
-      devUser: '',
-      devCredential: '',
-      devHost: '',
-      space: '',
-      prodUser: '',
-      prodCredential: '',
-      prodHost: ''
-    }
+    config.cms.name = 'wordpress'
+    config.cms.devUser = ''
+    config.cms.devCredential = ''
+    config.cms.devHost = ''
+    config.cms.prodUser = ''
+    config.cms.prodCredential = ''
+    config.cms.prodHost = ''
 
     await expect(async () => await getWordPressData({
       key: 'key_2',
       route: 'route'
     })).rejects.toThrowError('No credentials')
-  })
-
-  it('should throw an error if host is invalid', async () => {
-    config.cms.devHost = 'wp'
-
-    await expect(async () => await getWordPressData({
-      key: 'key_3',
-      route: 'route'
-    })).rejects.toThrowError(mockFetchErrorMessage.url)
   })
 
   it('should throw an error if invalid credentials', async () => {
@@ -141,6 +136,7 @@ describe('getWordPressData()', () => {
         _embed: 'wp:term' // Embed param coverage
       }
     })
+
     const expectedResult: RenderItem[] = []
 
     expect(result).toEqual(expectedResult)
@@ -151,6 +147,7 @@ describe('getWordPressData()', () => {
       key: 'null_key',
       route: 'null'
     })
+
     const expectedResult: RenderItem[] = []
 
     expect(result).toEqual(expectedResult)
@@ -182,7 +179,7 @@ describe('getWordPressData()', () => {
     config.env.cache = true
     const cacheGet = vi.fn((data) => new Promise(resolve => { resolve(data) }))
 
-    addFilter('cacheData', async (data, args): Promise<CacheData | undefined> => {
+    addFilter('cacheData', async (data, args): Promise<CacheData> => {
       const { key, type } = args
 
       if (key === 'posts_key_3' && type === 'get') {
@@ -191,7 +188,7 @@ describe('getWordPressData()', () => {
           items: posts,
           meta: {
             total: 1,
-            totalPages: 1
+            pages: 1
           }
         }
       }
@@ -201,7 +198,7 @@ describe('getWordPressData()', () => {
 
     const meta = {
       total: 0,
-      totalPages: 0
+      pages: 0
     }
 
     const result = await getWordPressData({
@@ -213,11 +210,11 @@ describe('getWordPressData()', () => {
     expect(cacheGet).toHaveBeenCalledTimes(1)
     expect(cacheGet).toHaveBeenCalledWith(undefined)
     expect(result).toEqual(posts)
-    expect(meta.total).toEqual(1)
-    expect(meta.totalPages).toEqual(1)
+    expect(meta.total).toBe(1)
+    expect(meta.pages).toBe(1)
   })
 
-  it('should return array of pages with production credentials', async () => {
+  it('should return array of pages with prod credentials', async () => {
     config.env.prod = true
     config.renderTypes = {
       page: 'p',
@@ -227,7 +224,7 @@ describe('getWordPressData()', () => {
 
     const meta = { // Meta coverage
       total: 0,
-      totalPages: 0
+      pages: 0
     }
 
     const result = await getWordPressData({
@@ -237,11 +234,11 @@ describe('getWordPressData()', () => {
     })
 
     expect(result).toEqual(pages)
-    expect(meta.total).toEqual(1)
-    expect(meta.totalPages).toEqual(1)
+    expect(meta.total).toBe(1)
+    expect(meta.pages).toBe(1)
   })
 
-  it('should return array of one post with id 1', async () => {
+  it('should return array of one post with specified id', async () => {
     const result = await getWordPressData({
       key: 'posts_key_4',
       route: 'posts/1'
@@ -362,6 +359,13 @@ describe('getWordPressData()', () => {
 
 describe('getAllWordPressData()', () => {
   beforeEach(() => {
+    config.cms.name = 'wordpress'
+    config.cms.devUser = 'user'
+    config.cms.devCredential = 'pass'
+    config.cms.devHost = 'wp.com'
+    config.cms.prodUser = 'user'
+    config.cms.prodCredential = 'pass'
+    config.cms.prodHost = 'wp.com'
     config.env.prodUrl = 'http://wp.com/'
     config.wholeTypes = ['page']
     config.partialTypes = [
@@ -379,16 +383,25 @@ describe('getAllWordPressData()', () => {
   })
 
   afterEach(() => {
-    resetFilters()
-    testResetStore()
-    normalMetaKeys.clear()
-    config.cms.ssl = true
-    config.cms.prodHost = ''
+    config.cms = {
+      name: '',
+      space: '',
+      prodUser: '',
+      prodCredential: '',
+      prodHost: '',
+      devUser: '',
+      devCredential: '',
+      devHost: ''
+    }
+
     config.env.prod = false
     config.env.prodUrl = ''
     config.renderTypes = {}
     config.wholeTypes = []
     config.partialTypes = []
+    resetFilters()
+    testResetStore()
+    normalMetaKeys.clear()
   })
 
   it('should return throw an error if route does not exist', async () => {

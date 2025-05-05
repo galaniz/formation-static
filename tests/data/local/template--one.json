@@ -4,8 +4,7 @@
   "metadata": {
     "tags": [
       {
-        "id": "template",
-        "name": "Template"
+        "id": "template"
       }
     ]
   },
@@ -18,8 +17,7 @@
           "metadata": {
             "tags": [
               {
-                "id": "templateSlot",
-                "name": "Template Slot"
+                "id": "templateSlot"
               }
             ]
           }

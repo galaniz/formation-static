@@ -46,8 +46,9 @@ export interface ConfigEnv {
  * @prop {string} devUser
  * @prop {string} devCredential
  * @prop {string} devHost
- * @prop {string} [env]
  * @prop {boolean} [ssl]
+ * @prop {string} [env]
+ * @prop {string[]} [locales]
  */
 export interface ConfigCms {
   name: string
@@ -58,8 +59,9 @@ export interface ConfigCms {
   devUser: string
   devCredential: string
   devHost: string
-  env?: string
   ssl?: boolean
+  env?: string
+  locales?: string[]
 }
 
 /**

@@ -163,7 +163,7 @@ const setStoreData = (allData: RenderAllData): boolean => {
 
       if (isStringStrict(archiveType)) {
         const hasLocale = isStringStrict(locale)
-        const archiveMeta = getArchiveMeta(archiveType, locale)
+        const archiveMeta = getArchiveMeta(archiveType, locale as string)
         const newArchive = {
           id,
           slug,

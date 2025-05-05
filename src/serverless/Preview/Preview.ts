@@ -7,6 +7,7 @@
 import type { ServerlessContext, ServerlessSetup } from '../serverlessTypes.js'
 import type { getAllContentfulData } from '../../contentful/contentfulData.js'
 import type { getAllWordPressData } from '../../wordpress/wordpressData.js'
+import type { RenderPreviewData } from '../../render/renderTypes.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isFunction } from '../../utils/function/function.js'
@@ -31,6 +32,7 @@ const Preview = async (
   const { request, next } = context
   const { searchParams } = new URL(request.url)
   const contentType = searchParams.get('content_type')
+  const locale = searchParams.get('locale')
   const id = searchParams.get('preview')
 
   /* Preview id and content type required */
@@ -45,7 +47,11 @@ const Preview = async (
 
   /* Data params */
 
-  const previewData = { id, contentType }
+  const previewData: RenderPreviewData = { id, contentType }
+
+  if (isStringStrict(locale)) {
+    previewData.locale = locale
+  }
 
   /* Output */
 

@@ -346,6 +346,7 @@ describe('render()', () => {
 
   afterEach(() => {
     config.hierarchicalTypes = []
+    config.cms.locales = undefined
     testResetRenderFunctions()
     resetActions()
     resetFilters()
@@ -1074,7 +1075,9 @@ describe('render()', () => {
     expect(resultMin).toEqual(expectedResultMin)
   })
 
-  it('should return item with unformatted slug', async () => {
+  it('should return item with unformatted slug and store slug data', async () => {
+    config.cms.locales = ['en-CA', 'fr-CA']
+
     const result = await render({
       allData: {
         content: {
@@ -1084,7 +1087,8 @@ describe('render()', () => {
               title: 'Lorem',
               contentType: 'page',
               slug: 'lorem.html',
-              content: 'lorem'
+              content: 'lorem',
+              locale: 'fr-CA'
             }
           ]
         }
@@ -1112,7 +1116,8 @@ describe('render()', () => {
     const expectedSlugs = {
       '/lorem.html': {
         contentType: 'page',
-        id: '7'
+        id: '7',
+        locale: 'fr-CA'
       }
     }
 
@@ -1171,8 +1176,7 @@ describe('render()', () => {
                       metadata: {
                         tags: [
                           {
-                            id: 'template',
-                            name: 'Template'
+                            id: 'template'
                           }
                         ]
                       },
@@ -1183,8 +1187,7 @@ describe('render()', () => {
                           metadata: {
                             tags: [
                               {
-                                id: 'templateRepeat',
-                                name: 'Template Repeat'
+                                id: 'templateRepeat'
                               }
                             ]
                           },
@@ -1193,8 +1196,7 @@ describe('render()', () => {
                               metadata: {
                                 tags: [
                                   {
-                                    id: 'templateSlot',
-                                    name: 'Template Slot'
+                                    id: 'templateSlot'
                                   }
                                 ]
                               }
@@ -1223,8 +1225,7 @@ describe('render()', () => {
                       metadata: {
                         tags: [
                           {
-                            id: 'template',
-                            name: 'Template'
+                            id: 'template'
                           }
                         ]
                       },
@@ -1234,8 +1235,7 @@ describe('render()', () => {
                           metadata: {
                             tags: [
                               {
-                                id: 'templateRepeat',
-                                name: 'Template Repeat'
+                                id: 'templateRepeat'
                               }
                             ]
                           },
@@ -1244,8 +1244,7 @@ describe('render()', () => {
                               metadata: {
                                 tags: [
                                   {
-                                    id: 'templateSlot',
-                                    name: 'Template Slot'
+                                    id: 'templateSlot'
                                   }
                                 ]
                               }
@@ -1272,8 +1271,7 @@ describe('render()', () => {
                       metadata: {
                         tags: [
                           {
-                            id: 'template',
-                            name: 'Template'
+                            id: 'template'
                           }
                         ]
                       },
@@ -1283,8 +1281,7 @@ describe('render()', () => {
                           metadata: {
                             tags: [
                               {
-                                id: 'templateSlot',
-                                name: 'Template Slot'
+                                id: 'templateSlot'
                               }
                             ]
                           }
@@ -1295,12 +1292,10 @@ describe('render()', () => {
                           metadata: {
                             tags: [
                               {
-                                id: 'templateSlot',
-                                name: 'Template Slot'
+                                id: 'templateSlot'
                               },
                               {
-                                id: 'templateOptional',
-                                name: 'Template Optional'
+                                id: 'templateOptional'
                               }
                             ]
                           }
@@ -1358,6 +1353,255 @@ describe('render()', () => {
     expect(resultMin).toEqual(expectedResultMin)
   })
 
+  it('should return item output with linked content template of repeating columns', async () => {
+    const result = await render({
+      allData: {
+        content: {
+          page: [
+            {
+              id: '2',
+              title: 'Home',
+              contentType: 'page',
+              slug: 'index',
+              content: [
+                {
+                  renderType: 'container',
+                  tag: 'section',
+                  content: [
+                    {
+                      renderType: 'test',
+                      testAttr: 'test',
+                      content: [
+                        {
+                          id: '4',
+                          renderType: 'testChild',
+                          content: [
+                            {
+                              id: '9',
+                              renderType: 'testEmpty',
+                              content: 'child'
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  renderType: 'contentTemplate',
+                  content: [
+                    {
+                      renderType: 'container',
+                      metadata: {
+                        tags: [
+                          {
+                            id: 'template'
+                          }
+                        ]
+                      },
+                      content: [
+                        {
+                          metadata: {
+                            tags: [
+                              {
+                                id: 'templateRepeat'
+                              }
+                            ]
+                          },
+                          content: [
+                            {
+                              renderType: 'container',
+                              tag: 'span',
+                              content: [
+                                {
+                                  metadata: {
+                                    tags: [
+                                      {
+                                        id: 'templateSlot'
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      content: '[1]'
+                    },
+                    {
+                      content: '[2]'
+                    },
+                    {
+                      content: '[3]'
+                    }
+                  ]
+                },
+                {
+                  renderType: 'contentTemplate',
+                  content: [
+                    {
+                      metadata: {
+                        tags: [
+                          {
+                            id: 'template'
+                          }
+                        ]
+                      },
+                      content: [
+                        {
+                          renderType: 'container',
+                          content: [
+                            {
+                              metadata: {
+                                tags: [
+                                  {
+                                    id: 'templateSlot'
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          renderType: 'container',
+                          tag: 'section',
+                          content: [
+                            {
+                              metadata: {
+                                tags: [
+                                  {
+                                    id: 'templateRepeat'
+                                  }
+                                ]
+                              },
+                              content: [
+                                {
+                                  renderType: 'column',
+                                  content: [
+                                    {
+                                      metadata: {
+                                        tags: [
+                                          {
+                                            id: 'templateSlot'
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      content: 'Title'
+                    },
+                    {
+                      content: '[one]'
+                    },
+                    {
+                      content: '[two]'
+                    },
+                    {
+                      content: '[three]'
+                    },
+                    {
+                      content: '[four]'
+                    },
+                    {
+                      renderType: 'container',
+                      tag: 'figure',
+                      metadata: {
+                        tags: [
+                          {
+                            id: 'template'
+                          }
+                        ]
+                      },
+                      content: [
+                        {
+                          renderType: 'container',
+                          metadata: {
+                            tags: [
+                              {
+                                id: 'templateSlot'
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          renderType: 'container',
+                          tag: 'figcaption',
+                          metadata: {
+                            tags: [
+                              {
+                                id: 'templateSlot'
+                              },
+                              {
+                                id: 'templateOptional'
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      content: '[five]'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }) as RenderReturn[]
+
+    const expectedResult = [
+      {
+        slug: '/',
+        output: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Home</title>
+            </head>
+            <body>
+              <section>
+                <ul data-test="test">
+                  <li id="4">child</li>
+                </ul>
+              </section>
+              <div>
+                <span>[1]</span>
+                <span>[2]</span>
+                <span>[3]</span>
+              </div>
+              <div>Title</div>
+              <section>
+                <div>[one]</div>
+                <div>[two]</div>
+                <div>[three]</div>
+                <div>[four]</div>
+              </section>
+              <figure>[five]</figure>
+            </body>
+          </html>
+        `
+      }
+    ]
+
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
+
+    expect(resultMin).toEqual(expectedResultMin)
+  })
+
   it('should return item output with named content template', async () => {
     const result = await render({
       allData: {
@@ -1374,8 +1618,7 @@ describe('render()', () => {
                   metadata: {
                     tags: [
                       {
-                        id: 'templateNamed',
-                        name: ''
+                        id: 'templateNamed'
                       }
                     ]
                   },
@@ -1386,8 +1629,7 @@ describe('render()', () => {
                       metadata: {
                         tags: [
                           {
-                            id: 'template',
-                            name: ''
+                            id: 'template'
                           }
                         ]
                       },
@@ -1411,8 +1653,7 @@ describe('render()', () => {
                                   metadata: {
                                     tags: [
                                       {
-                                        id: 'templateSlot',
-                                        name: ''
+                                        id: 'templateSlot'
                                       }
                                     ]
                                   }
@@ -1435,8 +1676,7 @@ describe('render()', () => {
                                   metadata: {
                                     tags: [
                                       {
-                                        id: 'templateSlot',
-                                        name: ''
+                                        id: 'templateSlot'
                                       }
                                     ]
                                   }
@@ -1487,6 +1727,411 @@ describe('render()', () => {
               <section>
                 <h2 data-rich="h2" id="4">[4]</h2>
               </section>
+            </body>
+          </html>
+        `
+      }
+    ]
+
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
+
+    expect(resultMin).toEqual(expectedResultMin)
+  })
+
+  it('should return item output with nested content templates', async () => {
+    const result = await render({
+      allData: {
+        content: {
+          page: [
+            {
+              id: '7',
+              title: 'Test',
+              contentType: 'page',
+              slug: 'test',
+              content: [
+                {
+                  renderType: 'contentTemplate',
+                  metadata: {
+                    tags: [
+                      {
+                        id: 'templateNamed'
+                      }
+                    ]
+                  },
+                  content: [
+                    {
+                      metadata: {
+                        tags: [
+                          {
+                            id: 'template'
+                          }
+                        ]
+                      },
+                      content: [
+                        {
+                          renderType: 'container',
+                          content: [
+                            {
+                              name: 'named',
+                              metadata: {
+                                tags: [
+                                  {
+                                    id: 'templateSlot'
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          renderType: 'contentTemplate',
+                          content: [
+                            {
+                              metadata: {
+                                tags: [
+                                  {
+                                    id: 'template'
+                                  }
+                                ]
+                              },
+                              content: [
+                                {
+                                  renderType: 'container',
+                                  content: [
+                                    {
+                                      metadata: {
+                                        tags: [
+                                          {
+                                            id: 'templateSlot'
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  renderType: 'container',
+                                  tag: 'section',
+                                  content: [
+                                    {
+                                      metadata: {
+                                        tags: [
+                                          {
+                                            id: 'templateRepeat'
+                                          }
+                                        ]
+                                      },
+                                      content: [
+                                        {
+                                          renderType: 'column',
+                                          content: [
+                                            {
+                                              name: 'named-repeat',
+                                              metadata: {
+                                                tags: [
+                                                  {
+                                                    id: 'templateSlot'
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              content: 'Title'
+                            },
+                            {
+                              content: '[one]'
+                            },
+                            {
+                              content: '[two]'
+                            },
+                            {
+                              content: '[three]'
+                            }
+                          ]
+                        },
+                        {
+                          renderType: 'container',
+                          content: [
+                            {
+                              name: 'named-2',
+                              metadata: {
+                                tags: [
+                                  {
+                                    id: 'templateSlot'
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      content: 'Hello',
+                      name: 'named'
+                    },
+                    {
+                      content: 'Bye',
+                      name: 'named-2'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }) as RenderReturn[]
+
+    const expectedResult = [
+      {
+        slug: '/test/',
+        output: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Test</title>
+            </head>
+            <body>
+              <div>Hello</div>
+              <div>Title</div>
+              <section>
+                <div>[one]</div>
+                <div>[two]</div>
+                <div>[three]</div>
+              </section>
+              <div>Bye</div>
+            </body>
+          </html>
+        `
+      }
+    ]
+
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
+
+    expect(resultMin).toEqual(expectedResultMin)
+  })
+
+  it('should return item output with content template in slotted content', async () => {
+    const result = await render({
+      allData: {
+        content: {
+          page: [
+            {
+              id: '7',
+              title: 'Test',
+              contentType: 'page',
+              slug: 'test',
+              content: [
+                {
+                  renderType: 'contentTemplate',
+                  metadata: {
+                    tags: [
+                      {
+                        id: 'templateNamed'
+                      }
+                    ]
+                  },
+                  content: [
+                    {
+                      metadata: {
+                        tags: [
+                          {
+                            id: 'template'
+                          }
+                        ]
+                      },
+                      content: [
+                        {
+                          renderType: 'container',
+                          content: [
+                            {
+                              name: 'named',
+                              metadata: {
+                                tags: [
+                                  {
+                                    id: 'templateSlot'
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          name: 'named-2',
+                          metadata: {
+                            tags: [
+                              {
+                                id: 'templateSlot'
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          renderType: 'container',
+                          content: [
+                            {
+                              name: 'named-3',
+                              metadata: {
+                                tags: [
+                                  {
+                                    id: 'templateSlot'
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      content: 'Hello',
+                      name: 'named'
+                    },
+                    {
+                      name: 'named-2',
+                      content: [
+                        {
+                          renderType: 'contentTemplate',
+                          content: [
+                            {
+                              metadata: {
+                                tags: [
+                                  {
+                                    id: 'template'
+                                  }
+                                ]
+                              },
+                              content: [
+                                {
+                                  renderType: 'container',
+                                  content: [
+                                    {
+                                      metadata: {
+                                        tags: [
+                                          {
+                                            id: 'templateSlot'
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  renderType: 'container',
+                                  tag: 'section',
+                                  content: [
+                                    {
+                                      metadata: {
+                                        tags: [
+                                          {
+                                            id: 'templateRepeat'
+                                          }
+                                        ]
+                                      },
+                                      content: [
+                                        {
+                                          renderType: 'column',
+                                          content: [
+                                            {
+                                              name: 'named-repeat',
+                                              metadata: {
+                                                tags: [
+                                                  {
+                                                    id: 'templateSlot'
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      renderType: 'container',
+                                      tag: 'span',
+                                      content: [
+                                        {
+                                          metadata: {
+                                            tags: [
+                                              {
+                                                id: 'templateSlot'
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              content: 'Title'
+                            },
+                            {
+                              content: '[one]'
+                            },
+                            {
+                              content: '[two]'
+                            },
+                            {
+                              metadata: {
+                                tags: [
+                                  {
+                                    id: 'templateBreak'
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              content: '[three]'
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      content: 'Bye',
+                      name: 'named-3'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }) as RenderReturn[]
+
+    const expectedResult = [
+      {
+        slug: '/test/',
+        output: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Test</title>
+            </head>
+            <body>
+              <div>Hello</div>
+              <div>Title</div>
+              <section>
+                <div>[one]</div>
+                <div>[two]</div>
+                <span>[three]</span>
+              </section>
+              <div>Bye</div>
             </body>
           </html>
         `

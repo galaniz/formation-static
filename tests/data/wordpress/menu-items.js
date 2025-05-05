@@ -18,14 +18,16 @@ export const menuItems = [
         title: 'Test'
       }
     ],
+    locale: 'en-CA',
+    custom: 'Meta test',
+    lorem: 'Ipsum',
     target: '',
     classes: [
       ''
     ],
     xfn: [
       ''
-    ],
-    meta: []
+    ]
   },
   {
     id: '11',
@@ -44,8 +46,7 @@ export const menuItems = [
     ],
     xfn: [
       ''
-    ],
-    meta: []
+    ]
   },
   {
     id: '15',
@@ -70,8 +71,7 @@ export const menuItems = [
     ],
     xfn: [
       ''
-    ],
-    meta: []
+    ]
   },
   {
     id: '16',
@@ -85,8 +85,7 @@ export const menuItems = [
     ],
     xfn: [
       ''
-    ],
-    meta: []
+    ]
   },
   {
     id: '17',
@@ -100,7 +99,6 @@ export const menuItems = [
     ],
     xfn: [
       ''
-    ],
-    meta: []
+    ]
   }
 ]

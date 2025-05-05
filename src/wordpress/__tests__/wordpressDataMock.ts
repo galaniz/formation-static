@@ -21,7 +21,7 @@ const mockWordPressFetch = vi.fn(async (
   url: string,
   options: MockFetchOptions
 ): Promise<MockFetchResult> => {
-  return await new Promise(async (resolve, reject) => { // eslint-disable-line @typescript-eslint/no-misused-promises
+  return await new Promise(async (resolve) => { // eslint-disable-line @typescript-eslint/no-misused-promises
     /* Status */
 
     let status = 200
@@ -34,20 +34,9 @@ const mockWordPressFetch = vi.fn(async (
 
     const headers = new Headers()
 
-    /* Url check */
+    /* Url */
 
-    let urlObj: URL
-
-    try {
-      urlObj = new URL(url)
-
-      if (!urlObj.host.includes('.')) {
-        throw new Error()
-      }
-    } catch {
-      reject(new TypeError(mockFetchErrorMessage.url))
-      return
-    }
+    const urlObj = new URL(url)
 
     /* Check if route exists */
 
@@ -91,7 +80,7 @@ const mockWordPressFetch = vi.fn(async (
     headers.set('X-WP-TotalPages', allPages ? '2' : '')
     headers.set('X-WP-Total', allPages ? '2' : '')
 
-    /* Posts sample data */
+    /* Sample data */
 
     if (route === 'posts') {
       const posts = await import('../../../tests/data/wordpress/posts.json').then((res) => res.default) as WordPressDataItem[]

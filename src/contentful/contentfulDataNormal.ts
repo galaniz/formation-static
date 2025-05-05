@@ -53,13 +53,10 @@ const getTag = (type: string = 'text'): string => {
     table: 'table',
     'table-row': 'tr',
     'table-cell': 'td',
-    'table-header-cell': 'th',
-    text: ''
+    'table-header-cell': 'th'
   }
 
-  const tag = tags[type]
-
-  return isString(tag) ? tag : ''
+  return tags[type] || ''
 }
 
 /**
@@ -141,7 +138,7 @@ const normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
         const url = target.fields?.file?.url
 
         if (nodeType === 'asset-hyperlink' && isString(url)) {
-          link = url
+          link = `https:${url}`
         }
       }
     }
@@ -209,11 +206,7 @@ const normalizeFile = (file: ContentfulDataFile, fields: ContentfulDataFields): 
  * @param {boolean} [isInternalLink]
  * @return {RenderItem}
  */
-const normalizeItem = (
-  item: ContentfulDataItem,
-  data: RenderItem[],
-  isInternalLink: boolean = false
-): RenderItem => {
+const normalizeItem = (item: ContentfulDataItem, data: RenderItem[], isInternalLink: boolean = false): RenderItem => {
   let newItem: RenderItem = {}
 
   /* Item */
@@ -224,6 +217,12 @@ const normalizeItem = (
 
   if (isString(itemCopy.sys?.id)) {
     newItem.id = itemCopy.sys.id
+  }
+
+  /* Locale */
+
+  if (isStringStrict(itemCopy.sys?.locale)) {
+    newItem.locale = itemCopy.sys.locale
   }
 
   /* Type */
@@ -252,8 +251,7 @@ const normalizeItem = (
     newItem.metadata = {
       tags: itemCopy.metadata.tags.map(t => {
         return {
-          id: isString(t.sys?.id) ? t.sys.id : '',
-          name: isString(t.sys?.name) ? t.sys.name : ''
+          id: isString(t.sys?.id) ? t.sys.id : ''
         }
       })
     }
@@ -304,7 +302,7 @@ const normalizeItem = (
     const nodeType = itemCopy.nodeType
 
     if (nodeType === 'embedded-entry-block' || nodeType === 'embedded-asset-block') {
-      const content = isObjectStrict(itemCopy.data?.target) ? itemCopy.data.target : item
+      const content = isObjectStrict(itemCopy.data?.target) ? itemCopy.data.target : {}
 
       newItem = normalizeItem(content, data, isInternalLink)
     } else {
@@ -333,10 +331,7 @@ const normalizeItem = (
  * @param {RenderItem[]} [_newData]
  * @return {RenderItem[]}
  */
-const normalizeContentfulData = (
-  data: ContentfulDataItem[],
-  _newData: RenderItem[] = []
-): RenderItem[] => {
+const normalizeContentfulData = (data: ContentfulDataItem[], _newData: RenderItem[] = []): RenderItem[] => {
   if (!isArrayStrict(data)) {
     return []
   }

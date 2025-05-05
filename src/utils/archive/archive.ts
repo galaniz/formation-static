@@ -59,7 +59,7 @@ const isArchive = (contentType: string, itemData: RenderItem): boolean => {
  * @param {string} [locale]
  * @return {ArchiveMeta}
  */
-const getArchiveMeta = (contentType: string, locale?: unknown): ArchiveMeta => {
+const getArchiveMeta = (contentType: string, locale?: string): ArchiveMeta => {
   const archiveMeta = getStoreItem('archiveMeta')[contentType]
 
   if (!isObjectStrict(archiveMeta)) {
@@ -80,7 +80,7 @@ const getArchiveMeta = (contentType: string, locale?: unknown): ArchiveMeta => {
  * @param {string} [locale]
  * @return {ArchiveInfo}
  */
-const getArchiveInfo = (contentType: string, locale?: unknown): ArchiveInfo => {
+const getArchiveInfo = (contentType: string, locale?: string): ArchiveInfo => {
   const value = {
     id: '',
     slug: '',
@@ -252,7 +252,7 @@ const getArchiveLabel = (
 ): string => {
   fallback = isStringStrict(fallback) ? fallback : (labelType === 'singular' ? 'Post' : 'Posts')
 
-  const label = getArchiveMeta(contentType, itemData?.locale)[labelType]
+  const label = getArchiveMeta(contentType, itemData?.locale as string)[labelType]
 
   return isStringStrict(label) ? label : fallback
 }

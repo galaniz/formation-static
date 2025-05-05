@@ -13,15 +13,42 @@ import type { RenderServerlessData, RenderPreviewData } from '../render/renderTy
 export type ContentfulDataParams = Record<string, string | number | boolean>
 
 /**
+ * @typedef {object} ContentfulDataError
+ * @prop {string} message
+ * @prop {object} sys
+ * @prop {string} sys.type
+ * @prop {string} sys.id
+ */
+export interface ContentfulDataError {
+  message: string
+  sys: {
+    type: string
+    id: string
+  }
+}
+
+/**
+ * @typedef {object} ContentfulData
+ * @prop {ContentfulDataItem[]} items
+ * @prop {number} total
+ * @prop {number} limit
+ * @prop {number} skip
+ */
+export interface ContentfulData {
+  items: ContentfulDataItem[]
+  total: number
+  limit: number
+  skip: number
+}
+
+/**
  * @typedef {object} ContentfulDataTag
  * @prop {object} [sys]
  * @prop {string} [sys.id]
- * @prop {string} [sys.name]
  */
 export interface ContentfulDataTag {
   sys?: {
     id?: string
-    name?: string
   }
 }
 
@@ -78,6 +105,7 @@ export interface ContentfulDataFields extends Generic {
  * @typedef {object} ContentfulDataSys
  * @prop {string} [id]
  * @prop {string} [type]
+ * @prop {string} [locale]
  * @prop {object} [contentType]
  * @prop {object} [contentType.sys]
  * @prop {string} [contentType.sys.id]
@@ -85,6 +113,7 @@ export interface ContentfulDataFields extends Generic {
 export interface ContentfulDataSys {
   id?: string
   type?: string
+  locale?: string
   contentType?: {
     sys?: {
       id?: string
@@ -120,16 +149,6 @@ export interface ContentfulDataItem {
   }
   sys?: ContentfulDataSys
   fields?: ContentfulDataFields
-}
-
-/**
- * @typedef {object} ContentfulData
- * @prop {ContentfulDataItem[]} items
- * @prop {number} total
- */
-export interface ContentfulData {
-  items: ContentfulDataItem[]
-  total: number
 }
 
 /**

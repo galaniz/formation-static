@@ -23,7 +23,10 @@
       ""
     ],
     "invalid": false,
-    "meta": [],
+    "meta": {
+      "customMeta": "Meta test",
+      "lorem": "Ipsum"
+    },
     "menus": 3,
     "_links": {
       "self": [

@@ -56,8 +56,7 @@ describe('getTag()', () => {
       metadata: {
         tags: [
           {
-            id: '321',
-            name: 'Test Tag'
+            id: '321'
           }
         ]
       }
@@ -73,34 +72,14 @@ describe('getTag()', () => {
       metadata: {
         tags: [
           {
-            id: '123',
-            name: 'Test Tag'
+            id: '123'
           }
         ]
       }
     }, '123')
 
     const expectedResult = {
-      id: '123',
-      name: 'Test Tag'
-    }
-
-    expect(result).toEqual(expectedResult)
-  })
-
-  it('should return tag without name associated with specified id', () => {
-    const result = getTag({
-      metadata: {
-        tags: [
-          // @ts-expect-error - test undefined name
-          { id: '123' }
-        ]
-      }
-    }, '123')
-
-    const expectedResult = {
-      id: '123',
-      name: ''
+      id: '123'
     }
 
     expect(result).toEqual(expectedResult)
@@ -131,8 +110,7 @@ describe('tagExists()', () => {
       metadata: {
         tags: [
           {
-            id: '321',
-            name: 'Test Tag'
+            id: '321'
           }
         ]
       }
@@ -148,8 +126,7 @@ describe('tagExists()', () => {
       metadata: {
         tags: [
           {
-            id: '123',
-            name: 'Test Tag'
+            id: '123'
           }
         ]
       }

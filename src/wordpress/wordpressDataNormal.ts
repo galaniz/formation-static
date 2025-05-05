@@ -577,6 +577,8 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
  * @return {NavigationItem[]}
  */
 const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): NavigationItem[] => {
+  /* Add items to menus */
+
   const itemsObj = Object.fromEntries(items.map(item => [item.id, item])) as Record<string, WordPressDataMenuItem>
 
   menusById.clear()
@@ -611,40 +613,30 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
     }
   })
 
+  /* Normalize items */
+
   const newItems: NavigationItem[] = []
 
   for (const [id, obj] of Object.entries(itemsObj)) {
     const {
       url = '',
       title = '',
-      attr_title = '',
-      description = '',
       contentType = '',
       children = [],
       object = '',
       object_id = '',
-      target = '',
-      locale = '',
-      classes = [],
-      xfn = [],
-      meta = []
+      locale = ''
     } = obj
 
     if (!isString(url) || !isStringStrict(title)) { // Allow empty string for link
       continue
     }
 
+    const newItem: NavigationItem = { id, title }
+
+    /* Internal item */
+
     const isCustom = contentType === 'custom'
-    const newItem: NavigationItem = {
-      id,
-      title,
-      attr_title,
-      description,
-      target,
-      classes,
-      xfn,
-      meta
-    }
 
     if (!isCustom && isStringStrict(object) && isStringStrict(object_id)) {
       const slug = url.split('/').filter(Boolean).pop()
@@ -655,17 +647,19 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
         slug
       }
 
-      if (isStringStrict(locale)) {
-        internalLink.locale = locale
-      }
-
       if (isTerm) {
         internalLink.taxonomy = getTaxonomy(object)
+      }
+
+      if (isStringStrict(locale)) {
+        internalLink.locale = locale
       }
 
       newItem.link = url
       newItem.internalLink = internalLink
     }
+
+    /* Custom/external item */
 
     if (isCustom) {
       const isExternal = url.startsWith('http') && !url.startsWith(config.env.prodUrl)
@@ -677,12 +671,44 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
       }
     }
 
+    /* Nested items */
+
     if (isArrayStrict(children)) {
       newItem.children = children.sort((a, b) => a.menu_order - b.menu_order)
     }
 
+    /* Outstanding props (eg. rest api field) */
+
+    const exclude = [
+      ...excludeProps,
+      'url',
+      'type',
+      'type_label',
+      'object',
+      'object_id',
+      'invalid',
+      'meta',
+      'menu_order',
+      'menus',
+      'parent',
+      'contentType',
+      'status'
+    ]
+
+    Object.entries(obj).forEach(([key, val]) => {
+      if (exclude.includes(key)) {
+        return
+      }
+
+      newItem[key] = val
+    })
+
+    /* Append */
+
     newItems.push(newItem)
   }
+
+  /* Output */
 
   return newItems
 }

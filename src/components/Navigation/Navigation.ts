@@ -123,10 +123,8 @@ class Navigation<L extends string = string> {
     this.navigations = navigations
     this.items = items
     this.currentLink = isStringStrict(currentLink) ? currentLink : ''
-
-    const typesArr = isArrayStrict(currentType) ? currentType : [currentType]
-
-    this.currentType = typesArr.map(type => normalizeContentType(type))
+    this.currentType =
+      (isArrayStrict(currentType) ? currentType : [currentType]).map(type => normalizeContentType(type))
 
     /* Items by id */
 
@@ -222,7 +220,7 @@ class Navigation<L extends string = string> {
       let isArchiveCurrent = false
 
       for (const type of this.currentType) {
-        const hasArchive = internalId === getArchiveMeta(type, internalLink?.locale).id
+        const hasArchive = internalId === getArchiveMeta(type, internalLink?.locale as string).id
 
         if (hasArchive) {
           isArchiveCurrent = true

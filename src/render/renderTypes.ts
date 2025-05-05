@@ -79,10 +79,12 @@ export interface RenderServerlessData {
  * @typedef {object} RenderPreviewData
  * @prop {string} id
  * @prop {string} contentType
+ * @prop {string} [locale]
  */
 export interface RenderPreviewData {
   id: string
   contentType: string
+  locale?: string
 }
 
 /**
@@ -96,11 +98,9 @@ export interface RenderRedirect {
 /**
  * @typedef {object} RenderTag
  * @prop {string} id
- * @prop {string} name
  */
 export interface RenderTag {
   id: string
-  name: string
 }
 
 /**
@@ -516,9 +516,13 @@ export type RenderItemEndAction = (args: RenderItemActionArgs) => Promise<void> 
 /**
  * @typedef {object} RenderDataMeta
  * @prop {number} [total]
- * @prop {number} [totalPages]
+ * @prop {number} [pages]
+ * @prop {number} [skip]
+ * @prop {number} [limit]
  */
 export interface RenderDataMeta {
   total?: number
-  totalPages?: number
+  pages?: number
+  skip?: number
+  limit?: number
 }

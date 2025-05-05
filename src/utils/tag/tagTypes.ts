@@ -25,9 +25,7 @@ export type TagExists = (item: RenderItem, id: string) => boolean
 /**
  * @typedef {object} TagGetReturn
  * @prop {string} id
- * @prop {string} name
  */
 export interface TagGetReturn {
   id: string
-  name: string
 }

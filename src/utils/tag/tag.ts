@@ -35,11 +35,7 @@ const getTag: TagGet = (item, id) => {
     const tagId = tag.id
 
     if (tagId === id) {
-      tagInfo = {
-        id: tagId,
-        name: isStringStrict(tag.name) ? tag.name : ''
-      }
-
+      tagInfo = { id: tagId }
       return true
     }
 
