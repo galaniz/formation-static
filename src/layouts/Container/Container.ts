@@ -87,11 +87,11 @@ const Container = (props: ContainerProps): string[] => {
     outerClassesArr.push(layoutClasses)
   }
 
-  if (outerClassesArr.length > 0) {
+  if (outerClassesArr.length) {
     attrs.push(`class="${outerClassesArr.join(' ')}"`)
   }
 
-  if (innerClassesArr.length > 0) {
+  if (innerClassesArr.length) {
     innerAttrs.push(`class="${innerClassesArr.join(' ')}"`)
   }
 
@@ -117,11 +117,11 @@ const Container = (props: ContainerProps): string[] => {
     innerTag = isSemanticParent ? tag : 'div'
   }
 
-  let start = `<${outerTag}${(attrs.length > 0) ? ` ${attrs.join(' ')}` : ''}>`
+  let start = `<${outerTag}${attrs.length ? ` ${attrs.join(' ')}` : ''}>`
   let end = `</${outerTag}>`
 
   if (innerTag) {
-    start = `${start}<${innerTag}${(innerAttrs.length > 0) ? ` ${innerAttrs.join(' ')}` : ''}>`
+    start = `${start}<${innerTag}${innerAttrs.length ? ` ${innerAttrs.join(' ')}` : ''}>`
     end = `</${innerTag}>${end}`
   }
 

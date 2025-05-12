@@ -8,6 +8,7 @@ import type { MockFetchResult, MockFetchOptions } from '../../../tests/types.js'
 import type { WordPressDataItem, WordPressDataError } from '../wordpressDataTypes.js'
 import { mockFetchErrorMessage } from '../../../tests/types.js'
 import { isNumber } from '../../utils/number/number.js'
+import { isArray } from '../../utils/array/array.js'
 import { vi } from 'vitest'
 
 /**
@@ -72,13 +73,18 @@ const mockWordPressFetch = vi.fn(async (
       }
     }
 
-    /* Headers */
+    /* Pagination */
 
     const page = urlObj.searchParams.get('page')
     const allPages = page && route === 'pages'
 
-    headers.set('X-WP-TotalPages', allPages ? '2' : '')
-    headers.set('X-WP-Total', allPages ? '2' : '')
+    let total = ''
+    let totalPages = ''
+
+    if (allPages) {
+      totalPages = '2'
+      total = '2'
+    }
 
     /* Sample data */
 
@@ -87,6 +93,7 @@ const mockWordPressFetch = vi.fn(async (
 
       if (id === '1') {
         data = posts.find((post) => post.id === 1) as WordPressDataItem
+        total = '1'
       }
 
       if (!id) {
@@ -130,6 +137,7 @@ const mockWordPressFetch = vi.fn(async (
 
     if (route === 'taxonomies') {
       data = await import('../../../tests/data/wordpress/taxonomies.json').then((res) => res.default) as Record<string, WordPressDataItem>
+      total = '4'
     }
 
     if (route === 'empty') {
@@ -140,6 +148,15 @@ const mockWordPressFetch = vi.fn(async (
       // @ts-expect-error - test null data
       data = [null, null, null, null]
     }
+
+    /* Headers */
+
+    if (isArray(data)) {
+      total = data.length.toString()
+    }
+
+    headers.set('X-WP-TotalPages', totalPages)
+    headers.set('X-WP-Total', total)
 
     /* Result */
 

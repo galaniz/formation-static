@@ -243,7 +243,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
 
   return {
     output: `
-      <ol${listAttrs.length > 0 ? ` ${listAttrs.join(' ')}` : ''}>
+      <ol${listAttrs.length ? ` ${listAttrs.join(' ')}` : ''}>
         ${output}
       </ol>
     `,

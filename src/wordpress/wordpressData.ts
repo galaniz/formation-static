@@ -10,7 +10,7 @@ import type {
   AllWordPressDataArgs,
   WordPressDataArgs
 } from './wordpressDataTypes.js'
-import type { RenderAllData, RenderItem } from '../render/renderTypes.js'
+import type { RenderAllData, RenderData } from '../render/renderTypes.js'
 import type { CacheData, DataFilterArgs } from '../utils/filter/filterTypes.js'
 import {
   normalizeWordPressData,
@@ -19,7 +19,7 @@ import {
   normalRoutes
 } from './wordpressDataNormal.js'
 import { applyFilters } from '../utils/filter/filter.js'
-import { isObjectStrict } from '../utils/object/object.js'
+import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
 import { isArray } from '../utils/array/array.js'
 import { getStoreItem } from '../store/store.js'
@@ -46,9 +46,9 @@ const getRoute = (type: string): string => {
  *
  * @param {WordPressDataArgs} args
  * @param {number} [_page=1]
- * @return {Promise<RenderItem[]>}
+ * @return {Promise<RenderData>}
  */
-const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Promise<RenderItem[]> => {
+const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Promise<RenderData> => {
   /* Args required */
 
   if (!isObjectStrict(args)) {
@@ -59,7 +59,6 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
     key,
     route,
     params,
-    meta,
     fetcher = fetch,
     options
   } = args
@@ -70,10 +69,6 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
     throw new Error('No key')
   }
 
-  /* Meta check */
-
-  const hasMeta = isObjectStrict(meta)
-
   /* Check cache */
 
   if (config.env.cache) {
@@ -83,18 +78,9 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
     }
 
     const cacheData = await applyFilters('cacheData', undefined as CacheData | undefined, cacheDataFilterArgs, true)
-    const cacheItems = cacheData?.items
-    const cacheMeta = cacheData?.meta
 
-    if (isObjectStrict(cacheMeta) && hasMeta) {
-      const { total, pages } = cacheMeta
-
-      meta.total = total
-      meta.pages = pages
-    }
-
-    if (isArray(cacheItems)) {
-      return structuredClone(cacheItems)
+    if (isObject(cacheData)) {
+      return structuredClone(cacheData)
     }
   }
 
@@ -184,35 +170,39 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
 
   const total = resp.headers.get('X-WP-Total')
   const totalPages = resp.headers.get('X-WP-TotalPages')
-  const totalNum = isStringStrict(total) ? parseInt(total, 10) : 1
-  const totalPagesNum = isStringStrict(totalPages) ? parseInt(totalPages, 10) : 1
-
-  if (hasMeta) {
-    meta.total = totalNum
-    meta.pages = totalPagesNum
-  }
+  const totalNum = isStringStrict(total) ? parseInt(total, 10) : 0
+  const totalPagesNum = isStringStrict(totalPages) ? parseInt(totalPages, 10) : 0
 
   /* Normalize */
 
   const dataItems = isArray(data) ? data : [data] as WordPressDataItem[]
-  let newData = normalizeWordPressData(dataItems, route)
+  let newItems = normalizeWordPressData(dataItems, route)
 
   if (loop && _page < totalPagesNum) {
     const pagData = await getWordPressData({
       key,
       route,
-      meta,
       params: {
         per_page: -1
       }
     }, _page + 1)
 
-    if (isArray(pagData)) {
-      newData = [
-        ...newData,
-        ...pagData
+    const { items: pagItems } = pagData
+
+    if (isArray(pagItems)) {
+      newItems = [
+        ...newItems,
+        ...pagItems
       ]
     }
+  }
+
+  /* Full data */
+
+  const newData = {
+    items: newItems,
+    total: totalNum,
+    pages: totalPagesNum
   }
 
   /* Add to cache */
@@ -224,10 +214,7 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
       data
     }
 
-    await applyFilters('cacheData', {
-      items: newData,
-      meta
-    }, cacheDataFilterArgs, true)
+    await applyFilters('cacheData', newData, cacheDataFilterArgs, true)
   }
 
   /* Output */
@@ -297,8 +284,10 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
         route: `${getRoute(contentType)}/${id}`
       })
 
-      if (isArray(data)) {
-        allData.content[contentType] = data
+      const { items } = data
+
+      if (isArray(items)) {
+        allData.content[contentType] = items
       }
     }
   }
@@ -316,8 +305,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
       allData[partialType] = []
 
       const key = `all_${contentType}`
-
-      let data = await getWordPressData({
+      const data = await getWordPressData({
         key,
         route: getRoute(contentType),
         params: {
@@ -325,21 +313,23 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
         }
       })
 
+      let { items } = data
+
       if (isMenuItem) {
-        data = normalizeWordPressMenuItems(data)
+        items = normalizeWordPressMenuItems(items)
       }
 
       if (isMenu) {
-        data = normalizeWordPressMenus(data)
+        items = normalizeWordPressMenus(items)
       }
 
-      data = applyFilters('wordpressData', data, {
+      items = applyFilters('wordpressData', items, {
         ...wordpressDataFilterArgs,
         contentType
       })
 
-      if (isArray(data)) {
-        allData[partialType] = data
+      if (isArray(items)) {
+        allData[partialType] = items
       }
     }
   }
@@ -353,8 +343,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
       allData.content[contentType] = []
 
       const key = `all_${contentType}`
-
-      let data = await getWordPressData({
+      const data = await getWordPressData({
         key,
         route: getRoute(contentType),
         params: {
@@ -362,13 +351,15 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
         }
       })
 
-      data = applyFilters('wordpressData', data, {
+      let { items } = data
+
+      items = applyFilters('wordpressData', items, {
         ...wordpressDataFilterArgs,
         contentType
       })
 
-      if (isArray(data)) {
-        allData.content[contentType] = data
+      if (isArray(items)) {
+        allData.content[contentType] = items
       }
     }
   }

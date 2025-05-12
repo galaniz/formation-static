@@ -334,7 +334,7 @@ describe('render()', () => {
           currentType
         } = args
 
-        if (navigations.length > 0 && items.length > 0) {
+        if (navigations.length && items.length) {
           return new Navigation({ navigations, items, currentLink, currentType })
         }
 

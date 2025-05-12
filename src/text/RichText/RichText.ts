@@ -158,7 +158,7 @@ const getContent = (args: RichTextContentProps): string => {
     let inner = ''
 
     if (isStringStrict(tag) && outputStr.trim() && !isSingleTag) {
-      opening = `<${tag}${attrs.length > 0 ? ` ${attrs.join(' ')}` : ''}>`
+      opening = `<${tag}${attrs.length ? ` ${attrs.join(' ')}` : ''}>`
       closing = `</${tag}>`
       inner = outputStr
       outputStr = `${opening}${outputStr}${closing}`
@@ -374,7 +374,7 @@ const RichText = (props: RichTextProps): string => {
     }
   }
 
-  if (classesArr.length > 0) {
+  if (classesArr.length) {
     attrs.push(`class="${classesArr.join(' ')}"`)
   }
 
@@ -403,7 +403,7 @@ const RichText = (props: RichTextProps): string => {
   let inner = ''
 
   if (isStringStrict(tag) && output.trim()) {
-    opening = `<${tag}${attrs.length > 0 ? ` ${attrs.join(' ')}` : ''}>`
+    opening = `<${tag}${attrs.length ? ` ${attrs.join(' ')}` : ''}>`
     closing = `</${tag}>`
     inner = output
     output = `${opening}${output}${closing}`

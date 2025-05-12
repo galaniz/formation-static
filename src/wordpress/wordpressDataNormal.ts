@@ -390,7 +390,7 @@ const normalizeBlocks = (blocks: readonly Block[]): RenderItem[] => {
 
     const { attributeIsItem } = attrs
     const attrItemArr = (isStringStrict(attributeIsItem) ? attributeIsItem : '').split(',')
-    const attrItemExists = attrItemArr.length > 0
+    const attrItemExists = attrItemArr.length
 
     for (const [key, value] of Object.entries(attrs)) {
       if (!isObjectStrict(value)) {
@@ -517,7 +517,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 
       if (key === 'content') {
         const normalVal = normalizeBlocks(parse(val as string))
-        val = normalVal.length > 0 ? normalVal : val
+        val = normalVal.length ? normalVal : val
       }
 
       if (key === 'taxonomy') {

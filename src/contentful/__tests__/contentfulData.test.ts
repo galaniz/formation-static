@@ -102,7 +102,12 @@ describe('getContentfulData()', () => {
       content_type: 'empty'
     })
 
-    expect(result).toEqual([])
+    expect(result).toEqual({
+      items: [],
+      total: 0,
+      limit: 0,
+      skip: 0
+    })
   })
 
   it('should return array of pages and set cache', async () => {
@@ -117,27 +122,24 @@ describe('getContentfulData()', () => {
       }
     })
 
-    const meta = {
-      total: 0,
-      limit: 0,
-      skip: 0
-    }
-
     const result = await getContentfulData('pages_key_2', {
       content_type: 'page'
-    }, meta)
+    })
 
     expect(cacheSet).toHaveBeenCalledTimes(1)
-    expect(cacheSet).toHaveBeenCalledWith({ items: pages.items, meta: {
+    expect(cacheSet).toHaveBeenCalledWith({
+      items: pages.items,
       total: 5,
       limit: 100,
       skip: 0
-    }})
+    })
 
-    expect(result).toEqual(pages.items)
-    expect(meta.total).toBe(5)
-    expect(meta.limit).toBe(100)
-    expect(meta.skip).toBe(0)
+    expect(result).toEqual({
+      items: pages.items,
+      total: 5,
+      limit: 100,
+      skip: 0
+    })
   })
 
   it('should return array of pages from cache', async () => {
@@ -151,33 +153,27 @@ describe('getContentfulData()', () => {
         await cacheGet(data)
         return {
           items: pages.items as RenderItem[],
-          meta: {
-            total: 5,
-            limit: 100,
-            skip: 0
-          }
+          total: 5,
+          limit: 100,
+          skip: 0
         }
       }
 
       return data
     })
 
-    const meta = {
-      total: 0,
-      limit: 0,
-      skip: 0
-    }
-
     const result = await getContentfulData('pages_key_3', {
       content_type: 'page'
-    }, meta)
+    })
 
     expect(cacheGet).toHaveBeenCalledTimes(1)
     expect(cacheGet).toHaveBeenCalledWith(undefined)
-    expect(result).toEqual(pages.items)
-    expect(meta.total).toBe(5)
-    expect(meta.limit).toBe(100)
-    expect(meta.skip).toBe(0)
+    expect(result).toEqual({
+      items: pages.items,
+      total: 5,
+      limit: 100,
+      skip: 0
+    })
   })
 
   it('should return array of one page with specified id and prod credentials', async () => {
@@ -188,7 +184,12 @@ describe('getContentfulData()', () => {
       'sys.id': 'JH7SZfgxuZ2SQrLvQHjQg'
     })
 
-    expect(result).toEqual([pages.items[0]])
+    expect(result).toEqual({
+      items: [pages.items[0]],
+      total: 5,
+      limit: 100,
+      skip: 0
+    })
   })
 
   it('should throw an error if entry not found', async () => {
@@ -203,7 +204,12 @@ describe('getContentfulData()', () => {
       content_type: 'taxonomy'
     })
 
-    expect(result).toEqual(taxonomies.items)
+    expect(result).toEqual({
+      items: taxonomies.items,
+      total: 2,
+      limit: 100,
+      skip: 0
+    })
   })
 
   it('should return array of terms', async () => {
@@ -211,7 +217,12 @@ describe('getContentfulData()', () => {
       content_type: 'term'
     })
 
-    expect(result).toEqual(terms.items)
+    expect(result).toEqual({
+      items: terms.items,
+      total: 1,
+      limit: 100,
+      skip: 0
+    })
   })
 })
 

@@ -200,7 +200,7 @@ const getSlug = <T extends boolean = false>(
     itemLocale
   )
 
-  if (parents.length > 0) {
+  if (parents.length) {
     parentSlugs = parents.map(({ slug }) => slug).join('/')
     hasParents = true
   }
@@ -249,7 +249,7 @@ const getSlug = <T extends boolean = false>(
 
   /* Slug */
 
-  let fullSlug = `${parts.length > 0 ? parts.join('/') : ''}${isNumber(page) && page > 1 ? `/?page=${page}` : ''}`
+  let fullSlug = `${parts.length ? parts.join('/') : ''}${isNumber(page) && page > 1 ? `/?page=${page}` : ''}`
   fullSlug = applyFilters('slug', fullSlug, args)
 
   /* Parents and slug return */

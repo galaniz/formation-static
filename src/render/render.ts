@@ -673,7 +673,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
 
   const s = getSlug(slugArgs, true)
   const slug = s.slug
-  const slugIsHtml = slug.includes('.html')
+  const slugIsHtml = slug.endsWith('.html')
   const permalink = getPermalink(slug, !slugIsHtml)
   const parents = s.parents
 

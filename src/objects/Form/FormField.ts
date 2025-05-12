@@ -168,7 +168,7 @@ const FormField = (props: FormFieldProps): string[] => {
   }
 
   const fieldAtts = ` ${fieldAttrs.join(' ')}` // Always at least one attribute
-  const fieldsetAtts = fieldsetAttrs.length > 0 ? ` ${fieldsetAttrs.join(' ')}` : ''
+  const fieldsetAtts = fieldsetAttrs.length ? ` ${fieldsetAttrs.join(' ')}` : ''
   const atts = ` ${attrs.join(' ')}` // Always at least one attribute
 
   /* Hint */

@@ -26,7 +26,7 @@ import type {
   RenderServerlessData,
   RenderPreviewData,
   RenderAllData,
-  RenderDataMeta
+  RenderData
 } from '../../render/renderTypes.js'
 
 /**
@@ -86,13 +86,10 @@ export type AllDataFilter = (allData: RenderAllData, args: AllDataFilterArgs) =>
 
 /**
  * @typedef {object} CacheData
- * @prop {RenderItem[]} [items]
- * @prop {RenderDataMeta} [meta]
+ * @extends {RenderData}
  * @prop {Object<string, RenderItem>} [data]
  */
-export interface CacheData {
-  items?: RenderItem[]
-  meta?: RenderDataMeta
+export interface CacheData extends RenderData {
   data?: Record<string, RenderItem>
 }
 

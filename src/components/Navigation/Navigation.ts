@@ -412,7 +412,7 @@ class Navigation<L extends string = string> {
       }
 
       const hasLink = isStringStrict(link)
-      const linkClasses = (linkClassesArr.length > 0) ? ` class="${linkClassesArr.join(' ')}"` : ''
+      const linkClasses = linkClassesArr.length ? ` class="${linkClassesArr.join(' ')}"` : ''
       const linkAttrsArr = [hasLink ? `href="${link}"` : 'type="button"']
 
       if (isStringStrict(args.linkAttr)) {
@@ -649,7 +649,7 @@ class Navigation<L extends string = string> {
         linkClassesArr.push(args.internalLinkClass)
       }
 
-      const linkClasses = (linkClassesArr.length > 0) ? ` class="${linkClassesArr.join(' ')}"` : ''
+      const linkClasses = linkClassesArr.length ? ` class="${linkClassesArr.join(' ')}"` : ''
       const linkAttrs = isStringStrict(args.linkAttr) ? ` ${args.linkAttr}` : ''
 
       output.html += `<a${linkClasses} href="${link}"${linkAttrs}>${title}</a>`

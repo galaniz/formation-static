@@ -11,11 +11,11 @@ import type {
   ContentfulDataItem,
   AllContentfulDataArgs
 } from './contentfulDataTypes.js'
-import type { RenderAllData, RenderDataMeta, RenderItem } from '../render/renderTypes.js'
+import type { RenderAllData, RenderData, RenderItem } from '../render/renderTypes.js'
 import type { CacheData, DataFilterArgs } from '../utils/filter/filterTypes.js'
 import resolveResponse from 'contentful-resolve-response'
 import { applyFilters } from '../utils/filter/filter.js'
-import { isObjectStrict } from '../utils/object/object.js'
+import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
 import { isArray } from '../utils/array/array.js'
 import { config } from '../config/config.js'
@@ -27,23 +27,14 @@ import { normalizeContentfulData } from './contentfulDataNormal.js'
  *
  * @param {string} key
  * @param {ContentfulDataParams} [params]
- * @param {RenderDataMeta} [meta]
- * @return {Promise<RenderItem[]>}
+ * @return {Promise<RenderData>}
  */
-const getContentfulData = async (
-  key: string,
-  params?: ContentfulDataParams,
-  meta?: RenderDataMeta
-): Promise<RenderItem[]> => {
+const getContentfulData = async (key: string, params?: ContentfulDataParams): Promise<RenderData> => {
   /* Key required for cache */
 
   if (!isStringStrict(key)) {
     throw new Error('No key')
   }
-
-  /* Meta check */
-
-  const hasMeta = isObjectStrict(meta)
 
   /* Check cache */
 
@@ -54,19 +45,9 @@ const getContentfulData = async (
     }
 
     const cacheData = await applyFilters('cacheData', undefined as CacheData | undefined, cacheDataFilterArgs, true)
-    const cacheItems = cacheData?.items
-    const cacheMeta = cacheData?.meta
 
-    if (isObjectStrict(cacheMeta) && hasMeta) {
-      const { total, limit, skip } = cacheMeta
-
-      meta.total = total
-      meta.limit = limit
-      meta.skip = skip
-    }
-
-    if (isArray(cacheItems)) {
-      return structuredClone(cacheItems)
+    if (isObject(cacheData)) {
+      return structuredClone(cacheData)
     }
   }
 
@@ -117,20 +98,25 @@ const getContentfulData = async (
     throw new Error(message, { cause: data })
   }
 
-  /* Total */
-
-  if (hasMeta) {
-    const { total, limit, skip } = data as ContentfulData
-
-    meta.total = total
-    meta.limit = limit
-    meta.skip = skip
-  }
-
   /* Normalize */
 
   const resolvedData = resolveResponse(data) as ContentfulDataItem[]
-  const newData = normalizeContentfulData(resolvedData)
+  const newItems = normalizeContentfulData(resolvedData)
+
+  /* Full data */
+
+  const {
+    total,
+    limit,
+    skip
+  } = data as ContentfulData
+
+  const newData = {
+    items: newItems,
+    total,
+    limit,
+    skip
+  }
 
   /* Add to cache */
 
@@ -141,10 +127,7 @@ const getContentfulData = async (
       data
     }
 
-    await applyFilters('cacheData', {
-      items: newData,
-      meta
-    }, cacheDataFilterArgs, true)
+    await applyFilters('cacheData', newData, cacheDataFilterArgs, true)
   }
 
   /* Output */
@@ -234,9 +217,10 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
       }
 
       const data = await getContentfulData(key, params)
+      const { items } = data
 
-      if (isArray(data)) {
-        allData.content[contentType] = data
+      if (isArray(items)) {
+        allData.content[contentType] = items
       }
     }
   }
@@ -248,7 +232,7 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
 
     for (const contentType of partial) {
       const key = `all_${contentType}`
-      let data: RenderItem[] = []
+      let newItems: RenderItem[] = []
 
       for (const locale of paramLocales) {
         const params: ContentfulDataParams = {
@@ -259,19 +243,20 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
           params.locale = locale
         }
 
-        let newData = await getContentfulData(key, params)
+        const newData = await getContentfulData(key, params)
+        let { items } = newData
 
-        newData = applyFilters('contentfulData', newData, contentfulDataFilterArgs)
+        items = applyFilters('contentfulData', items, contentfulDataFilterArgs)
 
-        if (isArray(newData)) {
-          data = [
-            ...data,
-            ...newData
+        if (isArray(items)) {
+          newItems = [
+            ...newItems,
+            ...items
           ]
         }
       }
 
-      allData[contentType] = data
+      allData[contentType] = newItems
     }
   }
 
@@ -282,7 +267,7 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
 
     for (const contentType of whole) {
       const key = `all_${contentType}`
-      let data: RenderItem[] = []
+      let newItems: RenderItem[] = []
 
       for (const locale of paramLocales) {
         const params: ContentfulDataParams = {
@@ -294,19 +279,20 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
           params.locale = locale
         }
 
-        let newData = await getContentfulData(key, params)
+        const newData = await getContentfulData(key, params)
+        let { items } = newData
 
-        newData = applyFilters('contentfulData', newData, contentfulDataFilterArgs)
+        items = applyFilters('contentfulData', items, contentfulDataFilterArgs)
 
-        if (isArray(newData)) {
-          data = [
-            ...data,
-            ...newData
+        if (isArray(items)) {
+          newItems = [
+            ...newItems,
+            ...items
           ]
         }
       }
 
-      allData.content[contentType] = data
+      allData.content[contentType] = newItems
     }
   }
 

@@ -514,13 +514,15 @@ export type RenderItemStartAction = (args: RenderItemStartActionArgs) => Promise
 export type RenderItemEndAction = (args: RenderItemActionArgs) => Promise<void> | void
 
 /**
- * @typedef {object} RenderDataMeta
+ * @typedef {object} RenderData
+ * @prop {RenderItem[]} items
  * @prop {number} [total]
  * @prop {number} [pages]
  * @prop {number} [skip]
  * @prop {number} [limit]
  */
-export interface RenderDataMeta {
+export interface RenderData {
+  items: RenderItem[]
   total?: number
   pages?: number
   skip?: number

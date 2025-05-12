@@ -115,7 +115,7 @@ const normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
     if (isArrayStrict(content)) {
       const contentArr = normalizeRichText(content)
 
-      if (contentArr.length > 0) {
+      if (contentArr.length) {
         contentValue = contentArr
       }
     }

@@ -4,7 +4,6 @@
 
 /* Imports */
 
-import type { RenderItem } from '../../render/renderTypes.js'
 import type { CacheData } from '../../utils/filter/filterTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach, beforeAll } from 'vitest'
 import { testResetStore } from '../../../tests/utils.js'
@@ -137,9 +136,11 @@ describe('getWordPressData()', () => {
       }
     })
 
-    const expectedResult: RenderItem[] = []
-
-    expect(result).toEqual(expectedResult)
+    expect(result).toEqual({
+      items: [],
+      total: 0,
+      pages: 0
+    })
   })
 
   it('should return empty array if data is array of null', async () => {
@@ -148,9 +149,11 @@ describe('getWordPressData()', () => {
       route: 'null'
     })
 
-    const expectedResult: RenderItem[] = []
-
-    expect(result).toEqual(expectedResult)
+    expect(result).toEqual({
+      items: [],
+      total: 4,
+      pages: 0
+    })
   })
 
   it('should return array of posts and set cache', async () => {
@@ -171,8 +174,17 @@ describe('getWordPressData()', () => {
     })
 
     expect(cacheSet).toHaveBeenCalledTimes(1)
-    expect(cacheSet).toHaveBeenCalledWith({ items: posts, meta: undefined })
-    expect(result).toEqual(posts)
+    expect(cacheSet).toHaveBeenCalledWith({
+      items: posts,
+      total: 2,
+      pages: 0
+    })
+
+    expect(result).toEqual({
+      items: posts,
+      total: 2,
+      pages: 0
+    })
   })
 
   it('should return array of posts from cache', async () => {
@@ -186,32 +198,26 @@ describe('getWordPressData()', () => {
         await cacheGet(data)
         return {
           items: posts,
-          meta: {
-            total: 1,
-            pages: 1
-          }
+          total: 2,
+          pages: 0
         }
       }
 
       return data
     })
 
-    const meta = {
-      total: 0,
-      pages: 0
-    }
-
     const result = await getWordPressData({
       key: 'posts_key_3',
-      route: 'posts',
-      meta
+      route: 'posts'
     })
 
     expect(cacheGet).toHaveBeenCalledTimes(1)
     expect(cacheGet).toHaveBeenCalledWith(undefined)
-    expect(result).toEqual(posts)
-    expect(meta.total).toBe(1)
-    expect(meta.pages).toBe(1)
+    expect(result).toEqual({
+      items: posts,
+      total: 2,
+      pages: 0
+    })
   })
 
   it('should return array of pages with prod credentials', async () => {
@@ -222,20 +228,16 @@ describe('getWordPressData()', () => {
       'frm/custom': 'custom'
     }
 
-    const meta = { // Meta coverage
-      total: 0,
-      pages: 0
-    }
-
     const result = await getWordPressData({
       key: 'pages_key',
-      route: 'pages',
-      meta
+      route: 'pages'
     })
 
-    expect(result).toEqual(pages)
-    expect(meta.total).toBe(1)
-    expect(meta.pages).toBe(1)
+    expect(result).toEqual({
+      items: pages,
+      total: 2,
+      pages: 0
+    })
   })
 
   it('should return array of one post with specified id', async () => {
@@ -244,7 +246,11 @@ describe('getWordPressData()', () => {
       route: 'posts/1'
     })
 
-    expect(result).toEqual([posts.find((post) => post.id === '1')])
+    expect(result).toEqual({
+      items: [posts.find((post) => post.id === '1')],
+      total: 1,
+      pages: 0
+    })
   })
 
   it('should return array of categories', async () => {
@@ -253,7 +259,11 @@ describe('getWordPressData()', () => {
       route: 'categories'
     })
 
-    expect(result).toEqual(categories)
+    expect(result).toEqual({
+      items: categories,
+      total: 2,
+      pages: 0
+    })
   })
 
   it('should return array of tags', async () => {
@@ -262,7 +272,11 @@ describe('getWordPressData()', () => {
       route: 'tags'
     })
 
-    expect(result).toEqual(tags)
+    expect(result).toEqual({
+      items: tags,
+      total: 1,
+      pages: 0
+    })
   })
 
   it('should return array of media', async () => {
@@ -271,7 +285,11 @@ describe('getWordPressData()', () => {
       route: 'media'
     })
 
-    expect(result).toEqual(media)
+    expect(result).toEqual({
+      items: media,
+      total: 2,
+      pages: 0
+    })
   })
 
   it('should return array of taxonomies', async () => {
@@ -280,7 +298,11 @@ describe('getWordPressData()', () => {
       route: 'taxonomies'
     })
 
-    expect(result).toEqual(taxonomies)
+    expect(result).toEqual({
+      items: taxonomies,
+      total: 4,
+      pages: 0
+    })
   })
 
   it('should return categories and posts with taxonomies linked', async () => {
@@ -308,50 +330,58 @@ describe('getWordPressData()', () => {
       ]
     }
 
-    expect(categoriesResult).toEqual(categories.map(category => {
-      return {
-        ...category,
-        taxonomy: uncategorized
-      }
-    }))
-
-    expect(postsResult).toEqual(posts.map(post => {
-      const postCategories: Array<number | object> = [
-        {
-          id: '1',
-          link: 'http://wp.com/category/uncategorized/',
-          title: 'Uncategorized',
-          slug: 'uncategorized',
-          contentType: 'term',
+    expect(categoriesResult).toEqual({
+      items: categories.map(category => {
+        return {
+          ...category,
           taxonomy: uncategorized
         }
-      ]
+      }),
+      total: 2,
+      pages: 0
+    })
 
-      const postTags: object[] = []
-
-      if (post.id === '1') {
-        postCategories.push(2)
-        postTags.push({
-          id: '4',
-          link: 'http://wp.com/tag/sample/',
-          title: 'Sample',
-          slug: 'sample',
-          contentType: 'term',
-          taxonomy: {
-            id: 'post_tag',
-            title: 'Tags',
-            slug: 'tag',
-            contentTypes: ['post']
+    expect(postsResult).toEqual({
+      items: posts.map(post => {
+        const postCategories: Array<number | object> = [
+          {
+            id: '1',
+            link: 'http://wp.com/category/uncategorized/',
+            title: 'Uncategorized',
+            slug: 'uncategorized',
+            contentType: 'term',
+            taxonomy: uncategorized
           }
-        })
-      }
-
-      return {
-        ...post,
-        categories: postCategories,
-        tags: postTags
-      }
-    }))
+        ]
+  
+        const postTags: object[] = []
+  
+        if (post.id === '1') {
+          postCategories.push(2)
+          postTags.push({
+            id: '4',
+            link: 'http://wp.com/tag/sample/',
+            title: 'Sample',
+            slug: 'sample',
+            contentType: 'term',
+            taxonomy: {
+              id: 'post_tag',
+              title: 'Tags',
+              slug: 'tag',
+              contentTypes: ['post']
+            }
+          })
+        }
+  
+        return {
+          ...post,
+          categories: postCategories,
+          tags: postTags
+        }
+      }),
+      total: 2,
+      pages: 0
+    })
   })
 })
 
