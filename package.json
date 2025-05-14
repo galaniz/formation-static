@@ -3,7 +3,7 @@
   "version": "1.3.0-beta.31",
   "description": "Foundation and utilities to build static sites using local JSON files, Contentful, or WordPress",
   "main": "./lib/config/config.js",
-  "packageManager": "pnpm@10.6.2",
+  "packageManager": "pnpm@10.10.0",
   "type": "module",
   "files": [
     "./lib",
@@ -39,19 +39,19 @@
   "author": "Graciela Alaniz (https://alanizcreative.com/)",
   "license": "MIT",
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20250310.0",
+    "@cloudflare/workers-types": "4.20250513.0",
     "@types/contentful-resolve-response": "^0.1.33",
-    "@types/node": "^22.13.10",
+    "@types/node": "^22.15.17",
     "@types/uuid": "^10.0.0",
     "@types/wordpress__block-serialization-spec-parser": "^3.1.3",
-    "@vitest/coverage-v8": "^3.0.8",
-    "eslint": "9.22.0",
-    "memfs": "4.17.0",
-    "release-it": "^18.1.2",
-    "terser": "5.37.0",
-    "typescript": "^5.8.2",
-    "typescript-eslint": "8.26.1",
-    "vitest": "^3.0.8"
+    "@vitest/coverage-v8": "^3.1.3",
+    "eslint": "9.26.0",
+    "memfs": "4.17.1",
+    "release-it": "^19.0.2",
+    "terser": "5.39.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "8.32.1",
+    "vitest": "^3.1.3"
   },
   "dependencies": {
     "uuid": "^11.1.0"

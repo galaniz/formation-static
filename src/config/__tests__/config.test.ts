@@ -68,8 +68,8 @@ describe('setConfig()', () => {
         build: false,
         cache: false,
         dir: 'test',
-        devUrl: '/',
-        prodUrl: 'http://test.com/'
+        devUrl: '',
+        prodUrl: 'http://test.com'
       },
       cms: {
         name: 'Test',
@@ -95,8 +95,8 @@ describe('setConfig()', () => {
       image: {
         inputDir: 'input/assets/test',
         outputDir: 'output/assets/test',
-        localUrl: '/assets/test/',
-        remoteUrl: 'http://test.com/assets/img/',
+        localUrl: '/assets/test',
+        remoteUrl: 'http://test.com/assets/img',
         quality: 80,
         sizes: [
           300,

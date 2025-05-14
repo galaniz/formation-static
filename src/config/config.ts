@@ -33,7 +33,7 @@ let config: Config = {
     build: false,
     cache: false,
     dir: '',
-    devUrl: '/',
+    devUrl: '',
     prodUrl: ''
   },
   cms: {
@@ -60,7 +60,7 @@ let config: Config = {
   image: {
     inputDir: 'src/assets/img',
     outputDir: 'site/assets/img',
-    localUrl: '/assets/img/',
+    localUrl: '/assets/img',
     remoteUrl: '',
     quality: 75,
     sizes: [

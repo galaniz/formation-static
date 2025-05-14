@@ -95,7 +95,7 @@ const getImage = <V extends boolean = false>(
       return fallback as ImageReturnType<V>
     }
 
-    url = `${config.image.localUrl}${path}`
+    url = `${config.image.localUrl}/${path}`
   }
 
   /* Dimensions */

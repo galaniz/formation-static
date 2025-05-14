@@ -635,7 +635,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     canonical: '',
     prev: '',
     next: '',
-    noIndex: false,
+    index: true,
     isIndex: false,
     ...item.meta
   }

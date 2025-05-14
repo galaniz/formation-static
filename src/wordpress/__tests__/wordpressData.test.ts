@@ -396,7 +396,7 @@ describe('getAllWordPressData()', () => {
     config.cms.prodUser = 'user'
     config.cms.prodCredential = 'pass'
     config.cms.prodHost = 'wp.com'
-    config.env.prodUrl = 'http://wp.com/'
+    config.env.prodUrl = 'http://wp.com'
     config.wholeTypes = ['page']
     config.partialTypes = [
       'nav_menu_item',

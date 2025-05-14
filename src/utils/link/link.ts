@@ -276,17 +276,28 @@ const getSlug = <T extends boolean = false>(
  * @return {string}
  */
 const getPermalink = (slug: string = '', trailingSlash: boolean = true): string => {
-  let url = '/'
+  let url = ''
 
   if (config.env.prod) {
     url = config.env.prodUrl
   }
 
-  if (!isString(slug) || slug === '/') {
-    return url
+  if (!isStringStrict(slug) || slug === '/') {
+    return `${url}/`
   }
 
-  return `${url}${slug}${slug !== '' && trailingSlash ? '/' : ''}`
+  const hasStartSlash = slug.startsWith('/')
+  const hasEndSlash = slug.endsWith('/')
+
+  if (!hasStartSlash) {
+    slug = `/${slug}`
+  }
+
+  if (!hasEndSlash && trailingSlash) {
+    slug = `${slug}/`
+  }
+
+  return `${url}${slug}`
 }
 
 /**

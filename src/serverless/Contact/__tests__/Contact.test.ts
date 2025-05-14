@@ -207,10 +207,10 @@ describe('Contact()', () => {
         senderEmail: 'from@test.com'
       }
     })
-  
+
     config.env.prod = true
     config.env.prodUrl = 'http://test.com'
-  
+
     const result = await Contact({
       action,
       id: 'test',
@@ -285,7 +285,7 @@ describe('Contact()', () => {
         One\n
         Two\n
         Three\n
-        This email was sent from a contact form on Test (http://test.com)
+        This email was sent from a contact form on Test (http://test.com/)
       `),
       html: minify(`
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -378,7 +378,7 @@ describe('Contact()', () => {
                       <tr>
                         <td style="padding: 32px 0;">
                           <p style="font-family: sans-serif; color: #222; margin: 0; line-height: 1.5em;">
-                            This email was sent from a contact form on Test (http://test.com)
+                            This email was sent from a contact form on Test (http://test.com/)
                           </p>
                         </td>
                       </tr>

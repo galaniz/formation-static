@@ -764,7 +764,7 @@ describe('getPermalink()', () => {
 
   it('should return index prod url if no slug provided', () => {
     config.env.prod = true
-    config.env.prodUrl = 'http://test.com/'
+    config.env.prodUrl = 'http://test.com'
 
     const result = getPermalink()
     const expectedResult = 'http://test.com/'
@@ -774,7 +774,7 @@ describe('getPermalink()', () => {
 
   it('should return index prod url if slug is slash', () => {
     config.env.prod = true
-    config.env.prodUrl = 'http://test.com/'
+    config.env.prodUrl = 'http://test.com'
 
     const result = getPermalink('/')
     const expectedResult = 'http://test.com/'
@@ -784,7 +784,7 @@ describe('getPermalink()', () => {
 
   it('should return prod url with trailing slash', () => {
     config.env.prod = true
-    config.env.prodUrl = 'http://test.com/'
+    config.env.prodUrl = 'http://test.com'
 
     const result = getPermalink('test')
     const expectedResult = 'http://test.com/test/'
@@ -794,10 +794,20 @@ describe('getPermalink()', () => {
 
   it('should return prod url without trailing slash', () => {
     config.env.prod = true
-    config.env.prodUrl = 'http://test.com/'
+    config.env.prodUrl = 'http://test.com'
 
     const result = getPermalink('test', false)
     const expectedResult = 'http://test.com/test'
+
+    expect(result).toBe(expectedResult)
+  })
+
+  it('should not prepend or append slash if slug has slashes', () => {
+    config.env.prod = true
+    config.env.prodUrl = 'http://test.com'
+
+    const result = getPermalink('/test/')
+    const expectedResult = 'http://test.com/test/'
 
     expect(result).toBe(expectedResult)
   })
@@ -841,7 +851,7 @@ describe('getLink()', () => {
 
   it('should return internal link as prod permalink', () => {
     config.env.prod = true
-    config.env.prodUrl = 'http://test.com/'
+    config.env.prodUrl = 'http://test.com'
     config.localeInSlug = {
       'es-ES': 'es'
     }

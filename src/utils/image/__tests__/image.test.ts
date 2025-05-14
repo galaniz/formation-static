@@ -15,7 +15,7 @@ describe('getImage()', () => {
   beforeEach(() => {
     config.source = 'cms'
     config.cms.name = ''
-    config.image.localUrl = '/assets/img/'
+    config.image.localUrl = '/assets/img'
   })
 
   it('should return empty string if args is undefined', () => {
@@ -109,7 +109,7 @@ describe('getImage()', () => {
   })
 
   it('should return local image details with source element', () => {
-    config.image.localUrl = '/assets/'
+    config.image.localUrl = '/assets'
 
     const result = getImage({
       width: 600,

@@ -32,7 +32,7 @@ import type { PaginationData } from '../components/Pagination/PaginationTypes.js
  * @prop {string} [canonicalParams]
  * @prop {string} [prev]
  * @prop {string} [next]
- * @prop {boolean} [noIndex]
+ * @prop {boolean} [index=true]
  * @prop {boolean} [isIndex]
  */
 export interface RenderMeta {
@@ -45,7 +45,7 @@ export interface RenderMeta {
   canonicalParams?: string
   prev?: string
   next?: string
-  noIndex?: boolean
+  index?: boolean
   isIndex?: boolean
 }
 
