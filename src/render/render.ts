@@ -337,7 +337,7 @@ const renderContent = async (
     serverlessData,
     previewData,
     itemData,
-    itemContains = [],
+    itemContains = new Set(),
     itemHeadings = [],
     navigations,
     parents = [],
@@ -365,7 +365,6 @@ const renderContent = async (
 
     const props = { ...item }
     const renderType = isString(props.renderType) ? props.renderType : ''
-    const contentAttr = props.contentIsAttribute
     const isRichText = renderType === 'richText'
 
     /* Check for nested content */
@@ -406,14 +405,6 @@ const renderContent = async (
       headingsIndex = itemHeadings.push([]) - 1
     }
 
-    /* Content is attribute */
-
-    if (isStringStrict(contentAttr)) {
-      props[contentAttr] = children
-      props.content = undefined
-      childrenArr = undefined
-    }
-
     /* Render output */
 
     let renderStart = ''
@@ -424,6 +415,10 @@ const renderContent = async (
     const renderFunction = renderFunctions[renderType]
 
     if (isFunction(renderFunction)) {
+      if (childrenArr) {
+        props.content = undefined
+      }
+
       const renderArgs: RenderFunctionArgs = {
         args: props,
         parents,
@@ -442,13 +437,9 @@ const renderContent = async (
         renderArgs.headings = itemHeadings[headingsIndex]
       }
 
-      let renderOutput = await renderFunction(renderArgs)
+      const renderOutput = await renderFunction(renderArgs)
 
       if (isArrayStrict(renderOutput)) {
-        if (renderOutput.length === 1) {
-          renderOutput = renderOutput[0]?.split('%content') ?? ['', '']
-        }
-
         const [start, end] = renderOutput
 
         if (isString(start)) {
@@ -462,9 +453,10 @@ const renderContent = async (
 
       if (isString(renderOutput)) {
         renderStart = renderOutput
+        childrenArr = undefined
       }
 
-      itemContains.push(renderType)
+      itemContains.add(renderType)
 
       filterType = renderType
       filterArgs = {
@@ -596,7 +588,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
 
   /* Components contained in page  */
 
-  const itemContains: string[] = []
+  const itemContains: Set<string> = new Set()
 
   /* Rich text headings in page */
 
@@ -616,7 +608,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     id,
     itemData: { ...item },
     contentType,
-    itemContains: [],
+    itemContains: new Set(),
     itemHeadings: [],
     serverlessData,
     previewData

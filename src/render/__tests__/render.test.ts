@@ -143,7 +143,7 @@ describe('renderContent()', () => {
       serverlessData: undefined,
       previewData: undefined,
       itemData: {},
-      itemContains: [],
+      itemContains: new Set(),
       itemHeadings: [],
       navigations: undefined,
       parents: []
@@ -160,7 +160,7 @@ describe('renderContent()', () => {
       serverlessData: undefined,
       previewData: undefined,
       itemData: {},
-      itemContains: [],
+      itemContains: new Set(),
       itemHeadings: [],
       navigations: undefined,
       parents: []
@@ -250,16 +250,16 @@ describe('render()', () => {
           const { args } = props
           const { testAttr = '' } = args
           return [
-            `<ul data-test="${testAttr}">%content</ul>`
+            `<ul data-test="${testAttr}">`,
+            '</ul>'
           ]
         },
         testChild (props: RenderFunctionArgs<{ id: string }>) {
-          const { args } = props
+          const { args, children } = props
           const { id } = args
-          return [
-            `<li id="${id}">`,
-            '</li>'
-          ]
+          const innerContent = children?.[0]?.content // Test skipping content loop if string returned
+
+          return `<li id="${id}">test: ${isStringStrict(innerContent) ? innerContent : ''}</li>`
         },
         // @ts-expect-error - test null output
         testEmpty () {
@@ -274,12 +274,6 @@ describe('render()', () => {
           }
 
           return ''
-        },
-        testContentIsAttribute (props: RenderFunctionArgs<{ blocks: Array<{ content: string }> }>) {
-          const { args } = props
-          const { blocks } = args
-
-          return blocks[0]?.content ?? ''
         }
       },
       layout: (args) => {
@@ -696,10 +690,10 @@ describe('render()', () => {
         parents: [],
         content: undefined
       },
-      itemContains: [
+      itemContains: new Set([
         'test',
         'testScript'
-      ],
+      ]),
       itemHeadings: [],
       serverlessData: undefined,
       previewData: undefined
@@ -719,10 +713,10 @@ describe('render()', () => {
         parents: [],
         content: undefined
       },
-      itemContains: [
+      itemContains: new Set([
         'test',
         'testScript'
-      ],
+      ]),
       itemHeadings: [],
       serverlessData: undefined,
       previewData: undefined
@@ -748,7 +742,7 @@ describe('render()', () => {
         ]
       },
       contentType: 'page',
-      itemContains: [],
+      itemContains: new Set(),
       itemHeadings: [],
       serverlessData: undefined,
       previewData: undefined
@@ -1027,54 +1021,6 @@ describe('render()', () => {
     ])
   })
 
-  it('should return body output from content is attribute', async () => {
-    const result = await render({
-      allData: {
-        content: {
-          page: [
-            {
-              id: '9',
-              slug: 'test',
-              title: 'Test',
-              contentType: 'page',
-              content: [
-                {
-                  renderType: 'testContentIsAttribute',
-                  contentIsAttribute: 'blocks',
-                  content: [
-                    {
-                      content: 'Attribute test'
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      }
-    }) as RenderReturn[]
-
-    const expectedResult = [
-      {
-        slug: '/test/',
-        output: `
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <title>Test</title>
-            </head>
-            <body>Attribute test</body>
-          </html>
-        `
-      }
-    ]
-
-    const resultMin = testMinifyOutput(result)
-    const expectedResultMin = testMinifyOutput(expectedResult)
-
-    expect(resultMin).toEqual(expectedResultMin)
-  })
-
   it('should return item with unformatted slug and store slug data', async () => {
     config.cms.locales = ['en-CA', 'fr-CA']
 
@@ -1326,7 +1272,7 @@ describe('render()', () => {
             <body>
               <section>
                 <ul data-test="test">
-                  <li id="4">child</li>
+                  <li id="4">test: child</li>
                 </ul>
               </section>
               <div>
@@ -1574,7 +1520,7 @@ describe('render()', () => {
             <body>
               <section>
                 <ul data-test="test">
-                  <li id="4">child</li>
+                  <li id="4">test: child</li>
                 </ul>
               </section>
               <div>

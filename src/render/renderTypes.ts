@@ -52,7 +52,7 @@ export interface RenderMeta {
 /**
  * @typedef {object} RenderBase
  * @prop {RenderItem} itemData
- * @prop {string[]} itemContains
+ * @prop {Set<string>} itemContains
  * @prop {Array<RichTextHeading[]>} itemHeadings
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]
@@ -60,7 +60,7 @@ export interface RenderMeta {
 export interface RenderBase {
   itemData: RenderItem
   itemHeadings: RichTextHeading[][]
-  itemContains: string[]
+  itemContains: Set<string>
   serverlessData?: RenderServerlessData
   previewData?: RenderPreviewData
 }
@@ -204,7 +204,7 @@ export type RenderHttpError = (args: RenderHttpErrorArgs) => string | Promise<st
  * @prop {object} args
  * @prop {ParentArgs[]} [parents]
  * @prop {RenderItem} [itemData]
- * @prop {string[]} [itemContains]
+ * @prop {Set<string>} [itemContains]
  * @prop {Navigation} [navigations]
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]
@@ -215,7 +215,7 @@ export interface RenderFunctionArgs<T = any, R = RenderItem, P = ParentArgs> { /
   args: 0 extends (1 & T) ? any : T // eslint-disable-line @typescript-eslint/no-explicit-any
   parents?: P[]
   itemData?: R
-  itemContains?: string[]
+  itemContains?: Set<string>
   navigations?: Navigation
   serverlessData?: RenderServerlessData
   previewData?: RenderPreviewData
@@ -381,7 +381,7 @@ export interface RenderItemActionArgs extends RenderBase {
  * @prop {string} content
  * @prop {string} slug
  * @prop {RenderItem} itemData
- * @prop {string[]} [itemContains]
+ * @prop {Set<string>} [itemContains]
  * @prop {Array<RichTextHeading[]>} [itemHeadings]
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]
@@ -395,7 +395,7 @@ export interface RenderLayoutArgs {
   slug: string
   itemData: RenderItem
   itemHeadings?: RichTextHeading[][]
-  itemContains?: string[]
+  itemContains?: Set<string>
   serverlessData?: RenderServerlessData
   previewData?: RenderPreviewData
 }

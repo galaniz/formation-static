@@ -13,12 +13,7 @@ import { isString } from '../utils/string/string.js'
  * Convenience wrapper for render content
  *
  * @param {RenderItem[]} content
- * @param {object} [args]
- * @param {ParentArgs[]} [args.parents]
- * @param {RenderItem} [args.itemData]
- * @param {string[]} [args.itemContains]
- * @param {RichTextHeading[][]} [args.itemHeadings]
- * @param {GenericStrings} [args.navigations]
+ * @param {RenderContentArgs} [args]
  * @return {Promise<string>}
  */
 const renderInlineContent = async (
@@ -29,7 +24,7 @@ const renderInlineContent = async (
     content,
     parents: [],
     itemData: {},
-    itemContains: [],
+    itemContains: new Set(),
     itemHeadings: [],
     navigations: undefined,
     ...args

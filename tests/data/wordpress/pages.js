@@ -116,7 +116,6 @@ export const pages = [
           title: 'Hello world!',
           content: undefined
         },
-        contentIsAttribute: 'blocks',
         content: [
           {
             contentType: 'core/paragraph',
