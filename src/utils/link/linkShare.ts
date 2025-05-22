@@ -9,7 +9,7 @@ import { isStringStrict } from '../string/string.js'
 import { isArrayStrict } from '../array/array.js'
 
 /**
- * Start of share links by platform
+ * Start of share links by platform.
  *
  * @type {LinkShare}
  */
@@ -23,7 +23,7 @@ const shareLinks: LinkShare = {
 }
 
 /**
- * Social share links
+ * Social share links.
  *
  * @param {string} url
  * @param {string[]} platforms

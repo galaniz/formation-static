@@ -9,7 +9,7 @@ import { join } from 'node:path'
 import { isStringStrict } from '../string/string.js'
 
 /**
- * Recurse directory to get all file paths in it
+ * Recurse directory to get all file paths in it.
  *
  * @param {string} dir
  * @yield {string[]}

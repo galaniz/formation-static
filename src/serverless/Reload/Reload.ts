@@ -16,13 +16,13 @@ import { minify } from '../../utils/minify/minify.js'
 import { print } from '../../utils/print/print.js'
 
 /**
- * Error html output
+ * Error html output.
  *
  * @private
  * @param {ServerlessContext} context
  * @param {ServerlessSetup} setupServerless
  * @param {number} status
- * @return {Promise<string>} html
+ * @return {Promise<string>} HTMLHtmlElement
  */
 const getErrorHtml = async (
   context: ServerlessContext,
@@ -43,11 +43,11 @@ const getErrorHtml = async (
 }
 
 /**
- * Output paginated and/or filtered page on browser reload
+ * Output paginated and/or filtered page on browser reload.
  *
  * @param {ServerlessContext} context
  * @param {ServerlessSetup} setupServerless
- * @param {function} getData - getAllContentfulData | getAllWordPressData
+ * @param {getAllContentfulData|getAllWordPressData} getData
  * @return {Promise<Response>} Response
  */
 const Reload = async (

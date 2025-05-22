@@ -26,7 +26,7 @@ import { getStoreItem } from '../store/store.js'
 import { config } from '../config/config.js'
 
 /**
- * Normalize route by type
+ * Normalize route by type.
  *
  * @param {string} type
  * @return {string}
@@ -42,7 +42,7 @@ const getRoute = (type: string): string => {
 }
 
 /**
- * Fetch data from wordpress cms or cache
+ * Fetch data from wordpress cms or cache.
  *
  * @param {WordPressDataArgs} args
  * @param {number} [_page=1]
@@ -223,7 +223,7 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
 }
 
 /**
- * Fetch data from all content types or single entry if serverless
+ * Fetch data from all content types or single entry if serverless.
  *
  * @param {AllWordPressDataArgs} [args]
  * @return {Promise<RenderAllData|undefined>}

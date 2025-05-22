@@ -9,7 +9,7 @@ import { isStringStrict } from '../string/string.js'
 import { config } from '../../config/config.js'
 
 /**
- * Check and get data source
+ * Check and get data source.
  *
  * @type {DataSource}
  */

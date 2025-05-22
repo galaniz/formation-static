@@ -10,7 +10,7 @@ import { mockFetchErrorMessage } from '../../../tests/types.js'
 import { vi } from 'vitest'
 
 /**
- * Mock fetch function
+ * Mock fetch function.
  *
  * @param {string} url
  * @return {Promise<MockFetchResult>}

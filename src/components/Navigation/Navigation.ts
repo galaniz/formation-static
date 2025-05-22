@@ -15,7 +15,7 @@ import type {
   NavigationBreadcrumbOutputArgs,
   NavigationByLocationItem
 } from './NavigationTypes.js'
-import type { HtmlString } from '../../global/globalTypes.js'
+import type { RefString } from '../../global/globalTypes.js'
 import { getSlug, getPermalink, getLink } from '../../utils/link/link.js'
 import { isArrayStrict } from '../../utils/array/array.js'
 import { isObjectStrict } from '../../utils/object/object.js'
@@ -26,46 +26,46 @@ import { normalizeContentType } from '../../utils/contentType/contentType.js'
 import { getArchiveMeta } from '../../utils/archive/archive.js'
 
 /**
- * Recursively generate navigation output
+ * Recursively generate navigation output.
  */
 class Navigation<L extends string = string> {
   /**
-   * All navigations
+   * All navigations.
    *
    * @type {NavigationList[]}
    */
   navigations: NavigationList[] = []
 
   /**
-   * All navigation items
+   * All navigation items.
    *
    * @type {NavigationItem[]}
    */
   items: NavigationItem[] = []
 
   /**
-   * Current link to compare against
+   * Current link to compare against.
    *
    * @type {string}
    */
   currentLink: string = ''
 
   /**
-   * Current content type(s) to compare against
+   * Current content type(s) to compare against.
    *
    * @type {string[]}
    */
   currentType: string[] = []
 
   /**
-   * Initialize success
+   * Initialize success.
    *
    * @type {boolean}
    */
   init: boolean = false
 
   /**
-   * Navigation items by id
+   * Navigation items by id.
    *
    * @private
    * @type {NavigationItemsById}
@@ -73,7 +73,7 @@ class Navigation<L extends string = string> {
   #itemsById: NavigationItemsById = new Map()
 
   /**
-   * Navigations by location
+   * Navigations by location.
    *
    * @private
    * @type {NavigationByLocation}
@@ -81,7 +81,7 @@ class Navigation<L extends string = string> {
   #navigationsByLocation: NavigationByLocation<L> = new Map()
 
   /**
-   * Initialize and set properties
+   * Pass props to init.
    *
    * @param {NavigationProps} props
    */
@@ -90,7 +90,7 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Initialize - check required props and set props
+   * Init check required props and set props.
    *
    * @private
    * @param {NavigationProps} props
@@ -177,7 +177,7 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Normalize navigation item props
+   * Normalize navigation item props.
    *
    * @private
    * @param {NavigationItem} item
@@ -252,17 +252,14 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Check if any children match current link
+   * Check if any children match current link.
    *
    * @private
    * @param {NavigationItem[]} children
    * @param {NavigationItem[]} output
    * @return {boolean}
    */
-  #recurseItemChildren (
-    children: NavigationItem[],
-    output: NavigationItem[]
-  ): boolean {
+  #recurseItemChildren (children: NavigationItem[], output: NavigationItem[]): boolean {
     let childCurrent = false
 
     children.forEach(child => {
@@ -288,7 +285,7 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Navigation items by id
+   * Navigation items by id.
    *
    * @private
    * @param {NavigationItem[]} items
@@ -314,11 +311,11 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Loop through items to create html
+   * Loop through items to create html.
    *
    * @private
    * @param {NavigationItem[]} items
-   * @param {HtmlString} output
+   * @param {RefString} output
    * @param {NavigationOutputArgs} args
    * @param {number} depth
    * @param {number} maxDepth
@@ -326,7 +323,7 @@ class Navigation<L extends string = string> {
    */
   #recurseOutput = (
     items: NavigationItem[],
-    output: HtmlString,
+    output: RefString,
     args: NavigationOutputArgs,
     depth: number = 0,
     maxDepth?: number
@@ -352,7 +349,7 @@ class Navigation<L extends string = string> {
     const listAttrs = isStringStrict(args.listAttr) ? ` ${args.listAttr}` : ''
     const listTag = isStringStrict(args.listTag) ? args.listTag : 'ul'
 
-    output.html += `<${listTag}${depthAttr}${listClasses}${listAttrs}>`
+    output.ref += `<${listTag}${depthAttr}${listClasses}${listAttrs}>`
 
     /* Items */
 
@@ -393,7 +390,7 @@ class Navigation<L extends string = string> {
         itemAttrs += ` ${dataAttr}-archive-current`
       }
 
-      output.html += `<${itemTag}${depthAttr}${itemClasses}${itemAttrs}>`
+      output.ref += `<${itemTag}${depthAttr}${itemClasses}${itemAttrs}>`
 
       /* Link start */
 
@@ -438,13 +435,13 @@ class Navigation<L extends string = string> {
       const linkAttrs = ` ${linkAttrsArr.join(' ')}`
       const linkTag = hasLink ? 'a' : 'button'
 
-      output.html += `<${linkTag}${depthAttr}${linkClasses}${linkAttrs}>`
+      output.ref += `<${linkTag}${depthAttr}${linkClasses}${linkAttrs}>`
 
       if (isFunction(args.filterBeforeLinkText)) {
         args.filterBeforeLinkText(filterArgs)
       }
 
-      output.html += title
+      output.ref += title
 
       if (isFunction(args.filterAfterLinkText)) {
         args.filterAfterLinkText(filterArgs)
@@ -452,7 +449,7 @@ class Navigation<L extends string = string> {
 
       /* Link end */
 
-      output.html += `</${linkTag}>`
+      output.ref += `</${linkTag}>`
 
       if (isFunction(args.filterAfterLink)) {
         args.filterAfterLink(filterArgs)
@@ -466,7 +463,7 @@ class Navigation<L extends string = string> {
 
       /* Item end */
 
-      output.html += `</${itemTag}>`
+      output.ref += `</${itemTag}>`
 
       if (isFunction(args.filterAfterItem)) {
         args.filterAfterItem(filterArgs)
@@ -475,7 +472,7 @@ class Navigation<L extends string = string> {
 
     /* List end */
 
-    output.html += `</${listTag}>`
+    output.ref += `</${listTag}>`
 
     if (isFunction(args.filterAfterList)) {
       args.filterAfterList(listFilterArgs)
@@ -483,18 +480,14 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Navigation html output
+   * Navigation html output.
    *
    * @param {string} location
    * @param {NavigationOutputArgs} args
    * @param {number} maxDepth
    * @return {string} HTMLUListElement
    */
-  getOutput (
-    location: L,
-    args?: NavigationOutputArgs,
-    maxDepth?: number
-  ): string {
+  getOutput (location: L, args?: NavigationOutputArgs, maxDepth?: number): string {
     const nav = this.#navigationsByLocation.get(location)
 
     if (!nav) {
@@ -530,15 +523,15 @@ class Navigation<L extends string = string> {
       filterAfterLinkText: () => {}
     }, isObjectStrict(args) ? args : {})
 
-    const output = { html: '' }
+    const output = { ref: '' }
 
     this.#recurseOutput(normalizedItems, output, args, 0, maxDepth)
 
-    return output.html
+    return output.ref
   }
 
   /**
-   * Breadcrumbs html output
+   * Breadcrumbs html output.
    *
    * @param {NavigationBreadcrumbItem[]} items
    * @param {string} [current]
@@ -619,7 +612,7 @@ class Navigation<L extends string = string> {
 
       /* Output store */
 
-      const output = { html: '' }
+      const output = { ref: '' }
 
       /* Check if last */
 
@@ -631,7 +624,7 @@ class Navigation<L extends string = string> {
 
       /* Item */
 
-      output.html += `<li${itemClasses}${itemAttrs}${lastLevel ? ` ${dataAttr}-last` : ''}>`
+      output.ref += `<li${itemClasses}${itemAttrs}${lastLevel ? ` ${dataAttr}-last` : ''}>`
 
       /* Link */
 
@@ -652,7 +645,7 @@ class Navigation<L extends string = string> {
       const linkClasses = linkClassesArr.length ? ` class="${linkClassesArr.join(' ')}"` : ''
       const linkAttrs = isStringStrict(args.linkAttr) ? ` ${args.linkAttr}` : ''
 
-      output.html += `<a${linkClasses} href="${link}"${linkAttrs}>${title}</a>`
+      output.ref += `<a${linkClasses} href="${link}"${linkAttrs}>${title}</a>`
 
       if (isFunction(args.filterAfterLink)) {
         args.filterAfterLink(filterArgs)
@@ -660,9 +653,9 @@ class Navigation<L extends string = string> {
 
       /* Close item */
 
-      output.html += '</li>'
+      output.ref += '</li>'
 
-      return output.html
+      return output.ref
     })
 
     /* Current item */
@@ -687,7 +680,7 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Items stored by id
+   * Items stored by id.
    *
    * @return {NavigationItemsById}
    */
@@ -696,7 +689,7 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * All navigations stored by location
+   * All navigations stored by location.
    *
    * @return {NavigationByLocation}
    */
@@ -705,7 +698,7 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Single navigation by location
+   * Single navigation by location.
    *
    * @param {string} location
    * @return {NavigationByLocationItem|undefined}

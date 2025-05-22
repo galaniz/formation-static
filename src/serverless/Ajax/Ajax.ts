@@ -22,7 +22,7 @@ import { config } from '../../config/config.js'
 import { serverlessActions } from '../serverless.js'
 
 /**
- * Handle ajax requests by processing data and calling serverless actions
+ * Handle ajax requests by processing data and calling serverless actions.
  *
  * @param {ServerlessContext} context
  * @param {ServerlessSetup} setupServerless

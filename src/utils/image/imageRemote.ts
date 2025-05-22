@@ -12,7 +12,7 @@ import { isStringStrict } from '../string/string.js'
 import { isArrayStrict } from '../array/array.js'
 
 /**
- * Download remote images to local images directory
+ * Download remote images to local images directory.
  *
  * @param {ImageRemote[]} images
  * @return {Promise<string[]>}

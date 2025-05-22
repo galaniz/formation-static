@@ -15,7 +15,7 @@ import { getStoreItem } from '../../store/store.js'
 import { config } from '../../config/config.js'
 
 /**
- * Recurse to get ascendents
+ * Recurse to get ascendents.
  *
  * @private
  * @param {string} id
@@ -52,7 +52,7 @@ const getParentSlug = (
 }
 
 /**
- * Slug with archive/taxonomy base and parents
+ * Slug with archive/taxonomy base and parents.
  *
  * @param {LinkSlugArgs} args
  * @param {boolean} [returnParents]
@@ -269,7 +269,7 @@ const getSlug = <T extends boolean = false>(
 }
 
 /**
- * Absolute or relative url
+ * Absolute or relative url.
  *
  * @param {string} [slug]
  * @param {boolean} [trailingSlash]
@@ -301,7 +301,7 @@ const getPermalink = (slug: string = '', trailingSlash: boolean = true): string 
 }
 
 /**
- * Permalink from external or internal source
+ * Permalink from external or internal source.
  *
  * @param {InternalLink} [internalLink]
  * @param {string} [externalLink]

@@ -9,14 +9,14 @@ import { isStringStrict } from '../utils/string/string.js'
 import { isObjectStrict } from '../utils/object/object.js'
 
 /**
- * Directory to write serverless files to
+ * Directory to write serverless files to.
  *
  * @type {string}
  */
 let serverlessDir: string = 'functions'
 
 /**
- * Serverless routes to create files for
+ * Serverless routes to create files for.
  *
  * @type {ServerlessRoutes}
  */
@@ -25,14 +25,14 @@ let serverlessRoutes: ServerlessRoutes = {
 }
 
 /**
- * Actions to use in serverless functions
+ * Actions to use in serverless functions.
  *
  * @type {ServerlessActions}
  */
 let serverlessActions: ServerlessActions = {}
 
 /**
- * Serverless options
+ * Serverless options.
  *
  * @param {ServerlessArgs} args
  * @param {string} [dir]

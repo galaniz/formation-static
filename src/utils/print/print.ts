@@ -7,11 +7,11 @@
 import { isArray } from '../array/array.js'
 
 /**
- * Output console message
+ * Output console message.
  *
  * @param {string} pre
  * @param {*} message
- * @param {string} [type=error] - error | warning | success | info
+ * @param {'error'|'warning'|'success'|'info'} [type='error']
  * @return {void}
  */
 const print = (

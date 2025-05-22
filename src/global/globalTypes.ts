@@ -65,11 +65,11 @@ export interface ParentArgs<T = Generic> {
 }
 
 /**
- * @typedef {object} HtmlString
- * @prop {string} html
+ * @typedef {object} RefString
+ * @prop {string} ref
  */
-export interface HtmlString {
-  html: string
+export interface RefString {
+  ref: string
 }
 
 /**

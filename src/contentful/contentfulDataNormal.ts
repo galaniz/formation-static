@@ -20,7 +20,7 @@ import { isNumber } from '../utils/number/number.js'
 import { config } from '../config/config.js'
 
 /**
- * Html tag from type
+ * Html tag from type.
  *
  * @private
  * @param {string} type
@@ -60,7 +60,7 @@ const getTag = (type: string = 'text'): string => {
 }
 
 /**
- * Convert rich text to flatter props
+ * Convert rich text to flatter props.
  *
  * @private
  * @param {ContentfulDataItem[]} items
@@ -174,7 +174,7 @@ const normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
 }
 
 /**
- * Flatten nested file props
+ * Flatten nested file props.
  *
  * @private
  * @param {ContentfulDataFile} file
@@ -198,7 +198,7 @@ const normalizeFile = (file: ContentfulDataFile, fields: ContentfulDataFields): 
 }
 
 /**
- * Transform item props to flatter structure
+ * Transform item props to flatter structure.
  *
  * @private
  * @param {ContentfulDataItem} item
@@ -325,7 +325,7 @@ const normalizeItem = (item: ContentfulDataItem, data: RenderItem[], isInternalL
 }
 
 /**
- * Transform contentful data into simpler objects
+ * Transform contentful data into simpler objects.
  *
  * @param {ContentfulDataItem[]} data
  * @param {RenderItem[]} [_newData]

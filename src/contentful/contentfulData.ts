@@ -23,7 +23,7 @@ import { getStoreItem } from '../store/store.js'
 import { normalizeContentfulData } from './contentfulDataNormal.js'
 
 /**
- * Fetch data from contentful cms or cache
+ * Fetch data from contentful cms or cache.
  *
  * @param {string} key
  * @param {ContentfulDataParams} [params]
@@ -136,7 +136,7 @@ const getContentfulData = async (key: string, params?: ContentfulDataParams): Pr
 }
 
 /**
- * Fetch data from all content types or single entry if serverless
+ * Fetch data from all content types or single entry if serverless.
  *
  * @param {AllContentfulDataArgs} [args]
  * @return {Promise<RenderAllData|undefined>}

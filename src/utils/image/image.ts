@@ -17,7 +17,7 @@ import { isObjectStrict } from '../object/object.js'
 import { dataSource } from '../dataSource/dataSource.js'
 
 /**
- * Responsive image output
+ * Responsive image output.
  *
  * @param {ImageArgs} args
  * @param {boolean} [returnDetails]
@@ -230,7 +230,7 @@ const getImage = <V extends boolean = false>(
 }
 
 /**
- * Closest value in config sizes
+ * Closest value in config sizes.
  *
  * @param {number} size
  * @return {number}
@@ -242,7 +242,7 @@ const getImageClosestSize = (size: number): number => {
 }
 
 /**
- * Calculate max width from column and container parents
+ * Calculate max width from column and container parents.
  *
  * @param {ImageMaxWidthArgs} args
  * @return {number}

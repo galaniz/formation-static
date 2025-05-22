@@ -3,7 +3,7 @@
  */
 
 /**
- * Check if tag is a heading
+ * Check if tag is a heading.
  *
  * @param {string} tag
  * @return {boolean}

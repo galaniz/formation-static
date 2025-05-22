@@ -21,14 +21,14 @@ import { isNumber } from '../number/number.js'
 import { escape } from '../escape/escape.js'
 
 /**
- * Shortcode callbacks by name
+ * Shortcode callbacks by name.
  *
  * @type {Shortcodes}
  */
 const shortcodes: Shortcodes = new Map()
 
 /**
- * Regex for searching x="" in strings
+ * Regex for searching x="" in strings.
  *
  * @private
  * @type {RegExp}
@@ -36,7 +36,7 @@ const shortcodes: Shortcodes = new Map()
 const attrReg: RegExp = /[\w-]+=".*?"/g
 
 /**
- * Extract attributes and inner content from tagged strings
+ * Extract attributes and inner content from tagged strings.
  *
  * @private
  * @param {string} content
@@ -181,7 +181,7 @@ const getShortcodeData = (
 }
 
 /**
- * Add shortcode to shortcodes map
+ * Add shortcode to shortcodes map.
  *
  * @param {string} name
  * @param {Shortcode} shortcode
@@ -198,7 +198,7 @@ const addShortcode = <T extends Shortcode>(name: string, shortcode: T): boolean 
 }
 
 /**
- * Remove shortcode from shortcodes map
+ * Remove shortcode from shortcodes map.
  *
  * @param {string} name
  * @return {boolean}
@@ -212,7 +212,7 @@ const removeShortcode = (name: string): boolean => {
 }
 
 /**
- * Transform content string with shortcode callbacks
+ * Transform content string with shortcode callbacks.
  *
  * @param {string} content
  * @param {RenderItem} [itemData]
@@ -255,7 +255,7 @@ const doShortcodes = async (content: string, itemData?: RenderItem): Promise<str
 }
 
 /**
- * Empty shortcodes map
+ * Empty shortcodes map.
  *
  * @return {void}
  */
@@ -264,7 +264,7 @@ const resetShortcodes = (): void => {
 }
 
 /**
- * Fill shortcodes map
+ * Fill shortcodes map.
  *
  * @param {ShortcodesSet} args
  * @return {boolean}
@@ -290,7 +290,7 @@ const setShortcodes = <T extends ShortcodesSet>(args: T): boolean => {  // eslin
 }
 
 /**
- * Remove shortcodes from string
+ * Remove shortcodes from string.
  *
  * @param {string} content
  * @return {string}

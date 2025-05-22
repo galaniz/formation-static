@@ -10,7 +10,7 @@ import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 
 /**
- * Output column wrapper
+ * Output column wrapper.
  *
  * @param {ColumnProps} props
  * @return {string[]}

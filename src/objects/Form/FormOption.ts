@@ -12,7 +12,7 @@ import { isObjectStrict } from '../../utils/object/object.js'
 import { isArrayStrict } from '../../utils/array/array.js'
 
 /**
- * Output form option
+ * Output form option.
  *
  * @param {FormOptionProps} props
  * @return {string} HTMLOptionElement|HTMLDivElement

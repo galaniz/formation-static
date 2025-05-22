@@ -7,7 +7,7 @@
 import type { Config, ConfigSet, ConfigSetFilter } from './configTypes.js'
 
 /**
- * Default options
+ * Default options.
  *
  * @type {Config}
  */
@@ -71,7 +71,7 @@ let config: Config = {
 }
 
 /**
- * Update default config with user options
+ * Update default config with user options.
  *
  * @type {ConfigSet}
  */
@@ -82,7 +82,7 @@ const setConfig: ConfigSet = (args) => {
 }
 
 /**
- * Filter config with environment variables
+ * Filter config with environment variables.
  *
  * @type {ConfigSetFilter}
  */

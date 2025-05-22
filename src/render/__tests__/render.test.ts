@@ -4,8 +4,9 @@
 
 /* Imports */
 
-import type { RenderAllData, RenderFunctionArgs, RenderReturn } from '../renderTypes.js'
+import type { RenderAllData, RenderFunctionArgs, RenderItem, RenderReturn } from '../renderTypes.js'
 import type { Scripts, Styles } from '../../utils/scriptStyle/scriptStyleTypes.js'
+import type { ParentArgs } from '../../global/globalTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach } from 'vitest'
 import {
   testMinify,
@@ -254,7 +255,7 @@ describe('render()', () => {
             '</ul>'
           ]
         },
-        testChild (props: RenderFunctionArgs<{ id: string }>) {
+        testChild (props: RenderFunctionArgs<{ id: string }, RenderItem, ParentArgs, { content: string }>) {
           const { args, children } = props
           const { id } = args
           const innerContent = children?.[0]?.content // Test skipping content loop if string returned

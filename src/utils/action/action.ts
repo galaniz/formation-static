@@ -12,7 +12,7 @@ import { isObjectStrict } from '../object/object.js'
 import { isFunction } from '../function/function.js'
 
 /**
- * Action callbacks by name
+ * Action callbacks by name.
  *
  * @type {ActionMap}
  */
@@ -24,7 +24,7 @@ let actions: ActionMap = new Map([
 ])
 
 /**
- * Add action to action map
+ * Add action to action map.
  *
  * @param {string} name
  * @param {GenericFunction} action
@@ -45,7 +45,7 @@ const addAction = <T extends keyof Actions>(name: T, action: Actions[T]): boolea
 }
 
 /**
- * Remove action from actions map
+ * Remove action from actions map.
  *
  * @param {string} name
  * @param {GenericFunction} action
@@ -66,7 +66,7 @@ const removeAction = <T extends keyof Actions>(name: T, action: Actions[T]): boo
 }
 
 /**
- * Call asynchronous functions sequentially
+ * Call asynchronous functions sequentially.
  *
  * @private
  * @param {GenericFunction[]} callbacks
@@ -80,7 +80,7 @@ const doSequentially = async (callbacks: GenericFunction[], args?: unknown): Pro
 }
 
 /**
- * Run callback functions from actions map
+ * Run callback functions from actions map.
  *
  * @param {string} name
  * @param {*} [args]
@@ -118,7 +118,7 @@ const doActions = <V extends boolean = false>(
 }
 
 /**
- * Empty actions map
+ * Empty actions map.
  *
  * @return {void}
  */
@@ -132,7 +132,7 @@ const resetActions = (): void => {
 }
 
 /**
- * Fill actions map
+ * Fill actions map.
  *
  * @param {Actions} args
  * @return {boolean}

@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { InternalLink, Generic, HtmlString } from '../../global/globalTypes.js'
+import type { InternalLink, Generic, RefString } from '../../global/globalTypes.js'
 
 /**
  * @typedef {object} NavigationProps
@@ -118,13 +118,13 @@ export interface NavigationOutputBaseArgs {
 /**
  * @typedef {object} NavigationOutputListFilterArgs
  * @prop {NavigationOutputArgs} args
- * @prop {HtmlString} output
+ * @prop {RefString} output
  * @prop {NavigationItem[]} items
  * @prop {number} depth
  */
 export interface NavigationOutputListFilterArgs {
   args: NavigationOutputArgs
-  output: HtmlString
+  output: RefString
   items: NavigationItem[]
   depth: number
 }
@@ -133,7 +133,7 @@ export interface NavigationOutputListFilterArgs {
  * @typedef {object} NavigationOutputFilterArgs
  * @prop {NavigationOutputArgs} args
  * @prop {NavigationItem} item
- * @prop {HtmlString} output
+ * @prop {RefString} output
  * @prop {number} index
  * @prop {NavigationItem[]} items
  * @prop {number} depth
@@ -141,7 +141,7 @@ export interface NavigationOutputListFilterArgs {
 export interface NavigationOutputFilterArgs {
   args: NavigationOutputArgs
   item: NavigationItem
-  output: HtmlString
+  output: RefString
   index: number
   items: NavigationItem[]
   depth: number
@@ -190,11 +190,11 @@ export interface NavigationOutputArgs extends NavigationOutputBaseArgs {
 
 /**
  * @typedef {object} NavigationBreadcrumbOutputFilterArgs
- * @prop {HtmlString} output
+ * @prop {RefString} output
  * @prop {boolean} lastLevel
  */
 export interface NavigationBreadcrumbOutputFilterArgs {
-  output: HtmlString
+  output: RefString
   lastLevel: boolean
 }
 

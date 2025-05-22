@@ -11,7 +11,7 @@ import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 
 /**
- * Output form field
+ * Output form field.
  *
  * @param {FormFieldProps} props
  * @return {string[]} HTMLDivElement

@@ -23,7 +23,7 @@ import type {
   RenderNavigations,
   RenderFunctionsArgs
 } from './renderTypes.js'
-import type { ParentArgs, HtmlString } from '../global/globalTypes.js'
+import type { ParentArgs, RefString } from '../global/globalTypes.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
 import type { Navigation } from '../components/Navigation/Navigation.js'
 import type { StoreSlug } from '../store/storeTypes.js'
@@ -50,7 +50,7 @@ import { RichText } from '../text/RichText/RichText.js'
 import { config } from '../config/config.js'
 
 /**
- * Default render functions
+ * Default render functions.
  *
  * @type {RenderFunctions}
  */
@@ -64,7 +64,7 @@ const defaultRenderFunctions: RenderFunctions = {
 }
 
 /**
- * Output elements in render content
+ * Output elements in render content.
  *
  * @type {RenderFunctions}
  */
@@ -73,28 +73,28 @@ let renderFunctions: RenderFunctions = {
 }
 
 /**
- * Output html element
+ * Output html element.
  *
  * @type {RenderLayout}
  */
 let renderLayout: RenderLayout = () => ''
 
 /**
- * Output http error page
+ * Output http error page.
  *
  * @type {RenderHttpError}
  */
 let renderHttpError: RenderHttpError = () => ''
 
 /**
- * Navigations output for use in render functions
+ * Navigations output for use in render functions.
  *
  * @type {RenderNavigations}
  */
 let renderNavigations: RenderNavigations = () => undefined
 
 /**
- * Content, layout and navigation output functions
+ * Content, layout and navigation output functions.
  *
  * @param {RenderFunctionsArgs} args
  * @return {boolean}
@@ -134,7 +134,7 @@ const setRenderFunctions = (args: RenderFunctionsArgs): boolean => {
 }
 
 /**
- * Content and templates in expected format to map
+ * Content and templates in expected format to map.
  *
  * @private
  * @param {RenderItem[]} content
@@ -203,7 +203,7 @@ const getContentTemplate = (
 }
 
 /**
- * Map out content slots to templates
+ * Map out content slots to templates.
  *
  * @private
  * @param {RenderItem[]} templates
@@ -316,20 +316,17 @@ const mapContentTemplate = (
 }
 
 /**
- * Recurse and output nested content
+ * Recurse and output nested content.
  *
  * @param {RenderContentArgs} args
- * @param {HtmlString} [_output]
+ * @param {RefString} [_html]
  * @return {Promise<string>}
  */
-const renderContent = async (
-  args: RenderContentArgs,
-  _output: HtmlString = { html: '' }
-): Promise<string> => {
+const renderContent = async (args: RenderContentArgs, _html: RefString = { ref: '' }): Promise<string> => {
   /* Args required */
 
   if (!isObjectStrict(args)) {
-    return _output.html
+    return _html.ref
   }
 
   const {
@@ -349,7 +346,7 @@ const renderContent = async (
   /* Content must be array */
 
   if (!isArrayStrict(content)) {
-    return _output.html
+    return _html.ref
   }
 
   /* Loop */
@@ -485,7 +482,7 @@ const renderContent = async (
 
     /* Add to output object */
 
-    _output.html += renderStart + childrenStr
+    _html.ref += renderStart + childrenStr
 
     /* Recurse through children */
 
@@ -516,23 +513,23 @@ const renderContent = async (
           headingsIndex,
           depth: depth + 1
         },
-        _output
+        _html
       )
     }
 
-    _output.html += renderEnd
+    _html.ref += renderEnd
   }
 
   /* Output */
 
-  return _output.html
+  return _html.ref
 }
 
 /**
- * Output single post or page
+ * Output single post or page.
  *
  * @param {RenderItemArgs} args
- * @param {string} [_contentType] - Rest content type
+ * @param {string} [_contentType] - Api content type.
  * @return {Promise<RenderItemReturn|null>}
  */
 const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<RenderItemReturn | null> => {
@@ -876,7 +873,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
 }
 
 /**
- * Loop through all content types to output pages and posts
+ * Loop through all content types to output pages and posts.
  *
  * @param {RenderArgs} args
  * @return {Promise<RenderReturn[]|RenderReturn>}

@@ -17,7 +17,7 @@ import { config } from '../config/config.js'
 import { normalizeLocalData } from './localDataNormal.js'
 
 /**
- * Data from local files or cache
+ * Data from local files or cache.
  *
  * @param {LocalDataArgs} args
  * @return {Promise<LocalData>}
@@ -116,7 +116,7 @@ const getLocalData = async (args: LocalDataArgs): Promise<LocalData> => {
 }
 
 /**
- * All data from file system
+ * All data from file system.
  *
  * @param {AllLocalDataArgs} [args]
  * @return {Promise<RenderAllData|undefined>}

@@ -15,11 +15,11 @@ import { render, renderHttpError } from '../../render/render.js'
 import { minify } from '../../utils/minify/minify.js'
 
 /**
- * Output preview from contentful or wordpress
+ * Output preview from contentful or wordpress.
  *
  * @param {ServerlessContext} context
  * @param {ServerlessSetup} setupServerless
- * @param {function} getData - getAllContentfulData | getAllWordPressData
+ * @param {getAllContentfulData|getAllWordPressData} getData
  * @return {Promise<Response>} Response
  */
 const Preview = async (

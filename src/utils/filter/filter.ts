@@ -12,7 +12,7 @@ import { isObjectStrict } from '../object/object.js'
 import { isFunction } from '../function/function.js'
 
 /**
- * Filter callbacks by name
+ * Filter callbacks by name.
  *
  * @type {FilterMap}
  */
@@ -43,7 +43,7 @@ let filters: FilterMap = new Map([
 ])
 
 /**
- * Add filter to filters map
+ * Add filter to filters map.
  *
  * @param {string} name
  * @param {GenericFunction} filter
@@ -64,7 +64,7 @@ const addFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boolea
 }
 
 /**
- * Remove filter from filters map
+ * Remove filter from filters map.
  *
  * @param {string} name
  * @param {GenericFunction} filter
@@ -85,7 +85,7 @@ const removeFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boo
 }
 
 /**
- * Call asynchronous functions sequentially
+ * Call asynchronous functions sequentially.
  *
  * @private
  * @param {GenericFunction[]} callbacks
@@ -102,7 +102,7 @@ const applySequentially = async <T>(callbacks: GenericFunction[], value: T, args
 }
 
 /**
- * Update value from callback return values
+ * Update value from callback return values.
  *
  * @param {string} name
  * @param {*} value
@@ -142,7 +142,7 @@ const applyFilters = <T, V extends boolean = false>(
 }
 
 /**
- * Empty filters map
+ * Empty filters map.
  *
  * @return {void}
  */
@@ -175,7 +175,7 @@ const resetFilters = (): void => {
 }
 
 /**
- * Fill filters map
+ * Fill filters map.
  *
  * @param {Filters} args
  * @return {boolean}

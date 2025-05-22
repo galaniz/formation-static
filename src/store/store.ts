@@ -15,14 +15,14 @@ import { getArchiveMeta } from '../utils/archive/archive.js'
 import { config } from '../config/config.js'
 
 /**
- * Directory to write store files to
+ * Directory to write store files to.
  *
  * @type {string}
  */
 let storeDir: string = 'lib/store'
 
 /**
- * Default store object
+ * Default store object.
  *
  * @type {Store}
  */
@@ -38,7 +38,7 @@ const defaultStore: Store = {
 }
 
 /**
- * Store options
+ * Store options.
  *
  * @type {Store}
  */
@@ -47,7 +47,7 @@ let store: Store = {
 }
 
 /**
- * Update default store with user options
+ * Update default store with user options.
  *
  * @param {Store} args
  * @param {string} [dir]
@@ -71,7 +71,7 @@ const setStore = <T extends object>(
 }
 
 /**
- * Update individual store property
+ * Update individual store property.
  *
  * @param {string} prop
  * @param {object} value
@@ -98,7 +98,7 @@ const setStoreItem = <T extends Store, K extends keyof T, V extends keyof T[K] |
 }
 
 /**
- * Build time data (navigations, archive meta, parents)
+ * Build time data (navigations, archive meta, parents).
  *
  * @param {RenderAllData} allData
  * @return {boolean}
@@ -209,7 +209,7 @@ const setStoreData = (allData: RenderAllData): boolean => {
 }
 
 /**
- * Individual store property
+ * Individual store property.
  *
  * @param {string} prop
  * @return {object}

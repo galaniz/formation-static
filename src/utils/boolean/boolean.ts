@@ -3,7 +3,7 @@
  */
 
 /**
- * Check if value is boolean
+ * Check if value is boolean.
  *
  * @param {*} value
  * @return {boolean}

@@ -19,7 +19,7 @@ import { store, setStore } from '../src/store/store.js'
 import { setServerless } from '../src/serverless/serverless.js'
 
 /**
- * Remove all empty spaces from string
+ * Remove all empty spaces from string.
  *
  * @param {string} str
  * @return {string}
@@ -29,7 +29,7 @@ const testMinify = (str: string): string => {
 }
 
 /**
- * Default store object
+ * Default store object.
  *
  * @return {Store}
  */
@@ -47,7 +47,7 @@ const testDefaultStore = (): Store => {
 }
 
 /**
- * Reset store to default properties
+ * Reset store to default properties.
  *
  * @return {void}
  */
@@ -60,7 +60,7 @@ const testResetStore = (): void => {
 }
 
 /**
- * Default render functions object
+ * Default render functions object.
  *
  * @return {RenderFunctions}
  */
@@ -76,7 +76,7 @@ const testDefaultRenderFunctions = (): RenderFunctions => {
 }
 
 /**
- * Reset render functions to default
+ * Reset render functions to default.
  *
  * @return {void}
  */
@@ -90,7 +90,7 @@ const testResetRenderFunctions = (): void => {
 }
 
 /**
- * Serverless context object
+ * Serverless context object.
  *
  * @param {string} [url=http://test.com/]
  * @param {string} [method=GET]
@@ -130,7 +130,7 @@ const testContext = (
 }
 
 /**
- * WordPress cms config object
+ * WordPress cms config object.
  *
  * @return {Config['cms']}
  */
@@ -148,7 +148,7 @@ const testWordPressConfig = (): Config['cms'] => {
 }
 
 /**
- * Reset serverless variables to default values
+ * Reset serverless variables to default values.
  *
  * @return {void}
  */

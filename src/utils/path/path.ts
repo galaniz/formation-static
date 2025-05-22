@@ -10,7 +10,7 @@ import { storeDir } from '../../store/store.js'
 import { serverlessDir } from '../../serverless/serverless.js'
 
 /**
- * Absolute path to file
+ * Absolute path to file.
  *
  * @param {string} file
  * @param {string} [type]
@@ -45,7 +45,7 @@ const getPath = (file: string, type?: string): string => {
 }
 
 /**
- * Relative ascendent path as string
+ * Relative ascendent path as string.
  *
  * @param {string} path
  * @return {string}

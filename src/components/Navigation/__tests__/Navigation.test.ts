@@ -365,7 +365,7 @@ describe('Navigation', () => {
         filterBeforeList ({ args, output, items, depth }) {
           args.listClass = `x-${depth}-${items.length}`
           args.listAttr = `data-x-${depth}`
-          output.html += '<!-- Before List -->'
+          output.ref += '<!-- Before List -->'
 
           if (depth > 0) {
             items.forEach(item => {
@@ -376,36 +376,36 @@ describe('Navigation', () => {
         filterBeforeItem ({ args, item, output, index, items, depth }) {
           args.itemClass = `y-${depth}-${index}-${items.length}`
           args.itemAttr = `data-y="${item.title}"`
-          output.html += '<!-- Before Item -->'
+          output.ref += '<!-- Before Item -->'
         },
         filterBeforeLink ({ args, item, output, index, items, depth }) {
           args.linkClass = `z-${depth}-${index}-${items.length}`
           args.linkAttr = `data-z="${item.title}"`
-          output.html += '<!-- Before Link -->'
+          output.ref += '<!-- Before Link -->'
         },
         filterBeforeLinkText ({ args, item, output, index, items, depth }) {
           const linkClass = String(args.linkClass)
-          output.html +=
+          output.ref +=
             `<!-- Before Link Text: ${linkClass}-${item.title}-${index}-${items.length}-${depth} -->`
         },
         filterAfterLinkText ({ args, item, output, index, items, depth }) {
           const linkClass = String(args.linkClass)
-          output.html +=
+          output.ref +=
             `<!-- After Link Text: ${linkClass}-${item.title}-${index}-${items.length}-${depth} -->`
         },
         filterAfterLink ({ args, item, output, index, items, depth }) {
           const linkClass = String(args.linkClass)
-          output.html +=
+          output.ref +=
             `<!-- After Link: ${linkClass}-${item.title}-${index}-${items.length}-${depth} -->`
         },
         filterAfterItem ({ args, item, output, index, items, depth }) {
           const itemClass = String(args.itemClass)
-          output.html +=
+          output.ref +=
             `<!-- After Item: ${itemClass}-${item.title}-${index}-${items.length}-${depth} -->`
         },
         filterAfterList ({ args, output, depth }) {
           const listClass = String(args.listClass)
-          output.html +=
+          output.ref +=
             `<!-- After List: ${listClass}-${depth} -->`
         }
       })
@@ -699,10 +699,10 @@ describe('Navigation', () => {
         currentClass: 'c',
         a11yClass: '',
         filterBeforeLink ({ output, lastLevel }) {
-          output.html += `<!-- Before Link: ${lastLevel.toString()} -->`
+          output.ref += `<!-- Before Link: ${lastLevel.toString()} -->`
         },
         filterAfterLink ({ output, lastLevel }) {
-          output.html += `<!-- After Link: ${lastLevel.toString()} -->`
+          output.ref += `<!-- After Link: ${lastLevel.toString()} -->`
         }
       })
 

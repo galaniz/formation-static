@@ -3,7 +3,7 @@
  */
 
 /**
- * Current year as YYYY
+ * Current year as YYYY.
  *
  * @return {number}
  */

@@ -10,7 +10,7 @@ import { print } from '../utils/print/print.js'
 import { redirects } from './redirects.js'
 
 /**
- * Create redirects file from redirects array
+ * Create redirects file from redirects array.
  *
  * @param {string} path
  * @return {Promise<void>}

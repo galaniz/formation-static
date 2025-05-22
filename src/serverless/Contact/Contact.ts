@@ -6,6 +6,7 @@
 
 import type { ContactData, ContactBody } from './ContactTypes.js'
 import type { ServerlessAction, ServerlessActionReturn } from '../serverlessTypes.js'
+import type { RefString } from '../../global/globalTypes.js'
 import { config } from '../../config/config.js'
 import { escape } from '../../utils/escape/escape.js'
 import { isArray } from '../../utils/array/array.js'
@@ -18,22 +19,19 @@ import { getStoreItem } from '../../store/store.js'
 import { minify } from '../../utils/minify/minify.js'
 
 /**
- * Recurse through data to output plain and html email body
+ * Recurse through data to output plain and html email body.
  *
  * @private
  * @param {ContactData} data
- * @param {Object<string, string>} output
- * @param {string} output.html
- * @param {string} output.plain
+ * @param {RefString} html
+ * @param {RefString} plain
  * @param {number} depth
  * @return {void}
  */
 const recurseEmailHtml = (
   data: ContactData,
-  output: {
-    html: string
-    plain: string
-  },
+  html: RefString,
+  plain: RefString,
   depth: number = 1
 ): void => {
   if (!isObject(data)) {
@@ -48,49 +46,49 @@ const recurseEmailHtml = (
     const h = depth + 1
 
     if (depth === 1) {
-      output.html += `
+      html.ref += `
         <tr>
           <td style="padding: 16px 0; border-bottom: 2px solid #ccc;">
       `
     }
 
     if (label && !isArr) {
-      output.html += `
+      html.ref += `
         <h${h} style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
           ${l}
         </h${h}>
       `
 
-      output.plain += `${l}\n`
+      plain.ref += `${l}\n`
     }
 
-    recurseEmailHtml(value as ContactData, output, depth + 1)
+    recurseEmailHtml(value as ContactData, html, plain, depth + 1)
 
     if (isString(value)) {
-      output.html += `
+      html.ref += `
         <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
           ${value}
         </p>
       `
 
-      output.plain += value
+      plain.ref += value
         .replace(/<br\s*\/?>/gi, '\n')
         .replace(/(<([^>]+)>)/ig, '') + '\n'
     }
 
     if (depth === 1) {
-      output.html += `
+      html.ref += `
           </td>
         </tr>
       `
 
-      output.plain += '\n'
+      plain.ref += '\n'
     }
   })
 }
 
 /**
- * Generate email from contact form fields
+ * Generate email from contact form fields.
  *
  * @type {ServerlessAction}
  */
@@ -180,10 +178,8 @@ const Contact: ServerlessAction = async (args) => {
   const header = `${config.title} contact form submission`
   const footer = `This email was sent from a contact form on ${config.title} (${getPermalink()})`
   const outputData: ContactData = {}
-  const output = {
-    html: '',
-    plain: ''
-  }
+  const html = { ref: '' }
+  const plain = { ref: '' }
 
   for (const [name, input] of Object.entries(inputs)) {
     const inputType = input.type
@@ -261,7 +257,7 @@ const Contact: ServerlessAction = async (args) => {
     }
   }
 
-  recurseEmailHtml(outputData, output)
+  recurseEmailHtml(outputData, html, plain)
 
   const outputHtml = `
     <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -278,7 +274,7 @@ const Contact: ServerlessAction = async (args) => {
             <tr>
               <td>
                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
-                  ${output.html}
+                  ${html.ref}
                   <tr>
                     <td style="padding: 32px 0;">
                       <p style="font-family: sans-serif; color: #222; margin: 0; line-height: 1.5em;">
@@ -295,7 +291,7 @@ const Contact: ServerlessAction = async (args) => {
     </table>
   `
 
-  const outputPlain = `${header}\n\n${output.plain}${footer}`
+  const outputPlain = `${header}\n\n${plain.ref}${footer}`
 
   /* Subjext fallback */
 

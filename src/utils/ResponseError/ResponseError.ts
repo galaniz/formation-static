@@ -3,18 +3,18 @@
  */
 
 /**
- * Custom exception to include fetch response
+ * Custom exception to include fetch response.
  */
 class ResponseError extends Error {
   /**
-   * Response data
+   * Response data.
    *
    * @type {Response|undefined}
    */
   response: Response | undefined
 
   /**
-   * Initialize and set properties
+   * Init and set properties.
    *
    * @param {string} message
    * @param {Response} [res]

@@ -14,7 +14,7 @@ import { setStoreItem } from '../../store/store.js'
 import { config } from '../../config/config.js'
 
 /**
- * Transform local images (quality and sizes)
+ * Transform local images (quality and sizes).
  *
  * @return {Promise<sharp.OutputInfo[]>}
  */

@@ -8,7 +8,7 @@ import { isStringStrict } from '../string/string.js'
 import { config } from '../../config/config.js'
 
 /**
- * Convert to normal content type if available
+ * Convert to normal content type if available.
  *
  * @param {string} contentType
  * @return {string}

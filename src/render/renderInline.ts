@@ -10,7 +10,7 @@ import { isObjectStrict } from '../utils/object/object.js'
 import { isString } from '../utils/string/string.js'
 
 /**
- * Convenience wrapper for render content
+ * Convenience wrapper for render content.
  *
  * @param {RenderItem[]} content
  * @param {RenderContentArgs} [args]
@@ -32,7 +32,7 @@ const renderInlineContent = async (
 }
 
 /**
- * Convenience wrapper for render item
+ * Convenience wrapper for render item.
  *
  * @param {RenderInlineItem} item
  * @return {Promise<string>}

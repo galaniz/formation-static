@@ -209,9 +209,9 @@ export type RenderHttpError = (args: RenderHttpErrorArgs) => string | Promise<st
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]
  * @prop {RichTextHeading[]} [headings]
- * @prop {RenderItem[]} [children]
+ * @prop {object[]} [children]
  */
-export interface RenderFunctionArgs<T = any, R = RenderItem, P = ParentArgs> { // eslint-disable-line @typescript-eslint/no-explicit-any
+export interface RenderFunctionArgs<T = any, R = RenderItem, P = ParentArgs, C = any> { // eslint-disable-line @typescript-eslint/no-explicit-any
   args: 0 extends (1 & T) ? any : T // eslint-disable-line @typescript-eslint/no-explicit-any
   parents?: P[]
   itemData?: R
@@ -220,7 +220,7 @@ export interface RenderFunctionArgs<T = any, R = RenderItem, P = ParentArgs> { /
   serverlessData?: RenderServerlessData
   previewData?: RenderPreviewData
   headings?: RichTextHeading[]
-  children?: R[]
+  children?: C[]
 }
 
 /**
@@ -228,15 +228,15 @@ export interface RenderFunctionArgs<T = any, R = RenderItem, P = ParentArgs> { /
  * @param {RenderFunctionArgs} props
  * @return {string|string[]|Promise<string|string[]>}
  */
-export type RenderFunction<T = any, R = RenderItem, P = ParentArgs> = ( // eslint-disable-line @typescript-eslint/no-explicit-any
-  props: RenderFunctionArgs<T, R, P>
+export type RenderFunction<T = any, R = RenderItem, P = ParentArgs, C = any> = ( // eslint-disable-line @typescript-eslint/no-explicit-any
+  props: RenderFunctionArgs<T, R, P, C>
 ) => string | string[] | Promise<string | string[]>
 
 /**
  * @typedef {Object<string, RenderFunction>} RenderFunctions
  */
-export type RenderFunctions<T = any, R = RenderItem, P = ParentArgs> = // eslint-disable-line @typescript-eslint/no-explicit-any
-  Record<string, RenderFunction<T, R, P>>
+export type RenderFunctions<T = any, R = RenderItem, P = ParentArgs, C = any> = // eslint-disable-line @typescript-eslint/no-explicit-any
+  Record<string, RenderFunction<T, R, P, C>>
 
 /**
  * @typedef {object} RenderFunctionsArgs

@@ -9,7 +9,7 @@ import { getPath } from '../path/path.js'
 import { applyFilters } from '../filter/filter.js'
 
 /**
- * Check and return valid JSON or fallback
+ * Check and return valid JSON or fallback.
  *
  * @param {string} value
  * @return {object|undefined}
@@ -29,7 +29,7 @@ const getJson = <T extends object>(value: string): T | undefined => { // eslint-
 }
 
 /**
- * Import json file and return contents if object
+ * Import JSON file and return contents if object.
  *
  * @param {string} path
  * @param {boolean} [store=false]

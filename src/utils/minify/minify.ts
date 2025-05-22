@@ -3,7 +3,7 @@
  */
 
 /**
- * Remove extra spaces from a string
+ * Remove extra spaces from a string.
  *
  * @param {string} value
  * @return {string}

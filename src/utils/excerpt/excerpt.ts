@@ -10,7 +10,7 @@ import { isStringStrict } from '../string/string.js'
 import { stripShortcodes } from '../shortcode/shortcode.js'
 
 /**
- * Words from object or array of content
+ * Words from object or array of content.
  *
  * @private
  * @param {ExcerptContentWordArgs} args
@@ -61,7 +61,7 @@ const getContentWords = <T>(args: ExcerptContentWordArgs<T>): string[] => {
 }
 
 /**
- * Excerpt from content limited by word count
+ * Excerpt from content limited by word count.
  *
  * @param {ExcerptArgs} args
  * @return {string}

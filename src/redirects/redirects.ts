@@ -9,14 +9,14 @@ import { isArrayStrict } from '../utils/array/array.js'
 import { isObjectStrict } from '../utils/object/object.js'
 
 /**
- * Redirects data
+ * Redirects data.
  *
  * @type {string[]}
  */
 let redirects: string[] = []
 
 /**
- * Clear redirects and append new data
+ * Clear redirects and append new data.
  *
  * @param {RenderRedirect[]} data
  * @return {boolean}

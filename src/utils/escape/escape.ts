@@ -7,7 +7,7 @@
 import { isString } from '../string/string.js'
 
 /**
- * Check string validity and escape special characters
+ * Check string validity and escape special characters.
  *
  * @see {@link https://github.com/validatorjs/validator.js/blob/master/src/lib/escape.js|Validator}
  * @param {string} value

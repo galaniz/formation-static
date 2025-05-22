@@ -33,7 +33,7 @@ import { isNumber } from '../utils/number/number.js'
 import { config } from '../config/config.js'
 
 /**
- * Normalize WordPress routes
+ * Normalize WordPress routes.
  *
  * @type {Map<string, string>}
  */
@@ -49,14 +49,14 @@ const normalRoutes: Map<string, string> = new Map([
 ])
 
 /**
- * Normalize WordPress meta keys
+ * Normalize WordPress meta keys.
  *
  * @type {Map<string, string>}
  */
 const normalMetaKeys: Map<string, string> = new Map()
 
 /**
- * Menu items grouped by menu id
+ * Menu items grouped by menu id.
  *
  * @private
  * @type {Map<string, WordPressDataMenuChild[]>}
@@ -64,7 +64,7 @@ const normalMetaKeys: Map<string, string> = new Map()
 const menusById: Map<string, WordPressDataMenuChild[]> = new Map()
 
 /**
- * Properties to exclude from item
+ * Properties to exclude from item.
  *
  * @private
  * @type {string[]}
@@ -75,7 +75,7 @@ const excludeProps: string[] = [
 ]
 
 /**
- * Taxonomy from taxonomies given id
+ * Taxonomy from taxonomies given id.
  *
  * @private
  * @param {string} id
@@ -100,7 +100,7 @@ const getTaxonomy = (id: string): Taxonomy => {
 }
 
 /**
- * Reduce file props
+ * Reduce file props.
  *
  * @private
  * @param {WordPressDataFile} file
@@ -158,7 +158,7 @@ const normalizeFile = (file: WordPressDataFile): RenderFile => {
 }
 
 /**
- * Link embeds to item parent, author, featured media or term
+ * Link embeds to item parent, author, featured media or term.
  *
  * @private
  * @param {WordPressDataEmbedded} value
@@ -364,7 +364,7 @@ const normalizeEmbedded = (
 }
 
 /**
- * Convert blocks to flatter props
+ * Convert blocks to flatter props.
  *
  * @private
  * @param {Block[]} blocks
@@ -432,7 +432,7 @@ const normalizeBlocks = (blocks: readonly Block[]): RenderItem[] => {
 }
 
 /**
- * Transform item props to flatter structure
+ * Transform item props to flatter structure.
  *
  * @private
  * @param {WordPressDataItem} item
@@ -570,7 +570,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 }
 
 /**
- * Transform wordpress menu items into navigation item objects
+ * Transform wordpress menu items into navigation item objects.
  *
  * @private
  * @param {WordPressDataMenuItem[]} items
@@ -714,7 +714,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
 }
 
 /**
- * Transform wordpress menus into navigation item objects
+ * Transform wordpress menus into navigation item objects.
  *
  * @private
  * @param {WordPressDataMenu[]} menus
@@ -748,7 +748,7 @@ const normalizeWordPressMenus = (menus: WordPressDataMenu[]): NavigationList[] =
 }
 
 /**
- * Transform wordpress data into simpler objects
+ * Transform wordpress data into simpler objects.
  *
  * @param {WordPressDataItem[]} data
  * @param {string} [route]

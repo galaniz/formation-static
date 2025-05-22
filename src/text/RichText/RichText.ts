@@ -21,7 +21,7 @@ import { isObjectStrict } from '../../utils/object/object.js'
 import { isHeading } from '../../utils/heading/heading.js'
 
 /**
- * Check if string contains shortcode
+ * Check if string contains shortcode.
  *
  * @private
  * @param {string} tag
@@ -37,7 +37,7 @@ const containsShortcode = (tag: string, content: string): boolean => {
 }
 
 /**
- * Check if data rich attribute should be added
+ * Check if data rich attribute should be added.
  *
  * @private
  * @param {boolean|string[]} dataAttr
@@ -53,7 +53,7 @@ const addDataAttr = (dataAttr: boolean | string[] = true, tag: string = ''): boo
 }
 
 /**
- * Recursively output content
+ * Recursively output content.
  *
  * @private
  * @param {RichTextContentProps} args
@@ -189,7 +189,7 @@ const getContent = (args: RichTextContentProps): string => {
 }
 
 /**
- * Rich text content as plain text string
+ * Rich text content as plain text string.
  *
  * @param {RichTextContent|RichTextContent[]|string|undefined} args
  * @return {string}
@@ -224,7 +224,7 @@ const getPlainText = (
 }
 
 /**
- * Output rich text
+ * Output rich text.
  *
  * @param {RichTextProps} props
  * @return {string}

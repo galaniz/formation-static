@@ -10,7 +10,7 @@ import { isStringStrict } from '../string/string.js'
 import { isArrayStrict } from '../array/array.js'
 
 /**
- * Data from metadata object
+ * Data from metadata object.
  *
  * @type {TagGet}
  */
@@ -46,7 +46,7 @@ const getTag: TagGet = (item, id) => {
 }
 
 /**
- * Check if tag exists in metadata object
+ * Check if tag exists in metadata object.
  *
  * @type {TagExists}
  */

@@ -15,7 +15,7 @@ import { normalizeContentType } from '../contentType/contentType.js'
 import { getSlug, getPermalink } from '../link/link.js'
 
 /**
- * Check if item is given term
+ * Check if item is given term.
  *
  * @param {string} contentType
  * @param {RenderItem} itemData
@@ -36,7 +36,7 @@ const isTerm = (contentType: string, itemData: RenderItem): boolean => {
 }
 
 /**
- * Check if item is given archive or term
+ * Check if item is given archive or term.
  *
  * @param {string} contentType
  * @param {RenderItem} itemData
@@ -53,7 +53,7 @@ const isArchive = (contentType: string, itemData: RenderItem): boolean => {
 }
 
 /**
- * Archive meta by content type and locale
+ * Archive meta by content type and locale.
  *
  * @param {string} contentType
  * @param {string} [locale]
@@ -74,7 +74,7 @@ const getArchiveMeta = (contentType: string, locale?: string): ArchiveMeta => {
 }
 
 /**
- * Archive id, slug and title
+ * Archive id, slug and title.
  *
  * @param {string} contentType
  * @param {string} [locale]
@@ -110,7 +110,7 @@ const getArchiveInfo = (contentType: string, locale?: string): ArchiveInfo => {
 }
 
 /**
- * Taxonomy attributes
+ * Taxonomy attributes.
  *
  * @param {string} contentType
  * @param {RenderItem} [itemData]
@@ -162,7 +162,7 @@ const getTaxonomyInfo = (contentType: string, itemData?: RenderItem): ArchiveTax
 }
 
 /**
- * Archive link by content type or taxonomy
+ * Archive link by content type or taxonomy.
  *
  * @param {string} contentType
  * @param {RenderItem} [itemData]
@@ -236,7 +236,7 @@ const getArchiveLink = (contentType: string, itemData?: RenderItem): ArchiveLink
 }
 
 /**
- * Localized archive label
+ * Localized archive label.
  *
  * @param {string} contentType
  * @param {RenderItem} [itemData]
@@ -258,7 +258,7 @@ const getArchiveLabel = (
 }
 
 /**
- * Singular and plural labels by content/taxonomy type
+ * Singular and plural labels by content/taxonomy type.
  *
  * @param {string} contentType
  * @param {RenderItem} [itemData]

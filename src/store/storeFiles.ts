@@ -10,7 +10,7 @@ import { print } from '../utils/print/print.js'
 import { storeDir, store } from './store.js'
 
 /**
- * Create files from store object
+ * Create files from store object.
  *
  * @return {Promise<void>}
  */

@@ -17,7 +17,7 @@ import { config } from '../config/config.js'
 import { serverlessDir, serverlessRoutes } from './serverless.js'
 
 /**
- * Minify template strings
+ * Minify template strings.
  *
  * @private
  * @param {string} str
@@ -31,7 +31,7 @@ const minify = (str: string): string => {
 }
 
 /**
- * Create files for serverless functions
+ * Create files for serverless functions.
  *
  * @param {ServerlessFilesArgs} [args]
  * @return {Promise<void>}

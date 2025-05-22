@@ -3,7 +3,7 @@
  */
 
 /**
- * Preserve type in object keys
+ * Preserve type in object keys.
  *
  * @param {object} obj
  * @return {string[]}

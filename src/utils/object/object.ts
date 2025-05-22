@@ -3,7 +3,7 @@
  */
 
 /**
- * Check if value is an object
+ * Check if value is an object.
  *
  * @param {*} value
  * @return {boolean}
@@ -13,12 +13,12 @@ const isObject = <T>(value: T): value is object & T => {
 }
 
 /**
- * Non-object types
+ * Non-object types.
  */
 type NotObject<T, K> = Exclude<T, string | number | boolean | Map<T, K> | Set<T> | FormData | null | undefined | unknown[] | string[] | number[] | boolean[]>
 
 /**
- * Check if value is an object and not object-like (array, map, blob etc.)
+ * Check if value is an object and not object-like (array, map, blob).
  *
  * @param {*} value
  * @return {boolean}

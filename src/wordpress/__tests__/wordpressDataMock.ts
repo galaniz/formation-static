@@ -12,7 +12,7 @@ import { isArray } from '../../utils/array/array.js'
 import { vi } from 'vitest'
 
 /**
- * Mock fetch function
+ * Mock fetch function.
  *
  * @param {string} url
  * @param {MockFetchOptions} options

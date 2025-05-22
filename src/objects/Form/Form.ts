@@ -12,7 +12,7 @@ import { isObjectStrict } from '../../utils/object/object.js'
 import { config } from '../../config/config.js'
 
 /**
- * Output form wrapper
+ * Output form wrapper.
  *
  * @param {FormProps} props
  * @return {string[]} HTMLFormElement

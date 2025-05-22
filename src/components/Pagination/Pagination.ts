@@ -9,7 +9,7 @@ import { isObjectStrict } from '../../utils/object/object.js'
 import { isStringStrict } from '../../utils/string/string.js'
 
 /**
- * Output pagination navigation
+ * Output pagination navigation.
  *
  * @param {PaginationProps} props
  * @return {PaginationReturn}

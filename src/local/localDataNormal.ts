@@ -13,7 +13,7 @@ import { getStoreItem } from '../store/store.js'
 import { StoreImageMeta } from '../store/storeTypes.js'
 
 /**
- * Link object and image references
+ * Link object and image references.
  *
  * @param {LocalDataItem} data
  * @param {LocalData} refData
@@ -133,7 +133,7 @@ const normalizeLocalRefs = (
 }
 
 /**
- * Transform and link local data
+ * Transform and link local data.
  *
  * @param {LocalData} data
  * @param {string[]} [refProps]

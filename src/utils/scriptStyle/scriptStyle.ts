@@ -10,7 +10,7 @@ import { isStringStrict } from '../string/string.js'
 import { config } from '../../config/config.js'
 
 /**
- * Scripts data per render item
+ * Scripts data per render item.
  *
  * @type {Scripts}
  */
@@ -22,7 +22,7 @@ const scripts: Scripts = {
 }
 
 /**
- * Styles data per render item
+ * Styles data per render item.
  *
  * @type {Styles}
  */
@@ -33,10 +33,10 @@ const styles: Styles = {
 }
 
 /**
- * Add style or script path and dependencies to item and build maps
+ * Add style or script path and dependencies to item and build maps.
  *
  * @private
- * @param {string} type - styles | scripts
+ * @param {'styles'|'scripts'} type
  * @param {string} path
  * @param {string[]} [deps]
  * @return {boolean}
@@ -91,7 +91,7 @@ const addScriptStyle = (
 }
 
 /**
- * Add script path and dependencies to item and build maps
+ * Add script path and dependencies to item and build maps.
  *
  * @param {string} path
  * @param {string[]} [deps]
@@ -102,7 +102,7 @@ const addScript = (path: string, deps: string[] = []): boolean => {
 }
 
 /**
- * Add style path and dependencies to item and build maps
+ * Add style path and dependencies to item and build maps.
  *
  * @param {string} path
  * @param {string[]} [deps]
@@ -113,10 +113,10 @@ const addStyle = (path: string, deps: string[] = []): boolean => {
 }
 
 /**
- * Output script or stylesheet elements
+ * Output script or stylesheet elements.
  *
  * @private
- * @param {string} type - styles | scripts
+ * @param {'styles'|'scripts'} type
  * @param {string} link
  * @return {string}
  */
@@ -174,7 +174,7 @@ const outputScriptsStyles = (type: 'styles' | 'scripts', link: string): string =
 }
 
 /**
- * Output script elements
+ * Output script elements.
  *
  * @param {string} link
  * @return {string}
@@ -184,7 +184,7 @@ const outputScripts = (link: string): string => {
 }
 
 /**
- * Output stylesheet elements
+ * Output stylesheet elements.
  *
  * @param {string} link
  * @return {string}
