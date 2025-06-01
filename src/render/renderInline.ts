@@ -26,7 +26,6 @@ const renderInlineContent = async (
     itemData: {},
     itemContains: new Set(),
     itemHeadings: [],
-    navigations: undefined,
     ...args
   })
 }

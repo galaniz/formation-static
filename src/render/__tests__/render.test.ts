@@ -28,7 +28,7 @@ import {
   renderContent,
   renderFunctions,
   renderLayout,
-  renderNavigations,
+  renderNavigation,
   renderHttpError,
   setRenderFunctions
 } from '../render.js'
@@ -61,19 +61,19 @@ describe('setRenderFunctions()', () => {
     // @ts-expect-error - test undefined args
     const resultHttpError = renderHttpError()
     // @ts-expect-error - test undefined args
-    const resultNavigations = renderNavigations()
+    const resultNavigation = renderNavigation()
 
     const expectedResult = false
     const expectedRenderFunctions = testDefaultRenderFunctions()
     const expectedLayout = ''
     const expectedHttpError = ''
-    const expectedNavigations = undefined
+    const expectedNavigation = undefined
 
     expect(result).toBe(expectedResult)
     expect(renderFunctions).toEqual(expectedRenderFunctions)
     expect(resultLayout).toBe(expectedLayout)
     expect(resultHttpError).toBe(expectedHttpError)
-    expect(resultNavigations).toEqual(expectedNavigations)
+    expect(resultNavigation).toEqual(expectedNavigation)
   })
 
   it('should return false and not set any functions if no functions or layout', () => {
@@ -84,31 +84,31 @@ describe('setRenderFunctions()', () => {
     // @ts-expect-error - test undefined args
     const resultHttpError = renderHttpError()
     // @ts-expect-error - test undefined args
-    const resultNavigations = renderNavigations()
+    const resultNavigation = renderNavigation()
 
     const expectedResult = false
     const expectedRenderFunctions = testDefaultRenderFunctions()
     const expectedLayout = ''
     const expectedHttpError = ''
-    const expectedNavigations = undefined
+    const expectedNavigation = undefined
 
     expect(result).toBe(expectedResult)
     expect(renderFunctions).toEqual(expectedRenderFunctions)
     expect(resultLayout).toBe(expectedLayout)
     expect(resultHttpError).toBe(expectedHttpError)
-    expect(resultNavigations).toEqual(expectedNavigations)
+    expect(resultNavigation).toEqual(expectedNavigation)
   })
 
   it('should return true and set render functions', () => {
     const test = (): string => 'test'
     const layout = (): string => 'layout'
     const httpError = (): string => 'http'
-    const navigations = () => undefined
+    const navigation = () => undefined
 
     const result = setRenderFunctions({
       functions: { test },
       layout,
-      navigations,
+      navigation,
       httpError
     })
 
@@ -122,7 +122,7 @@ describe('setRenderFunctions()', () => {
     expect(renderFunctions).toEqual(expectedRenderFunctions)
     expect(renderLayout).toEqual(layout)
     expect(renderHttpError).toEqual(httpError)
-    expect(renderNavigations).toEqual(navigations)
+    expect(renderNavigation).toEqual(navigation)
   })
 })
 
@@ -163,7 +163,6 @@ describe('renderContent()', () => {
       itemData: {},
       itemContains: new Set(),
       itemHeadings: [],
-      navigations: undefined,
       parents: []
     })
 
@@ -243,6 +242,8 @@ describe('renderItem()', () => {
 /* Test render */
 
 describe('render()', () => {
+  let navInstance: Navigation | undefined
+
   beforeEach(() => {
     config.hierarchicalTypes = ['page']
     setRenderFunctions({
@@ -278,7 +279,7 @@ describe('render()', () => {
         }
       },
       layout: (args) => {
-        const { content, meta, navigations } = args
+        const { content, meta, itemData } = args
         const {
           title = '',
           paginationTitle = '',
@@ -299,12 +300,12 @@ describe('render()', () => {
         const canonicalMeta =
           canonical && isPag ? `<link rel="canonical" href="${canonical}${canonicalParams}">` : ''
 
-        const primary = navigations?.getOutput('primary')
-        let nav = ''
+        const primary = navInstance?.getOutput('primary', {
+          currentLink: itemData.baseUrl,
+          currentType: itemData.baseType
+        })
 
-        if (isStringStrict(primary)) {
-          nav = `<nav>${primary}</nav>`
-        }
+        const nav = isStringStrict(primary) ? `<nav>${primary}</nav>` : ''
 
         return `
           <!DOCTYPE html>
@@ -321,19 +322,10 @@ describe('render()', () => {
           </html>
         `
       },
-      navigations: (args) => {
-        const {
-          navigations,
-          items,
-          currentLink,
-          currentType
-        } = args
+      navigation: (args) => {
+        const { navigations, items } = args
 
-        if (navigations.length && items.length) {
-          return new Navigation({ navigations, items, currentLink, currentType })
-        }
-
-        return
+        navInstance = new Navigation({ navigations, items })
       },
       httpError: ({ code }) => `${code}`
     })
@@ -688,6 +680,7 @@ describe('render()', () => {
         contentType: 'page',
         title: 'Page Test',
         baseUrl: '/page/',
+        baseType: 'page',
         parents: [],
         content: undefined
       },
@@ -711,6 +704,7 @@ describe('render()', () => {
         contentType: 'page',
         title: 'Page Test',
         baseUrl: '/page/',
+        baseType: 'page',
         parents: [],
         content: undefined
       },

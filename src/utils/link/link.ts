@@ -310,7 +310,6 @@ const getPermalink = (slug: string = '', trailingSlash: boolean = true): string 
 const getLink = (internalLink?: InternalLink, externalLink?: string): string => {
   if (isObjectStrict(internalLink)) {
     const slug = internalLink.slug
-
     const res = getSlug({
       id: internalLink.id,
       contentType: internalLink.contentType,

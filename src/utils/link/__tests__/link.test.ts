@@ -837,6 +837,19 @@ describe('getLink()', () => {
     expect(result).toBe(expectedResult)
   })
 
+  it('should return invalid internal slug as dev permalink', () => {
+    const result = getLink({
+      id: '123',
+      // @ts-expect-error - test null slug
+      slug: null,
+      contentType: 'page'
+    })
+
+    const expectedResult = '/'
+
+    expect(result).toBe(expectedResult)
+  })
+
   it('should return internal link as dev permalink', () => {
     const result = getLink({
       id: '123',

@@ -9,7 +9,6 @@ import type {
   GenericStrings,
   InternalLink,
   Taxonomy,
-  Parent,
   ParentArgs
 } from '../global/globalTypes.js'
 import type {
@@ -17,7 +16,6 @@ import type {
   NavigationItem,
   NavigationProps
 } from '../components/Navigation/NavigationTypes.js'
-import type { Navigation } from '../components/Navigation/Navigation.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
 import type { PaginationData } from '../components/Pagination/PaginationTypes.js'
 
@@ -166,22 +164,11 @@ export interface RenderTemplate {
 }
 
 /**
- * @typedef {object} RenderNavigationsArgs
- * @extends {NavigationProps}
- * @prop {string} [title]
- * @prop {Parent[]} parents
+ * @typedef {function} RenderNavigation
+ * @param {NavigationProps} args
+ * @return {void|Promise<void>}
  */
-export interface RenderNavigationsArgs extends NavigationProps {
-  title?: string
-  parents: Parent[]
-}
-
-/**
- * @typedef {function} RenderNavigations
- * @param {RenderNavigationsArgs} args
- * @return {Navigation|undefined|Promise<Navigation|undefined>}
- */
-export type RenderNavigations = (args: RenderNavigationsArgs) => Navigation | undefined | Promise<Navigation | undefined>
+export type RenderNavigation = (args: NavigationProps) => void | Promise<void>
 
 /**
  * @typedef {object} RenderHttpErrorArgs
@@ -205,7 +192,6 @@ export type RenderHttpError = (args: RenderHttpErrorArgs) => string | Promise<st
  * @prop {ParentArgs[]} [parents]
  * @prop {RenderItem} [itemData]
  * @prop {Set<string>} [itemContains]
- * @prop {Navigation} [navigations]
  * @prop {RenderServerlessData} [serverlessData]
  * @prop {RenderPreviewData} [previewData]
  * @prop {RichTextHeading[]} [headings]
@@ -216,7 +202,6 @@ export interface RenderFunctionArgs<T = any, R = RenderItem, P = ParentArgs, C =
   parents?: P[]
   itemData?: R
   itemContains?: Set<string>
-  navigations?: Navigation
   serverlessData?: RenderServerlessData
   previewData?: RenderPreviewData
   headings?: RichTextHeading[]
@@ -242,13 +227,13 @@ export type RenderFunctions<T = any, R = RenderItem, P = ParentArgs, C = any> = 
  * @typedef {object} RenderFunctionsArgs
  * @prop {RenderFunctions} functions
  * @prop {RenderLayout} layout
- * @prop {RenderNavigations} [navigations]
+ * @prop {RenderNavigation} [navigation]
  * @prop {RenderHttpError} [httpError]
  */
 export interface RenderFunctionsArgs {
   functions: RenderFunctions
   layout: RenderLayout
-  navigations?: RenderNavigations
+  navigation?: RenderNavigation
   httpError?: RenderHttpError
 }
 
@@ -257,14 +242,12 @@ export interface RenderFunctionsArgs {
  * @extends {RenderBase}
  * @prop {RenderItem[]} content
  * @prop {ParentArgs[]} parents
- * @prop {Navigation} [navigations]
  * @prop {number} [headingsIndex]
  * @prop {number} [depth]
  */
 export interface RenderContentArgs extends RenderBase {
   content: RenderItem[]
   parents: ParentArgs[]
-  navigations?: Navigation
   headingsIndex?: number
   depth?: number
 }
@@ -281,6 +264,7 @@ export interface RenderContentArgs extends RenderBase {
  * @prop {RenderItem|RenderItem[]} [content]
  * @prop {RenderMeta} [meta]
  * @prop {string} [baseUrl]
+ * @prop {string} [baseType]
  * @prop {string} [archive]
  * @prop {RenderItem} [parent]
  * @prop {Taxonomy} [taxonomy]
@@ -299,6 +283,7 @@ export interface RenderItem extends Generic, Partial<Taxonomy> {
   content?: RenderItem[] | string
   meta?: RenderMeta
   baseUrl?: string
+  baseType?: string | string[]
   archive?: string
   parent?: RenderItem
   taxonomy?: Taxonomy
@@ -376,7 +361,6 @@ export interface RenderItemActionArgs extends RenderBase {
  * @typedef {object} RenderLayoutArgs
  * @prop {string} id
  * @prop {RenderMeta} meta
- * @prop {Navigation} [navigations]
  * @prop {string} contentType
  * @prop {string} content
  * @prop {string} slug
@@ -389,7 +373,6 @@ export interface RenderItemActionArgs extends RenderBase {
 export interface RenderLayoutArgs {
   id: string
   meta: RenderMeta
-  navigations?: Navigation
   contentType: string
   content: string
   slug: string

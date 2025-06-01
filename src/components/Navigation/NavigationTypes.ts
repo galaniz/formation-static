@@ -164,6 +164,8 @@ export type NavigationFilter = (args: NavigationOutputFilterArgs) => void
 /**
  * @typedef {object} NavigationOutputArgs
  * @extends {NavigationOutputBaseArgs}
+ * @prop {string} [currentLink] - Current link to compare against.
+ * @prop {string[]} [currentType] - Current content type(s) to compare against.
  * @prop {string} [listTag]
  * @prop {string} [itemTag]
  * @prop {NavigationOutputListFilter} [filterBeforeList]
@@ -176,6 +178,8 @@ export type NavigationFilter = (args: NavigationOutputFilterArgs) => void
  * @prop {NavigationFilter} [filterAfterLinkText]
  */
 export interface NavigationOutputArgs extends NavigationOutputBaseArgs {
+  currentLink?: string
+  currentType?: string | string[]
   listTag?: string
   itemTag?: string
   filterBeforeList?: NavigationOutputListFilter
@@ -208,6 +212,7 @@ export type NavigationBreadcrumbOutputFilter = (args: NavigationBreadcrumbOutput
 /**
  * @typedef {object} NavigationBreadcrumbOutputArgs
  * @extends {NavigationOutputBaseArgs}
+ * @prop {string} [current]
  * @prop {string} [currentClass]
  * @prop {string} [currentLabel]
  * @prop {string} [a11yClass]
@@ -215,6 +220,7 @@ export type NavigationBreadcrumbOutputFilter = (args: NavigationBreadcrumbOutput
  * @prop {NavigationBreadcrumbOutputFilter} [filterAfterLink]
  */
 export interface NavigationBreadcrumbOutputArgs extends NavigationOutputBaseArgs {
+  current?: string
   currentClass?: string
   currentLabel?: string
   a11yClass?: string

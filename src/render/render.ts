@@ -20,12 +20,11 @@ import type {
   RenderFunctions,
   RenderLayout,
   RenderHttpError,
-  RenderNavigations,
+  RenderNavigation,
   RenderFunctionsArgs
 } from './renderTypes.js'
 import type { ParentArgs, RefString } from '../global/globalTypes.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
-import type { Navigation } from '../components/Navigation/Navigation.js'
 import type { StoreSlug } from '../store/storeTypes.js'
 import { doActions } from '../utils/action/action.js'
 import { applyFilters } from '../utils/filter/filter.js'
@@ -87,14 +86,14 @@ let renderLayout: RenderLayout = () => ''
 let renderHttpError: RenderHttpError = () => ''
 
 /**
- * Navigations output for use in render functions.
+ * Navigation instance for use in render functions.
  *
- * @type {RenderNavigations}
+ * @type {RenderNavigation}
  */
-let renderNavigations: RenderNavigations = () => undefined
+let renderNavigation: RenderNavigation = () => undefined
 
 /**
- * Content, layout and navigation output functions.
+ * Content, layout and navigation functions.
  *
  * @param {RenderFunctionsArgs} args
  * @return {boolean}
@@ -107,7 +106,7 @@ const setRenderFunctions = (args: RenderFunctionsArgs): boolean => {
   const {
     functions,
     layout,
-    navigations,
+    navigation,
     httpError
   } = args
 
@@ -122,8 +121,8 @@ const setRenderFunctions = (args: RenderFunctionsArgs): boolean => {
 
   renderLayout = layout
 
-  if (isFunction(navigations)) {
-    renderNavigations = navigations
+  if (isFunction(navigation)) {
+    renderNavigation = navigation
   }
 
   if (isFunction(httpError)) {
@@ -336,7 +335,6 @@ const renderContent = async (args: RenderContentArgs, _html: RefString = { ref: 
     itemData,
     itemContains = new Set(),
     itemHeadings = [],
-    navigations,
     parents = [],
     depth = 0
   } = args
@@ -421,7 +419,6 @@ const renderContent = async (args: RenderContentArgs, _html: RefString = { ref: 
         parents,
         itemData,
         itemContains,
-        navigations,
         serverlessData,
         previewData
       }
@@ -509,7 +506,6 @@ const renderContent = async (args: RenderContentArgs, _html: RefString = { ref: 
           itemData,
           itemContains,
           itemHeadings,
-          navigations,
           headingsIndex,
           depth: depth + 1
         },
@@ -645,10 +641,6 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     meta.title = title
   }
 
-  /* Term taxonomy */
-
-  const taxonomy = contentType === 'term' ? item.taxonomy : contentType === 'taxonomy' ? item : {}
-
   /* Permalink */
 
   const slugArgs = {
@@ -666,9 +658,15 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
   const permalink = getPermalink(slug, !slugIsHtml)
   const parents = s.parents
 
-  item.baseUrl = permalink
   meta.url = permalink
   meta.canonical = permalink
+
+  /* Base */
+
+  const taxonomy = contentType === 'term' ? item.taxonomy : contentType === 'taxonomy' ? item : null
+
+  item.baseUrl = permalink
+  item.baseType = isObjectStrict(taxonomy) && isArrayStrict(taxonomy.contentTypes) ? taxonomy.contentTypes : contentType
 
   /* Format and add to slug store */
 
@@ -699,27 +697,6 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
   const index = item.slug === 'index'
 
   meta.isIndex = index
-
-  /* Navigations */
-
-  let navigations: Navigation | undefined
-
-  if (isFunction(renderNavigations)) {
-    let currentType: string | string[] = contentType
-
-    if (isObjectStrict(taxonomy) && isArrayStrict(taxonomy.contentTypes)) {
-      currentType = taxonomy.contentTypes
-    }
-
-    navigations = await renderNavigations({
-      navigations: getStoreItem('navigations'),
-      items: getStoreItem('navigationItems'),
-      currentLink: permalink,
-      currentType,
-      title,
-      parents
-    })
-  }
 
   /* Serverless data */
 
@@ -764,7 +741,6 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
       itemData,
       itemContains,
       itemHeadings,
-      navigations,
       previewData
     })
   }
@@ -816,7 +792,6 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     const layoutArgs: RenderLayoutArgs = {
       id,
       meta,
-      navigations,
       contentType,
       content: contentOutput,
       slug: formattedSlug,
@@ -926,6 +901,15 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
     setStoreData(allData)
   }
 
+  /* Navigation */
+
+  if (isFunction(renderNavigation)) {
+    await renderNavigation({
+      navigations: getStoreItem('navigations'),
+      items: getStoreItem('navigationItems')
+    })
+  }
+
   /* Redirects data */
 
   setRedirects(redirect)
@@ -989,7 +973,7 @@ export {
   renderContent,
   renderFunctions,
   renderLayout,
-  renderNavigations,
+  renderNavigation,
   renderHttpError,
   setRenderFunctions
 }

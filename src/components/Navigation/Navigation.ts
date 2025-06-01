@@ -44,20 +44,6 @@ class Navigation<L extends string = string> {
   items: NavigationItem[] = []
 
   /**
-   * Current link to compare against.
-   *
-   * @type {string}
-   */
-  currentLink: string = ''
-
-  /**
-   * Current content type(s) to compare against.
-   *
-   * @type {string[]}
-   */
-  currentType: string[] = []
-
-  /**
    * Initialize success.
    *
    * @type {boolean}
@@ -105,12 +91,7 @@ class Navigation<L extends string = string> {
 
     /* Defaults */
 
-    const {
-      navigations,
-      items,
-      currentLink,
-      currentType
-    } = props
+    const { navigations, items } = props
 
     /* Check that required items exist */
 
@@ -122,26 +103,15 @@ class Navigation<L extends string = string> {
 
     this.navigations = navigations
     this.items = items
-    this.currentLink = isStringStrict(currentLink) ? currentLink : ''
-    this.currentType =
-      (isArrayStrict(currentType) ? currentType : [currentType]).map(type => normalizeContentType(type))
 
     /* Items by id */
 
     this.items.forEach(item => {
-      if (!item) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+      if (!isObjectStrict(item)) {
         return
       }
 
       this.#itemsById.set(item.id, item)
-    })
-
-    this.items.forEach(item => {
-      const info = this.#getItemInfo(item)
-
-      if (info) {
-        this.#itemsById.set(info.id, info)
-      }
     })
 
     /* Navigations by location */
@@ -177,13 +147,58 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Normalize navigation item props.
+   * Check if any children match current.
    *
    * @private
-   * @param {NavigationItem} item
+   * @param {NavigationItem[]} children
+   * @param {NavigationItem[]} output
+   * @param {string} [currentLink]
+   * @param {string[]} [currentType]
+   * @return {boolean}
+   */
+  #recurseItemChildren (
+    children: NavigationItem[],
+    output: NavigationItem[],
+    currentLink: string = '',
+    currentType: string | string[] = []
+  ): boolean {
+    let childCurrent = false
+
+    children.forEach(child => {
+      const newItem = this.#getItem(this.#itemsById.get(child?.id || ''), currentLink, currentType) // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+
+      if (!newItem) {
+        return
+      }
+
+      const { current, archiveCurrent } = newItem
+
+      if (current || archiveCurrent) {
+        childCurrent = true
+      }
+
+      output.push(newItem)
+    })
+
+    return childCurrent
+  }
+
+  /**
+   * Normalize item props.
+   *
+   * @private
+   * @param {NavigationItem|undefined} item
+   * @param {string} [currentLink]
+   * @param {string[]} [currentType=[]]
    * @return {NavigationItem|undefined}
    */
-  #getItemInfo (item: NavigationItem | undefined): NavigationItem | undefined {
+  #getItem (
+    item: NavigationItem | undefined,
+    currentLink?: string,
+    currentType: string | string[] = []
+  ): NavigationItem | undefined {
+    /* Item required */
+
     if (!isObjectStrict(item)) {
       return
     }
@@ -197,114 +212,96 @@ class Navigation<L extends string = string> {
       children
     } = item
 
+    /* External */
+
     let external = false
 
     if (isStringStrict(externalLink)) {
       external = true
     }
 
-    const props: NavigationItem = {
+    /* Link */
+
+    const newLink = isStringStrict(link) ? link : getLink(internalLink, externalLink)
+
+    /* Props */
+
+    const newItem: NavigationItem = {
+      ...item,
       id,
       title,
-      link: isStringStrict(link) ? link : getLink(internalLink, externalLink),
+      link: newLink,
       external
     }
 
-    if (isStringStrict(props.link) && !external) {
-      props.current = props.link === this.currentLink
+    /* Current */
+
+    if (newLink && !external) {
+      newItem.current = newLink === currentLink
     }
+
+    /* Archive current */
 
     const internalId = internalLink?.id
 
     if (isStringStrict(internalId)) {
-      let isArchiveCurrent = false
+      let archiveCurrent = false
 
-      for (const type of this.currentType) {
+      for (const type of currentType) {
         const hasArchive = internalId === getArchiveMeta(type, internalLink?.locale as string).id
 
         if (hasArchive) {
-          isArchiveCurrent = true
+          archiveCurrent = true
           break
         }
       }
 
-      props.archiveCurrent = isArchiveCurrent
+      newItem.archiveCurrent = archiveCurrent
     }
+
+    /* Descendent current */
 
     let descendentCurrent = false
 
     if (isArrayStrict(children)) {
-      const storeChildren: NavigationItem[] = []
-
-      descendentCurrent = this.#recurseItemChildren(children, storeChildren)
-
-      props.children = storeChildren
+      const newChildren: NavigationItem[] = []
+      descendentCurrent = this.#recurseItemChildren(children, newChildren, currentLink, currentType)
+      newItem.children = newChildren
     }
 
     if (descendentCurrent) {
-      props.descendentCurrent = descendentCurrent
+      newItem.descendentCurrent = descendentCurrent
     }
 
-    return {
-      ...item,
-      ...props
-    }
+    /* Result */
+
+    return newItem
   }
 
   /**
-   * Check if any children match current link.
-   *
-   * @private
-   * @param {NavigationItem[]} children
-   * @param {NavigationItem[]} output
-   * @return {boolean}
-   */
-  #recurseItemChildren (children: NavigationItem[], output: NavigationItem[]): boolean {
-    let childCurrent = false
-
-    children.forEach(child => {
-      const info = this.#getItemInfo(this.#itemsById.get(child?.id)) // eslint-disable-line @typescript-eslint/no-unnecessary-condition
-
-      if (!info) {
-        return
-      }
-
-      const {
-        current = false,
-        archiveCurrent = false
-      } = info
-
-      if (current || archiveCurrent) {
-        childCurrent = true
-      }
-
-      output.push(info)
-    })
-
-    return childCurrent
-  }
-
-  /**
-   * Navigation items by id.
+   * Process items with current link and type.
    *
    * @private
    * @param {NavigationItem[]} items
+   * @param {string} [currentLink]
+   * @param {string[]} [currentType]
    * @return {NavigationItem[]}
    */
-  #getItems (items: NavigationItem[] = []): NavigationItem[] {
+  #getItems (
+    items: NavigationItem[] = [],
+    currentLink?: string,
+    currentType?: string | string[]
+  ): NavigationItem[] {
     const resItems: NavigationItem[] = []
 
     items.forEach(item => {
-      if (!isObjectStrict(item)) {
+      const newItem = this.#getItem(this.#itemsById.get(item?.id || ''), currentLink, currentType) // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+
+      if (!newItem) {
         return
       }
 
-      const { id } = item
-      const storedItem = this.#itemsById.get(id)
-
-      if (storedItem) {
-        resItems.push(storedItem)
-      }
+      resItems.push(newItem)
     })
 
     return resItems
@@ -483,8 +480,8 @@ class Navigation<L extends string = string> {
    * Navigation html output.
    *
    * @param {string} location
-   * @param {NavigationOutputArgs} args
-   * @param {number} maxDepth
+   * @param {NavigationOutputArgs} [args]
+   * @param {number} [maxDepth]
    * @return {string} HTMLUListElement
    */
   getOutput (location: L, args?: NavigationOutputArgs, maxDepth?: number): string {
@@ -494,34 +491,17 @@ class Navigation<L extends string = string> {
       return ''
     }
 
+    args = Object.assign({ depthAttr: false }, args || {})
+
     const items = nav.items
-    const normalizedItems = this.#getItems(items)
+    const { currentLink, currentType } = args
+    const currLink = isStringStrict(currentLink) ? currentLink : ''
+    const currType = (isArrayStrict(currentType) ? currentType : [currentType]).map(type => normalizeContentType(type))
+    const normalizedItems = this.#getItems(items, currLink, currType)
 
     if (!normalizedItems.length) {
       return ''
     }
-
-    args = Object.assign({
-      listTag: '',
-      listClass: '',
-      listAttr: '',
-      itemTag: '',
-      itemClass: '',
-      itemAttr: '',
-      linkClass: '',
-      internalLinkClass: '',
-      linkAttr: '',
-      dataAttr: '',
-      depthAttr: false,
-      filterBeforeList: () => {},
-      filterAfterList: () => {},
-      filterBeforeItem: () => {},
-      filterAfterItem: () => {},
-      filterBeforeLink: () => {},
-      filterAfterLink: () => {},
-      filterBeforeLinkText: () => {},
-      filterAfterLinkText: () => {}
-    }, isObjectStrict(args) ? args : {})
 
     const output = { ref: '' }
 
@@ -534,13 +514,11 @@ class Navigation<L extends string = string> {
    * Breadcrumbs html output.
    *
    * @param {NavigationBreadcrumbItem[]} items
-   * @param {string} [current]
    * @param {NavigationBreadcrumbOutputArgs} [args]
    * @return {string} HTMLOListElement
    */
   getBreadcrumbs (
     items: NavigationBreadcrumbItem[],
-    current?: string,
     args?: NavigationBreadcrumbOutputArgs
   ): string {
     /* Items required */
@@ -551,21 +529,11 @@ class Navigation<L extends string = string> {
 
     /* Args defaults */
 
-    args = Object.assign({
-      listClass: '',
-      listAttr: '',
-      itemClass: '',
-      itemAttr: '',
-      linkClass: '',
-      internalLinkClass: '',
-      linkAttr: '',
-      currentClass: '',
-      currentLabel: '',
-      a11yClass: 'a-hide-vis',
-      dataAttr: '',
-      filterBeforeLink: () => {},
-      filterAfterLink: () => {}
-    }, isObjectStrict(args) ? args : {})
+    args = Object.assign({ a11yClass: 'a-hide-vis' }, args || {})
+
+    /* Current */
+
+    const current = args.current
 
     /* Data attributes */
 
@@ -610,7 +578,7 @@ class Navigation<L extends string = string> {
 
       const link = getPermalink(slug)
 
-      /* Output store */
+      /* Output */
 
       const output = { ref: '' }
 

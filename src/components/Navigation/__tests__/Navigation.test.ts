@@ -13,14 +13,9 @@ import { setStore } from '../../../store/store.js'
 /**
  * Nav props with specified current link and type
  *
- * @param {string} currentLink
- * @param {string|string[]} currentType
  * @return {NavigationProps}
  */
-const testNavProps = (
-  currentLink: string = '/',
-  currentType: string | string[] = 'page'
-): NavigationProps => {
+const testNavProps = (): NavigationProps => {
   const homeItem = {
     id: '1',
     title: 'Home',
@@ -98,19 +93,14 @@ const testNavProps = (
       blogItem,
       // @ts-expect-error - test invalid item
       null
-    ],
-    currentLink,
-    currentType
+    ]
   }
 }
 
 /* Tests */
 
 describe('Navigation', () => {
-  let home: Navigation
-  let about: Navigation
-  let blog: Navigation
-  let blogPost: Navigation
+  let primary: Navigation
 
   afterEach(() => {
     testResetStore()
@@ -127,19 +117,16 @@ describe('Navigation', () => {
       }
     })
 
-    home = new Navigation(testNavProps())
-    about = new Navigation(testNavProps('/about/'))
-    blog = new Navigation(testNavProps('/blog/'))
-    blogPost = new Navigation(testNavProps('/blog-post/', ['blog', 'page']))
+    primary = new Navigation(testNavProps())
   })
 
   /* Test init */
 
   describe('Initialization', () => {
     it('should initialize with valid props', () => {
-      expect(home.init).toBe(true)
-      expect(home.navigations.length).toBe(3)
-      expect(home.items.length).toBe(5)
+      expect(primary.init).toBe(true)
+      expect(primary.navigations.length).toBe(3)
+      expect(primary.items.length).toBe(5)
     })
 
     it('should fail to initialize with undefined props', () => {
@@ -173,7 +160,7 @@ describe('Navigation', () => {
     })
 
     it('should contain navigation items by id', () => {
-      const items = home.getItemsById()
+      const items = primary.getItemsById()
 
       expect(items.get('1')).toBeDefined()
       expect(items.get('2')).toBeDefined()
@@ -183,7 +170,7 @@ describe('Navigation', () => {
     })
 
     it('should contain navigations with items by location', () => {
-      const navs = home.getNavigationsByLocation()
+      const navs = primary.getNavigationsByLocation()
 
       expect(navs.get('header')).toBeDefined()
       expect(navs.get('footer')).toBeDefined()
@@ -192,7 +179,7 @@ describe('Navigation', () => {
     })
 
     it('should return single navigation by location', () => {
-      const nav = home.getNavigationByLocation('header')
+      const nav = primary.getNavigationByLocation('header')
       const expectedNav = {
         title: 'Home',
         items: [
@@ -231,7 +218,11 @@ describe('Navigation', () => {
 
   describe('getOutput()', () => {
     it('should return empty string for unknown location', () => {
-      const result = home.getOutput('unknown')
+      const result = primary.getOutput('unknown', {
+        currentLink: '/',
+        currentType: ['page']
+      })
+
       const expectedResult = ''
 
       expect(result).toBe(expectedResult)
@@ -264,7 +255,11 @@ describe('Navigation', () => {
     })
 
     it('should return list markup string with home as current', () => {
-      const res = home.getOutput('header')
+      const res = primary.getOutput('header', {
+        currentLink: '/',
+        currentType: ['page']
+      })
+
       const expected = `
         <ul>
           <li data-nav-current>
@@ -291,7 +286,12 @@ describe('Navigation', () => {
     })
 
     it('should return list markup string one level deep', () => {
-      const res = home.getOutput('header', { depthAttr: true }, 0)
+      const res = primary.getOutput('header', {
+        depthAttr: true,
+        currentLink: '/',
+        currentType: ['page']
+      }, 0)
+
       const expected = `
         <ul data-nav-depth="0">
           <li data-nav-depth="0" data-nav-current>
@@ -313,7 +313,7 @@ describe('Navigation', () => {
     })
 
     it('should return list markup string with home as current and classes and attributes from args', () => {
-      const res = home.getOutput('header', {
+      const res = primary.getOutput('header', {
         listClass: 'x',
         listAttr: 'data-x',
         itemClass: 'y',
@@ -324,7 +324,9 @@ describe('Navigation', () => {
         itemTag: 'div',
         listTag: 'div',
         dataAttr: 'data-test',
-        depthAttr: true
+        depthAttr: true,
+        currentLink: '/',
+        currentType: ['page']
       })
 
       const expected = `
@@ -353,7 +355,9 @@ describe('Navigation', () => {
     })
 
     it('should return list markup string with classes and attributes from filter args', () => {
-      const res = home.getOutput('header', {
+      const res = primary.getOutput('header', {
+        currentLink: '/',
+        currentType: ['page'],
         listClass: 'x',
         listAttr: 'data-x',
         itemClass: 'y',
@@ -479,7 +483,12 @@ describe('Navigation', () => {
     })
 
     it('should return list markup string with about as current', () => {
-      const res = about.getOutput('header', { depthAttr: true })
+      const res = primary.getOutput('header', {
+        depthAttr: true,
+        currentLink: '/about/',
+        currentType: ['page']
+      })
+
       const expected = `
         <ul data-nav-depth="0">
           <li data-nav-depth="0">
@@ -506,7 +515,12 @@ describe('Navigation', () => {
     })
 
     it('should return list markup string with blog as current', () => {
-      const res = blog.getOutput('header', { depthAttr: true })
+      const res = primary.getOutput('header', {
+        depthAttr: true,
+        currentLink: '/blog/',
+        currentType: ['page']
+      })
+
       const expected = `
         <ul data-nav-depth="0">
           <li data-nav-depth="0">
@@ -533,7 +547,12 @@ describe('Navigation', () => {
     })
 
     it('should return list markup string with localized blog as archive current', () => {
-      const res = blogPost.getOutput('header', { depthAttr: true })
+      const res = primary.getOutput('header', {
+        depthAttr: true,
+        currentLink: '/blog-post/',
+        currentType: ['blog', 'page']
+      })
+
       const expected = `
         <ul data-nav-depth="0">
           <li data-nav-depth="0">
@@ -592,21 +611,21 @@ describe('Navigation', () => {
 
     it('should return empty string if items are null', () => {
       // @ts-expect-error - test null items
-      const result = home.getBreadcrumbs(null)
+      const result = primary.getBreadcrumbs(null)
       const expectedResult = ''
 
       expect(result).toBe(expectedResult)
     })
 
     it('should return empty string if items are empty', () => {
-      const result = home.getBreadcrumbs([])
+      const result = primary.getBreadcrumbs([])
       const expectedResult = ''
 
       expect(result).toBe(expectedResult)
     })
 
     it('should return ordered list markup without current item', () => {
-      const res = home.getBreadcrumbs(breadcrumbItems)
+      const res = primary.getBreadcrumbs(breadcrumbItems)
       const expected = `
         <ol>
           <li>
@@ -625,7 +644,10 @@ describe('Navigation', () => {
     })
 
     it('should return ordered list markup', () => {
-      const res = home.getBreadcrumbs(breadcrumbItems, 'Current Page')
+      const res = primary.getBreadcrumbs(breadcrumbItems, {
+        current: 'Current Page'
+      })
+
       const expected = `
         <ol>
           <li>
@@ -650,7 +672,7 @@ describe('Navigation', () => {
     })
 
     it('should return ordered list markup with classes and attributes from args', () => {
-      const res = home.getBreadcrumbs(breadcrumbItems, 'Current Page', {
+      const res = primary.getBreadcrumbs(breadcrumbItems, {
         listClass: 'x',
         listAttr: 'data-x',
         itemClass: 'y',
@@ -658,6 +680,7 @@ describe('Navigation', () => {
         linkClass: 'z',
         internalLinkClass: 'in',
         linkAttr: 'data-z',
+        current: 'Current Page',
         currentClass: 'c',
         currentLabel: '(test)',
         dataAttr: 'data-test',
@@ -688,7 +711,7 @@ describe('Navigation', () => {
     })
 
     it('should return ordered list markup with classes and attributes and filtered output', () => {
-      const res = home.getBreadcrumbs(breadcrumbItems, 'Current Page', {
+      const res = primary.getBreadcrumbs(breadcrumbItems, {
         listClass: 'x',
         listAttr: 'data-x',
         itemClass: 'y',
@@ -696,6 +719,7 @@ describe('Navigation', () => {
         linkClass: 'z',
         internalLinkClass: 'in',
         linkAttr: 'data-z',
+        current: 'Current Page',
         currentClass: 'c',
         a11yClass: '',
         filterBeforeLink ({ output, lastLevel }) {
