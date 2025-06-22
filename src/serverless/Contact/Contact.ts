@@ -19,7 +19,7 @@ import { getStoreItem } from '../../store/store.js'
 import { minify } from '../../utils/minify/minify.js'
 
 /**
- * Recurse through data to output plain and html email body.
+ * Recurse through data to output plain and HTML email body.
  *
  * @private
  * @param {ContactData} data

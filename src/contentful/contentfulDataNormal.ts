@@ -20,7 +20,7 @@ import { isNumber } from '../utils/number/number.js'
 import { config } from '../config/config.js'
 
 /**
- * Html tag from type.
+ * HTML tag from type.
  *
  * @private
  * @param {string} type
@@ -325,10 +325,9 @@ const normalizeItem = (item: ContentfulDataItem, data: RenderItem[], isInternalL
 }
 
 /**
- * Transform contentful data into simpler objects.
+ * Transform Contentful data into simpler objects.
  *
  * @param {ContentfulDataItem[]} data
- * @param {RenderItem[]} [_newData]
  * @return {RenderItem[]}
  */
 const normalizeContentfulData = (data: ContentfulDataItem[], _newData: RenderItem[] = []): RenderItem[] => {

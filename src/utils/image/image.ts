@@ -17,6 +17,53 @@ import { isObjectStrict } from '../object/object.js'
 import { dataSource } from '../dataSource/dataSource.js'
 
 /**
+ * Url with params from remote source.
+ *
+ * @private
+ * @param {string} url
+ * @param {string} format
+ * @param {number} quality
+ * @param {number} width
+ * @param {number} height
+ * @param {Record<string, string>} params
+ * @return {string}
+ */
+const getImageUrl = (
+  url: string,
+  format: string,
+  quality: number,
+  width: number,
+  height: number,
+  params: Record<string, string>
+): string => {
+  const urlObj = new URL(url)
+
+  Object.entries(params).forEach(([key, value]) => {
+    let val = value
+
+    if (val === '%format') {
+      val = format
+    }
+
+    if (val === '%quality') {
+      val = `${quality}`
+    }
+
+    if (val === '%width') {
+      val = `${width}`
+    }
+
+    if (val === '%height') {
+      val = `${height}`
+    }
+
+    urlObj.searchParams.set(key, val)
+  })
+
+  return urlObj.toString()
+}
+
+/**
  * Responsive image output.
  *
  * @param {ImageArgs} args
@@ -40,7 +87,13 @@ const getImage = <V extends boolean = false>(
     source = config.source,
     maxWidth = 1200,
     viewportWidth = 100,
-    format = 'webp'
+    format = 'webp',
+    params = {
+      fm: '%format',
+      q: '%quality',
+      w: '%width',
+      h: '%height'
+    }
   } = isObjectStrict(args) ? args : {}
 
   /* Fallback */
@@ -69,7 +122,8 @@ const getImage = <V extends boolean = false>(
     alt: dataAlt = '',
     width: naturalWidth = 1,
     height: naturalHeight = 1,
-    format: naturalFormat = 'jpg'
+    format: naturalFormat = 'jpg',
+    sizes: dataSizes
   } = data
 
   let { url = config.image.remoteUrl } = data
@@ -121,6 +175,19 @@ const getImage = <V extends boolean = false>(
     h = Math.round(w * aspectRatio)
   }
 
+  if (isWordpress && dataSizes && !dataSizes[w]) {
+    const isNatural = w === naturalWidth
+
+    if (!isNatural) {
+      w = getImageClosestSize(w, Object.keys(dataSizes).map(s => parseInt(s, 10)))
+      h = Math.round(w * aspectRatio)
+    }
+
+    if (isNatural) {
+      dataSizes[w] = url
+    }
+  }
+
   /* Src and sizes attributes */
 
   let src = url
@@ -132,10 +199,8 @@ const getImage = <V extends boolean = false>(
   }
 
   if (isRemote) {
-    const params = `&q=${quality}&w=${w}&h=${h}`
-
-    src = `${url}?fm=${format}${params}`
-    srcFallback = `${url}?fm=${naturalFormat}${params}`
+    src = getImageUrl(url, format, quality, w, h, params)
+    srcFallback = getImageUrl(url, naturalFormat, quality, w, h, params)
   }
 
   const sizes = `(min-width: ${w / 16}rem) ${w / 16}rem, ${viewportWidth}vw`
@@ -161,14 +226,14 @@ const getImage = <V extends boolean = false>(
     }
 
     if (isRemote) {
-      const params = `&q=${quality}&w=${s}&h=${Math.round(s * aspectRatio)} ${s}w`
+      const sizeHeight = Math.round(s * aspectRatio)
 
-      srcsetFallback.push(`${url}?fm=${naturalFormat}${params}`)
-      srcsetSource.push(`${url}?fm=${format}${params}`)
+      srcsetFallback.push(getImageUrl(url, naturalFormat, quality, s, sizeHeight, params) + ` ${s}w`)
+      srcsetSource.push(getImageUrl(url, format, quality, s, sizeHeight, params) + ` ${s}w`)
     }
 
     if (isWordpress) {
-      const sizeUrl = data.sizes?.[s]
+      const sizeUrl = dataSizes?.[s]
 
       if (isStringStrict(sizeUrl)) {
         srcsetSource.push(`${sizeUrl} ${s}w`)
@@ -233,10 +298,15 @@ const getImage = <V extends boolean = false>(
  * Closest value in config sizes.
  *
  * @param {number} size
+ * @param {number[]} [sizes]
  * @return {number}
  */
-const getImageClosestSize = (size: number): number => {
-  return [...config.image.sizes].reduce((prev, curr) => {
+const getImageClosestSize = (size: number, sizes: number[] = []): number => {
+  if (!sizes.length) {
+    sizes = config.image.sizes
+  }
+
+  return [...sizes].reduce((prev, curr) => {
     return Math.abs(curr - size) <= Math.abs(prev - size) ? curr : prev
   })
 }

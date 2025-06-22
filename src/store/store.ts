@@ -34,7 +34,8 @@ const defaultStore: Store = {
   formMeta: {},
   archiveMeta: {},
   imageMeta: {},
-  taxonomies: {}
+  taxonomies: {},
+  serverless: {}
 }
 
 /**
@@ -195,11 +196,7 @@ const setStoreData = (allData: RenderAllData): boolean => {
             store.parents[type] = {}
           }
 
-          store.parents[type][id] = {
-            id: parentId,
-            slug: parentSlug,
-            title: parentTitle
-          }
+          store.parents[type][id] = [parentId, parentSlug, parentTitle]
         }
       }
     })

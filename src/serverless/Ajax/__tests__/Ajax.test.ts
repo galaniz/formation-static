@@ -5,7 +5,7 @@
 /* Imports */
 
 import { it, expect, describe, vi, afterEach, beforeAll } from 'vitest'
-import { testContext } from '../../../../tests/utils.js'
+import { testRequest } from '../../../../tests/utils.js'
 import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
 import { setServerless } from '../../serverless.js'
 import { Ajax } from '../Ajax.js'
@@ -21,24 +21,9 @@ describe('Ajax()', () => {
     resetFilters()
   })
 
-  it('should return error if setup serverless is not a function', async () => {
-    // @ts-expect-error - test null setup serverless
-    const result = await Ajax(testContext(), null)
-
-    const status = result.status
-    const message = await result.json()
-    const expectedStatus = 500
-    const expectedMessage = {
-      error: 'setupServerless is not a function'
-    }
-
-    expect(status).toBe(expectedStatus)
-    expect(message).toEqual(expectedMessage)
-  })
-
   it('should return error if data is not an object', async () => {
     // @ts-expect-error - test null data
-    const result = await Ajax(testContext('http://test.com/', 'GET', null), () => {})
+    const result = await Ajax(testRequest('http://test.com/', 'GET', null), {})
 
     const status = result.status
     const message = await result.json()
@@ -52,7 +37,7 @@ describe('Ajax()', () => {
   })
 
   it('should return error if action does not exist', async () => {
-    const result = await Ajax(testContext(), () => {})
+    const result = await Ajax(testRequest(), {})
     const status = result.status
     const message = await result.json()
     const expectedStatus = 500
@@ -65,9 +50,9 @@ describe('Ajax()', () => {
   })
 
   it('should return error if action has no result', async () => {
-    const result = await Ajax(testContext('http://test.com/', 'GET', {
+    const result = await Ajax(testRequest('http://test.com/', 'GET', {
       action: 'test'
-    }), () => {})
+    }), {})
     const status = result.status
     const message = await result.json()
     const expectedStatus = 500
@@ -80,13 +65,13 @@ describe('Ajax()', () => {
   })
 
   it('should return success if honeypot exists', async () => {
-    const result = await Ajax(testContext('http://test.com/', 'GET', {
+    const result = await Ajax(testRequest('http://test.com/', 'GET', {
       inputs: {
         frm_asi: {
           value: 'test'
         }
       }
-    }), () => {})
+    }), {})
 
     const status = result.status
     const message = await result.json()
@@ -100,7 +85,20 @@ describe('Ajax()', () => {
   })
 
   it('should return success message from test action', async () => {
-    const result = await Ajax(testContext('http://test.com/', 'GET', {
+    setServerless({
+      test: async () => {
+        return await Promise.resolve({
+          success: {
+            message: 'Success',
+            headers: {
+              'Content-Type': 'text/plain'
+            }
+          }
+        })
+      }
+    })
+
+    const result = await Ajax(testRequest('http://test.com/', 'GET', {
       action: 'test',
       inputs: {
         frm_asi: {
@@ -110,22 +108,7 @@ describe('Ajax()', () => {
           value: 'ipsum'
         }
       }
-    }), () => {
-      setServerless({
-        actions: {
-          test: async () => {
-            return await Promise.resolve({
-              success: {
-                message: 'Success',
-                headers: {
-                  'Content-Type': 'text/plain'
-                }
-              }
-            })
-          }
-        }
-      })
-    })
+    }), {})
 
     const status = result.status
     const contentType = result.headers.get('Content-Type')
@@ -155,7 +138,7 @@ describe('Ajax()', () => {
       })
     })
 
-    const ajaxContext = testContext('http://test.com/', 'GET', {
+    const ajaxRequest = testRequest('http://test.com/', 'GET', {
       action: 'test',
       inputs: {
         frm_asi: {
@@ -166,21 +149,18 @@ describe('Ajax()', () => {
         }
       }
     })
-    
-    const result = await Ajax(ajaxContext, () => {
-      setServerless({
-        actions: {
-          test: async () => {
-            return await Promise.resolve({
-              success: {
-                message: 'Success'
-              }
-            })
-          }
-        }
-      })
-    })
 
+    setServerless({
+      test: async () => {
+        return await Promise.resolve({
+          success: {
+            message: 'Success'
+          }
+        })
+      }
+    })
+    
+    const result = await Ajax(ajaxRequest, {})
     const status = result.status
     const message = await result.json()
     const expectedStatus = 404
@@ -205,13 +185,25 @@ describe('Ajax()', () => {
             }
           }
         },
-        context: ajaxContext
+        request: ajaxRequest,
+        env: {}
       }
     )
   })
 
   it('should return error message from test action', async () => {
-    const result = await Ajax(testContext('http://test.com/', 'GET', {
+    setServerless({
+      test: async () => {
+        return await Promise.resolve({
+          error: {
+            message: 'Error',
+            response: new Response(null, { status: 400 })
+          }
+        })
+      }
+    })
+
+    const result = await Ajax(testRequest('http://test.com/', 'GET', {
       action: 'test',
       inputs: {
         frm_asi: {
@@ -221,20 +213,7 @@ describe('Ajax()', () => {
           value: 'ipsum'
         }
       }
-    }), () => {
-      setServerless({
-        actions: {
-          test: async () => {
-            return await Promise.resolve({
-              error: {
-                message: 'Error',
-                response: new Response(null, { status: 400 })
-              }
-            })
-          }
-        }
-      })
-    })
+    }), {})
 
     const status = result.status
     const message = await result.json()
@@ -248,7 +227,13 @@ describe('Ajax()', () => {
   })
 
   it('should return unknown error if error is not an object', async () => {
-    const result = await Ajax(testContext('http://test.com/', 'GET', {
+    setServerless({
+      test: async () => { // eslint-disable-line @typescript-eslint/require-await
+        throw 'test error' // eslint-disable-line @typescript-eslint/only-throw-error
+      }
+    })
+
+    const result = await Ajax(testRequest('http://test.com/', 'GET', {
       action: 'test',
       inputs: {
         frm_asi: {
@@ -258,15 +243,7 @@ describe('Ajax()', () => {
           value: 'ipsum'
         }
       }
-    }), () => {
-      setServerless({
-        actions: {
-          test: async () => { // eslint-disable-line @typescript-eslint/require-await
-            throw 'test error' // eslint-disable-line @typescript-eslint/only-throw-error
-          }
-        }
-      })
-    })
+    }), {})
 
     const status = result.status
     const message = await result.json()

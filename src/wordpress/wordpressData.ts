@@ -42,10 +42,9 @@ const getRoute = (type: string): string => {
 }
 
 /**
- * Fetch data from wordpress cms or cache.
+ * Fetch data from WordPress CMS or cache.
  *
  * @param {WordPressDataArgs} args
- * @param {number} [_page=1]
  * @return {Promise<RenderData>}
  */
 const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Promise<RenderData> => {
@@ -155,7 +154,7 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
   headers.set('Authorization', `Basic ${btoa(`${user}:${pass}`)}`)
 
   const resp = await fetcher(url, { headers, ...options })
-  const data: WordPressDataError | WordPressDataItem | WordPressDataItem[] = await resp.json()
+  const data = await resp.json() as WordPressDataError | WordPressDataItem | WordPressDataItem[]
 
   /* Check if error */
 
@@ -266,9 +265,11 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
       const path = serverlessData.path
       const item = slugs[path]
 
-      if (isObjectStrict(item)) {
-        id = isStringStrict(item.id) ? item.id : ''
-        contentType = isStringStrict(item.contentType) ? item.contentType : ''
+      if (isArray(item)) {
+        const [itemId, itemContentType] = item
+
+        id = itemId || ''
+        contentType = itemContentType || ''
       }
     }
 

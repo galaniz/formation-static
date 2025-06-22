@@ -7,7 +7,6 @@
 import { isStringStrict } from '../string/string.js'
 import { config } from '../../config/config.js'
 import { storeDir } from '../../store/store.js'
-import { serverlessDir } from '../../serverless/serverless.js'
 
 /**
  * Absolute path to file.
@@ -30,14 +29,6 @@ const getPath = (file: string, type?: string): string => {
 
     if (isStringStrict(dir)) {
       append = `${dir}/${file}.json`
-    }
-  }
-
-  if (type === 'serverless') {
-    const dir = serverlessDir
-
-    if (isStringStrict(dir)) {
-      append = `${dir}/${file}.js`
     }
   }
 

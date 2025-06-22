@@ -25,6 +25,7 @@ import type sharp from 'sharp'
  * @prop {number} [maxWidth]
  * @prop {number} [viewportWidth]
  * @prop {string} [format=webp]
+ * @prop {Record<string, string>} [params={fm: '%format', q: '%quality', w: '%width', h: '%height'}]
  */
 export interface ImageArgs {
   data?: RenderFile
@@ -40,6 +41,7 @@ export interface ImageArgs {
   maxWidth?: number
   viewportWidth?: number
   format?: string
+  params?: Record<string, string>
 }
 
 /**

@@ -71,14 +71,6 @@ describe('getPath()', () => {
 
     expect(result).toBe(expectedResult)
   })
-
-  it('should return path with serverless dir if type is serverless', () => {
-    const file = 'file'
-    const result = getPath(file, 'serverless')
-    const expectedResult = '/root/functions/file.js'
-
-    expect(result).toBe(expectedResult)
-  })
 })
 
 /* Test getPathDepth */

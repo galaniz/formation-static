@@ -5,7 +5,7 @@
 /* Imports */
 
 import { it, expect, describe, beforeEach, afterEach, vi } from 'vitest'
-import { testContext, testResetStore } from '../../../../tests/utils.js'
+import { testRequest, testResetStore } from '../../../../tests/utils.js'
 import { store, setStoreItem } from '../../../store/store.js'
 import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
 import { config } from '../../../config/config.js'
@@ -16,7 +16,8 @@ import { minify } from '../../../utils/minify/minify.js'
 
 describe('Contact()', () => {
   const action = 'contact'
-  const context = testContext()
+  const request = testRequest()
+  const env = {}
   const inputs = {
     name: {
       type: 'text',
@@ -82,7 +83,7 @@ describe('Contact()', () => {
       action,
       id: '',
       inputs: {}
-    }, context)
+    }, request, env)
 
     const expectedResult = {
       error: {
@@ -99,7 +100,7 @@ describe('Contact()', () => {
       id: 'test',
       // @ts-expect-error - test null inputs
       inputs: null
-    }, context)
+    }, request, env)
 
     const expectedResult = {
       error: {
@@ -118,7 +119,7 @@ describe('Contact()', () => {
       action,
       id: 'test',
       inputs
-    }, context)
+    }, request, env)
 
     const expectedResult = {
       error: {
@@ -142,7 +143,7 @@ describe('Contact()', () => {
       action,
       id: 'doesNotExist',
       inputs
-    }, context)
+    }, request, env)
 
     const expectedResult = {
       error: {
@@ -165,7 +166,7 @@ describe('Contact()', () => {
       action,
       id: 'test',
       inputs
-    }, context)
+    }, request, env)
 
     const expectedResult = {
       error: {
@@ -188,7 +189,7 @@ describe('Contact()', () => {
       action,
       id: 'test',
       inputs
-    }, context)
+    }, request, env)
 
     const expectedResult = {
       error: {
@@ -215,7 +216,7 @@ describe('Contact()', () => {
       action,
       id: 'test',
       inputs
-    }, context)
+    }, request, env)
 
     expect(result).toEqual({})
   })
@@ -248,7 +249,7 @@ describe('Contact()', () => {
       action,
       id: 'test',
       inputs
-    }, context)
+    }, request, env)
 
     const expectedResult = {
       success: {
@@ -430,7 +431,7 @@ describe('Contact()', () => {
           label: 'Lorem'
         }
       }
-    }, context)
+    }, request, env)
 
     const expectedSubject = 'Test Contact Form'
 
@@ -467,7 +468,7 @@ describe('Contact()', () => {
           label: 'Subject'
         }
       }
-    }, context)
+    }, request, env)
 
     const expectedToEmails = ['to@test.com', 'test@test.com']
     const expectedSubject = 'Meta Subject'
@@ -497,7 +498,7 @@ describe('Contact()', () => {
       action,
       id: 'test',
       inputs
-    }, context)
+    }, request, env)
     
     const expectedSubject = 'Test Subject'
 

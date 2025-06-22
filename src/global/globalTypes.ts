@@ -73,7 +73,7 @@ export interface RefString {
 }
 
 /**
- * @typedef {string} Source - cms | local
+ * @typedef {'cms'|'local'} Source
  */
 export type Source = 'cms' | 'local' | (string & Record<never, never>)
 

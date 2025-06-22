@@ -26,7 +26,6 @@ export interface ExcerptArgs<T extends object> {
  * @prop {string} [prop=value]
  * @prop {number} [limit=25]
  * @prop {string} [more=&hellip;]
- * @prop {string[]} [_words]
  */
 export interface ExcerptContentWordArgs<T> {
   content: T

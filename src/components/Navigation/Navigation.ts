@@ -26,7 +26,7 @@ import { normalizeContentType } from '../../utils/contentType/contentType.js'
 import { getArchiveMeta } from '../../utils/archive/archive.js'
 
 /**
- * Recursively generate navigation output.
+ * Handles navigation data and recursively generating output.
  */
 class Navigation<L extends string = string> {
   /**
@@ -67,7 +67,7 @@ class Navigation<L extends string = string> {
   #navigationsByLocation: NavigationByLocation<L> = new Map()
 
   /**
-   * Pass props to init.
+   * Create new instance with given props.
    *
    * @param {NavigationProps} props
    */

@@ -320,11 +320,7 @@ describe('getAllContentfulData()', () => {
   })
 
   it('should return navigation and page data from serverless data', async () => {
-    setStoreItem('slugs', {
-      id: 'JH7SZfgxuZ2SQrLvQHjQg',
-      contentType: 'page',
-      locale: 'fr-CA'
-    }, '/fr/null/')
+    setStoreItem('slugs', ['JH7SZfgxuZ2SQrLvQHjQg', 'page', 'fr-CA'], '/fr/null/')
 
     const result = await getAllContentfulData({
       serverlessData: {
@@ -345,14 +341,8 @@ describe('getAllContentfulData()', () => {
   })
 
   it('should return empty data if serverless data invalid', async () => {
-    setStoreItem('slugs', {
-      // @ts-expect-error - test null id
-      id: null,
-      // @ts-expect-error - test null content type
-      contentType: null,
-      // @ts-expect-error - test null locale
-      locale: null
-    }, '/null/')
+    // @ts-expect-error - test null data
+    setStoreItem('slugs', [null, null, null], '/null/')
 
     const result = await getAllContentfulData({
       serverlessData: {

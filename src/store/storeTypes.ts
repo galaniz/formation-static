@@ -4,33 +4,21 @@
 
 /* Imports */
 
-import type { Generic, Parent, Taxonomy } from '../global/globalTypes.js'
+import type { Generic, Taxonomy } from '../global/globalTypes.js'
 import type { NavigationList, NavigationItem } from '../components/Navigation/NavigationTypes.js'
 import type { ArchiveMeta } from '../utils/archive/archiveTypes.js'
 import type { ImageProps } from '../utils/image/imageTypes.js'
 import type { FormMeta } from '../objects/Form/FormTypes.js'
 
 /**
- * @typedef {object} StoreSlug
- * @prop {string} contentType
- * @prop {string} id
- * @prop {string} [locale]
+ * @typedef {Object<string, [string, string, string|undefined]>} StoreSlugs
  */
-export interface StoreSlug {
-  contentType: string
-  id: string
-  locale?: string
-}
+export type StoreSlugs = Record<string, [string, string, string?]>
 
 /**
- * @typedef {Object<string, StoreSlug>} StoreSlugs
+ * @typedef {Object<string, Object<string, [string, string, string]>>} StoreParents
  */
-export type StoreSlugs = Record<string, StoreSlug>
-
-/**
- * @typedef {Object<string, Object<string, Parent>>} StoreParents
- */
-export type StoreParents = Record<string, Record<string, Parent>>
+export type StoreParents = Record<string, Record<string, [string, string, string]>>
 
 /**
  * @typedef {Object<string, ArchiveMeta|Object<string, ArchiveMeta>>} StoreArchiveMeta
@@ -53,6 +41,23 @@ export type StoreImageMeta = Record<string, ImageProps>
 export type StoreTaxonomies = Record<string, Taxonomy>
 
 /**
+ * @typedef {string|number|boolean|null|undefined|StorePrimitive[]|Object<string, StorePrimitive>} StorePrimitive
+ */
+export type StorePrimitive = 
+  | string 
+  | number 
+  | boolean 
+  | null 
+  | undefined
+  | StorePrimitive[]
+  | { [key: string]: StorePrimitive }
+
+/**
+ * @typedef {Object<string, StorePrimitive[]>} StoreServerless
+ */
+export type StoreServerless<T extends StorePrimitive[]> = Record<string, T>
+
+/**
  * @typedef {object} Store
  * @extends {Generic}
  * @prop {StoreSlugs} slugs
@@ -63,6 +68,7 @@ export type StoreTaxonomies = Record<string, Taxonomy>
  * @prop {NavigationList[]} navigations
  * @prop {NavigationItem[]} navigationItems
  * @prop {StoreTaxonomies} taxonomies
+ * @prop {StoreServerless} serverless
  */
 export interface Store extends Generic {
   slugs: StoreSlugs
@@ -73,4 +79,5 @@ export interface Store extends Generic {
   navigations: NavigationList[]
   navigationItems: NavigationItem[]
   taxonomies: StoreTaxonomies
+  serverless: StoreServerless<StorePrimitive[]>
 }

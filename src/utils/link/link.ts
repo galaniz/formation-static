@@ -36,8 +36,12 @@ const getParentSlug = (
   const parent = storeParents[contentType]?.[id]
 
   if (parent) {
+    const [parentId, parentSlug, parentTitle] = parent
+
     const newParent: InternalLink = {
-      ...parent,
+      id: parentId,
+      slug: parentSlug,
+      title: parentTitle,
       contentType,
       locale
     }
@@ -47,7 +51,7 @@ const getParentSlug = (
     }
 
     parents.unshift(newParent)
-    getParentSlug(parent.id, contentType, parents, taxonomy, locale)
+    getParentSlug(parentId, contentType, parents, taxonomy, locale)
   }
 }
 

@@ -85,7 +85,6 @@ export interface RichTextProps<T = RichTextArgs, R = RenderItem> extends RenderF
  * @prop {RenderRichText[]} content
  * @prop {RichTextProps} props
  * @prop {boolean|string[]} dataAttr
- * @prop {string} [_output]
  */
 export interface RichTextContentProps {
   content: RenderRichText[]

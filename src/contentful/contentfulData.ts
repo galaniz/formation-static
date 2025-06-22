@@ -23,7 +23,7 @@ import { getStoreItem } from '../store/store.js'
 import { normalizeContentfulData } from './contentfulDataNormal.js'
 
 /**
- * Fetch data from contentful cms or cache.
+ * Fetch data from Contentful CMS or cache.
  *
  * @param {string} key
  * @param {ContentfulDataParams} [params]
@@ -87,7 +87,7 @@ const getContentfulData = async (key: string, params?: ContentfulDataParams): Pr
   /* Request */
 
   const resp = await fetch(url)
-  const data: ContentfulData | ContentfulDataError = await resp.json()
+  const data = await resp.json() as ContentfulData | ContentfulDataError
 
   /* Check if error */
 
@@ -190,10 +190,12 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
       const path = serverlessData.path
       const item = slugs[path]
 
-      if (isObjectStrict(item)) {
-        id = isStringStrict(item.id) ? item.id : ''
-        contentType = isStringStrict(item.contentType) ? item.contentType : ''
-        locale = isStringStrict(item.locale) ? item.locale : ''
+      if (isArray(item)) {
+        const [itemId, itemContentType, itemLocale] = item
+
+        id = itemId || ''
+        contentType = itemContentType || ''
+        locale = itemLocale || ''
       }
     }
 

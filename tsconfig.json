@@ -21,9 +21,6 @@
     "removeComments": true,
     "lib": [
       "es2022"
-    ],
-    "types": [
-      "@cloudflare/workers-types"
     ]
   },
   "include": [

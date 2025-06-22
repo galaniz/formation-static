@@ -570,7 +570,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 }
 
 /**
- * Transform wordpress menu items into navigation item objects.
+ * Transform WordPress menu items into navigation item objects.
  *
  * @private
  * @param {WordPressDataMenuItem[]} items
@@ -714,7 +714,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
 }
 
 /**
- * Transform wordpress menus into navigation item objects.
+ * Transform WordPress menus into navigation item objects.
  *
  * @private
  * @param {WordPressDataMenu[]} menus
@@ -748,11 +748,10 @@ const normalizeWordPressMenus = (menus: WordPressDataMenu[]): NavigationList[] =
 }
 
 /**
- * Transform wordpress data into simpler objects.
+ * Transform WordPress data into simpler objects.
  *
  * @param {WordPressDataItem[]} data
  * @param {string} [route]
- * @param {RenderItem[]} [_newData]
  * @return {RenderItem[]}
  */
 const normalizeWordPressData = (

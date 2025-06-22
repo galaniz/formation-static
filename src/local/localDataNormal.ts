@@ -15,6 +15,7 @@ import { StoreImageMeta } from '../store/storeTypes.js'
 /**
  * Link object and image references.
  *
+ * @private
  * @param {LocalDataItem} data
  * @param {LocalData} refData
  * @param {StoreImageMeta} imageData

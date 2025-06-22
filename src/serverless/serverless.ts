@@ -4,25 +4,16 @@
 
 /* Import */
 
-import type { ServerlessRoutes, ServerlessActions, ServerlessArgs } from './serverlessTypes.js'
+import type { ServerlessActions } from './serverlessTypes.js'
+import type { RenderPreviewData, RenderServerlessData } from '../render/renderTypes.js'
+import type { getAllContentfulData } from '../contentful/contentfulData.js'
+import type { getAllWordPressData } from '../wordpress/wordpressData.js'
 import { isStringStrict } from '../utils/string/string.js'
 import { isObjectStrict } from '../utils/object/object.js'
-
-/**
- * Directory to write serverless files to.
- *
- * @type {string}
- */
-let serverlessDir: string = 'functions'
-
-/**
- * Serverless routes to create files for.
- *
- * @type {ServerlessRoutes}
- */
-let serverlessRoutes: ServerlessRoutes = {
-  reload: []
-}
+import { isFunction } from '../utils/function/function.js'
+import { render, renderHttpError } from '../render/render.js'
+import { minify } from '../utils/minify/minify.js'
+import { print } from '../utils/print/print.js'
 
 /**
  * Actions to use in serverless functions.
@@ -32,47 +23,160 @@ let serverlessRoutes: ServerlessRoutes = {
 let serverlessActions: ServerlessActions = {}
 
 /**
- * Serverless options.
+ * Check if request is a preview.
  *
- * @param {ServerlessArgs} args
- * @param {string} [dir]
+ * @param {Request} request
+ * @return {RenderPreviewData|undefined}
  */
-const setServerless = (
-  args: ServerlessArgs,
-  dir: string = 'functions'
-): boolean => {
-  if (!isObjectStrict(args)) {
-    return false
+const serverlessPreview = (request: Request): RenderPreviewData | undefined => {
+  /* Params */
+
+  const { url } = request
+  const { searchParams } = new URL(url)
+  const contentType = searchParams.get('content_type')
+  const locale = searchParams.get('locale')
+  const id = searchParams.get('preview')
+
+  /* Id and content type required */
+
+  if (!isStringStrict(id) || !isStringStrict(contentType)) {
+    return
   }
 
-  const {
-    actions,
-    routes
-  } = args
+  /* Result */
 
-  if (isObjectStrict(actions)) {
-    serverlessActions = { ...actions }
+  const previewData: RenderPreviewData = { id, contentType }
+
+  if (isStringStrict(locale)) {
+    previewData.locale = locale
   }
 
-  if (isObjectStrict(routes)) {
-    serverlessRoutes = {
-      ...{ reload: [] },
-      ...routes
+  return previewData
+}
+
+/**
+ * Check if request is a paginated and/or filtered page.
+ *
+ * @param {Request} request
+ * @return {RenderServerlessData|undefined}
+ */
+const serverlessReload = (request: Request): RenderServerlessData | undefined => {
+  /* Query */
+
+  const { url } = request
+  const { searchParams, pathname } = new URL(url)
+  const page = searchParams.get('page')
+  const filters = searchParams.get('filters')
+  const path = pathname
+  const query: Record<string, string> = {}
+
+  let noPage = false
+  let noFilters = false
+
+  if (isStringStrict(page)) {
+    query.page = page
+  } else {
+    noPage = true
+  }
+
+  if (isStringStrict(filters)) {
+    query.filters = filters
+  } else {
+    noFilters = true
+  }
+
+  /* No query move on to default page */
+
+  if (noPage && noFilters) {
+    return
+  }
+
+  /* Result */
+
+  return { query, path }
+}
+
+/**
+ * Re-render with serverless or preview data.
+ *
+ * @param {getAllContentfulData|getAllWordPressData} getData
+ * @param {RenderServerlessData} [serverlessData]
+ * @param {RenderPreviewData} [previewData]
+ * @return {Promise<Response>}
+ */
+const serverlessRender = async (
+  getData: typeof getAllContentfulData | typeof getAllWordPressData,
+  serverlessData?: RenderServerlessData,
+  previewData?: RenderPreviewData
+): Promise<Response> => {
+  try {
+    const data = await render({
+      serverlessData,
+      previewData,
+      allData: await getData({
+        serverlessData,
+        previewData
+      })
+    })
+
+    let html = ''
+    let status = 200
+
+    if (isObjectStrict(data)) {
+      html = data.output
     }
+
+    const isEmpty = html === ''
+
+    if (isEmpty) {
+      status = 404
+    }
+
+    if (isEmpty && isFunction(renderHttpError)) {
+      html = await renderHttpError({ code: status })
+    }
+
+    return new Response(minify(html), {
+      status,
+      headers: {
+        'Content-Type': 'text/html;charset=UTF-8'
+      }
+    })
+  } catch (error) {
+    print('[FRM] Error on serverless render', error)
+  
+    const status = 500
+    const html = await renderHttpError({ code: status })
+
+    return new Response(html, {
+      status,
+      headers: {
+        'Content-Type': 'text/html;charset=UTF-8'
+      }
+    })
+  }
+}
+
+/**
+ * Set serverless actions.
+ *
+ * @param {ServerlessActions} [actions]
+ * @return {void}
+ */
+const setServerless = (actions?: ServerlessActions): void => {
+  if (!isObjectStrict(actions)) {
+    return
   }
 
-  if (isStringStrict(dir)) {
-    serverlessDir = dir
-  }
-
-  return true
+  serverlessActions = { ...actions }
 }
 
 /* Exports */
 
 export {
-  serverlessDir,
-  serverlessRoutes,
   serverlessActions,
+  serverlessPreview,
+  serverlessReload,
+  serverlessRender,
   setServerless
 }

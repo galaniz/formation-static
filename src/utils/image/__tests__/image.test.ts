@@ -333,9 +333,9 @@ describe('getImage()', () => {
         alt="Test"
         src="http://wp.com/test.png"
         srcset="http://wp.com/test-200x20.png 200w, http://wp.com/test-400x40.png 400w, http://wp.com/test-600x60.png 600w, http://wp.com/test-800x80.png 800w, http://wp.com/test-1000x100.png 1000w"
-        sizes="(min-width: 68.75rem) 68.75rem, 100vw"
-        width="1100"
-        height="110"
+        sizes="(min-width: 62.5rem) 62.5rem, 100vw"
+        width="1000"
+        height="100"
         loading="lazy"
         decoding="async"
       >
@@ -355,7 +355,7 @@ describe('getImage()', () => {
         'http://wp.com/test-800x80.png 800w',
         'http://wp.com/test-1000x100.png 1000w'
       ],
-      sizes: '(min-width: 68.75rem) 68.75rem, 100vw'
+      sizes: '(min-width: 62.5rem) 62.5rem, 100vw'
     }
 
     expect(result).toEqual(expectedResult)
@@ -365,7 +365,7 @@ describe('getImage()', () => {
     config.cms.name = 'wordpress'
 
     const result = getImage({
-      maxWidth: 800,
+      maxWidth: 700,
       lazy: false,
       classes: 'test',
       attr: 'id="test"',
@@ -377,10 +377,10 @@ describe('getImage()', () => {
         format: 'jpg',
         alt: 'Test',
         sizes: {
-          200: 'http://wp.com/test-200x100.png',
-          400: 'http://wp.com/test-400x200.png',
-          600: 'http://wp.com/test-600x300.png',
-          800: 'http://wp.com/test-800x400.png'
+          200: 'http://wp.com/test-200x100.jpg',
+          400: 'http://wp.com/test-400x200.jpg',
+          600: 'http://wp.com/test-600x300.jpg',
+          800: 'http://wp.com/test-800x400.jpg'
         }
       }
     })
@@ -396,11 +396,54 @@ describe('getImage()', () => {
         class="test"
         alt=""
         src="http://wp.com/test.jpg"
-        srcset="http://wp.com/test-200x100.png 200w, http://wp.com/test-400x200.png 400w, http://wp.com/test-600x300.png 600w, http://wp.com/test-800x400.png 800w"
+        srcset="http://wp.com/test-200x100.jpg 200w, http://wp.com/test-400x200.jpg 400w, http://wp.com/test-600x300.jpg 600w, http://wp.com/test-800x400.jpg 800w"
         sizes="(min-width: 50rem) 50rem, 100vw"
         width="800"
         height="400"
         id="test"
+        loading="eager"
+      >
+    `)
+
+    expect(testMinify(result)).toEqual(expectedResult)
+  })
+
+  it('should return wordpress image output with max natural width', () => {
+    config.cms.name = 'wordpress'
+
+    const result = getImage({
+      maxWidth: 1600,
+      lazy: false,
+      alt: '',
+      data: {
+        url: 'http://wp.com/test.jpg',
+        width: 1600,
+        height: 800,
+        format: 'jpg',
+        alt: 'Test',
+        sizes: {
+          200: 'http://wp.com/test-200x100.jpg',
+          400: 'http://wp.com/test-400x200.jpg',
+          600: 'http://wp.com/test-600x300.jpg',
+          800: 'http://wp.com/test-800x400.jpg'
+        }
+      }
+    })
+
+    const expectedResult = testMinify(`
+      <img
+        alt=""
+        role="presentation"
+        aria-hidden="true"
+        src="data:image/svg+xml;charset=utf-8,%3Csvg height='800' width='1600' xmlns='http://www.w3.org/2000/svg' version='1.1'%3E%3C/svg%3E" style="pointerEvents: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%"
+      >
+      <img
+        alt=""
+        src="http://wp.com/test.jpg"
+        srcset="http://wp.com/test-200x100.jpg 200w, http://wp.com/test-400x200.jpg 400w, http://wp.com/test-600x300.jpg 600w, http://wp.com/test-800x400.jpg 800w, http://wp.com/test.jpg 1600w"
+        sizes="(min-width: 100rem) 100rem, 100vw"
+        width="1600"
+        height="800"
         loading="eager"
       >
     `)

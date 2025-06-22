@@ -4,16 +4,25 @@
 
 /* Imports */
 
-import { it, expect, describe, vi, afterEach, beforeAll } from 'vitest'
-import { fs } from 'memfs'
-import { readFile } from 'node:fs/promises'
-import { testMinify, testResetServerless } from '../../../tests/utils.js'
-import { config } from '../../config/config.js'
-import { createServerlessFiles } from '../serverlessFiles.js'
+import { it, expect, describe, vi, afterEach, beforeEach, beforeAll } from 'vitest'
 import {
-  serverlessDir,
-  serverlessRoutes,
+  testRequest,
+  testResetRenderFunctions,
+  testResetStore,
+  testResetServerless,
+  testWordPressConfig
+} from '../../../tests/utils.js'
+import { getAllWordPressData } from '../../wordpress/wordpressData.js'
+import { mockWordPressFetch } from '../../wordpress/__tests__/wordpressDataMock.js'
+import { setRenderFunctions } from '../../render/render.js'
+import { isStringStrict } from '../../utils/string/string.js'
+import { config, setConfig } from '../../config/config.js'
+import { setStoreItem } from '../../store/store.js'
+import {
   serverlessActions,
+  serverlessPreview,
+  serverlessReload,
+  serverlessRender,
   setServerless
 } from '../serverless.js'
 
@@ -24,253 +33,289 @@ describe('setServerless()', () => {
     testResetServerless()
   })
 
-  it('should return false and not set serverless variables if no args', () => {
-    // @ts-expect-error - test undefined args
-    const result = setServerless()
-    const expectedResult = false
-    const expectedDir = 'functions'
-    const expectedRoutes = { reload: [] }
-    const expectedActions = {}
-
-    expect(result).toBe(expectedResult)
-    expect(serverlessDir).toBe(expectedDir)
-    expect(serverlessRoutes).toEqual(expectedRoutes)
-    expect(serverlessActions).toEqual(expectedActions)
+  it('should not set actions if empty args', () => {
+    setServerless()
+    expect(serverlessActions).toEqual({})
   })
 
-  it('should return true and set variables', async () => {
-    const result = setServerless({
-      actions: {
-        test: () => new Promise(resolve => {
-          resolve({})
-        })
-      },
-      routes: {
-        test: []
-      }
-    }, 'test')
+  it('should set actions', async () => {
+    setServerless({
+      test: () => new Promise(resolve => {
+        resolve({})
+      })
+    })
 
     const resultAction = await serverlessActions.test?.(
       // @ts-expect-error - test empty data
-      {}, {}
+      {}, {}, {}
     )
 
-    const expectedResult = true
-    const expectedDir = 'test'
-    const expectedRoutes = {
-      test: [],
-      reload: []
-    }
-
-    expect(result).toBe(expectedResult)
-    expect(serverlessDir).toBe(expectedDir)
-    expect(serverlessRoutes).toEqual(expectedRoutes)
     expect(resultAction).toEqual({})
   })
 })
 
-/* Test createServerlessFiles */
+/* Test serverlessPreview */
 
-describe('createServerlessFiles()', () => {
+describe('serverlessPreview()', () => {
+  it('should return undefined if no params', () => {
+    const result = serverlessPreview(testRequest())
+    const expectedResult = undefined
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return undefined if no id', () => {
+    const result = serverlessPreview(testRequest('http://test.com/?content_type=post'))
+    const expectedResult = undefined
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return undefined if no content type', () => {
+    const result = serverlessPreview(testRequest('http://test.com/?preview=123'))
+    const expectedResult = undefined
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return id and content type', () => {
+    const result = serverlessPreview(testRequest('http://test.com/?preview=123&content_type=post'))
+    const expectedResult = { id: '123', contentType: 'post' }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return id, content type and locale', () => {
+    const result = serverlessPreview(testRequest('http://test.com/?preview=123&content_type=post&locale=es'))
+    const expectedResult = { id: '123', contentType: 'post', locale: 'es' }
+
+    expect(result).toEqual(expectedResult)
+  })
+})
+
+/* Test serverlessReload */
+
+describe('serverlessReload()', () => {
+  it('should return undefined if no params', () => {
+    const result = serverlessReload(testRequest())
+    const expectedResult = undefined
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return page and path', () => {
+    const result = serverlessReload(testRequest('http://test.com/blog/?page=2'))
+    const expectedResult = {
+      path: '/blog/',
+      query: {
+        page: '2'
+      }
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return filters and path', () => {
+    const result = serverlessReload(testRequest('http://test.com/blog/?filters=category:1'))
+    const expectedResult = {
+      path: '/blog/',
+      query: {
+        filters: 'category:1'
+      }
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return page, filters and path', () => {
+    const result = serverlessReload(testRequest('http://test.com/blog/?page=2&filters=category:1'))
+    const expectedResult = {
+      path: '/blog/',
+      query: {
+        page: '2',
+        filters: 'category:1'
+      }
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+})
+
+/* Test serverlessRender */
+
+describe('serverlessRender()', () => {
   beforeAll(() => {
-    vi.spyOn(console, 'info').mockImplementation(() => {})
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+  })
+
+  beforeEach(() => {
+    vi.stubGlobal('fetch', mockWordPressFetch)
+    setConfig({ cms: testWordPressConfig() })
   })
 
   afterEach(() => {
-    config.cms.name = ''
-    config.env.dev = true
-    testResetServerless()
+    testResetRenderFunctions()
+    testResetStore()
+    config.cms = {
+      name: '',
+      space: '',
+      prodUser: '',
+      prodCredential: '',
+      prodHost: '',
+      devUser: '',
+      devCredential: '',
+      devHost: ''
+    }
   })
 
-  it('should not create preview file if production', async () => {
-    config.env.dev = false
-    setServerless({}, '/files')
-
-    await createServerlessFiles({
-      previewFile: 'preview.js'
+  it('should return 500 response with empty body', async () => {
+    // @ts-expect-error - test throwing error
+    const response = await serverlessRender(null, {
+      path: '/hello-world/',
+      query: {
+        page: '10'
+      }
     })
 
-    const preview = fs.existsSync('/files/preview.js')
-    const expectedPreview = false
+    const body = await response.text()
+    const status = response.status
+    const expectedBody = ''
+    const expectedStatus = 500
 
-    expect(preview).toBe(expectedPreview)
+    expect(body).toBe(expectedBody)
+    expect(status).toBe(expectedStatus)
   })
 
-  it('should create ajax, preview and custom route files', async () => {
-    const loremContent = 'import test from "../test.js"; export const lorem = async () => "lorem"'
-
-    setServerless({
-      routes: {
-        reload: [],
-        custom: [
-          {
-            path: 'lorem.js',
-            content: loremContent
-          }
-        ]
-      }
-    }, '/files')
-
-    await createServerlessFiles()
-
-    const ajax = await readFile('/files/ajax/index.js', { encoding: 'utf8' })
-    const preview = await readFile('/files/_middleware.js', { encoding: 'utf8' })
-    const lorem = await readFile('/files/lorem.js', { encoding: 'utf8' })
-
-    const expectedAjax = testMinify(`
-      import { Ajax } from '@alanizcreative/formation-static/serverless/Ajax/Ajax.js';
-      import { setupServerless } from '../../../lib/setup/setupServerless.js';
-      const render = async (context) => {
-        return await Ajax(context, setupServerless);
-      };
-      export const onRequestPost = [render];
-    `)
-
-    const expectedPreview = testMinify(`
-      import { Preview } from '@alanizcreative/formation-static/serverless/Preview/Preview.js';
-      import { getAllContentfulData } from '@alanizcreative/formation-static/contentful/contentfulData.js';
-      import { setupServerless } from '../../lib/setup/setupServerless.js';
-      const render = async (context) => {
-        return await Preview(context, setupServerless, getAllContentfulData);
-      };
-      export const onRequestGet = [render];
-    `)
-
-    expect(testMinify(ajax)).toBe(expectedAjax)
-    expect(testMinify(preview)).toBe(expectedPreview)
-    expect(testMinify(lorem)).toBe(testMinify(loremContent))
-  })
-
-  it('should create reload route files', async () => {
-    config.cms.name = 'wordpress'
-
-    setServerless({
-      routes: {
-        reload: [
-          {
-            path: 'test'
-          },
-          {
-            path: 'parent/child'
-          },
-          {
-            path: '' // Test empty path
-          }
-        ],
-        custom: [
-          {
-            path: 'lorem.js',
-            content: ''
-          }
-        ]
-      }
-    }, '/files')
-
-    await createServerlessFiles({
-      reloadFile: 'reload.js'
+  it('should return 500 response with render http error output', async () => {
+    setRenderFunctions({
+      functions: {},
+      layout: () => '',
+      httpError: ({ code }) => `<html><body><h1>${code}</h1></body></html>`
     })
 
-    const testReload = await readFile('/files/test/reload.js', { encoding: 'utf8' })
-    const childReload = await readFile('/files/parent/child/reload.js', { encoding: 'utf8' })
-    const emptyReload = fs.existsSync('/files/reload.js')
-    const lorem = fs.existsSync('/files/lorem.js')
-
-    const expectedTestReload = testMinify(`
-      import { Reload } from '@alanizcreative/formation-static/serverless/Reload/Reload.js';
-      import { getAllWordPressData } from '@alanizcreative/formation-static/wordpress/wordpressData.js';
-      import { setupServerless } from '../../../lib/setup/setupServerless.js';
-      const render = async (context) => {
-        return await Reload(context, setupServerless, getAllWordPressData);
-      };
-      export const onRequestGet = [render];
-    `)
-
-    const expectedChildReload = testMinify(`
-      import { Reload } from '@alanizcreative/formation-static/serverless/Reload/Reload.js';
-      import { getAllWordPressData } from '@alanizcreative/formation-static/wordpress/wordpressData.js';
-      import { setupServerless } from '../../../../lib/setup/setupServerless.js';
-      const render = async (context) => {
-        return await Reload(context, setupServerless, getAllWordPressData);
-      };
-      export const onRequestGet = [render];
-    `)
-
-    const expectedEmptyReload = false
-    const expectedLorem = false
-
-    expect(testMinify(testReload)).toBe(expectedTestReload)
-    expect(testMinify(childReload)).toBe(expectedChildReload)
-    expect(emptyReload).toBe(expectedEmptyReload)
-    expect(lorem).toBe(expectedLorem)
-  })
-
-  it('should create ajax, preview, reload and custom routes in specified files and directories', async () => {
-    setServerless({
-      routes: {
-        reload: [
-          {
-            path: 'test'
-          }
-        ],
-        test: [
-          {
-            path: 'test.js',
-            content: 'test'
-          }
-        ]
+    // @ts-expect-error - test throwing error
+    const response = await serverlessRender(null, {
+      path: '/hello-world/',
+      query: {
+        page: '10'
       }
-    }, '/files')
-
-    await createServerlessFiles({
-      dataExport: 'getData',
-      dataExportFile: 'lib/data.js',
-      setupExport: 'setup',
-      setupExportFile: 'lib/setup.js',
-      previewExportFile: 'lib/preview.js',
-      reloadExportFile: 'lib/reload.js',
-      ajaxExportFile: 'lib/ajax.js',
-      ajaxFile: 'ajax.js',
-      previewFile: 'preview.js',
-      reloadFile: 'reload.js'
     })
 
-    const ajax = await readFile('/files/ajax.js', { encoding: 'utf8' })
-    const preview = await readFile('/files/preview.js', { encoding: 'utf8' })
-    const testReload = await readFile('/files/test/reload.js', { encoding: 'utf8' })
-    const test = await readFile('/files/test.js', { encoding: 'utf8' })
+    const body = await response.text()
+    const status = response.status
+    const expectedBody = '<html><body><h1>500</h1></body></html>'
+    const expectedStatus = 500
 
-    const expectedAjax = testMinify(`
-      import { Ajax } from '../../lib/ajax.js';
-      import { setup } from '../../lib/setup.js';
-      const render = async (context) => {
-        return await Ajax(context, setup);
-      };
-      export const onRequestPost = [render];
-    `)
+    expect(body).toBe(expectedBody)
+    expect(status).toBe(expectedStatus)
+  })
 
-    const expectedPreview = testMinify(`
-      import { Preview } from '../../lib/preview.js';
-      import { getData } from '../../lib/data.js';
-      import { setup } from '../../lib/setup.js';
-      const render = async (context) => {
-        return await Preview(context, setup, getData);
-      };
-      export const onRequestGet = [render];
-    `)
+  it('should return 404 response with render http error output', async () => {
+    setRenderFunctions({
+      functions: {},
+      layout: () => '',
+      httpError: ({ code }) => `<html><body><h1>${code}</h1></body></html>`
+    })
 
-    const expectedTestReload = testMinify(`
-      import { Reload } from '../../../lib/reload.js';
-      import { getData } from '../../../lib/data.js';
-      import { setup } from '../../../lib/setup.js';
-      const render = async (context) => {
-        return await Reload(context, setup, getData);
-      };
-      export const onRequestGet = [render];
-    `)
+    const response = await serverlessRender(getAllWordPressData, {
+      path: '/hello-world/',
+      query: {
+        page: '10'
+      }
+    })
 
-    expect(testMinify(ajax)).toBe(expectedAjax)
-    expect(testMinify(preview)).toBe(expectedPreview)
-    expect(testMinify(testReload)).toBe(expectedTestReload)
-    expect(testMinify(test)).toBe('test')
+    const body = await response.text()
+    const status = response.status
+    const expectedBody = '<html><body><h1>404</h1></body></html>'
+    const expectedStatus = 404
+
+    expect(body).toBe(expectedBody)
+    expect(status).toBe(expectedStatus)
+  })
+
+  it('should return 404 response with empty body', async () => {
+    const response = await serverlessRender(getAllWordPressData, {
+      path: '/hello-world/',
+      query: {
+        page: '10'
+      }
+    })
+
+    const body = await response.text()
+    const status = response.status
+    const expectedBody = ''
+    const expectedStatus = 404
+
+    expect(body).toBe(expectedBody)
+    expect(status).toBe(expectedStatus)
+  })
+
+  it('should return 200 response with serverless data output', async () => {
+    setStoreItem('slugs', ['1', 'post'], '/hello-world/')
+    setConfig({
+      cms: testWordPressConfig(),
+      env: {
+        ...config.env,
+        dir: '/'
+      }
+    })
+
+    setRenderFunctions({
+      functions: {},
+      layout: ({ content, serverlessData }) => {
+        let page = ''
+        let filters = ''
+
+        if (serverlessData) {
+          const { query } = serverlessData
+
+          page = isStringStrict(query?.page) ? query.page : ''
+          filters = isStringStrict(query?.filters) ? query.filters : ''
+        }
+
+        return `<html><body>${page} ${filters} ${content}</body></html>`
+      },
+      httpError: ({ code }) => `<html><body><h1>${code}</h1></body></html>`
+    })
+
+    const response = await serverlessRender(getAllWordPressData, {
+      path: '/hello-world/',
+      query: {
+        page: '10',
+        filters: 'cat'
+      }
+    })
+
+    const body = await response.text()
+    const status = response.status
+    const expectedStatus = 200
+    const expectedBody =
+      '<html><body>10 cat <p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p></body></html>'
+
+    expect(body).toBe(expectedBody)
+    expect(status).toBe(expectedStatus)
+  })
+
+  it('should return 200 response with preview data output', async () => {
+    setRenderFunctions({
+      functions: {},
+      layout: ({ content, previewData }) => `<html lang="${previewData?.locale}"><body>${content}</body></html>`,
+      httpError: ({ code }) => `<html><body><h1>${code}</h1></body></html>`
+    })
+
+    const response = await serverlessRender(getAllWordPressData, undefined, {
+      id: '1',
+      contentType: 'post',
+      locale: 'en-CA'
+    })
+
+    const body = await response.text()
+    const status = response.status
+    const expectedStatus = 200
+    const expectedBody =
+      '<html lang="en-CA"><body><p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p></body></html>'
+
+    expect(body).toBe(expectedBody)
+    expect(status).toBe(expectedStatus)
   })
 })

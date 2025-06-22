@@ -14,17 +14,17 @@ class ResponseError extends Error {
   response: Response | undefined
 
   /**
-   * Init and set properties.
+   * Create new instance with given message and response.
    *
    * @param {string} message
-   * @param {Response} [res]
+   * @param {Response} [resp]
    */
-  constructor (message: string, res?: Response) {
+  constructor (message: string, resp?: Response) {
     super(message)
     this.message = message
 
-    if (res instanceof Response) {
-      this.response = res
+    if (resp instanceof Response) {
+      this.response = resp
     }
   }
 }

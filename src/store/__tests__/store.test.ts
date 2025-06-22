@@ -55,6 +55,7 @@ describe('setStore()', () => {
       archiveMeta: {},
       imageMeta: {},
       taxonomies: {},
+      serverless: {},
       test: []
     }
 
@@ -99,17 +100,21 @@ describe('setStoreItem()', () => {
   })
 
   it('should return true and set slug prop', () => {
-    const result = setStoreItem('slugs', {
-      contentType: 'page',
-      id: ''
-    }, '/test/')
-
+    const result = setStoreItem('slugs', ['', 'page'], '/test/')
     const resultStore = store.slugs['/test/']
     const expectedResult = true
-    const expectedResultStore = {
-      contentType: 'page',
-      id: ''
-    }
+    const expectedResultStore = ['', 'page']
+
+    expect(result).toBe(expectedResult)
+    expect(resultStore).toEqual(expectedResultStore)
+  })
+
+  it('should return true and set serverless prop', () => {
+    const data = ['test', 1, true, null, undefined, ['test', 1, true, null, undefined]]
+    const result = setStoreItem('serverless', data, 'test')
+    const resultStore = store.serverless.test
+    const expectedResult = true
+    const expectedResultStore = ['test', 1, true, null, undefined, ['test', 1, true, null, undefined]]
 
     expect(result).toBe(expectedResult)
     expect(resultStore).toEqual(expectedResultStore)
@@ -363,10 +368,10 @@ describe('setStoreData()', () => {
       slugs: {},
       parents: {
         page: {
-          1: pageParent
+          1: [pageParent.id, pageParent.slug, pageParent.title]
         },
         term: {
-          5: termParent
+          5: [termParent.id, termParent.slug, termParent.title]
         }
       },
       navigations,
@@ -391,7 +396,8 @@ describe('setStoreData()', () => {
         }
       },
       imageMeta: {},
-      taxonomies: {}
+      taxonomies: {},
+      serverless: {}
     }
 
     expect(result).toBe(expectedResult)
@@ -431,6 +437,17 @@ describe('getStoreItem()', () => {
     setStoreItem('formMeta', data, '123')
 
     const result = getStoreItem('formMeta')
+    const expectedResult = { 123: data }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return serverless data', () => {
+    const data = ['one', 9, true, null, [1, 2, 3], { one: 1, two: 2 }]
+
+    setStoreItem('serverless', data, '123')
+
+    const result = getStoreItem('serverless')
     const expectedResult = { 123: data }
 
     expect(result).toEqual(expectedResult)
@@ -484,6 +501,7 @@ describe('createStoreFiles()', () => {
     const archiveMeta = await readFile('/files/archiveMeta.json', { encoding: 'utf8' })
     const imageMeta = await readFile('/files/imageMeta.json', { encoding: 'utf8' })
     const taxonomies = await readFile('/files/taxonomies.json', { encoding: 'utf8' })
+    const serverless = await readFile('/files/serverless.json', { encoding: 'utf8' })
     const test = await readFile('/files/test.json', { encoding: 'utf8' })
 
     expect(JSON.parse(slugs)).toEqual({})
@@ -494,6 +512,7 @@ describe('createStoreFiles()', () => {
     expect(JSON.parse(archiveMeta)).toEqual({})
     expect(JSON.parse(imageMeta)).toEqual({})
     expect(JSON.parse(taxonomies)).toEqual({})
+    expect(JSON.parse(serverless)).toEqual({})
     expect(JSON.parse(test)).toEqual(testData)
   })
 })

@@ -5,12 +5,8 @@
 /* Imports */
 
 import type { AjaxResultOptions, AjaxResultFilterArgs } from './AjaxTypes.js'
-import type {
-  ServerlessContext,
-  ServerlessSetup,
-  ServerlessActionData,
-  ServerlessActionReturn
-} from '../serverlessTypes.js'
+import type { ServerlessActionData, ServerlessActionReturn } from '../serverlessTypes.js'
+import type { Generic } from '../../global/globalTypes.js'
 import { ResponseError } from '../../utils/ResponseError/ResponseError.js'
 import { applyFilters } from '../../utils/filter/filter.js'
 import { isObjectStrict } from '../../utils/object/object.js'
@@ -24,20 +20,15 @@ import { serverlessActions } from '../serverless.js'
 /**
  * Handle ajax requests by processing data and calling serverless actions.
  *
- * @param {ServerlessContext} context
- * @param {ServerlessSetup} setupServerless
- * @return {Promise<Response>} Response
+ * @param {Request} request
+ * @param {Generic} env
+ * @return {Promise<Response>}
  */
-const Ajax = async (context: ServerlessContext, setupServerless: ServerlessSetup): Promise<Response> => {
+const Ajax = async (request: Request, env: Generic): Promise<Response> => {
   try {
-    /* Setup */
-
-    await setupServerless(context, 'ajax')
-
     /* Form data */
 
-    const request = context.request
-    const data: ServerlessActionData | undefined = await request.json()
+    const data = await request.json() as ServerlessActionData | undefined
 
     /* Data must be object */
 
@@ -81,12 +72,13 @@ const Ajax = async (context: ServerlessContext, setupServerless: ServerlessSetup
     const ajaxFn = serverlessActions[action]
 
     if (isFunction(ajaxFn)) {
-      res = await ajaxFn(data, context)
+      res = await ajaxFn(data, request, env)
     }
 
     const ajaxResultFilterArgs: AjaxResultFilterArgs = {
       data,
-      context
+      request,
+      env
     }
 
     res = await applyFilters('ajaxResult', res, ajaxResultFilterArgs, true)

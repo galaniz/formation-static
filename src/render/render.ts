@@ -25,7 +25,6 @@ import type {
 } from './renderTypes.js'
 import type { ParentArgs, RefString } from '../global/globalTypes.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
-import type { StoreSlug } from '../store/storeTypes.js'
 import { doActions } from '../utils/action/action.js'
 import { applyFilters } from '../utils/filter/filter.js'
 import { getSlug, getPermalink } from '../utils/link/link.js'
@@ -38,7 +37,6 @@ import { doShortcodes } from '../utils/shortcode/shortcode.js'
 import { tagExists } from '../utils/tag/tag.js'
 import { setStoreData, setStoreItem, getStoreItem } from '../store/store.js'
 import { setRedirects } from '../redirects/redirects.js'
-import { serverlessRoutes } from '../serverless/serverless.js'
 import { scripts, styles } from '../utils/scriptStyle/scriptStyle.js'
 import { Container } from '../layouts/Container/Container.js'
 import { Column } from '../layouts/Column/Column.js'
@@ -318,7 +316,6 @@ const mapContentTemplate = (
  * Recurse and output nested content.
  *
  * @param {RenderContentArgs} args
- * @param {RefString} [_html]
  * @return {Promise<string>}
  */
 const renderContent = async (args: RenderContentArgs, _html: RefString = { ref: '' }): Promise<string> => {
@@ -525,7 +522,6 @@ const renderContent = async (args: RenderContentArgs, _html: RefString = { ref: 
  * Output single post or page.
  *
  * @param {RenderItemArgs} args
- * @param {string} [_contentType] - Api content type.
  * @return {Promise<RenderItemReturn|null>}
  */
 const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<RenderItemReturn | null> => {
@@ -633,7 +629,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     meta.description = item.metaDescription
   }
 
-  if (isStringStrict((item as { metaImage?: { url?: string } }).metaImage?.url)) { // Cast one off for contentful image
+  if (isStringStrict((item as { metaImage?: { url?: string } }).metaImage?.url)) { // Cast one off for Contentful image
     meta.image = (item as { metaImage: { url: string } }).metaImage.url
   }
 
@@ -677,16 +673,13 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
   }
 
   const cmsLocales = config.cms.locales
-  const slugData: StoreSlug = {
-    id,
-    contentType: isStringStrict(_contentType) ? _contentType : contentType
-  }
+  const slugData = [id, isStringStrict(_contentType) ? _contentType : contentType] as [string, string, string?]
 
   if (isStringStrict(item.locale) && cmsLocales) {
     const locale = item.locale
 
     if (cmsLocales.includes(locale) && locale !== cmsLocales[0]) {
-      slugData.locale = locale
+      slugData.push(locale)
     }
   }
 
@@ -914,10 +907,6 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
 
   setRedirects(redirect)
 
-  /* Empty serverless reload */
-
-  serverlessRoutes.reload = []
-
   /* Loop through all content types */
 
   for (const [contentType, contentItems] of Object.entries(content)) {
@@ -948,9 +937,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
       data.push(itemData)
 
       if (serverlessRender && !isServerless) {
-        serverlessRoutes.reload.push({
-          path: itemData.slug.replace(/^\/|\/$/gm, '')
-        })
+        setStoreItem('serverless', ['reload'], itemData.slug)
       }
     }
   }

@@ -4,8 +4,8 @@
 
 /* Imports */
 
-import type { GenericStrings } from '../../global/globalTypes.js'
-import type { ServerlessActionData, ServerlessContext, ServerlessActionReturn } from '../serverlessTypes.js'
+import type { Generic, GenericStrings } from '../../global/globalTypes.js'
+import type { ServerlessActionData, ServerlessActionReturn } from '../serverlessTypes.js'
 
 /**
  * @typedef {object} AjaxResultOptions
@@ -20,11 +20,13 @@ export interface AjaxResultOptions {
 /**
  * @typedef {object} AjaxResultFilterArgs
  * @prop {ServerlessActionData} data
- * @prop {ServerlessContext} context
+ * @prop {Request} request
+ * @prop {Generic} env
  */
 export interface AjaxResultFilterArgs {
   data: ServerlessActionData
-  context: ServerlessContext
+  request: Request
+  env: Generic
 }
 
 /**

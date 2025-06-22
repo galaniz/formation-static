@@ -5,7 +5,6 @@
 /* Imports */
 
 import type { RenderFunctions } from '../src/render/renderTypes.js'
-import type { ServerlessContext } from '../src/serverless/serverlessTypes.js'
 import type { Store } from '../src/store/storeTypes.js'
 import type { Config } from '../src/config/configTypes.js'
 import { Container } from '../src/layouts/Container/Container.js'
@@ -42,7 +41,8 @@ const testDefaultStore = (): Store => {
     formMeta: {},
     archiveMeta: {},
     imageMeta: {},
-    taxonomies: {}
+    taxonomies: {},
+    serverless: {}
   }
 }
 
@@ -84,53 +84,38 @@ const testResetRenderFunctions = (): void => {
   setRenderFunctions({
     functions: {},
     layout: () => '',
-    navigations: () => undefined,
+    navigation: () => undefined,
     httpError: () => ''
   })
 }
 
 /**
- * Serverless context object.
+ * Serverless request object.
  *
  * @param {string} [url=http://test.com/]
  * @param {string} [method=GET]
  * @param {object} [data={}]
- * @return {ServerlessContext}
+ * @return {Request}
  */
-const testContext = (
-  url: string = 'http://test.com/',
-  method: string = 'GET',
-  data: object = {}
-): ServerlessContext => {
+const testRequest = (url: string = 'http://test.com/', method: string = 'GET', data: object = {}): Request => {
   const request = new Request(url, { method })
 
   return {
-    request: {
-      ...request,
-      url,
-      method,
-      clone: () => ({
-        ...request.clone(),
-        fetcher: {},
-        bytes: () => new ArrayBuffer(0)
-      }),
+    ...request,
+    url,
+    method,
+    clone: () => ({
+      ...request.clone(),
       fetcher: {},
-      bytes: () => new ArrayBuffer(0),
-      text: () => JSON.stringify(data),
-      json: () => (data)
-    },
-    functionPath: '',
-    env: {},
-    data: {},
-    waitUntil () {},
-    passThroughOnException () {},
-    params: {},
-    next () {}
-  } as unknown as ServerlessContext
+      bytes: () => new ArrayBuffer(0)
+    }),
+    text: () => Promise.resolve(JSON.stringify(data)),
+    json: () => Promise.resolve(data)
+  }
 }
 
 /**
- * WordPress cms config object.
+ * WordPress CMS config object.
  *
  * @return {Config['cms']}
  */
@@ -148,15 +133,12 @@ const testWordPressConfig = (): Config['cms'] => {
 }
 
 /**
- * Reset serverless variables to default values.
+ * Reset serverless actions to default.
  *
  * @return {void}
  */
 const testResetServerless = (): void => {
-  setServerless({
-    actions: {},
-    routes: {}
-  }, 'functions')
+  setServerless({})
 }
 
 /* Exports */
@@ -167,7 +149,7 @@ export {
   testResetStore,
   testDefaultRenderFunctions,
   testResetRenderFunctions,
-  testContext,
+  testRequest,
   testWordPressConfig,
   testResetServerless
 }

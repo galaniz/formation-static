@@ -108,16 +108,8 @@ describe('getSlug()', () => {
 
     setStoreItem('parents', {
       hierarchical: {
-        123: {
-          id: '456',
-          slug: 'colors',
-          title: 'Colors'
-        },
-        456: {
-          id: '789',
-          slug: 'design',
-          title: 'Design'
-        }
+        123: ['456', 'colors', 'Colors'],
+        456: ['789', 'design', 'Design']
       }
     })
 
@@ -184,11 +176,7 @@ describe('getSlug()', () => {
   it('should return parent, archive slug and slug', () => {
     setStoreItem('parents', {
       page: {
-        123: {
-          id: '456',
-          slug: 'art',
-          title: 'Art'
-        }
+        123: ['456', 'art', 'Art']
       }
     })
 
@@ -424,16 +412,8 @@ describe('getSlug()', () => {
   it('should return locale, parent slug, archive slug and taxonomy slug', () => {
     setStoreItem('parents', {
       page: {
-        123: {
-          id: '456',
-          slug: 'art',
-          title: 'Art'
-        },
-        456: {
-          id: '789',
-          slug: 'all',
-          title: 'All'
-        }
+        123: ['456', 'art', 'Art'],
+        456: ['789', 'all', 'All']
       }
     })
 
@@ -621,11 +601,7 @@ describe('getSlug()', () => {
 
     setStoreItem('parents', {
       term: {
-        789: {
-          id: '101',
-          slug: 'cold',
-          title: 'Cold'
-        }
+        789: ['101', 'cold', 'Cold']
       }
     })
 

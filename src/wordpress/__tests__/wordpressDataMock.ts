@@ -151,7 +151,7 @@ const mockWordPressFetch = vi.fn(async (
 
     /* Headers */
 
-    if (isArray(data)) {
+    if (isArray(data) && data.length) {
       total = data.length.toString()
     }
 

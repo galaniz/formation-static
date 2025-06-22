@@ -224,6 +224,20 @@ describe('renderItem()', () => {
     expect(result).toBe(expectedResult)
   })
 
+  it('should return null if item content type is null', async () => {
+    const result = await renderItem({
+      contentType: 'page',
+      item: {
+        // @ts-expect-error - test null content type
+        contentType: null
+      }
+    })
+
+    const expectedResult = null
+
+    expect(result).toBe(expectedResult)
+  })
+
   it('should return null if item slug is empty string', async () => {
     const result = await renderItem({
       item: {
@@ -981,14 +995,8 @@ describe('render()', () => {
     const expectedResultMin = testMinifyOutput(expectedResult)
     const slugs = getStoreItem('slugs')
     const expectedSlugs = {
-      '/parent/': {
-        contentType: 'page',
-        id: '3'
-      },
-      '/parent/child/': {
-        contentType: 'page',
-        id: '1'
-      }
+      '/parent/': ['3', 'page'],
+      '/parent/child/': ['1', 'page']
     }
 
     expect(slugs).toEqual(expectedSlugs)
@@ -1055,11 +1063,7 @@ describe('render()', () => {
     const expectedResultMin = testMinifyOutput(expectedResult)
     const slugs = getStoreItem('slugs')
     const expectedSlugs = {
-      '/lorem.html': {
-        contentType: 'page',
-        id: '7',
-        locale: 'fr-CA'
-      }
+      '/lorem.html': ['7', 'page', 'fr-CA']
     }
 
     expect(resultMin).toEqual(expectedResultMin)

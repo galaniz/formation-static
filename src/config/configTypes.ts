@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { Source, GenericStrings } from '../global/globalTypes.js'
+import type { Source, GenericStrings, Generic } from '../global/globalTypes.js'
 
 /**
  * @typedef {object} ConfigMeta
@@ -75,7 +75,7 @@ export interface ConfigLocal {
 /**
  * @typedef {object} ConfigAsset
  * @prop {string} inputDir
- * @prop {string} outputDir - Relative to site folder
+ * @prop {string} outputDir - Relative to site folder.
  */
 export interface ConfigAsset {
   inputDir: string
@@ -103,16 +103,13 @@ export interface ConfigImage {
 /**
  * @typedef {function} ConfigFilter
  * @param {Config} config
- * @param {GenericStrings|NodeJS.Process['env']} env
+ * @param {Generic} env
  * @return {Config}
  */
-export type ConfigFilter = (
-  config: Config,
-  env: GenericStrings | NodeJS.Process['env']
-) => Config
+export type ConfigFilter = (config: Config, env: Generic) => Config
 
 /**
- * @typedef {object} ConfigBase
+ * @typedef {object} Config
  * @prop {string} namespace
  * @prop {Source} source
  * @prop {string} title
@@ -164,9 +161,7 @@ export type ConfigSet = (args: Partial<Config>) => Config
 
 /**
  * @typedef {function} ConfigSetFilter
- * @param {GenericStrings|NodeJS.Process['env']} env
+ * @param {Generic} env
  * @return {Config}
  */
-export type ConfigSetFilter = (
-  env: GenericStrings | NodeJS.Process['env']
-) => Config
+export type ConfigSetFilter = (env: Generic) => Config

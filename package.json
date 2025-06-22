@@ -39,7 +39,6 @@
   "author": "Graciela Alaniz (https://alanizcreative.com/)",
   "license": "MIT",
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20250521.0",
     "@types/contentful-resolve-response": "^0.1.33",
     "@types/node": "^22.15.21",
     "@types/uuid": "^10.0.0",

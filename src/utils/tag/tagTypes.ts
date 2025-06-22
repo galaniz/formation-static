@@ -7,7 +7,7 @@
 import type { RenderItem } from '../../render/renderTypes.js'
 
 /**
- * @typedef {function} TagGetMethod
+ * @typedef {function} TagGet
  * @param {RenderItem} item
  * @param {string} id
  * @return {TagGetReturn|undefined}
@@ -15,7 +15,7 @@ import type { RenderItem } from '../../render/renderTypes.js'
 export type TagGet = (item: RenderItem, id: string) => TagGetReturn | undefined
 
 /**
- * @typedef {function} TagExistsMethod
+ * @typedef {function} TagExists
  * @param {RenderItem} item
  * @param {string} id
  * @return {boolean}
