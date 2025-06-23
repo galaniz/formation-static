@@ -29,12 +29,20 @@ let serverlessActions: ServerlessActions = {}
  * @return {RenderPreviewData|undefined}
  */
 const serverlessPreview = (request: Request): RenderPreviewData | undefined => {
+  const { method, url } = request
+
+  /* Request must be get */
+
+  if (method !== 'GET') {
+    return
+  }
+
   /* Params */
 
-  const { url } = request
   const { searchParams } = new URL(url)
   const contentType = searchParams.get('content_type')
   const locale = searchParams.get('locale')
+  const env = searchParams.get('env')
   const id = searchParams.get('preview')
 
   /* Id and content type required */
@@ -51,6 +59,10 @@ const serverlessPreview = (request: Request): RenderPreviewData | undefined => {
     previewData.locale = locale
   }
 
+  if (isStringStrict(env)) {
+    previewData.env = env
+  }
+
   return previewData
 }
 
@@ -61,9 +73,16 @@ const serverlessPreview = (request: Request): RenderPreviewData | undefined => {
  * @return {RenderServerlessData|undefined}
  */
 const serverlessReload = (request: Request): RenderServerlessData | undefined => {
+  const { url, method } = request
+
+  /* Request must be get */
+
+  if (method !== 'GET') {
+    return
+  }
+
   /* Query */
 
-  const { url } = request
   const { searchParams, pathname } = new URL(url)
   const page = searchParams.get('page')
   const filters = searchParams.get('filters')

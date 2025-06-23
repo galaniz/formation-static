@@ -64,6 +64,13 @@ describe('serverlessPreview()', () => {
     expect(result).toEqual(expectedResult)
   })
 
+  it('should return undefined if method is not get', () => {
+    const result = serverlessPreview(testRequest('http://test.com/?preview=123&content_type=post', 'POST'))
+    const expectedResult = undefined
+
+    expect(result).toEqual(expectedResult)
+  })
+
   it('should return undefined if no id', () => {
     const result = serverlessPreview(testRequest('http://test.com/?content_type=post'))
     const expectedResult = undefined
@@ -91,6 +98,13 @@ describe('serverlessPreview()', () => {
 
     expect(result).toEqual(expectedResult)
   })
+
+  it('should return id, content type, locale and env', () => {
+    const result = serverlessPreview(testRequest('http://test.com/?preview=123&content_type=post&locale=es&env=dev'))
+    const expectedResult = { id: '123', contentType: 'post', locale: 'es', env: 'dev' }
+
+    expect(result).toEqual(expectedResult)
+  })
 })
 
 /* Test serverlessReload */
@@ -98,6 +112,13 @@ describe('serverlessPreview()', () => {
 describe('serverlessReload()', () => {
   it('should return undefined if no params', () => {
     const result = serverlessReload(testRequest())
+    const expectedResult = undefined
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return undefined if method is not get', () => {
+    const result = serverlessReload(testRequest('http://test.com/blog/?page=2', 'POST'))
     const expectedResult = undefined
 
     expect(result).toEqual(expectedResult)
