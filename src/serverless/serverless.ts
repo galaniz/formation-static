@@ -42,7 +42,6 @@ const serverlessPreview = (request: Request): RenderPreviewData | undefined => {
   const { searchParams } = new URL(url)
   const contentType = searchParams.get('content_type')
   const locale = searchParams.get('locale')
-  const env = searchParams.get('env')
   const id = searchParams.get('preview')
 
   /* Id and content type required */
@@ -57,10 +56,6 @@ const serverlessPreview = (request: Request): RenderPreviewData | undefined => {
 
   if (isStringStrict(locale)) {
     previewData.locale = locale
-  }
-
-  if (isStringStrict(env)) {
-    previewData.env = env
   }
 
   return previewData

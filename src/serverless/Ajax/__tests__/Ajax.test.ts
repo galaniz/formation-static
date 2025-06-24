@@ -21,9 +21,22 @@ describe('Ajax()', () => {
     resetFilters()
   })
 
+  it('should return error if method is not post', async () => {
+    const result = await Ajax(testRequest('http://test.com/', 'GET', {}), {})
+    const status = result.status
+    const message = await result.json()
+    const expectedStatus = 405
+    const expectedMessage = {
+      error: 'Method not allowed'
+    }
+
+    expect(status).toBe(expectedStatus)
+    expect(message).toEqual(expectedMessage)
+  })
+
   it('should return error if data is not an object', async () => {
     // @ts-expect-error - test null data
-    const result = await Ajax(testRequest('http://test.com/', 'GET', null), {})
+    const result = await Ajax(testRequest('http://test.com/', 'POST', null), {})
 
     const status = result.status
     const message = await result.json()
@@ -37,7 +50,7 @@ describe('Ajax()', () => {
   })
 
   it('should return error if action does not exist', async () => {
-    const result = await Ajax(testRequest(), {})
+    const result = await Ajax(testRequest('http://test.com/', 'POST', {}), {})
     const status = result.status
     const message = await result.json()
     const expectedStatus = 500
@@ -50,9 +63,10 @@ describe('Ajax()', () => {
   })
 
   it('should return error if action has no result', async () => {
-    const result = await Ajax(testRequest('http://test.com/', 'GET', {
+    const result = await Ajax(testRequest('http://test.com/', 'POST', {
       action: 'test'
     }), {})
+
     const status = result.status
     const message = await result.json()
     const expectedStatus = 500
@@ -65,7 +79,7 @@ describe('Ajax()', () => {
   })
 
   it('should return success if honeypot exists', async () => {
-    const result = await Ajax(testRequest('http://test.com/', 'GET', {
+    const result = await Ajax(testRequest('http://test.com/', 'POST', {
       inputs: {
         frm_asi: {
           value: 'test'
@@ -98,7 +112,7 @@ describe('Ajax()', () => {
       }
     })
 
-    const result = await Ajax(testRequest('http://test.com/', 'GET', {
+    const result = await Ajax(testRequest('http://test.com/', 'POST', {
       action: 'test',
       inputs: {
         frm_asi: {
@@ -138,7 +152,7 @@ describe('Ajax()', () => {
       })
     })
 
-    const ajaxRequest = testRequest('http://test.com/', 'GET', {
+    const ajaxRequest = testRequest('http://test.com/', 'POST', {
       action: 'test',
       inputs: {
         frm_asi: {
@@ -203,7 +217,7 @@ describe('Ajax()', () => {
       }
     })
 
-    const result = await Ajax(testRequest('http://test.com/', 'GET', {
+    const result = await Ajax(testRequest('http://test.com/', 'POST', {
       action: 'test',
       inputs: {
         frm_asi: {
@@ -233,7 +247,7 @@ describe('Ajax()', () => {
       }
     })
 
-    const result = await Ajax(testRequest('http://test.com/', 'GET', {
+    const result = await Ajax(testRequest('http://test.com/', 'POST', {
       action: 'test',
       inputs: {
         frm_asi: {

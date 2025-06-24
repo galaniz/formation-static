@@ -26,9 +26,22 @@ import { serverlessActions } from '../serverless.js'
  */
 const Ajax = async (request: Request, env: Generic): Promise<Response> => {
   try {
+    const { method, json } = request
+
+    /* Request must be post */
+
+    if (method !== 'POST') {
+      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+        status: 405,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+
     /* Form data */
 
-    const data = await request.json() as ServerlessActionData | undefined
+    const data = await json() as ServerlessActionData | undefined
 
     /* Data must be object */
 

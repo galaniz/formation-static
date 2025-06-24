@@ -78,13 +78,11 @@ export interface RenderServerlessData {
  * @prop {string} id
  * @prop {string} contentType
  * @prop {string} [locale]
- * @prop {string} [env]
  */
 export interface RenderPreviewData {
   id: string
   contentType: string
   locale?: string
-  env?: string
 }
 
 /**

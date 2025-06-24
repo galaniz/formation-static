@@ -98,13 +98,6 @@ describe('serverlessPreview()', () => {
 
     expect(result).toEqual(expectedResult)
   })
-
-  it('should return id, content type, locale and env', () => {
-    const result = serverlessPreview(testRequest('http://test.com/?preview=123&content_type=post&locale=es&env=dev'))
-    const expectedResult = { id: '123', contentType: 'post', locale: 'es', env: 'dev' }
-
-    expect(result).toEqual(expectedResult)
-  })
 })
 
 /* Test serverlessReload */
