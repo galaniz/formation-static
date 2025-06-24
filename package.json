@@ -1,9 +1,9 @@
 {
   "name": "@alanizcreative/formation-static",
-  "version": "1.3.0-beta.37",
+  "version": "1.3.0-beta.36",
   "description": "Foundation and utilities to build static sites using local JSON files, Contentful, or WordPress",
   "main": "./lib/config/config.js",
-  "packageManager": "pnpm@10.11.0",
+  "packageManager": "pnpm@10.12.3",
   "type": "module",
   "files": [
     "./lib",
@@ -40,28 +40,27 @@
   "license": "MIT",
   "devDependencies": {
     "@types/contentful-resolve-response": "^0.1.33",
-    "@types/node": "^22.15.21",
+    "@types/node": "^24.0.4",
     "@types/uuid": "^10.0.0",
-    "@types/wordpress__block-serialization-spec-parser": "^3.1.3",
-    "@vitest/coverage-v8": "^3.1.4",
-    "eslint": "9.27.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "9.29.0",
     "memfs": "4.17.2",
-    "release-it": "^19.0.2",
-    "terser": "5.39.2",
+    "release-it": "^19.0.3",
+    "terser": "5.43.1",
     "typescript": "^5.8.3",
-    "typescript-eslint": "8.32.1",
-    "vitest": "^3.1.4"
+    "typescript-eslint": "8.35.0",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "uuid": "^11.1.0"
   },
   "peerDependencies": {
-    "@wordpress/block-serialization-spec-parser": "^5.11.0",
-    "contentful-resolve-response": "^1.9.0",
-    "sharp": "0.33.5"
+    "@wordpress/block-serialization-default-parser": "^5.25.0",
+    "contentful-resolve-response": "^1.9.3",
+    "sharp": "0.34.2"
   },
   "peerDependenciesMeta": {
-    "@wordpress/block-serialization-spec-parser": {
+    "@wordpress/block-serialization-default-parser": {
       "optional": true
     },
     "contentful-resolve-response": {

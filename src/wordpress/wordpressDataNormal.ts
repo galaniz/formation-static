@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { Block } from '@wordpress/block-serialization-spec-parser'
+import type { ParsedBlock } from '@wordpress/block-serialization-default-parser'
 import type { InternalLink, Taxonomy, Generic } from '../global/globalTypes.js'
 import type {
   WordPressDataFile,
@@ -22,7 +22,7 @@ import type {
 } from './wordpressDataTypes.js'
 import type { RenderItem, RenderFile } from '../render/renderTypes.js'
 import type { NavigationList, NavigationItem } from '../components/Navigation/NavigationTypes.js'
-import { parse } from '@wordpress/block-serialization-spec-parser'
+import { parse } from '@wordpress/block-serialization-default-parser'
 import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { getObjectKeys } from '../utils/object/objectUtils.js'
 import { getStoreItem, setStoreItem } from '../store/store.js'
@@ -367,20 +367,24 @@ const normalizeEmbedded = (
  * Convert blocks to flatter props.
  *
  * @private
- * @param {Block[]} blocks
+ * @param {ParsedBlock[]} blocks
  * @return {RenderItem[]}
  */
-const normalizeBlocks = (blocks: readonly Block[]): RenderItem[] => {
+const normalizeBlocks = (blocks: readonly ParsedBlock[]): RenderItem[] => {
   const newItems: RenderItem[] = []
 
   /* Recurse */
+
+  interface GenericBlock extends ParsedBlock {
+    attrs: Generic
+  }
 
   blocks.forEach(block => {
     const {
       blockName,
       attrs,
       innerBlocks
-    } = block
+    } = block as GenericBlock
 
     const contentType = blockName
 
