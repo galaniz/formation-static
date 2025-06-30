@@ -6,7 +6,7 @@
 
 import type { AjaxResultOptions, AjaxResultFilterArgs } from './AjaxTypes.js'
 import type { ServerlessActionData, ServerlessActionReturn } from '../serverlessTypes.js'
-import type { Generic } from '../../global/globalTypes.js'
+import type { Generic, GenericStrings } from '../../global/globalTypes.js'
 import { ResponseError } from '../../utils/ResponseError/ResponseError.js'
 import { applyFilters } from '../../utils/filter/filter.js'
 import { isObjectStrict } from '../../utils/object/object.js'
@@ -21,19 +21,23 @@ import { serverlessActions } from '../serverless.js'
  *
  * @param {Request} request
  * @param {Generic} env
+ * @param {GenericStrings} [headers]
  * @param {string} [honeypotName]
  * @return {Promise<Response>}
  */
-const Ajax = async (request: Request, env: Generic, honeypotName?: string): Promise<Response> => {
+const Ajax = async (request: Request, env: Generic, headers?: GenericStrings, honeypotName?: string): Promise<Response> => {
+  const ajaxHeaders = {
+    'Content-Type': 'application/json',
+    ...headers
+  }
+
   try {
     /* Request must be post */
 
     if (request.method !== 'POST') {
       return new Response(JSON.stringify({ error: 'Method not allowed' }), {
         status: 405,
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: ajaxHeaders
       })
     }
 
@@ -53,14 +57,10 @@ const Ajax = async (request: Request, env: Generic, honeypotName?: string): Prom
       const honeypotValue = data.inputs[honeypotName].value
 
       if (isStringStrict(honeypotValue)) {
-        const options = {
+        return new Response(JSON.stringify({ success: 'Form successully sent' }), {
           status: 200,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-
-        return new Response(JSON.stringify({ success: 'Form successully sent' }), options)
+          headers: ajaxHeaders
+        })
       }
 
       delete data.inputs[honeypotName] // eslint-disable-line @typescript-eslint/no-dynamic-delete
@@ -106,9 +106,7 @@ const Ajax = async (request: Request, env: Generic, honeypotName?: string): Prom
 
     const options: AjaxResultOptions = {
       status: 200,
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      headers: ajaxHeaders
     }
 
     let message = ''
@@ -116,15 +114,15 @@ const Ajax = async (request: Request, env: Generic, honeypotName?: string): Prom
     if (res.success) {
       const {
         message: successMessage,
-        headers
+        headers: successHeaders
       } = res.success
 
       if (isStringStrict(successMessage)) {
         message = successMessage
       }
 
-      if (isObjectStrict(headers)) {
-        options.headers = { ...options.headers, ...headers }
+      if (isObjectStrict(successHeaders)) {
+        options.headers = { ...options.headers, ...successHeaders }
       }
     }
 
@@ -145,14 +143,10 @@ const Ajax = async (request: Request, env: Generic, honeypotName?: string): Prom
       }
     }
 
-    const options = {
+    return new Response(JSON.stringify({ error: message }), {
       status: statusCode,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-
-    return new Response(JSON.stringify({ error: message }), options)
+      headers: ajaxHeaders
+    })
   }
 }
 

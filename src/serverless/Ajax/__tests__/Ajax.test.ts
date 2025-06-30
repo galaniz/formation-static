@@ -85,10 +85,12 @@ describe('Ajax()', () => {
           value: 'test'
         }
       }
-    }), {}, 'frm_hp')
+    }), {}, undefined, 'frm_hp')
 
     const status = result.status
     const message = await result.json()
+    const contentType = result.headers.get('Content-Type')
+    const expectedContentType = 'application/json'
     const expectedStatus = 200
     const expectedMessage = {
       success: 'Form successully sent'
@@ -96,6 +98,7 @@ describe('Ajax()', () => {
 
     expect(status).toBe(expectedStatus)
     expect(message).toEqual(expectedMessage)
+    expect(contentType).toEqual(expectedContentType)
   })
 
   it('should return success message from test action', async () => {
@@ -112,23 +115,32 @@ describe('Ajax()', () => {
       }
     })
 
-    const result = await Ajax(testRequest('http://test.com/', 'POST', {
-      action: 'test',
-      inputs: {
-        frm_hp: {
-          value: ''
-        },
-        test: {
-          value: 'ipsum'
+    const result = await Ajax(testRequest('http://test.com/', 'POST', 
+      {
+        action: 'test',
+        inputs: {
+          frm_hp: {
+            value: ''
+          },
+          test: {
+            value: 'ipsum'
+          }
         }
-      }
-    }), {}, 'frm_hp')
+      }),
+      {},
+      {
+        'Access-Control-Allow-Origin': 'http://blog.test.com'
+      },
+      'frm_hp'
+    )
 
     const status = result.status
     const contentType = result.headers.get('Content-Type')
+    const allowOrigin = result.headers.get('Access-Control-Allow-Origin')
     const message = await result.json()
     const expectedStatus = 200
     const expectedContentType = 'text/plain'
+    const expectedAllowOrigin = 'http://blog.test.com'
     const expectedMessage = {
       success: 'Success'
     }
@@ -136,6 +148,7 @@ describe('Ajax()', () => {
     expect(status).toBe(expectedStatus)
     expect(message).toEqual(expectedMessage)
     expect(contentType).toEqual(expectedContentType)
+    expect(allowOrigin).toEqual(expectedAllowOrigin)
   })
 
   it('should filter result', async () => {
@@ -174,7 +187,7 @@ describe('Ajax()', () => {
       }
     })
     
-    const result = await Ajax(ajaxRequest, {}, 'frm_hp')
+    const result = await Ajax(ajaxRequest, {}, {}, 'frm_hp')
     const status = result.status
     const message = await result.json()
     const expectedStatus = 404
@@ -227,7 +240,7 @@ describe('Ajax()', () => {
           value: 'ipsum'
         }
       }
-    }), {}, 'frm_hp')
+    }), {}, {}, 'frm_hp')
 
     const status = result.status
     const message = await result.json()
@@ -247,20 +260,29 @@ describe('Ajax()', () => {
       }
     })
 
-    const result = await Ajax(testRequest('http://test.com/', 'POST', {
-      action: 'test',
-      inputs: {
-        frm_hp: {
-          value: ''
-        },
-        test: {
-          value: 'ipsum'
+    const result = await Ajax(testRequest('http://test.com/', 'POST',
+      {
+        action: 'test',
+        inputs: {
+          frm_hp: {
+            value: ''
+          },
+          test: {
+            value: 'ipsum'
+          }
         }
-      }
-    }), {}, 'frm_hp')
+      }),
+      {},
+      {
+        'Access-Control-Allow-Origin': 'http://sub.test.com'
+      },
+      'frm_hp'
+    )
 
     const status = result.status
     const message = await result.json()
+    const allowOrigin = result.headers.get('Access-Control-Allow-Origin')
+    const expectedAllowOrigin = 'http://sub.test.com'
     const expectedStatus = 500
     const expectedMessage = {
       error: 'Unknown error'
@@ -268,5 +290,6 @@ describe('Ajax()', () => {
 
     expect(status).toBe(expectedStatus)
     expect(message).toEqual(expectedMessage)
+    expect(allowOrigin).toEqual(expectedAllowOrigin)
   })
 })
