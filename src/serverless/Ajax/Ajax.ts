@@ -14,7 +14,6 @@ import { isStringStrict } from '../../utils/string/string.js'
 import { isNumber } from '../../utils/number/number.js'
 import { isFunction } from '../../utils/function/function.js'
 import { print } from '../../utils/print/print.js'
-import { config } from '../../config/config.js'
 import { serverlessActions } from '../serverless.js'
 
 /**
@@ -22,15 +21,14 @@ import { serverlessActions } from '../serverless.js'
  *
  * @param {Request} request
  * @param {Generic} env
+ * @param {string} [honeypotName]
  * @return {Promise<Response>}
  */
-const Ajax = async (request: Request, env: Generic): Promise<Response> => {
+const Ajax = async (request: Request, env: Generic, honeypotName?: string): Promise<Response> => {
   try {
-    const { method, json } = request
-
     /* Request must be post */
 
-    if (method !== 'POST') {
+    if (request.method !== 'POST') {
       return new Response(JSON.stringify({ error: 'Method not allowed' }), {
         status: 405,
         headers: {
@@ -41,7 +39,7 @@ const Ajax = async (request: Request, env: Generic): Promise<Response> => {
 
     /* Form data */
 
-    const data = await json() as ServerlessActionData | undefined
+    const data = await request.json() as ServerlessActionData | undefined
 
     /* Data must be object */
 
@@ -51,9 +49,7 @@ const Ajax = async (request: Request, env: Generic): Promise<Response> => {
 
     /* Honeypot check */
 
-    const honeypotName = `${config.namespace}_asi`
-
-    if (isObjectStrict(data.inputs?.[honeypotName])) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+    if (isStringStrict(honeypotName) && isObjectStrict(data.inputs?.[honeypotName])) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
       const honeypotValue = data.inputs[honeypotName].value
 
       if (isStringStrict(honeypotValue)) {

@@ -9,7 +9,6 @@ import { v4 as uuid } from 'uuid'
 import { applyFilters } from '../../utils/filter/filter.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
-import { config } from '../../config/config.js'
 
 /**
  * Output form wrapper.
@@ -45,7 +44,7 @@ const Form = (props: FormProps): string[] => {
     submitLabel = 'Submit',
     submitClasses,
     submitAttr,
-    honeypot = false,
+    honeypotName,
     honeypotFieldClasses,
     honeypotFieldAttr,
     honeypotLabelClasses,
@@ -77,9 +76,8 @@ const Form = (props: FormProps): string[] => {
 
   let honeypotOutput = ''
 
-  if (honeypot) {
+  if (isStringStrict(honeypotName)) {
     const honeypotId: string = uuid()
-    const honeypotName = `${config.namespace}_asi`
     const honeypotFieldAttrs =
       (isStringStrict(honeypotFieldClasses) ? ` class="${honeypotFieldClasses}"` : '') +
       (isStringStrict(honeypotFieldAttr) ? ` ${honeypotFieldAttr}` : '')

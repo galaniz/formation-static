@@ -68,7 +68,7 @@ const serverlessPreview = (request: Request): RenderPreviewData | undefined => {
  * @return {RenderServerlessData|undefined}
  */
 const serverlessReload = (request: Request): RenderServerlessData | undefined => {
-  const { url, method } = request
+  const { method, url } = request
 
   /* Request must be get */
 

@@ -208,7 +208,7 @@ const getArchiveLink = (contentType: string, itemData?: RenderItem): ArchiveLink
 
   /* Archive */
 
-  const archiveInfo = getArchiveInfo(contentType)
+  const archiveInfo = getArchiveInfo(contentType, itemData?.locale as string)
 
   const {
     id: archiveId,

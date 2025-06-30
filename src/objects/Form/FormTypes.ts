@@ -21,7 +21,7 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
  * @prop {string} [submitLabel=Submit]
  * @prop {string} [submitClasses]
  * @prop {string} [submitAttr]
- * @prop {boolean} [honeypot=false]
+ * @prop {string} [honeypotName]
  * @prop {string} [honeypotFieldClasses]
  * @prop {string} [honeypotFieldAttr]
  * @prop {string} [honeypotLabelClasses]
@@ -41,7 +41,7 @@ export interface FormArgs extends Generic {
   submitLabel?: string
   submitClasses?: string
   submitAttr?: string
-  honeypot?: boolean
+  honeypotName?: string
   honeypotFieldClasses?: string
   honeypotFieldAttr?: string
   honeypotLabelClasses?: string

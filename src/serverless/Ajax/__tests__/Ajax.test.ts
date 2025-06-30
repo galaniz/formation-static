@@ -81,11 +81,11 @@ describe('Ajax()', () => {
   it('should return success if honeypot exists', async () => {
     const result = await Ajax(testRequest('http://test.com/', 'POST', {
       inputs: {
-        frm_asi: {
+        frm_hp: {
           value: 'test'
         }
       }
-    }), {})
+    }), {}, 'frm_hp')
 
     const status = result.status
     const message = await result.json()
@@ -115,14 +115,14 @@ describe('Ajax()', () => {
     const result = await Ajax(testRequest('http://test.com/', 'POST', {
       action: 'test',
       inputs: {
-        frm_asi: {
+        frm_hp: {
           value: ''
         },
         test: {
           value: 'ipsum'
         }
       }
-    }), {})
+    }), {}, 'frm_hp')
 
     const status = result.status
     const contentType = result.headers.get('Content-Type')
@@ -155,7 +155,7 @@ describe('Ajax()', () => {
     const ajaxRequest = testRequest('http://test.com/', 'POST', {
       action: 'test',
       inputs: {
-        frm_asi: {
+        frm_hp: {
           value: ''
         },
         test: {
@@ -174,7 +174,7 @@ describe('Ajax()', () => {
       }
     })
     
-    const result = await Ajax(ajaxRequest, {})
+    const result = await Ajax(ajaxRequest, {}, 'frm_hp')
     const status = result.status
     const message = await result.json()
     const expectedStatus = 404
@@ -220,14 +220,14 @@ describe('Ajax()', () => {
     const result = await Ajax(testRequest('http://test.com/', 'POST', {
       action: 'test',
       inputs: {
-        frm_asi: {
+        frm_hp: {
           value: ''
         },
         test: {
           value: 'ipsum'
         }
       }
-    }), {})
+    }), {}, 'frm_hp')
 
     const status = result.status
     const message = await result.json()
@@ -250,14 +250,14 @@ describe('Ajax()', () => {
     const result = await Ajax(testRequest('http://test.com/', 'POST', {
       action: 'test',
       inputs: {
-        frm_asi: {
+        frm_hp: {
           value: ''
         },
         test: {
           value: 'ipsum'
         }
       }
-    }), {})
+    }), {}, 'frm_hp')
 
     const status = result.status
     const message = await result.json()

@@ -132,7 +132,7 @@ describe('Form()', () => {
     const result = Form({
       args: {
         id: 'frm-id',
-        honeypot: true
+        honeypotName: 'frm_hp'
       }
     })
 
@@ -141,7 +141,7 @@ describe('Form()', () => {
         <div>`,
           `<div>
             <label for="mock-uuid">Website</label>
-            <input type="url" name="frm_asi" id="mock-uuid" autocomplete="off">
+            <input type="url" name="frm_hp" id="mock-uuid" autocomplete="off">
           </div>
           <div>
             <button type="submit">
@@ -175,7 +175,7 @@ describe('Form()', () => {
         submitFieldAttr: 'data-field="submit"',
         submitClasses: 'submit',
         submitAttr: 'data-input="submit"',
-        honeypot: true,
+        honeypotName: 'frm_hp',
         honeypotFieldClasses: 'field-honeypot',
         honeypotFieldAttr: 'data-field="honeypot"',
         honeypotLabelClasses: 'label-honeypot',
@@ -190,7 +190,7 @@ describe('Form()', () => {
         <form class="fields" novalidate>`,
           `<div class="field-honeypot" data-field="honeypot">
             <label for="mock-uuid" class="label-honeypot">Sitio</label>
-            <input type="url" name="frm_asi" id="mock-uuid" autocomplete="off" class="honeypot" data-input="honeypot">
+            <input type="url" name="frm_hp" id="mock-uuid" autocomplete="off" class="honeypot" data-input="honeypot">
           </div>
           <div class="field-submit" data-field="submit">
             <button type="submit" class="submit" data-input="submit">
@@ -236,7 +236,7 @@ describe('Form()', () => {
         formTag: 'frm-form',
         formClasses: 'form',
         submitFieldClasses: 'field',
-        honeypot: true,
+        honeypotName: 'frm_hp',
         honeypotFieldClasses: 'field'
       }
     })
@@ -246,7 +246,7 @@ describe('Form()', () => {
         <div>`,
           `<div class="field-new">
             <label for="mock-uuid">Website</label>
-            <input type="url" name="frm_asi" id="mock-uuid" autocomplete="off">
+            <input type="url" name="frm_hp" id="mock-uuid" autocomplete="off">
           </div>
           <div class="field-new">
             <button type="submit">
@@ -271,7 +271,7 @@ describe('Form()', () => {
         formTag: 'frm-form',
         formClasses: 'form',
         submitFieldClasses: 'field',
-        honeypot: true,
+        honeypotName: 'frm_hp',
         honeypotFieldClasses: 'field'
       }
     })
