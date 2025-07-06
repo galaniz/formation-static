@@ -5,26 +5,31 @@
 /* Imports */
 
 import { it, expect, describe, afterEach, beforeEach } from 'vitest'
+import { testResetRenderFunctions } from '../../../tests/utils.js'
 import { setRenderFunctions } from '../render.js'
+import { RichText } from '../../text/RichText/RichText.js'
+import { Container } from '../../layouts/Container/Container.js'
 import { renderInlineContent, renderInlineItem } from '../renderInline.js'
-
-/**
- * Reset render functions to default
- *
- * @return {void}
- */
-const testResetRenderFunctions = (): void => {
-  setRenderFunctions({
-    functions: {},
-    layout: () => '',
-    navigation: () => undefined,
-    httpError: () => ''
-  })
-}
 
 /* Test renderInlineContent */
 
 describe('renderInlineContent()', () => {
+  beforeEach(() => {
+    setRenderFunctions({
+      functions: {
+        container: Container,
+        richText: RichText
+      },
+      layout: ({ content }) => content,
+      navigation: () => undefined,
+      httpError: () => ''
+    })
+  })
+
+  afterEach(() => {
+    testResetRenderFunctions()
+  })
+
   it('should return empty string if no items', async () => {
     // @ts-expect-error - test undefined items
     const result = await renderInlineContent()
@@ -84,7 +89,10 @@ describe('renderInlineContent()', () => {
 describe('renderInlineItem()', () => {
   beforeEach(() => {
     setRenderFunctions({
-      functions: {},
+      functions: {
+        container: Container,
+        richText: RichText
+      },
       layout: ({ content }) => content,
       navigation: () => undefined,
       httpError: () => ''

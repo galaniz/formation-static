@@ -8,13 +8,11 @@ import type { RenderAllData, RenderFunctionArgs, RenderItem, RenderReturn } from
 import type { Scripts, Styles } from '../../utils/scriptStyle/scriptStyleTypes.js'
 import type { ParentArgs } from '../../global/globalTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach } from 'vitest'
-import {
-  testMinify,
-  testResetRenderFunctions,
-  testDefaultRenderFunctions,
-  testResetStore
-} from '../../../tests/utils.js'
+import { testMinify, testResetRenderFunctions, testResetStore } from '../../../tests/utils.js'
 import { Navigation } from '../../components/Navigation/Navigation.js'
+import { Container } from '../../layouts/Container/Container.js'
+import { Column } from '../../layouts/Column/Column.js'
+import { RichText } from '../../text/RichText/RichText.js'
 import { addAction, resetActions } from '../../utils/action/action.js'
 import { addFilter, resetFilters } from '../../utils/filter/filter.js'
 import { getStoreItem } from '../../store/store.js'
@@ -34,7 +32,7 @@ import {
 } from '../render.js'
 
 /**
- * Minify render return item output
+ * Minify render return item output.
  *
  * @param {RenderReturn[]} items
  * @return {RenderReturn[]}
@@ -64,7 +62,7 @@ describe('setRenderFunctions()', () => {
     const resultNavigation = renderNavigation()
 
     const expectedResult = false
-    const expectedRenderFunctions = testDefaultRenderFunctions()
+    const expectedRenderFunctions = {}
     const expectedLayout = ''
     const expectedHttpError = ''
     const expectedNavigation = undefined
@@ -87,7 +85,7 @@ describe('setRenderFunctions()', () => {
     const resultNavigation = renderNavigation()
 
     const expectedResult = false
-    const expectedRenderFunctions = testDefaultRenderFunctions()
+    const expectedRenderFunctions = {}
     const expectedLayout = ''
     const expectedHttpError = ''
     const expectedNavigation = undefined
@@ -113,10 +111,7 @@ describe('setRenderFunctions()', () => {
     })
 
     const expectedResult = true
-    const expectedRenderFunctions = {
-      ...testDefaultRenderFunctions(),
-      test
-    }
+    const expectedRenderFunctions = { test }
 
     expect(result).toBe(expectedResult)
     expect(renderFunctions).toEqual(expectedRenderFunctions)
@@ -262,6 +257,9 @@ describe('render()', () => {
     config.hierarchicalTypes = ['page']
     setRenderFunctions({
       functions: {
+        container: Container,
+        column: Column,
+        richText: RichText,
         test (props: RenderFunctionArgs<{ testAttr: string }>) {
           const { args } = props
           const { testAttr = '' } = args

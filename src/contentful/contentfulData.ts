@@ -219,7 +219,12 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
       }
 
       const data = await getContentfulData(key, params)
-      const { items } = data
+      let { items } = data
+
+      items = applyFilters('contentfulData', items, {
+        ...contentfulDataFilterArgs,
+        contentType
+      })
 
       if (isArray(items)) {
         allData.content[contentType] = items
@@ -248,7 +253,10 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
         const newData = await getContentfulData(key, params)
         let { items } = newData
 
-        items = applyFilters('contentfulData', items, contentfulDataFilterArgs)
+        items = applyFilters('contentfulData', items, {
+          ...contentfulDataFilterArgs,
+          contentType
+        })
 
         if (isArray(items)) {
           newItems = [
@@ -284,7 +292,10 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
         const newData = await getContentfulData(key, params)
         let { items } = newData
 
-        items = applyFilters('contentfulData', items, contentfulDataFilterArgs)
+        items = applyFilters('contentfulData', items, {
+          ...contentfulDataFilterArgs,
+          contentType
+        })
 
         if (isArray(items)) {
           newItems = [

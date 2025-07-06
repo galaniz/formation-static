@@ -285,7 +285,12 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
         route: `${getRoute(contentType)}/${id}`
       })
 
-      const { items } = data
+      let { items } = data
+
+      items = applyFilters('wordpressData', items, {
+        ...wordpressDataFilterArgs,
+        contentType
+      })
 
       if (isArray(items)) {
         allData.content[contentType] = items

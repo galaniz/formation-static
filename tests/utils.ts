@@ -4,15 +4,8 @@
 
 /* Imports */
 
-import type { RenderFunctions } from '../src/render/renderTypes.js'
 import type { Store } from '../src/store/storeTypes.js'
 import type { Config } from '../src/config/configTypes.js'
-import { Container } from '../src/layouts/Container/Container.js'
-import { Column } from '../src/layouts/Column/Column.js'
-import { Form } from '../src/objects/Form/Form.js'
-import { FormField } from '../src/objects/Form/FormField.js'
-import { FormOption } from '../src/objects/Form/FormOption.js'
-import { RichText } from '../src/text/RichText/RichText.js'
 import { setRenderFunctions } from '../src/render/render.js'
 import { store, setStore } from '../src/store/store.js'
 import { setServerless } from '../src/serverless/serverless.js'
@@ -57,22 +50,6 @@ const testResetStore = (): void => {
   }
 
   setStore(testDefaultStore(), 'lib/store')
-}
-
-/**
- * Default render functions object.
- *
- * @return {RenderFunctions}
- */
-const testDefaultRenderFunctions = (): RenderFunctions => {
-  return {
-    container: Container,
-    column: Column,
-    form: Form,
-    formField: FormField,
-    formOption: FormOption,
-    richText: RichText
-  }
 }
 
 /**
@@ -147,7 +124,6 @@ export {
   testMinify,
   testDefaultStore,
   testResetStore,
-  testDefaultRenderFunctions,
   testResetRenderFunctions,
   testRequest,
   testWordPressConfig,

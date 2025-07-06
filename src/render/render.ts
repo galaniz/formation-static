@@ -38,36 +38,14 @@ import { tagExists } from '../utils/tag/tag.js'
 import { setStoreData, setStoreItem, getStoreItem } from '../store/store.js'
 import { setRedirects } from '../redirects/redirects.js'
 import { scripts, styles } from '../utils/scriptStyle/scriptStyle.js'
-import { Container } from '../layouts/Container/Container.js'
-import { Column } from '../layouts/Column/Column.js'
-import { Form } from '../objects/Form/Form.js'
-import { FormField } from '../objects/Form/FormField.js'
-import { FormOption } from '../objects/Form/FormOption.js'
-import { RichText } from '../text/RichText/RichText.js'
 import { config } from '../config/config.js'
-
-/**
- * Default render functions.
- *
- * @type {RenderFunctions}
- */
-const defaultRenderFunctions: RenderFunctions = {
-  container: Container,
-  column: Column,
-  form: Form,
-  formField: FormField,
-  formOption: FormOption,
-  richText: RichText
-}
 
 /**
  * Output elements in render content.
  *
  * @type {RenderFunctions}
  */
-let renderFunctions: RenderFunctions = {
-  ...defaultRenderFunctions
-}
+let renderFunctions: RenderFunctions = {}
 
 /**
  * Output html element.
@@ -112,11 +90,7 @@ const setRenderFunctions = (args: RenderFunctionsArgs): boolean => {
     return false
   }
 
-  renderFunctions = {
-    ...defaultRenderFunctions,
-    ...functions
-  }
-
+  renderFunctions = { ...functions }
   renderLayout = layout
 
   if (isFunction(navigation)) {
