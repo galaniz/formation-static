@@ -31,7 +31,6 @@ import { getSlug, getPermalink } from '../utils/link/link.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
 import { isArray, isArrayStrict } from '../utils/array/array.js'
 import { isObjectStrict } from '../utils/object/object.js'
-import { isNumber } from '../utils/number/number.js'
 import { isFunction } from '../utils/function/function.js'
 import { doShortcodes } from '../utils/shortcode/shortcode.js'
 import { tagExists } from '../utils/tag/tag.js'
@@ -720,32 +719,39 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
 
   if (isObjectStrict(pag)) {
     const {
-      current = 0,
-      total = 1,
-      currentFilters,
-      prevFilters,
-      nextFilters
+      currentParams,
+      prevParams,
+      nextParams
     } = pag
 
-    meta.canonicalParams =
-      `${current > 1 ? `?page=${current}` : ''}${isString(currentFilters) ? currentFilters : ''}`
+    const currentParamsStr = new URLSearchParams(currentParams).toString()
+
+    if (currentParamsStr) {
+      meta.canonicalParams = `?${currentParamsStr}`
+    }
 
     if (isStringStrict(pag.title)) {
       meta.paginationTitle = pag.title
     }
 
-    if (isNumber(pag.prev) && pag.prev >= 1) {
-      slugArgs.page = pag.prev
+    if (pag.prev) {
+      const prevSlugArgs = {
+        ...slugArgs,
+        params: prevParams
+      }
 
-      const p = getSlug(slugArgs, true)
-      meta.prev = `${getPermalink(p.slug, pag.prev === 1)}${isString(prevFilters) ? prevFilters : ''}`
+      const p = getSlug(prevSlugArgs, true)
+      meta.prev = getPermalink(p.slug, pag.prev === 1 && !prevParams)
     }
 
-    if (isNumber(pag.next) && pag.next > 1 && pag.next < total) {
-      slugArgs.page = pag.next
+    if (pag.next) {
+      const nextSlugArgs = {
+        ...slugArgs,
+        params: nextParams
+      }
 
-      const n = getSlug(slugArgs, true)
-      meta.next = `${getPermalink(n.slug, false)}${isString(nextFilters) ? nextFilters : ''}`
+      const n = getSlug(nextSlugArgs, true)
+      meta.next = getPermalink(n.slug, false)
     }
 
     serverlessRender = true

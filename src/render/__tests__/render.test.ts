@@ -2092,7 +2092,7 @@ describe('render()', () => {
       serverlessData: {
         path: '/blog/',
         query: {
-          page: '3',
+          page: '2',
           filters: 'cat'
         }
       },
@@ -2113,9 +2113,17 @@ describe('render()', () => {
               pagination: {
                 current: 2,
                 total: 5,
-                prevFilters: '?filters=cat',
-                nextFilters: '&filters=cat',
-                currentFilters: '&filters=cat',
+                prevParams: {
+                  filters: 'cat'
+                },
+                nextParams: {
+                  page: '3',
+                  filters: 'cat'
+                },
+                currentParams: {
+                  page: '2',
+                  filters: 'cat'
+                },
                 title: 'Page 2 of 5',
                 next: 3,
                 prev: 1
@@ -2147,7 +2155,7 @@ describe('render()', () => {
     expect(resultMin).toEqual(expectedResult)
   })
 
-  it('should items with pagination meta information', async () => {
+  it('should return items with pagination meta information', async () => {
     const result = await render({
       allData: {
         content: {
@@ -2160,12 +2168,11 @@ describe('render()', () => {
               pagination: {
                 current: 1,
                 total: 5,
-                prevFilters: undefined,
-                nextFilters: undefined,
-                currentFilters: undefined,
+                nextParams: {
+                  page: '2'
+                },
                 title: 'Page 1 of 5',
-                next: 2,
-                prev: 0
+                next: 2
               }
             },
             {
@@ -2176,9 +2183,12 @@ describe('render()', () => {
               pagination: {
                 current: 2,
                 total: 5,
-                prevFilters: undefined,
-                nextFilters: undefined,
-                currentFilters: undefined,
+                nextParams: {
+                  page: '3'
+                },
+                currentParams: {
+                  page: '2'
+                },
                 title: 'Page 2 of 5',
                 next: 3,
                 prev: 1
@@ -2192,11 +2202,10 @@ describe('render()', () => {
               pagination: {
                 current: 2,
                 total: 2,
-                prevFilters: undefined,
-                nextFilters: undefined,
-                currentFilters: undefined,
+                currentParams: {
+                  page: '2'
+                },
                 title: 'Page 2 of 2',
-                next: 0,
                 prev: 1
               }
             },
@@ -2208,12 +2217,15 @@ describe('render()', () => {
               pagination: {
                 current: 1,
                 total: 5,
-                prevFilters: undefined,
-                nextFilters: '&filters=cat',
-                currentFilters: '?filters=cat',
+                nextParams: {
+                  page: '2',
+                  filters: 'cat'
+                },
+                currentParams: {
+                  filters: 'cat'
+                },
                 title: 'Page 1 of 5',
-                next: 2,
-                prev: 0
+                next: 2
               }
             },
             {
@@ -2224,9 +2236,17 @@ describe('render()', () => {
               pagination: {
                 current: 2,
                 total: 5,
-                prevFilters: '?filters=cat',
-                nextFilters: '&filters=cat',
-                currentFilters: '&filters=cat',
+                prevParams: {
+                  filters: 'cat'
+                },
+                nextParams: {
+                  page: '3',
+                  filters: 'cat'
+                },
+                currentParams: {
+                  page: '2',
+                  filters: 'cat'
+                },
                 title: 'Page 2 of 5',
                 next: 3,
                 prev: 1
@@ -2240,11 +2260,14 @@ describe('render()', () => {
               pagination: {
                 current: 2,
                 total: 2,
-                prevFilters: '?filters=cat',
-                nextFilters: undefined,
-                currentFilters: '&filters=cat',
+                prevParams: {
+                  filters: 'cat'
+                },
+                currentParams: {
+                  page: '2',
+                  filters: 'cat'
+                },
                 title: 'Page 2 of 2',
-                next: 0,
                 prev: 1
               }
             }

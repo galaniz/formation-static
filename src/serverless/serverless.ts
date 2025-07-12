@@ -65,9 +65,13 @@ const serverlessPreview = (request: Request): RenderPreviewData | undefined => {
  * Check if request is a paginated and/or filtered page.
  *
  * @param {Request} request
+ * @param {string[]} [allowedParams]
  * @return {RenderServerlessData|undefined}
  */
-const serverlessReload = (request: Request): RenderServerlessData | undefined => {
+const serverlessReload = (
+  request: Request,
+  allowedParams: string[] = ['page', 'filters']
+): RenderServerlessData | undefined => {
   const { method, url } = request
 
   /* Request must be get */
@@ -79,29 +83,23 @@ const serverlessReload = (request: Request): RenderServerlessData | undefined =>
   /* Query */
 
   const { searchParams, pathname } = new URL(url)
-  const page = searchParams.get('page')
-  const filters = searchParams.get('filters')
   const path = pathname
   const query: Record<string, string> = {}
 
-  let noPage = false
-  let noFilters = false
+  let hasParams = false
 
-  if (isStringStrict(page)) {
-    query.page = page
-  } else {
-    noPage = true
+  for (const param of allowedParams) {
+    const value = searchParams.get(param)
+
+    if (isStringStrict(value)) {
+      query[param] = value
+      hasParams = true
+    }
   }
 
-  if (isStringStrict(filters)) {
-    query.filters = filters
-  } else {
-    noFilters = true
-  }
+  /* No params */
 
-  /* No query move on to default page */
-
-  if (noPage && noFilters) {
+  if (!hasParams) {
     return
   }
 

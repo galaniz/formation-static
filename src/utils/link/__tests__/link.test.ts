@@ -652,8 +652,10 @@ describe('getSlug()', () => {
   it('should return slug with page query param', () => {
     const result = getSlug({
       slug: 'colors',
-      page: 2,
-      contentType: 'page'
+      contentType: 'page',
+      params: {
+        page: '2'
+      }
     })
 
     const expectedResult = 'colors/?page=2'

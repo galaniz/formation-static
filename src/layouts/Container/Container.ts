@@ -48,7 +48,7 @@ const Container = (props: ContainerProps): string[] => {
 
   /* Semantically specific */
 
-  const isSemanticParent = ['ul', 'ol', 'dl', 'figure'].includes(tag)
+  const isSemanticParent = new Set(['ul', 'ol', 'dl', 'figure']).has(tag)
 
   /* Classes */
 

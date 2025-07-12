@@ -120,8 +120,9 @@ describe('Pagination()', () => {
     const expectedData = {
       current: 1,
       total: 5,
-      nextFilters: '',
-      currentFilters: '',
+      nextParams: {
+        page: '2'
+      },
       next: 2
     }
 
@@ -183,9 +184,12 @@ describe('Pagination()', () => {
     const expectedData = {
       current: 2,
       total: 5,
-      prevFilters: '',
-      nextFilters: '',
-      currentFilters: '',
+      nextParams: {
+        page: '3'
+      },
+      currentParams: {
+        page: '2'
+      },
       title: 'Page 2 of 5',
       next: 3,
       prev: 1
@@ -249,9 +253,15 @@ describe('Pagination()', () => {
     const expectedData = {
       current: 3,
       total: 5,
-      prevFilters: '',
-      nextFilters: '',
-      currentFilters: '',
+      prevParams: {
+        page: '2'
+      },
+      nextParams: {
+        page: '4'
+      },
+      currentParams: {
+        page: '3'
+      },
       title: 'Page 3 of 5',
       next: 4,
       prev: 2
@@ -315,9 +325,15 @@ describe('Pagination()', () => {
     const expectedData = {
       current: 4,
       total: 5,
-      prevFilters: '',
-      nextFilters: '',
-      currentFilters: '',
+      prevParams: {
+        page: '3'
+      },
+      nextParams: {
+        page: '5'
+      },
+      currentParams: {
+        page: '4'
+      },
       title: 'Page 4 of 5',
       next: 5,
       prev: 3
@@ -376,11 +392,13 @@ describe('Pagination()', () => {
     const expectedData = {
       current: 5,
       total: 5,
-      prevFilters: '',
-      nextFilters: '',
-      currentFilters: '',
+      prevParams: {
+        page: '4'
+      },
+      currentParams: {
+        page: '5'
+      },
       title: 'Page 5 of 5',
-      next: 0,
       prev: 4
     }
 
@@ -395,7 +413,9 @@ describe('Pagination()', () => {
       current: 1,
       url,
       ellipsis: '&hellip;',
-      filters: 'filters=cat:1',
+      filters: {
+        filters: 'cat:1'
+      },
       args: { ...args }
     })
 
@@ -413,13 +433,13 @@ describe('Pagination()', () => {
           </span>
         </li>
         <li class="item" data-test="item">
-          <a href="${url}?page=2&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=2&filters=cat%3A1" class="link" data-test="link">
             <span class="a11y">Page </span>
             2
           </a>
         </li>
         <li class="item" data-test="item">
-          <a href="${url}?page=3&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=3&filters=cat%3A1" class="link" data-test="link">
             <span class="a11y">Page </span>
             3
           </a>
@@ -427,7 +447,7 @@ describe('Pagination()', () => {
         <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
         <li class="item" data-test="item" data-pag-next="link">
           <a
-            href="${url}?page=2&filters=cat:1"
+            href="${url}?page=2&filters=cat%3A1"
             aria-label="Next page"
             class="next-link"
           >
@@ -439,8 +459,16 @@ describe('Pagination()', () => {
     const expectedData = {
       current: 1,
       total: 5,
-      nextFilters: '&filters=cat:1',
-      currentFilters: '?filters=cat:1',
+      prevParams: {
+        filters: 'cat:1'
+      },
+      nextParams: {
+        page: '2',
+        filters: 'cat:1'
+      },
+      currentParams: {
+        filters: 'cat:1'
+      },
       next: 2
     }
 
@@ -457,7 +485,9 @@ describe('Pagination()', () => {
       ellipsis: '&hellip;',
       prev: '&larr;',
       next: '&rarr;',
-      filters: 'filters=cat:1',
+      filters: {
+        filters: 'cat:1'
+      },
       args: { ...args }
     })
 
@@ -467,7 +497,7 @@ describe('Pagination()', () => {
       <ol class="list" data-test="list">
         <li class="item" data-test="item" data-pag-prev="link">
           <a
-            href="${url}?filters=cat:1"
+            href="${url}?filters=cat%3A1"
             aria-label="Previous page"
             class="prev-link"
           >
@@ -475,7 +505,7 @@ describe('Pagination()', () => {
           </a>
         </li>
         <li class="item" data-test="item">
-          <a href="${url}?filters=cat:1" class="link" data-test="link">
+          <a href="${url}?filters=cat%3A1" class="link" data-test="link">
             <span class="a11y">Page </span>
             1
           </a>
@@ -487,7 +517,7 @@ describe('Pagination()', () => {
           </span>
         </li>
         <li class="item" data-test="item">
-          <a href="${url}?page=3&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=3&filters=cat%3A1" class="link" data-test="link">
             <span class="a11y">Page </span>
             3
           </a>
@@ -495,7 +525,7 @@ describe('Pagination()', () => {
         <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
         <li class="item" data-test="item" data-pag-next="link">
           <a
-            href="${url}?page=3&filters=cat:1"
+            href="${url}?page=3&filters=cat%3A1"
             aria-label="Next page"
             class="next-link"
           >
@@ -508,9 +538,17 @@ describe('Pagination()', () => {
     const expectedData = {
       current: 2,
       total: 5,
-      prevFilters: '?filters=cat:1',
-      nextFilters: '&filters=cat:1',
-      currentFilters: '&filters=cat:1',
+      prevParams: {
+        filters: 'cat:1'
+      },
+      nextParams: {
+        page: '3',
+        filters: 'cat:1'
+      },
+      currentParams: {
+        page: '2',
+        filters: 'cat:1'
+      },
       title: 'Page 2 of 5',
       next: 3,
       prev: 1
@@ -529,7 +567,9 @@ describe('Pagination()', () => {
       ellipsis: '&hellip;',
       prev: '&larr;',
       next: '&rarr;',
-      filters: 'filters=cat:1',
+      filters: {
+        filters: 'cat:1'
+      },
       args: { ...args }
     })
 
@@ -539,7 +579,7 @@ describe('Pagination()', () => {
       <ol class="list" data-test="list">
         <li class="item" data-test="item" data-pag-prev="link">
           <a
-            href="${url}?page=2&filters=cat:1"
+            href="${url}?page=2&filters=cat%3A1"
             aria-label="Previous page"
             class="prev-link"
           >
@@ -548,7 +588,7 @@ describe('Pagination()', () => {
         </li>
         <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
         <li class="item" data-test="item">
-          <a href="${url}?page=2&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=2&filters=cat%3A1" class="link" data-test="link">
             <span class="a11y">Page </span>
             2
           </a>
@@ -560,7 +600,7 @@ describe('Pagination()', () => {
           </span>
         </li>
         <li class="item" data-test="item">
-          <a href="${url}?page=4&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=4&filters=cat%3A1" class="link" data-test="link">
             <span class="a11y">Page </span>
             4
           </a>
@@ -568,7 +608,7 @@ describe('Pagination()', () => {
         <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
         <li class="item" data-test="item" data-pag-next="link">
           <a
-            href="${url}?page=4&filters=cat:1"
+            href="${url}?page=4&filters=cat%3A1"
             aria-label="Next page"
             class="next-link"
           >
@@ -581,9 +621,18 @@ describe('Pagination()', () => {
     const expectedData = {
       current: 3,
       total: 5,
-      prevFilters: '&filters=cat:1',
-      nextFilters: '&filters=cat:1',
-      currentFilters: '&filters=cat:1',
+      prevParams: {
+        page: '2',
+        filters: 'cat:1'
+      },
+      nextParams: {
+        page: '4',
+        filters: 'cat:1'
+      },
+      currentParams: {
+        page: '3',
+        filters: 'cat:1'
+      },
       title: 'Page 3 of 5',
       next: 4,
       prev: 2
@@ -602,7 +651,9 @@ describe('Pagination()', () => {
       ellipsis: '&hellip;',
       prev: '&larr;',
       next: '&rarr;',
-      filters: 'filters=cat:1',
+      filters: {
+        filters: 'cat:1'
+      },
       args: { ...args }
     })
 
@@ -612,7 +663,7 @@ describe('Pagination()', () => {
       <ol class="list" data-test="list">
         <li class="item" data-test="item" data-pag-prev="link">
           <a
-            href="${url}?page=3&filters=cat:1"
+            href="${url}?page=3&filters=cat%3A1"
             aria-label="Previous page"
             class="prev-link"
           >
@@ -621,7 +672,7 @@ describe('Pagination()', () => {
         </li>
         <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
         <li class="item" data-test="item">
-          <a href="${url}?page=3&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=3&filters=cat%3A1" class="link" data-test="link">
             <span class="a11y">Page </span>
             3
           </a>
@@ -633,14 +684,14 @@ describe('Pagination()', () => {
           </span>
         </li>
         <li class="item" data-test="item">
-          <a href="${url}?page=5&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=5&filters=cat%3A1" class="link" data-test="link">
             <span class="a11y">Page </span>
             5
           </a>
         </li>
         <li class="item" data-test="item" data-pag-next="link">
           <a
-            href="${url}?page=5&filters=cat:1"
+            href="${url}?page=5&filters=cat%3A1"
             aria-label="Next page"
             class="next-link"
           >
@@ -653,9 +704,18 @@ describe('Pagination()', () => {
     const expectedData = {
       current: 4,
       total: 5,
-      prevFilters: '&filters=cat:1',
-      nextFilters: '&filters=cat:1',
-      currentFilters: '&filters=cat:1',
+      prevParams: {
+        page: '3',
+        filters: 'cat:1'
+      },
+      nextParams: {
+        page: '5',
+        filters: 'cat:1'
+      },
+      currentParams: {
+        page: '4',
+        filters: 'cat:1'
+      },
       title: 'Page 4 of 5',
       next: 5,
       prev: 3
@@ -674,7 +734,9 @@ describe('Pagination()', () => {
       ellipsis: '&hellip;',
       prev: '&larr;',
       next: '&rarr;',
-      filters: 'filters=cat:1',
+      filters: {
+        filters: 'cat:1'
+      },
       args: { ...args }
     })
 
@@ -684,7 +746,7 @@ describe('Pagination()', () => {
       <ol class="list" data-test="list">
         <li class="item" data-test="item" data-pag-prev="link">
           <a
-            href="${url}?page=4&filters=cat:1"
+            href="${url}?page=4&filters=cat%3A1"
             aria-label="Previous page"
             class="prev-link"
           >
@@ -693,13 +755,13 @@ describe('Pagination()', () => {
         </li>
         <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
         <li class="item" data-test="item">
-          <a href="${url}?page=3&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=3&filters=cat%3A1" class="link" data-test="link">
             <span class="a11y">Page </span>
             3
           </a>
         </li>
         <li class="item" data-test="item">
-          <a href="${url}?page=4&filters=cat:1" class="link" data-test="link">
+          <a href="${url}?page=4&filters=cat%3A1" class="link" data-test="link">
             <span class="a11y">Page </span>
             4
           </a>
@@ -719,11 +781,15 @@ describe('Pagination()', () => {
     const expectedData = {
       current: 5,
       total: 5,
-      prevFilters: '&filters=cat:1',
-      nextFilters: '',
-      currentFilters: '&filters=cat:1',
+      prevParams: {
+        page: '4',
+        filters: 'cat:1'
+      },
+      currentParams: {
+        page: '5',
+        filters: 'cat:1'
+      },
       title: 'Page 5 of 5',
-      next: 0,
       prev: 4
     }
 
@@ -820,8 +886,9 @@ describe('Pagination()', () => {
     const expectedData = {
       current: 1,
       total: 10,
-      nextFilters: '',
-      currentFilters: '',
+      nextParams: {
+        page: '2'
+      },
       next: 2
     }
 

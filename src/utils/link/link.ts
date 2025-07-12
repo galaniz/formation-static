@@ -6,7 +6,6 @@
 
 import type { LinkSlugArgs, LinkSlugReturnType } from './linkTypes.js'
 import type { InternalLink, Taxonomy } from '../../global/globalTypes.js'
-import { isNumber } from '../number/number.js'
 import { isObjectStrict } from '../object/object.js'
 import { isString, isStringStrict } from '../string/string.js'
 import { applyFilters } from '../filter/filter.js'
@@ -68,10 +67,10 @@ const getSlug = <T extends boolean = false>(
 ): LinkSlugReturnType<T> => {
   const {
     id = '',
-    page = 0,
     slug: initSlug = '',
     contentType = 'page',
-    itemData
+    itemData,
+    params
   } = isObjectStrict(args) ? args : {}
 
   let slug = initSlug
@@ -251,9 +250,19 @@ const getSlug = <T extends boolean = false>(
 
   parts = applyFilters('slugParts', parts, args)
 
+  /* Params */
+
+  if (params) {
+    const paramsStr = new URLSearchParams(params).toString()
+
+    if (paramsStr) {
+      parts.push(`?${paramsStr}`)
+    }
+  }
+
   /* Slug */
 
-  let fullSlug = `${parts.length ? parts.join('/') : ''}${isNumber(page) && page > 1 ? `/?page=${page}` : ''}`
+  let fullSlug = parts.length ? parts.join('/') : ''
   fullSlug = applyFilters('slug', fullSlug, args)
 
   /* Parents and slug return */

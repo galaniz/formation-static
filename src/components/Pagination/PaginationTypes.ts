@@ -7,7 +7,7 @@
  * @prop {number} [total]
  * @prop {number} [display]
  * @prop {number} [current]
- * @prop {string} [filters]
+ * @prop {Record<string, string>} [filters]
  * @prop {string} [url]
  * @prop {string} [ellipsis]
  * @prop {string} [prev]
@@ -23,7 +23,7 @@ export interface PaginationProps {
   total?: number
   display?: number
   current?: number
-  filters?: string
+  filters?: Record<string, string>
   url?: string
   ellipsis?: string
   prev?: string
@@ -73,9 +73,9 @@ export interface PaginationArgs {
  * @prop {string} [title]
  * @prop {number} [next]
  * @prop {number} [prev]
- * @prop {string} [nextFilters]
- * @prop {string} [prevFilters]
- * @prop {string} [currentFilters]
+ * @prop {Record<string, string>} [nextParams]
+ * @prop {Record<string, string>} [prevParams]
+ * @prop {Record<string, string>} [currentParams]
  */
 export interface PaginationData {
   current?: number
@@ -83,9 +83,9 @@ export interface PaginationData {
   title?: string
   next?: number
   prev?: number
-  nextFilters?: string
-  prevFilters?: string
-  currentFilters?: string
+  nextParams?: Record<string, string>
+  prevParams?: Record<string, string>
+  currentParams?: Record<string, string>
 }
 
 /**

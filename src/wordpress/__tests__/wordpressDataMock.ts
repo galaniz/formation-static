@@ -35,7 +35,7 @@ const mockWordPressFetch = vi.fn(async (
 
     const headers = new Headers()
 
-    /* Url */
+    /* URL */
 
     const urlObj = new URL(url)
 

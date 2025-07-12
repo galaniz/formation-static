@@ -70,48 +70,93 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
 
   let output = ''
 
-  /* Url param filters */
+  /* URL params */
 
-  const hasFilters = isStringStrict(filters)
+  const hasFilters = isObjectStrict(filters)
+  
+  let prevParams: Record<string, string> = {}
+  let nextParams: Record<string, string> = {}
+  let currentParams: Record<string, string> = {}
 
-  let prevFilters = ''
-  let nextFilters = ''
-  let currentFilters = ''
+  const prevPage = current - 1
+  const nextPage = current + 1 <= total ? current + 1 : 0
+
+  if (current > 1) {
+    currentParams.page = current.toString()
+  }
+
+  if (prevPage > 1) {
+    prevParams.page = prevPage.toString()
+  }
+
+  if (nextPage) {
+    nextParams.page = nextPage.toString()
+  }
 
   if (hasFilters) {
-    if (current > 2) {
-      prevFilters = `&${filters}`
-    } else {
-      prevFilters = `?${filters}`
+    currentParams = {
+      ...currentParams,
+      ...filters
     }
 
-    if (current === 1) {
-      currentFilters = `?${filters}`
-    } else {
-      currentFilters = `&${filters}`
+    prevParams = {
+      ...prevParams,
+      ...filters
     }
 
     if (current < total) {
-      nextFilters = `&${filters}`
+      nextParams = {
+        ...nextParams,
+        ...filters
+      }
     }
+  }
+
+  let prevParamsStr = new URLSearchParams(prevParams).toString()
+  let nextParamsStr = new URLSearchParams(nextParams).toString()
+  let currentParamsStr = new URLSearchParams(currentParams).toString()
+
+  if (prevParamsStr) {
+    prevParamsStr = `?${prevParamsStr}`
+  }
+
+  if (nextParamsStr) {
+    nextParamsStr = `?${nextParamsStr}`
+  }
+
+  if (currentParamsStr) {
+    currentParamsStr = `?${currentParamsStr}`
   }
 
   /* Meta data for head tags and urls */
 
   const data: PaginationData = {
     current,
-    total,
-    nextFilters,
-    currentFilters
+    total
   }
 
-  if (current === 1) {
-    data.next = current + 1
-  } else {
+  if (nextPage) {
+    data.next = nextPage
+  }
+
+  if (prevPage) {
+    data.prev = prevPage
+  }
+
+  if (currentParamsStr) {
+    data.currentParams = currentParams
+  }
+
+  if (nextParamsStr) {
+    data.nextParams = nextParams
+  }
+
+  if (prevParamsStr) {
+    data.prevParams = prevParams
+  }
+
+  if (current > 1) {
     data.title = titleTemplate.replace('%current', current.toString()).replace('%total', total.toString())
-    data.next = current + 1 <= total ? current + 1 : 0
-    data.prev = current - 1
-    data.prevFilters = prevFilters
   }
 
   /* Determine number of items to display */
@@ -163,7 +208,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     isPrevLink = true
     prevItem = `
       <a
-        href="${url}${current > 2 ? `?page=${current - 1}` : ''}${prevFilters}"
+        href="${url}${prevParamsStr}"
         aria-label="${prevLabel}"${isStringStrict(prevLinkClass) ? ` class="${prevLinkClass}"` : ''}
       >
         ${prev}
@@ -200,11 +245,27 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
         </span>
       `
     } else {
-      const link = i === 1 ? url : `${url}?page=${i}`
-      const linkFilters = hasFilters ? i === 1 ? `?${filters}` : `&${filters}` : ''
+      let params: Record<string, string> = {}
+
+      if (i > 1) {
+        params.page = i.toString()
+      }
+
+      if (hasFilters) {
+        params = {
+          ...params,
+          ...filters
+        }
+      }
+
+      let paramsStr = new URLSearchParams(params).toString()
+
+      if (paramsStr) {
+        paramsStr = `?${paramsStr}`
+      }
 
       content = `
-        <a href="${link}${linkFilters}"${isStringStrict(linkClass) ? ` class="${linkClass}"` : ''}${isStringStrict(linkAttr) ? ` ${linkAttr}` : ''}>
+        <a href="${url}${paramsStr}"${isStringStrict(linkClass) ? ` class="${linkClass}"` : ''}${isStringStrict(linkAttr) ? ` ${linkAttr}` : ''}>
           <span class="${a11yClass}">${pageLabel} </span>
           ${i}
         </a>
@@ -229,7 +290,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     nextLink = true
     nextItem = `
       <a
-        href="${url}?page=${current + 1}${nextFilters}"
+        href="${url}${nextParamsStr}"
         aria-label="${nextLabel}"${isStringStrict(nextLinkClass) ? ` class="${nextLinkClass}"` : ''}
       >
         ${next}

@@ -9,18 +9,18 @@ import type { Parent } from '../../global/globalTypes.js'
 
 /**
  * @typedef {object} LinkSlugArgs
- * @prop {string} [id]
  * @prop {string} slug
- * @prop {number} [page]
+ * @prop {string} [id]
  * @prop {string} [contentType]
  * @prop {RenderItem} [itemData]
+ * @prop {Record<string, string>|string} [params]
  */
 export interface LinkSlugArgs {
-  id?: string
   slug: string
-  page?: number
+  id?: string
   contentType?: string
   itemData?: RenderItem
+  params?: Record<string, string> | string
 }
 
 /**

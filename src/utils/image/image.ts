@@ -17,7 +17,7 @@ import { isObjectStrict } from '../object/object.js'
 import { dataSource } from '../dataSource/dataSource.js'
 
 /**
- * Url with params from remote source.
+ * URL with params from remote source.
  *
  * @private
  * @param {string} url
