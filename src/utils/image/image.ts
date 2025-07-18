@@ -274,7 +274,7 @@ const getImage = <V extends boolean = false>(
       width="${w}"
       height="${h}"
       ${isStringStrict(attr) ? ` ${attr}` : ''}
-      ${lazy ? ' loading="lazy" decoding="async"' : ' loading="eager"'}
+      ${lazy ? ' loading="lazy" decoding="async"' : ' loading="eager" fetchpriority="high"'}
     >
   `
 

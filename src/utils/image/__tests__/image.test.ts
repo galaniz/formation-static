@@ -147,6 +147,7 @@ describe('getImage()', () => {
         width="600"
         height="150"
         loading="eager"
+        fetchpriority="high"
       >
     `)
 
@@ -402,6 +403,7 @@ describe('getImage()', () => {
         height="400"
         id="test"
         loading="eager"
+        fetchpriority="high"
       >
     `)
 
@@ -445,6 +447,7 @@ describe('getImage()', () => {
         width="1600"
         height="800"
         loading="eager"
+        fetchpriority="high"
       >
     `)
 
