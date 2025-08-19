@@ -76,8 +76,8 @@ export interface RichTextContent extends Generic {
  * @extends {RenderFunctionArgs}
  * @prop {RichTextArgs} args
  */
-export interface RichTextProps<T = RichTextArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {
-  args: RichTextArgs & T
+export interface RichTextProps<A = RichTextArgs, R = RenderItem> extends RenderFunctionArgs<A, R> {
+  args: RichTextArgs & A
 }
 
 /**

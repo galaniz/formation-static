@@ -18,9 +18,9 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
  * @prop {string} [attr]
  * @prop {boolean} [nest]
  */
-export interface ContainerArgs extends Generic {
-  tag?: string
-  maxWidth?: string | number
+export interface ContainerArgs<T = any, M = any> extends Generic { // eslint-disable-line @typescript-eslint/no-explicit-any
+  tag?: string & T
+  maxWidth?: (string | number) & M
   layoutClasses?: string
   classes?: string
   style?: string
@@ -33,8 +33,8 @@ export interface ContainerArgs extends Generic {
  * @extends {RenderFunctionArgs}
  * @prop {ContainerArgs} args
  */
-export interface ContainerProps<T = ContainerArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {
-  args: ContainerArgs & T
+export interface ContainerProps<A = ContainerArgs, R = RenderItem> extends RenderFunctionArgs<A, R> {
+  args: ContainerArgs & A
 }
 
 /**
@@ -42,6 +42,6 @@ export interface ContainerProps<T = ContainerArgs, R = RenderItem> extends Rende
  * @param {ContainerProps} props
  * @return {ContainerProps}
  */
-export type ContainerPropsFilter<T = ContainerArgs, R = RenderItem> = (
-  props: ContainerProps<T, R>
-) => ContainerProps<T, R>
+export type ContainerPropsFilter<A = ContainerArgs, R = RenderItem> = (
+  props: ContainerProps<A, R>
+) => ContainerProps<A, R>

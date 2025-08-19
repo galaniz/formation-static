@@ -39,7 +39,7 @@ const FormField = (props: FormFieldProps): string[] => {
     hint,
     value,
     required = false,
-    attributes,
+    attr,
     emptyError,
     invalidError,
     fieldClasses,
@@ -117,11 +117,11 @@ const FormField = (props: FormFieldProps): string[] => {
   const fieldsetAttrs: string[] = []
   const attrs: string[] = ['data-form-input']
 
-  if (isStringStrict(attributes)) {
-    const attrsArr = attributes.split('\n')
+  if (isStringStrict(attr)) {
+    const attrsArr = attr.split('\n')
 
-    for (const attr of attrsArr) {
-      const [attrName, attrValue] = attr.split(' : ')
+    for (const attrItem of attrsArr) {
+      const [attrName, attrValue] = attrItem.split(' : ')
 
       if (!isStringStrict(attrName) || !isStringStrict(attrValue)) {
         continue

@@ -1706,7 +1706,7 @@ export const pagesFr = {
                       width: '1/2',
                       autoCompleteToken: 'name',
                       rows: 0,
-                      emptyErrorMessage: 'Vestibulum scelerisque'
+                      emptyError: 'Vestibulum scelerisque'
                     },
                     {
                       id: '5RYUROVKB6N3VbufFp3brj',
@@ -1719,8 +1719,8 @@ export const pagesFr = {
                       width: '1/2',
                       autoCompleteToken: 'email',
                       rows: 0,
-                      emptyErrorMessage: 'Donec hendrerit',
-                      invalidErrorMessage: 'Maecenas justo'
+                      emptyError: 'Donec hendrerit',
+                      invalidError: 'Maecenas justo'
                     },
                     {
                       id: '5vTr8Bko6rbRMf7B6jQUYH',
@@ -1743,7 +1743,7 @@ export const pagesFr = {
                       required: true,
                       width: '1/1',
                       rows: 6,
-                      emptyErrorMessage: 'Quisque mollis'
+                      emptyError: 'Quisque mollis'
                     }
                   ]
                 },

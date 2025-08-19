@@ -136,8 +136,8 @@ describe('doShortcodes()', () => {
     'should return content with shortcode replaced and skip invalid attributes',
     async () => await new Promise(async (resolve) => { // eslint-disable-line @typescript-eslint/no-misused-promises
       addShortcode('test', {
-        callback ({ attributes }) {
-          const result = Object.keys(attributes).length
+        callback ({ attr }) {
+          const result = Object.keys(attr).length
 
           expect(result).toEqual(0)
           resolve('')
@@ -154,14 +154,14 @@ describe('doShortcodes()', () => {
     const itemDataProps = vi.fn()
 
     addShortcode('test', {
-      callback ({ attributes, content = '', itemData }) {
+      callback ({ attr, content = '', itemData }) {
         itemDataProps(itemData)
 
         const {
           type = 'default',
           required = false,
           size = 0
-        } = attributes as {
+        } = attr as {
           type: string
           required: boolean
           size: number
@@ -197,8 +197,8 @@ describe('doShortcodes()', () => {
 
   it('should return content with parent and child shortcodes replaced', async () => {
     addShortcode('child', {
-      callback ({ attributes, content = '' }) {
-        const { subtype = 'default' } = attributes as {
+      callback ({ attr, content = '' }) {
+        const { subtype = 'default' } = attr as {
           subtype: string
         }
 
@@ -211,12 +211,12 @@ describe('doShortcodes()', () => {
 
     addShortcode('parent', {
       child: 'child',
-      callback ({ attributes, content }) {
+      callback ({ attr, content }) {
         const {
           type = 'default',
           required = false,
           size = 0
-        } = attributes as {
+        } = attr as {
           type: string
           required: boolean
           size: number
@@ -303,8 +303,8 @@ describe('setShortcodes()', () => {
   it('should return true and add shortcodes to shortcodes map', () => {
     const result = setShortcodes({
       test: {
-        callback ({ attributes, content = '' }) {
-          const { tag = 'p' } = attributes as {
+        callback ({ attr, content = '' }) {
+          const { tag = 'p' } = attr as {
             tag: string
           }
 
@@ -348,8 +348,8 @@ describe('stripShortcodes()', () => {
 
   it('should remove shortcodes from content', () => {
     addShortcode('child', {
-      callback ({ attributes, content = '' }) {
-        const { subtype = 'default' } = attributes as {
+      callback ({ attr, content = '' }) {
+        const { subtype = 'default' } = attr as {
           subtype: string
         }
 
@@ -362,12 +362,12 @@ describe('stripShortcodes()', () => {
 
     addShortcode('parent', {
       child: 'child',
-      callback ({ attributes, content }) {
+      callback ({ attr, content }) {
         const {
           type = 'default',
           required = false,
           size = 0
-        } = attributes as {
+        } = attr as {
           type: string
           required: boolean
           size: number

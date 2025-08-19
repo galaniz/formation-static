@@ -78,13 +78,13 @@ export interface ServerlessActionReturn {
  * @param {ServerlessActionData} args
  * @param {Request} request
  * @param {Generic} env
- * @return {Promise<ServerlessActionReturn>}
+ * @return {ServerlessActionReturn|Promise<ServerlessActionReturn>}
  */
 export type ServerlessAction = (
   args: ServerlessActionData,
   request: Request,
   env: Generic
-) => Promise<ServerlessActionReturn>
+) => Promise<ServerlessActionReturn> | ServerlessActionReturn
 
 /**
  * @typedef {Object<string, ServerlessAction>} ServerlessActions

@@ -32,7 +32,7 @@ const Column = (props: ColumnProps): string[] => {
 
   const { args } = props
   const {
-    tag = 'div',
+    tag = 'div', // eslint-disable-line @typescript-eslint/no-unsafe-assignment
     classes,
     style,
     attr

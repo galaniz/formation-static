@@ -37,6 +37,7 @@ const Form = (props: FormProps): string[] => {
     formTag = 'form',
     formClasses,
     formAttr,
+    fields = '',
     fieldsClasses,
     fieldsAttr,
     submitFieldClasses,
@@ -111,7 +112,7 @@ const Form = (props: FormProps): string[] => {
   return [`
     <${formTag} id="${id}"${formAttrs}>
       <${fieldsTag}${fieldsAttrs}>`,
-        `${honeypotOutput}
+        `${fields}${honeypotOutput}
         <div${submitFieldAttrs}>
           <button type="submit"${submitAttrs}>
             ${submitLabel}

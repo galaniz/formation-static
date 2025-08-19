@@ -25,7 +25,12 @@ import { serverlessActions } from '../serverless.js'
  * @param {string} [honeypotName]
  * @return {Promise<Response>}
  */
-const Ajax = async (request: Request, env: Generic, headers?: GenericStrings, honeypotName?: string): Promise<Response> => {
+const Ajax = async (
+  request: Request,
+  env: Generic,
+  headers?: GenericStrings,
+  honeypotName?: string
+): Promise<Response> => {
   const ajaxHeaders = {
     'Content-Type': 'application/json',
     ...headers

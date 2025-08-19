@@ -113,8 +113,8 @@ const getShortcodeData = (
 
     /* Attributes from opening tag */
 
-    const attributes: ShortcodeAttrs = {}
-    const attributeTypes = isObjectStrict(info.attributeTypes) ? info.attributeTypes : {}
+    const attrs: ShortcodeAttrs = {}
+    const attrTypes = isObjectStrict(info.attrTypes) ? info.attrTypes : {}
     const attr = tag.match(attrReg)
 
     if (isArrayStrict(attr)) {
@@ -127,8 +127,8 @@ const getShortcodeData = (
 
         let val: ShortcodeAttrValue = escape(value.replace(/"/g, ''))
 
-        if (isStringStrict(attributeTypes[key])) {
-          const type = attributeTypes[key]
+        if (isStringStrict(attrTypes[key])) {
+          const type = attrTypes[key]
 
           if (type === 'number') {
             const num = parseInt(val, 10)
@@ -141,7 +141,7 @@ const getShortcodeData = (
           }
         }
 
-        attributes[key] = val
+        attrs[key] = val
       })
     }
 
@@ -169,7 +169,7 @@ const getShortcodeData = (
       name,
       replaceContent,
       content: innerContent,
-      attributes,
+      attr: attrs,
       children,
       itemData
     })

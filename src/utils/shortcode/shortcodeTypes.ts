@@ -22,7 +22,7 @@ export type ShortcodeAttrs = Record<string, ShortcodeAttrValue>
  * @prop {string} name
  * @prop {string} replaceContent
  * @prop {string} content
- * @prop {ShortcodeAtts} attributes
+ * @prop {ShortcodeAtts} attr
  * @prop {ShortcodeData[]} children
  * @prop {RenderItem} [itemData]
  */
@@ -30,7 +30,7 @@ export interface ShortcodeData {
   name: string
   replaceContent: string
   content: string
-  attributes: ShortcodeAttrs
+  attr: ShortcodeAttrs
   children: ShortcodeData[]
   itemData?: RenderItem
 }
@@ -45,12 +45,12 @@ export type ShortcodeCallback = (args: ShortcodeData) => string | Promise<string
 /**
  * @typedef {object} Shortcode
  * @prop {ShortcodeCallback} callback
- * @prop {GenericStrings} [attributeTypes] - property values: number | boolean | string
+ * @prop {GenericStrings} [attrTypes] - Property values: number | boolean | string
  * @prop {string} [child]
  */
 export interface Shortcode {
   callback: ShortcodeCallback
-  attributeTypes?: GenericStrings
+  attrTypes?: GenericStrings
   child?: string
 }
 

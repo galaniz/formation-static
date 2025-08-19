@@ -1143,7 +1143,7 @@
           "required": true,
           "width": "1/1",
           "rows": 6,
-          "emptyErrorMessage": "Quisque mollis"
+          "emptyError": "Quisque mollis"
         }
       },
       {
@@ -1572,7 +1572,7 @@
           "width": "1/2",
           "autoCompleteToken": "name",
           "rows": 0,
-          "emptyErrorMessage": "Vestibulum scelerisque"
+          "emptyError": "Vestibulum scelerisque"
         }
       },
       {
@@ -2025,8 +2025,8 @@
           "width": "1/2",
           "autoCompleteToken": "email",
           "rows": 0,
-          "emptyErrorMessage": "Donec hendrerit",
-          "invalidErrorMessage": "Maecenas justo"
+          "emptyError": "Donec hendrerit",
+          "invalidError": "Maecenas justo"
         }
       },
       {

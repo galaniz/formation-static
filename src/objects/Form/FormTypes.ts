@@ -14,6 +14,7 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
  * @prop {string} [formTag=form]
  * @prop {string} [formClasses]
  * @prop {string} [formAttr]
+ * @prop {string} [fields]
  * @prop {string} [fieldsClasses]
  * @prop {string} [fieldsAttr]
  * @prop {string} [submitFieldClasses]
@@ -34,6 +35,7 @@ export interface FormArgs extends Generic {
   formTag?: string
   formClasses?: string
   formAttr?: string
+  fields?: string
   fieldsClasses?: string
   fieldsAttr?: string
   submitFieldClasses?: string
@@ -55,8 +57,8 @@ export interface FormArgs extends Generic {
  * @extends {RenderFunctionArgs}
  * @prop {FormArgs} args
  */
-export interface FormProps<T = FormArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {
-  args: FormArgs & T
+export interface FormProps<A = FormArgs, R = RenderItem> extends RenderFunctionArgs<A, R> {
+  args: FormArgs & A
 }
 
 /**
@@ -76,9 +78,9 @@ export interface FormMeta {
  * @param {FormProps} props
  * @return {FormProps}
  */
-export type FormPropsFilter<T = FormArgs, R = RenderItem> = (
-  props: FormProps<T, R>
-) => FormProps<T, R>
+export type FormPropsFilter<A = FormArgs, R = RenderItem> = (
+  props: FormProps<A, R>
+) => FormProps<A, R>
 
 /**
  * @typedef {'text'|'email'|'checkbox'|'radio'|'number'|'password'|'tel'|'url'|'textarea'|'select'|'radio-group'|'checkbox-group'|'fieldset'|'hidden'} FormFieldType
@@ -108,7 +110,7 @@ export type FormFieldType =
  * @prop {string} [hint]
  * @prop {string} [value]
  * @prop {boolean} [required=false]
- * @prop {string} [attributes]
+ * @prop {string} [attr]
  * @prop {string} [emptyError]
  * @prop {string} [invalidError]
  * @prop {string} [fieldsetClasses]
@@ -129,7 +131,7 @@ export interface FormFieldArgs extends Generic {
   hint?: string
   value?: string
   required?: boolean
-  attributes?: string
+  attr?: string
   emptyError?: string
   invalidError?: string
   fieldsetClasses?: string
@@ -149,8 +151,8 @@ export interface FormFieldArgs extends Generic {
  * @extends {RenderFunctionArgs}
  * @prop {FormFieldArgs} args
  */
-export interface FormFieldProps<T = FormFieldArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {
-  args: FormFieldArgs & T
+export interface FormFieldProps<A = FormFieldArgs, R = RenderItem> extends RenderFunctionArgs<A, R> {
+  args: FormFieldArgs & A
 }
 
 /**
@@ -158,9 +160,9 @@ export interface FormFieldProps<T = FormFieldArgs, R = RenderItem> extends Rende
  * @param {FormFieldProps} props
  * @return {FormFieldProps}
  */
-export type FormFieldPropsFilter<T = FormFieldArgs, R = RenderItem> = (
-  props: FormFieldProps<T, R>
-) => FormFieldProps<T, R>
+export type FormFieldPropsFilter<A = FormFieldArgs, R = RenderItem> = (
+  props: FormFieldProps<A, R>
+) => FormFieldProps<A, R>
 
 /**
  * @typedef {object} FormOptionArgs
@@ -195,8 +197,8 @@ export interface FormOptionArgs extends Generic {
  * @prop {FormOptionArgs} args
  * @prop {FormFieldArgs} [parents]
  */
-export interface FormOptionProps<T = FormOptionArgs, R = RenderItem, P = ParentArgs & FormFieldProps> extends RenderFunctionArgs<T, R, P> {
-  args: FormOptionArgs & T
+export interface FormOptionProps<A = FormOptionArgs, R = RenderItem, P = ParentArgs & FormFieldProps> extends RenderFunctionArgs<A, R, P> {
+  args: FormOptionArgs & A
   parents?: P[]
 }
 
@@ -205,6 +207,6 @@ export interface FormOptionProps<T = FormOptionArgs, R = RenderItem, P = ParentA
  * @param {FormOptionProps} props
  * @return {FormOptionProps}
  */
-export type FormOptionPropsFilter<T = FormOptionArgs, R = RenderItem> = (
-  props: FormOptionProps<T, R>
-) => FormOptionProps<T, R>
+export type FormOptionPropsFilter<A = FormOptionArgs, R = RenderItem> = (
+  props: FormOptionProps<A, R>
+) => FormOptionProps<A, R>

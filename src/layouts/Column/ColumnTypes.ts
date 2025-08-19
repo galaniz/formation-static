@@ -19,12 +19,12 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
  * @prop {string} [style]
  * @prop {string} [attr]
  */
-export interface ColumnArgs extends Generic {
-  tag?: string
-  width?: string | number
-  widthSmall?: string | number
-  widthMedium?: string | number
-  widthLarge?: string | number
+export interface ColumnArgs<T = any, W = any> extends Generic { // eslint-disable-line @typescript-eslint/no-explicit-any
+  tag?: string & T
+  width?: (string | number) & W
+  widthSmall?: (string | number) & W
+  widthMedium?: (string | number) & W
+  widthLarge?: (string | number) & W
   classes?: string
   style?: string
   attr?: string
@@ -35,8 +35,8 @@ export interface ColumnArgs extends Generic {
  * @extends {RenderFunctionArgs}
  * @prop {ColumnArgs} args
  */
-export interface ColumnProps<T = ColumnArgs, R = RenderItem> extends RenderFunctionArgs<T, R> {
-  args: ColumnArgs & T
+export interface ColumnProps<A = ColumnArgs, R = RenderItem> extends RenderFunctionArgs<A, R> {
+  args: ColumnArgs & A
 }
 
 /**
@@ -44,6 +44,6 @@ export interface ColumnProps<T = ColumnArgs, R = RenderItem> extends RenderFunct
  * @param {ColumnProps} props
  * @return {ColumnProps}
  */
-export type ColumnPropsFilter<T = ColumnArgs, R = RenderItem> = (
-  props: ColumnProps<T, R>
-) => ColumnProps<T, R>
+export type ColumnPropsFilter<A = ColumnArgs, R = RenderItem> = (
+  props: ColumnProps<A, R>
+) => ColumnProps<A, R>

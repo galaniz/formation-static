@@ -32,7 +32,7 @@ const Container = (props: ContainerProps): string[] => {
 
   const { args } = props
   const {
-    tag = 'div',
+    tag = 'div', // eslint-disable-line @typescript-eslint/no-unsafe-assignment
     layoutClasses,
     classes,
     style,

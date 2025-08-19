@@ -197,8 +197,8 @@ export type RenderHttpError = (args: RenderHttpErrorArgs) => string | Promise<st
  * @prop {RichTextHeading[]} [headings]
  * @prop {object[]} [children]
  */
-export interface RenderFunctionArgs<T = any, R = RenderItem, P = ParentArgs, C = any> { // eslint-disable-line @typescript-eslint/no-explicit-any
-  args: 0 extends (1 & T) ? any : T // eslint-disable-line @typescript-eslint/no-explicit-any
+export interface RenderFunctionArgs<A = any, R = RenderItem, P = ParentArgs, C = any> { // eslint-disable-line @typescript-eslint/no-explicit-any
+  args: 0 extends (1 & A) ? any : A // eslint-disable-line @typescript-eslint/no-explicit-any
   parents?: P[]
   itemData?: R
   itemContains?: Set<string>
@@ -213,15 +213,15 @@ export interface RenderFunctionArgs<T = any, R = RenderItem, P = ParentArgs, C =
  * @param {RenderFunctionArgs} props
  * @return {string|string[]|Promise<string|string[]>}
  */
-export type RenderFunction<T = any, R = RenderItem, P = ParentArgs, C = any> = ( // eslint-disable-line @typescript-eslint/no-explicit-any
-  props: RenderFunctionArgs<T, R, P, C>
+export type RenderFunction<A = any, R = RenderItem, P = ParentArgs, C = any> = ( // eslint-disable-line @typescript-eslint/no-explicit-any
+  props: RenderFunctionArgs<A, R, P, C>
 ) => string | string[] | Promise<string | string[]>
 
 /**
  * @typedef {Object<string, RenderFunction>} RenderFunctions
  */
-export type RenderFunctions<T = any, R = RenderItem, P = ParentArgs, C = any> = // eslint-disable-line @typescript-eslint/no-explicit-any
-  Record<string, RenderFunction<T, R, P, C>>
+export type RenderFunctions<A = any, R = RenderItem, P = ParentArgs, C = any> = // eslint-disable-line @typescript-eslint/no-explicit-any
+  Record<string, RenderFunction<A, R, P, C>>
 
 /**
  * @typedef {object} RenderFunctionsArgs
