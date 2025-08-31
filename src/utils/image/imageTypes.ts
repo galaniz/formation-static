@@ -74,7 +74,12 @@ export type ImageReturnType<V extends false | true> = V extends true ? ImageRetu
 /**
  * @typedef {ParentArgs|ColumnProps|ContainerProps} ImageMaxWidthParents
  */
-export type ImageMaxWidthParents = ParentArgs & ColumnProps<string, string | number> & ContainerProps<string, string | number>
+export type ImageMaxWidthParents = ParentArgs & ColumnProps & ContainerProps
+
+/**
+ * @typedef {ParentArgs|ColumnProps|ContainerProps} ImageMaxWidthParentsArgs
+ */
+export type ImageMaxWidthParentsArgs = ParentArgs & ColumnProps<string, string | number> & ContainerProps<string, string | number>
 
 /**
  * @typedef {object} ImageMaxWidthArgs

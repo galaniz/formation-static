@@ -7,7 +7,8 @@
 import type {
   ImageArgs,
   ImageReturnType,
-  ImageMaxWidthArgs
+  ImageMaxWidthArgs,
+  ImageMaxWidthParentsArgs
 } from './imageTypes.js'
 import { config } from '../../config/config.js'
 import { isString, isStringStrict } from '../string/string.js'
@@ -359,7 +360,7 @@ const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
       return
     }
 
-    const { renderType, args } = parent
+    const { renderType, args } = parent as ImageMaxWidthParentsArgs
 
     if (!isObjectStrict(args)) {
       return
