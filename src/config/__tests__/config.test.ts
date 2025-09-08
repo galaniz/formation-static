@@ -118,7 +118,7 @@ describe('setConfigFilter()', () => {
     setConfig(testConfig)
   })
 
-  it('should filter config namespace with default value', async () => {
+  it('should filter config namespace with default value', () => {
     setConfig({
       filter: (con, env) => {
         con.namespace = env?.NAMESPACE ?? 'frm' // eslint-disable-line @typescript-eslint/no-unnecessary-condition
@@ -128,7 +128,7 @@ describe('setConfigFilter()', () => {
     })
 
     // @ts-expect-error - test empty args
-    await setConfigFilter()
+    setConfigFilter()
 
     const namespace = config.namespace
     const expectedNamespace = 'frm'
@@ -136,7 +136,7 @@ describe('setConfigFilter()', () => {
     expect(namespace).toBe(expectedNamespace)
   })
 
-  it('should filter config namespace with environment variable', async () => {
+  it('should filter config namespace with environment variable', () => {
     setConfig({
       filter: (con, env) => {
         con.namespace = env.NAMESPACE ?? ''
@@ -145,7 +145,7 @@ describe('setConfigFilter()', () => {
       }
     })
 
-    await setConfigFilter({
+    setConfigFilter({
       NAMESPACE: 'ns'
     })
 

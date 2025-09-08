@@ -86,8 +86,8 @@ const setConfig: ConfigSet = (args) => {
  *
  * @type {ConfigSetFilter}
  */
-const setConfigFilter: ConfigSetFilter = async (env) => {
-  config = await config.filter(config, env)
+const setConfigFilter: ConfigSetFilter = (env) => {
+  config = config.filter(config, env)
 
   return config
 }
