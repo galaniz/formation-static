@@ -104,9 +104,9 @@ export interface ConfigImage {
  * @typedef {function} ConfigFilter
  * @param {Config} config
  * @param {Generic} env
- * @return {Config}
+ * @return {Config|Promise<Config>}
  */
-export type ConfigFilter = (config: Config, env: Generic) => Config
+export type ConfigFilter = (config: Config, env: Generic) => Config | Promise<Config>
 
 /**
  * @typedef {object} Config
@@ -162,6 +162,6 @@ export type ConfigSet = (args: Partial<Config>) => Config
 /**
  * @typedef {function} ConfigSetFilter
  * @param {Generic} env
- * @return {Config}
+ * @return {Config|Promise<Config>}
  */
-export type ConfigSetFilter = (env: Generic) => Config
+export type ConfigSetFilter = (env: Generic) => Config | Promise<Config>

@@ -9,7 +9,7 @@ import { it, expect, describe, afterEach } from 'vitest'
 import { config, setConfig, setConfigFilter } from '../config.js'
 
 /**
- * Default config
+ * Default config.
  *
  * @type {Config}
  */
@@ -118,7 +118,7 @@ describe('setConfigFilter()', () => {
     setConfig(testConfig)
   })
 
-  it('should filter config namespace with default value', () => {
+  it('should filter config namespace with default value', async () => {
     setConfig({
       filter: (con, env) => {
         con.namespace = env?.NAMESPACE ?? 'frm' // eslint-disable-line @typescript-eslint/no-unnecessary-condition
@@ -128,7 +128,7 @@ describe('setConfigFilter()', () => {
     })
 
     // @ts-expect-error - test empty args
-    setConfigFilter()
+    await setConfigFilter()
 
     const namespace = config.namespace
     const expectedNamespace = 'frm'
@@ -136,7 +136,7 @@ describe('setConfigFilter()', () => {
     expect(namespace).toBe(expectedNamespace)
   })
 
-  it('should filter config namespace with environment variable', () => {
+  it('should filter config namespace with environment variable', async () => {
     setConfig({
       filter: (con, env) => {
         con.namespace = env.NAMESPACE ?? ''
@@ -145,7 +145,7 @@ describe('setConfigFilter()', () => {
       }
     })
 
-    setConfigFilter({
+    await setConfigFilter({
       NAMESPACE: 'ns'
     })
 

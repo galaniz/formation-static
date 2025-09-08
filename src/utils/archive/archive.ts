@@ -174,6 +174,10 @@ const getArchiveLink = (contentType: string, itemData?: RenderItem): ArchiveLink
   let title = ''
   let slug
 
+  /* Locale */
+
+  const locale = itemData?.locale as string
+
   /* Taxonomy */
 
   const taxonomyInfo = getTaxonomyInfo(contentType, itemData)
@@ -208,7 +212,7 @@ const getArchiveLink = (contentType: string, itemData?: RenderItem): ArchiveLink
 
   /* Archive */
 
-  const archiveInfo = getArchiveInfo(contentType, itemData?.locale as string)
+  const archiveInfo = getArchiveInfo(contentType, locale)
 
   const {
     id: archiveId,
@@ -221,7 +225,10 @@ const getArchiveLink = (contentType: string, itemData?: RenderItem): ArchiveLink
     slug = getSlug({
       id: archiveId,
       slug: archiveSlug,
-      contentType: archiveType
+      contentType: archiveType,
+      itemData: {
+        locale
+      }
     })
 
     title = getArchiveLabel(contentType, itemData, 'plural', archiveTitle) 
