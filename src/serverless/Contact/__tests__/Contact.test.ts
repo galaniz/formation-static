@@ -54,6 +54,19 @@ describe('Contact()', () => {
       value: [1, 2, 3],
       label: 'Numbers'
     },
+    file: {
+      type: 'file',
+      value: new File(['test'], 'test.txt', { type: 'text/plain' }),
+      label: 'File'
+    },
+    files: {
+      type: 'file',
+      value: [
+        new File(['test'], 'test.txt', { type: 'text/plain' }),
+        new File(['test'], 'test2.txt', { type: 'text/plain' })
+      ],
+      label: 'Files'
+    },
     legend: {
       type: 'text',
       legend: 'Legend',
@@ -281,6 +294,11 @@ describe('Contact()', () => {
         1\n
         2\n
         3\n
+        File\n
+        test.txt\n
+        Files\n
+        test.txt\n
+        test2.txt\n
         Legend\n
         Options\n
         One\n
@@ -360,6 +378,26 @@ describe('Contact()', () => {
                           </h2>
                           <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
                             1<br>2<br>3
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 16px 0; border-bottom: 2px solid #ccc;">
+                          <h2 style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
+                            File
+                          </h2>
+                          <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
+                            test.txt
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 16px 0; border-bottom: 2px solid #ccc;">
+                          <h2 style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
+                            Files
+                          </h2>
+                          <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
+                            test.txt<br>test2.txt
                           </p>
                         </td>
                       </tr>

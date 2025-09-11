@@ -17,16 +17,21 @@ export interface ServerlessRoute {
 }
 
 /**
+ * @typedef {string|number|boolean|File} ServerlessActionPrimitive
+ */
+export type ServerlessActionPrimitive = string | number | boolean | File
+
+/**
  * @typedef {object} ServerlessActionInput
  * @extends {Generic}
+ * @prop {ServerlessActionPrimitive|ServerlessActionPrimitive[]} value
  * @prop {string|string[]} type
- * @prop {string|boolean|number|string[]|number[]} value
  * @prop {string} [label]
  * @prop {string} [legend]
  */
 export interface ServerlessActionInput extends Generic {
+  value: ServerlessActionPrimitive | ServerlessActionPrimitive[]
   type: string | string[]
-  value: string | boolean | number | string[] | number[]
   label?: string
   legend?: string
 }

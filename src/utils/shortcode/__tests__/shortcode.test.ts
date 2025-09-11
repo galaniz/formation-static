@@ -169,7 +169,7 @@ describe('doShortcodes()', () => {
 
         return `<${type} ${required.toString()} ${size}${content} />`
       },
-      attributeTypes: {
+      attrTypes: {
         type: 'string',
         required: 'boolean',
         size: 'number'
@@ -204,7 +204,7 @@ describe('doShortcodes()', () => {
 
         return `<child ${subtype}>${content}</child>`
       },
-      attributeTypes: {
+      attrTypes: {
         subtype: 'string'
       }
     })
@@ -224,7 +224,7 @@ describe('doShortcodes()', () => {
 
         return `<parent ${type} ${required.toString()} ${size}>${content}</parent>`
       },
-      attributeTypes: {
+      attrTypes: {
         type: 'string',
         required: 'boolean',
         size: 'number'
@@ -310,7 +310,7 @@ describe('setShortcodes()', () => {
 
           return `<${tag}>${content}</${tag}>`
         },
-        attributeTypes: {
+        attrTypes: {
           tag: 'string'
         },
         child: 'testChild'
@@ -355,7 +355,7 @@ describe('stripShortcodes()', () => {
 
         return `<child ${subtype}>${content}</child>`
       },
-      attributeTypes: {
+      attrTypes: {
         subtype: 'string'
       }
     })
@@ -375,7 +375,7 @@ describe('stripShortcodes()', () => {
 
         return `<parent ${type} ${required.toString()} ${size}>${content}</parent>`
       },
-      attributeTypes: {
+      attrTypes: {
         type: 'string',
         required: 'boolean',
         size: 'number'

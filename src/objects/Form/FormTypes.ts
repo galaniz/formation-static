@@ -83,7 +83,7 @@ export type FormPropsFilter<A = FormArgs, R = RenderItem> = (
 ) => FormProps<A, R>
 
 /**
- * @typedef {'text'|'email'|'checkbox'|'radio'|'number'|'password'|'tel'|'url'|'textarea'|'select'|'radio-group'|'checkbox-group'|'fieldset'|'hidden'} FormFieldType
+ * @typedef {'text'|'email'|'checkbox'|'radio'|'number'|'password'|'tel'|'url'|'textarea'|'select'|'radio-group'|'checkbox-group'|'fieldset'|'hidden'|'file'} FormFieldType
  */
 export type FormFieldType =
   'text' |
@@ -99,7 +99,8 @@ export type FormFieldType =
   'radio-group' |
   'checkbox-group' |
   'fieldset' |
-  'hidden'
+  'hidden' |
+  'file'
 
 /**
  * @typedef {object} FormFieldArgs

@@ -17,6 +17,7 @@ import { applyFilters } from '../../utils/filter/filter.js'
 import { getPermalink } from '../../utils/link/link.js'
 import { getStoreItem } from '../../store/store.js'
 import { minify } from '../../utils/minify/minify.js'
+import { isFile } from '../../utils/file/file.js'
 
 /**
  * Recurse through data to output plain and HTML email body.
@@ -191,9 +192,15 @@ const Contact: ServerlessAction = async (args) => {
     let inputValueStr = ''
 
     if (isArray(inputValue)) {
-      inputValueStr = inputValue.map(v => escape(v.toString().trim())).join('<br>')
+      inputValueStr = inputValue.map(v => {
+        if (isFile(v)) {
+          return v.name
+        }
+
+        return escape(v.toString().trim())
+      }).join('<br>')
     } else {
-      inputValueStr = escape(inputValue.toString().trim())
+      inputValueStr = isFile(inputValue) ? inputValue.name : escape(inputValue.toString().trim())
     }
 
     /* Subject */

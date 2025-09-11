@@ -107,7 +107,7 @@ export const pages = [
         renderType: 'custom',
         title: 'Title',
         text: 'Text',
-        attributeIsItem: 'item',
+        isItem: 'item',
         item: {
           id: '1',
           slug: 'hello-world',

@@ -392,8 +392,8 @@ const normalizeBlocks = (blocks: readonly ParsedBlock[]): RenderItem[] => {
       return
     }
 
-    const { attributeIsItem } = attrs
-    const attrItemArr = (isStringStrict(attributeIsItem) ? attributeIsItem : '').split(',')
+    const { isItem } = attrs
+    const attrItemArr = (isStringStrict(isItem) ? isItem : '').split(',')
     const attrItemExists = attrItemArr.length
 
     for (const [key, value] of Object.entries(attrs)) {
