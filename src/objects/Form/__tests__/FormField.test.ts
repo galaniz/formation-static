@@ -540,6 +540,7 @@ describe('FormField()', () => {
         fieldsetAttr: 'data-radio-fieldset',
         fieldClasses: 'radio-field',
         fieldAttr: 'data-radio',
+        fieldTag: 'frm-field',
         labelClasses: 'radio-label',
         classes: 'radio',
         ...icons
@@ -547,7 +548,7 @@ describe('FormField()', () => {
     })
 
     const expectedResult = [`
-      <div data-form-field class="radio-field" data-radio>
+      <frm-field data-form-field class="radio-field" data-radio>
         <input
           type="radio"
           name="radio"
@@ -565,7 +566,7 @@ describe('FormField()', () => {
           </span>
           <small data-form-hint>Lorem ipsum dolor sit amet</small>
         </label>
-      </div>
+      </frm-field>
     `]
 
     const resultStart = testMinify(result[0] as string)
@@ -643,7 +644,8 @@ describe('FormField()', () => {
           type: 'email' as FormFieldType,
           name: 'email',
           label: 'Email',
-          invalidError: 'Enter a valid email address'
+          invalidError: 'Enter a valid email address',
+          fieldTag: 'frm-field'
         }
       }
 
@@ -661,7 +663,7 @@ describe('FormField()', () => {
     })
 
     const expectedResult = [`
-      <div data-form-field>
+      <frm-field data-form-field>
         <label for="mock-uuid">
           <span data-form-label>
             <span data-form-label-text>Email</span>
@@ -676,7 +678,7 @@ describe('FormField()', () => {
           data-form-invalid="Enter a valid email address"
           required
         >`,
-      `</div>
+      `</frm-field>
     `]
 
     const resultStart = testMinify(result[0] as string)

@@ -42,6 +42,7 @@ const FormField = (props: FormFieldProps): string[] => {
     attr,
     emptyError,
     invalidError,
+    fieldTag = 'div',
     fieldClasses,
     fieldAttr,
     fieldsetClasses,
@@ -264,7 +265,7 @@ const FormField = (props: FormFieldProps): string[] => {
   }
 
   return [`
-    <div${fieldAtts}>
+    <${fieldTag}${fieldAtts}>
       ${isFieldset ? `<fieldset${fieldsetAtts}>` : ''}
       ${labelBefore}
       ${isFieldset ? '<div data-form-group>' : ''}
@@ -272,7 +273,7 @@ const FormField = (props: FormFieldProps): string[] => {
       `${afterOutput}
       ${labelAfter}
       ${isFieldset ? '</div></fieldset>' : ''}
-    </div>
+    </${fieldTag}>
   `]
 }
 

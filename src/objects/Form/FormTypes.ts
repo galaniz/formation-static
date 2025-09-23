@@ -116,9 +116,9 @@ export type FormFieldType =
  * @prop {string} [invalidError]
  * @prop {string} [fieldsetClasses]
  * @prop {string} [fieldsetAttr]
+ * @prop {string} [fieldTag='div']
  * @prop {string} [fieldClasses]
  * @prop {string} [fieldAttr]
- * @prop {string} [fieldTag='div']
  * @prop {string} [labelClasses]
  * @prop {string} [classes]
  * @prop {string} [radioIcon]
@@ -138,9 +138,9 @@ export interface FormFieldArgs extends Generic {
   invalidError?: string
   fieldsetClasses?: string
   fieldsetAttr?: string
+  fieldTag?: string
   fieldClasses?: string
   fieldAttr?: string
-  fieldTag?: string
   labelClasses?: string
   classes?: string
   radioIcon?: string
