@@ -378,6 +378,11 @@ describe('Navigation', () => {
           }
         },
         filterBeforeItem ({ args, item, output, index, items, depth }) {
+          if (item.link === '/about/') {
+            item.link = '/about-us/'
+            item.title = 'About Us'
+          }
+
           args.itemClass = `y-${depth}-${index}-${items.length}`
           args.itemAttr = `data-y="${item.title}"`
           output.ref += '<!-- Before Item -->'
@@ -436,14 +441,14 @@ describe('Navigation', () => {
           </li>
           <!-- After Item: y-0-0-3-Home-0-3-0 -->
           <!-- Before Item -->
-          <li data-nav-depth="0" class="y-0-1-3" data-y="About">
+          <li data-nav-depth="0" class="y-0-1-3" data-y="About Us">
             <!-- Before Link -->
-            <a data-nav-depth="0" class="z-0-1-3 in" href="/about/" data-z="About">
-              <!-- Before Link Text: z-0-1-3-About-1-3-0 -->
-              About
-              <!-- After Link Text: z-0-1-3-About-1-3-0 -->
+            <a data-nav-depth="0" class="z-0-1-3 in" href="/about-us/" data-z="About Us">
+              <!-- Before Link Text: z-0-1-3-About Us-1-3-0 -->
+              About Us
+              <!-- After Link Text: z-0-1-3-About Us-1-3-0 -->
             </a>
-            <!-- After Link: z-0-1-3-About-1-3-0 -->
+            <!-- After Link: z-0-1-3-About Us-1-3-0 -->
             <!-- Before List -->
             <ul data-nav-depth="1" class="x-1-1" data-x-1>
               <!-- Before Item -->
@@ -460,7 +465,7 @@ describe('Navigation', () => {
             </ul>
             <!-- After List: x-1-1-1 -->
           </li>
-          <!-- After Item: y-1-0-1-About-1-3-0 -->
+          <!-- After Item: y-1-0-1-AboutUs-1-3-0 -->
           <!-- Before Item -->
           <li data-nav-depth="0" class="y-0-2-3" data-y="External">
             <!-- Before Link -->

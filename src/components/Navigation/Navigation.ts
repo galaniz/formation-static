@@ -351,16 +351,6 @@ class Navigation<L extends string = string> {
     /* Items */
 
     items.forEach((item, index) => {
-      const {
-        title,
-        link,
-        external = false,
-        children,
-        current = false,
-        descendentCurrent = false,
-        archiveCurrent = false
-      } = item
-
       /* Filters args */
 
       const filterArgs = { args, item, output, index, items, depth }
@@ -370,6 +360,16 @@ class Navigation<L extends string = string> {
       if (isFunction(args.filterBeforeItem)) {
         args.filterBeforeItem(filterArgs)
       }
+
+      const {
+        title,
+        link,
+        external = false,
+        children,
+        current = false,
+        descendentCurrent = false,
+        archiveCurrent = false
+      } = item
 
       const itemClasses = isStringStrict(args.itemClass) ? ` class="${args.itemClass}"` : ''
       const itemTag = isStringStrict(args.itemTag) ? args.itemTag : 'li'
