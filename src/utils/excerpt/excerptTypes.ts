@@ -6,10 +6,10 @@
  * @typedef {object} ExcerptArgs
  * @prop {string} [excerpt]
  * @prop {Generic|Generic[]} [content]
- * @prop {string} [prop=value]
+ * @prop {string} [prop='value']
  * @prop {number} [limit=25]
  * @prop {boolean} [limitExcerpt=false]
- * @prop {string} [more=&hellip;]
+ * @prop {string} [more='&hellip;']
  */
 export interface ExcerptArgs<T extends object> {
   excerpt?: string
@@ -23,9 +23,9 @@ export interface ExcerptArgs<T extends object> {
 /**
  * @typedef {object} ExcerptContentWordArgs
  * @prop {object} content
- * @prop {string} [prop=value]
+ * @prop {string} [prop='value']
  * @prop {number} [limit=25]
- * @prop {string} [more=&hellip;]
+ * @prop {string} [more='&hellip;']
  */
 export interface ExcerptContentWordArgs<T> {
   content: T

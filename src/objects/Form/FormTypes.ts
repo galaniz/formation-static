@@ -11,7 +11,7 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
  * @typedef {object} FormArgs
  * @extends {Generic}
  * @prop {string} [id]
- * @prop {string} [formTag=form]
+ * @prop {string} [formTag='form']
  * @prop {string} [formClasses]
  * @prop {string} [formAttr]
  * @prop {string} [fields]
@@ -19,7 +19,7 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
  * @prop {string} [fieldsAttr]
  * @prop {string} [submitFieldClasses]
  * @prop {string} [submitFieldAttr]
- * @prop {string} [submitLabel=Submit]
+ * @prop {string} [submitLabel='Submit']
  * @prop {string} [submitClasses]
  * @prop {string} [submitAttr]
  * @prop {string} [honeypotName]
@@ -27,7 +27,7 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
  * @prop {string} [honeypotFieldAttr]
  * @prop {string} [honeypotLabelClasses]
  * @prop {string} [honeypotClasses]
- * @prop {string} [honeypotLabel=Website]
+ * @prop {string} [honeypotLabel='Website']
  * @prop {string} [honeypotAttr]
  */
 export interface FormArgs extends Generic {
@@ -105,7 +105,7 @@ export type FormFieldType =
 /**
  * @typedef {object} FormFieldArgs
  * @extends {Generic}
- * @prop {FormFieldType} [type=text]
+ * @prop {FormFieldType} [type='text']
  * @prop {string} [name]
  * @prop {string} [label]
  * @prop {string} [hint]
@@ -118,6 +118,7 @@ export type FormFieldType =
  * @prop {string} [fieldsetAttr]
  * @prop {string} [fieldClasses]
  * @prop {string} [fieldAttr]
+ * @prop {string} [fieldTag='div']
  * @prop {string} [labelClasses]
  * @prop {string} [classes]
  * @prop {string} [radioIcon]
@@ -139,6 +140,7 @@ export interface FormFieldArgs extends Generic {
   fieldsetAttr?: string
   fieldClasses?: string
   fieldAttr?: string
+  fieldTag?: string
   labelClasses?: string
   classes?: string
   radioIcon?: string

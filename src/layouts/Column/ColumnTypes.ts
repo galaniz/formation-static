@@ -10,7 +10,7 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
 /**
  * @typedef {object} ColumnArgs
  * @extends {Generic}
- * @prop {string} [tag=div]
+ * @prop {string} [tag='div']
  * @prop {string|number} [width] - Used in getImageMaxWidth()
  * @prop {string|number} [widthSmall] - Used in getImageMaxWidth()
  * @prop {string|number} [widthMedium] - Used in getImageMaxWidth()

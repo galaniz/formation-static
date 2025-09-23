@@ -69,8 +69,8 @@ const testResetRenderFunctions = (): void => {
 /**
  * Serverless request object.
  *
- * @param {string} [url=http://test.com/]
- * @param {string} [method=GET]
+ * @param {string} [url='http://test.com/']
+ * @param {string} [method='GET']
  * @param {object} [data={}]
  * @return {Request}
  */

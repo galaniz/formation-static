@@ -247,7 +247,7 @@ const getArchiveLink = (contentType: string, itemData?: RenderItem): ArchiveLink
  *
  * @param {string} contentType
  * @param {RenderItem} [itemData]
- * @param {string} [labelType=singular]
+ * @param {string} [labelType='singular']
  * @param {string} [fallback]
  * @return {string}
  */

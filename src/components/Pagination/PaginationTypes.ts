@@ -12,11 +12,11 @@
  * @prop {string} [ellipsis]
  * @prop {string} [prev]
  * @prop {string} [next]
- * @prop {string} [prevLabel=Previous page]
- * @prop {string} [nextLabel=Next page]
- * @prop {string} [currentLabel=Current page]
- * @prop {string} [pageLabel=Page]
- * @prop {string} [titleTemplate=Page %current of %total]
+ * @prop {string} [prevLabel='Previous page']
+ * @prop {string} [nextLabel='Next page']
+ * @prop {string} [currentLabel='Current page']
+ * @prop {string} [pageLabel='Page']
+ * @prop {string} [titleTemplate='Page %current of %total']
  * @prop {PaginationArgs} [args]
  */
 export interface PaginationProps {

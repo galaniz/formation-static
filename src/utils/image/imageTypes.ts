@@ -15,7 +15,7 @@ import type sharp from 'sharp'
  * @prop {RenderFile} [data]
  * @prop {string} [classes]
  * @prop {string} [attr]
- * @prop {string} [alt=inherit]
+ * @prop {string} [alt='inherit']
  * @prop {string|number} [width]
  * @prop {string|number} [height]
  * @prop {boolean} [lazy]
@@ -24,7 +24,7 @@ import type sharp from 'sharp'
  * @prop {Source|'remote'} [source]
  * @prop {number} [maxWidth]
  * @prop {number} [viewportWidth]
- * @prop {string} [format=webp]
+ * @prop {string} [format='webp']
  * @prop {Record<string, string>} [params={fm: '%format', q: '%quality', w: '%width', h: '%height'}]
  */
 export interface ImageArgs {
