@@ -383,7 +383,9 @@ const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
     if (renderType === 'container') {
       const { maxWidth = 'Default' } = args
 
-      m = isNumber(maxWidths[maxWidth]) ? maxWidths[maxWidth] : 0
+      if (isNumber(maxWidths[maxWidth])) {
+        m = maxWidths[maxWidth]
+      }
     }
   })
 
