@@ -35,8 +35,12 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     filters,
     url,
     ellipsis,
+    first,
+    last,
     prev = '',
     next = '',
+    firstLabel = 'First page',
+    lastLabel = 'Last page',
     prevLabel = 'Previous page',
     nextLabel = 'Next page',
     currentLabel = 'Current page',
@@ -54,6 +58,8 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     linkAttr,
     currentClass,
     a11yClass = 'a-hide-vis',
+    firstClass,
+    lastClass,
     prevSpanClass,
     prevLinkClass,
     nextSpanClass,
@@ -73,7 +79,9 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
   /* URL params */
 
   const hasFilters = isObjectStrict(filters)
-  
+
+  let firstParams: Record<string, string> = {}
+  let lastParams: Record<string, string> = { page: total.toString() }
   let prevParams: Record<string, string> = {}
   let nextParams: Record<string, string> = {}
   let currentParams: Record<string, string> = {}
@@ -94,6 +102,16 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
   }
 
   if (hasFilters) {
+    firstParams = {
+      ...firstParams,
+      ...filters
+    }
+
+    lastParams = {
+      ...lastParams,
+      ...filters
+    }
+
     currentParams = {
       ...currentParams,
       ...filters
@@ -112,9 +130,19 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     }
   }
 
+  let firstParamsStr = new URLSearchParams(firstParams).toString()
+  let lastParamsStr = new URLSearchParams(lastParams).toString()
   let prevParamsStr = new URLSearchParams(prevParams).toString()
   let nextParamsStr = new URLSearchParams(nextParams).toString()
   let currentParamsStr = new URLSearchParams(currentParams).toString()
+
+  if (firstParamsStr) {
+    firstParamsStr = `?${firstParamsStr}`
+  }
+
+  if (lastParamsStr) {
+    lastParamsStr = `?${lastParamsStr}`
+  }
 
   if (prevParamsStr) {
     prevParamsStr = `?${prevParamsStr}`
@@ -141,6 +169,14 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
 
   if (prevPage) {
     data.prev = prevPage
+  }
+
+  if (firstParamsStr) {
+    data.firstParams = firstParams
+  }
+
+  if (lastParamsStr) {
+    data.lastParams = lastParams
   }
 
   if (currentParamsStr) {
@@ -198,6 +234,21 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
   /* Item attributes */
 
   const itemAttrs = `${isStringStrict(itemClass) ? ` class="${itemClass}"` : ''}${isStringStrict(itemAttr) ? ` ${itemAttr}` : ''}`
+
+  /* First item */
+
+  if (isStringStrict(first)) {
+    output += `
+      <li${itemAttrs} data-pag-first>
+        <a
+          href="${url}${firstParamsStr}"
+          aria-label="${firstLabel}"${isStringStrict(firstClass) ? ` class="${firstClass}"` : ''}
+        >
+          ${first}
+        </a>
+      </li>
+    `
+  }
 
   /* Previous item */
 
@@ -299,6 +350,21 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
   }
 
   output += `<li${itemAttrs} data-pag-next="${nextLink ? 'link' : 'text'}">${nextItem}</li>`
+
+  /* Last item */
+
+  if (isStringStrict(last)) {
+    output += `
+      <li${itemAttrs} data-pag-last>
+        <a
+          href="${url}${lastParamsStr}"
+          aria-label="${lastLabel}"${isStringStrict(lastClass) ? ` class="${lastClass}"` : ''}
+        >
+          ${last}
+        </a>
+      </li>
+    `
+  }
 
   /* Output */
 

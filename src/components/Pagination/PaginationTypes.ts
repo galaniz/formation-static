@@ -10,8 +10,12 @@
  * @prop {Record<string, string>} [filters]
  * @prop {string} [url]
  * @prop {string} [ellipsis]
+ * @prop {string} [first]
+ * @prop {string} [last]
  * @prop {string} [prev]
  * @prop {string} [next]
+ * @prop {string} [firstLabel='First page']
+ * @prop {string} [lastLabel='Last page']
  * @prop {string} [prevLabel='Previous page']
  * @prop {string} [nextLabel='Next page']
  * @prop {string} [currentLabel='Current page']
@@ -26,8 +30,12 @@ export interface PaginationProps {
   filters?: Record<string, string>
   url?: string
   ellipsis?: string
+  first?: string
+  last?: string
   prev?: string
   next?: string
+  firstLabel?: string
+  lastLabel?: string
   prevLabel?: string
   nextLabel?: string
   currentLabel?: string
@@ -46,6 +54,8 @@ export interface PaginationProps {
  * @prop {string} [linkAttr]
  * @prop {string} [currentClass]
  * @prop {string} [a11yClass]
+ * @prop {string} [firstClass]
+ * @prop {string} [lastClass]
  * @prop {string} [prevSpanClass]
  * @prop {string} [prevLinkClass]
  * @prop {string} [nextSpanClass]
@@ -60,6 +70,8 @@ export interface PaginationArgs {
   linkAttr?: string
   currentClass?: string
   a11yClass?: string
+  firstClass?: string
+  lastClass?: string
   prevSpanClass?: string
   prevLinkClass?: string
   nextSpanClass?: string
@@ -71,8 +83,12 @@ export interface PaginationArgs {
  * @prop {number} [current]
  * @prop {number} [total]
  * @prop {string} [title]
+ * @prop {number} [first]
+ * @prop {number} [last]
  * @prop {number} [next]
  * @prop {number} [prev]
+ * @prop {Record<string, string>} [firstParams]
+ * @prop {Record<string, string>} [lastParams]
  * @prop {Record<string, string>} [nextParams]
  * @prop {Record<string, string>} [prevParams]
  * @prop {Record<string, string>} [currentParams]
@@ -81,8 +97,12 @@ export interface PaginationData {
   current?: number
   total?: number
   title?: string
+  first?: number
+  last?: number
   next?: number
   prev?: number
+  firstParams?: Record<string, string>
+  lastParams?: Record<string, string>
   nextParams?: Record<string, string>
   prevParams?: Record<string, string>
   currentParams?: Record<string, string>
