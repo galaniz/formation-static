@@ -4,7 +4,6 @@
 
 /* Imports */
 
-import type { ParsedBlock } from '@wordpress/block-serialization-default-parser'
 import type { InternalLink, Taxonomy, Generic } from '../global/globalTypes.js'
 import type {
   WordPressDataFile,
@@ -367,17 +366,15 @@ const normalizeEmbedded = (
  * Convert blocks to flatter props.
  *
  * @private
- * @param {ParsedBlock[]} blocks
+ * @param {object[]} blocks
  * @return {RenderItem[]}
  */
-const normalizeBlocks = (blocks: readonly ParsedBlock[]): RenderItem[] => {
+const normalizeBlocks = (blocks: ReturnType<typeof parse>): RenderItem[] => {
   const newItems: RenderItem[] = []
 
   /* Recurse */
 
-  interface GenericBlock extends ParsedBlock {
-    attrs: Generic
-  }
+  type GenericBlock = ReturnType<typeof parse>[number] & { attrs: Generic }
 
   blocks.forEach(block => {
     const {

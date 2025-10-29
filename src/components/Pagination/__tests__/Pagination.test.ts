@@ -21,6 +21,8 @@ describe('Pagination()', () => {
     linkAttr: 'data-test="link"',
     currentClass: 'current',
     a11yClass: 'a11y',
+    firstClass: 'first-link',
+    lastClass: 'last-link',
     prevSpanClass: 'prev-span',
     prevLinkClass: 'prev-link',
     nextSpanClass: 'next-span',
@@ -123,6 +125,9 @@ describe('Pagination()', () => {
       nextParams: {
         page: '2'
       },
+      lastParams: {
+        page: '5'
+      },
       next: 2
     }
 
@@ -130,20 +135,30 @@ describe('Pagination()', () => {
     expect(data).toEqual(expectedData)
   })
 
-  it('should return list of 5 items with second as current', () => {
+  it('should return list of 5 items with second as current and first and last items', () => {
     const result = Pagination({
       total: 5,
       display: 3,
       current: 2,
       url,
       prev: '&larr;',
-      next: '&rarr;'
+      next: '&rarr;',
+      first: '&laquo;',
+      last: '&raquo;'
     })
 
     const { output, data } = result
 
     const expectedOutput = `
       <ol>
+        <li data-pag-first>
+          <a
+            href="${url}"
+            aria-label="First page"
+          >
+            &laquo;
+          </a>
+        </li>
         <li data-pag-prev="link">
           <a
             href="${url}"
@@ -178,6 +193,14 @@ describe('Pagination()', () => {
             &rarr;
           </a>
         </li>
+        <li data-pag-last>
+          <a
+            href="${url}?page=5"
+            aria-label="Last page"
+          >
+            &raquo;
+          </a>
+        </li>
       </ol>
     `
 
@@ -189,6 +212,9 @@ describe('Pagination()', () => {
       },
       currentParams: {
         page: '2'
+      },
+      lastParams: {
+        page: '5'
       },
       title: 'Page 2 of 5',
       next: 3,
@@ -262,6 +288,9 @@ describe('Pagination()', () => {
       currentParams: {
         page: '3'
       },
+      lastParams: {
+        page: '5'
+      },
       title: 'Page 3 of 5',
       next: 4,
       prev: 2
@@ -334,6 +363,9 @@ describe('Pagination()', () => {
       currentParams: {
         page: '4'
       },
+      lastParams: {
+        page: '5'
+      },
       title: 'Page 4 of 5',
       next: 5,
       prev: 3
@@ -396,6 +428,9 @@ describe('Pagination()', () => {
         page: '4'
       },
       currentParams: {
+        page: '5'
+      },
+      lastParams: {
         page: '5'
       },
       title: 'Page 5 of 5',
@@ -468,6 +503,13 @@ describe('Pagination()', () => {
       },
       currentParams: {
         filters: 'cat:1'
+      },
+      firstParams: {
+        filters: 'cat:1'
+      },
+      lastParams: {
+        filters: 'cat:1',
+        page: '5'
       },
       next: 2
     }
@@ -549,6 +591,13 @@ describe('Pagination()', () => {
         page: '2',
         filters: 'cat:1'
       },
+      firstParams: {
+        filters: 'cat:1'
+      },
+      lastParams: {
+        filters: 'cat:1',
+        page: '5'
+      },
       title: 'Page 2 of 5',
       next: 3,
       prev: 1
@@ -558,7 +607,7 @@ describe('Pagination()', () => {
     expect(data).toEqual(expectedData)
   })
 
-  it('should return list of 7 items with third as current, filters and attributes', () => {
+  it('should return list of 7 items with third as current, first and last items, filters and attributes', () => {
     const result = Pagination({
       total: 5,
       display: 3,
@@ -567,6 +616,8 @@ describe('Pagination()', () => {
       ellipsis: '&hellip;',
       prev: '&larr;',
       next: '&rarr;',
+      first: '&laquo;',
+      last: '&raquo;',
       filters: {
         filters: 'cat:1'
       },
@@ -577,6 +628,15 @@ describe('Pagination()', () => {
 
     const expectedOutput = `
       <ol class="list" data-test="list">
+        <li class="item" data-test="item" data-pag-first>
+          <a
+            href="${url}?filters=cat%3A1"
+            aria-label="First page"
+            class="first-link"
+          >
+            &laquo;
+          </a>
+        </li>
         <li class="item" data-test="item" data-pag-prev="link">
           <a
             href="${url}?page=2&filters=cat%3A1"
@@ -615,6 +675,15 @@ describe('Pagination()', () => {
             &rarr;
           </a>
         </li>
+        <li class="item" data-test="item" data-pag-last>
+          <a
+            href="${url}?page=5&filters=cat%3A1"
+            aria-label="Last page"
+            class="last-link"
+          >
+            &raquo;
+          </a>
+        </li>
       </ol>
     `
 
@@ -632,6 +701,13 @@ describe('Pagination()', () => {
       currentParams: {
         page: '3',
         filters: 'cat:1'
+      },
+      firstParams: {
+        filters: 'cat:1'
+      },
+      lastParams: {
+        filters: 'cat:1',
+        page: '5'
       },
       title: 'Page 3 of 5',
       next: 4,
@@ -716,6 +792,13 @@ describe('Pagination()', () => {
         page: '4',
         filters: 'cat:1'
       },
+      firstParams: {
+        filters: 'cat:1'
+      },
+      lastParams: {
+        filters: 'cat:1',
+        page: '5'
+      },
       title: 'Page 4 of 5',
       next: 5,
       prev: 3
@@ -788,6 +871,13 @@ describe('Pagination()', () => {
       currentParams: {
         page: '5',
         filters: 'cat:1'
+      },
+      firstParams: {
+        filters: 'cat:1'
+      },
+      lastParams: {
+        filters: 'cat:1',
+        page: '5'
       },
       title: 'Page 5 of 5',
       prev: 4
@@ -888,6 +978,9 @@ describe('Pagination()', () => {
       total: 10,
       nextParams: {
         page: '2'
+      },
+      lastParams: {
+        page: '10'
       },
       next: 2
     }

@@ -6,7 +6,7 @@
 
 import { it, expect, describe, beforeEach } from 'vitest'
 import { testMinify } from '../../../../tests/utils.js'
-import { getImage, getImageClosestSize, getImageMaxWidth } from '../image.js'
+import { getImage, getImageClosestSize, getImageSizes } from '../image.js'
 import { config } from '../../../config/config.js'
 
 /* Test getImage */
@@ -528,9 +528,9 @@ describe('getImageClosestSize()', () => {
   })
 })
 
-/* Test getImageMaxWidth */
+/* Test getImageSizes */
 
-describe('getImageMaxWidth()', () => {
+describe('getImageSizes()', () => {
   const widths = {
     12: 1,
     11: 0.9166,
@@ -556,16 +556,19 @@ describe('getImageMaxWidth()', () => {
     1200
   ]
 
-  it('should return 0 if args is null', () => {
+  it('should return fallback if args is null', () => {
     // @ts-expect-error - test null args
-    const result = getImageMaxWidth(null)
-    const expectedResult = 0
+    const result = getImageSizes(null)
+    const expectedResult = {
+      maxWidth: 0,
+      sizes: ''
+    }
 
-    expect(result).toBe(expectedResult)
+    expect(result).toEqual(expectedResult)
   })
 
-  it('should return 0 if parents, widths, maxWidths and breakpoints are null or empty', () => {
-    const result = getImageMaxWidth({
+  it('should return fallback if parents, widths, maxWidths and breakpoints are null or empty', () => {
+    const result = getImageSizes({
       parents: [],
       // @ts-expect-error - test null widths
       widths: null,
@@ -574,13 +577,16 @@ describe('getImageMaxWidth()', () => {
       breakpoints: []
     })
 
-    const expectedResult = 0
+    const expectedResult = {
+      maxWidth: 0,
+      sizes: ''
+    }
 
-    expect(result).toBe(expectedResult)
+    expect(result).toEqual(expectedResult)
   })
 
-  it('should return 0 if parents are an array of null', () => {
-    const result = getImageMaxWidth({
+  it('should return fallback if parents are an array of null', () => {
+    const result = getImageSizes({
       // @ts-expect-error - test null parents
       parents: [null, null, null, null],
       widths,
@@ -588,13 +594,16 @@ describe('getImageMaxWidth()', () => {
       breakpoints
     })
 
-    const expectedResult = 0
+    const expectedResult = {
+      maxWidth: 0,
+      sizes: ''
+    }
 
-    expect(result).toBe(expectedResult)
+    expect(result).toEqual(expectedResult)
   })
 
-  it('should return 0 if parent args are null', () => {
-    const result = getImageMaxWidth({
+  it('should return fallback if parent args are null', () => {
+    const result = getImageSizes({
       parents: [
         {
           renderType: 'container',
@@ -612,13 +621,16 @@ describe('getImageMaxWidth()', () => {
       breakpoints
     })
 
-    const expectedResult = 0
+    const expectedResult = {
+      maxWidth: 0,
+      sizes: ''
+    }
 
-    expect(result).toBe(expectedResult)
+    expect(result).toEqual(expectedResult)
   })
 
   it('should return container width if single container parent', () => {
-    const result = getImageMaxWidth({
+    const result = getImageSizes({
       parents: [
         {
           renderType: 'container',
@@ -632,13 +644,16 @@ describe('getImageMaxWidth()', () => {
       breakpoints
     })
 
-    const expectedResult = 2400
+    const expectedResult = {
+      maxWidth: 2400,
+      sizes: '(min-width: 75rem) 75rem, 100vw'
+    }
 
-    expect(result).toBe(expectedResult)
+    expect(result).toEqual(expectedResult)
   })
 
   it('should return large breakpoint 2x if empty column widths and container', () => {
-    const result = getImageMaxWidth({
+    const result = getImageSizes({
       parents: [
         {
           renderType: 'container',
@@ -661,13 +676,16 @@ describe('getImageMaxWidth()', () => {
       breakpoints
     })
 
-    const expectedResult = 2400
+    const expectedResult = {
+      maxWidth: 2400,
+      sizes: '(min-width: 75rem) 75rem, 100vw'
+    }
 
-    expect(result).toBe(expectedResult)
+    expect(result).toEqual(expectedResult)
   })
 
   it('should return width relative to container', () => {
-    const result = getImageMaxWidth({
+    const result = getImageSizes({
       parents: [
         {
           renderType: 'container',
@@ -687,13 +705,16 @@ describe('getImageMaxWidth()', () => {
       breakpoints
     })
 
-    const expectedResult = 960
+    const expectedResult = {
+      maxWidth: 960,
+      sizes: '(min-width: 75rem) 30rem, 40vw'
+    }
 
-    expect(result).toBe(expectedResult)
+    expect(result).toEqual(expectedResult)
   })
 
   it('should return width large relative to container when large breakpoint > container', () => {
-    const result = getImageMaxWidth({
+    const result = getImageSizes({
       parents: [
         {
           renderType: 'container',
@@ -721,13 +742,16 @@ describe('getImageMaxWidth()', () => {
       ]
     })
 
-    const expectedResult = 1600.08
+    const expectedResult = {
+      maxWidth: 1600,
+      sizes: '(min-width: 93.75rem) 50rem, (min-width: 23.4375rem) 83.33vw, 100vw'
+    }
 
-    expect(result).toBe(expectedResult)
+    expect(result).toEqual(expectedResult)
   })
 
   it('should return width medium relative to medium breakpoint if container none', () => {
-    const result = getImageMaxWidth({
+    const result = getImageSizes({
       parents: [
         {
           renderType: 'container',
@@ -755,13 +779,16 @@ describe('getImageMaxWidth()', () => {
       ]
     })
 
-    const expectedResult = 1500
+    const expectedResult = {
+      maxWidth: 1500,
+      sizes: '(min-width: 93.75rem) 40vw, 100vw'
+    }
 
-    expect(result).toBe(expectedResult)
+    expect(result).toEqual(expectedResult)
   })
 
   it('should return width large relative to large breakpoint if no container parent', () => {
-    const result = getImageMaxWidth({
+    const result = getImageSizes({
       parents: [
         {
           renderType: 'column',
@@ -783,13 +810,16 @@ describe('getImageMaxWidth()', () => {
       ]
     })
 
-    const expectedResult = 2000.1
+    const expectedResult = {
+      maxWidth: 2000,
+      sizes: '(min-width: 93.75rem) 66.67vw, (min-width: 23.4375rem) 83.33vw, 100vw'
+    }
 
-    expect(result).toBe(expectedResult)
+    expect(result).toEqual(expectedResult)
   })
 
   it('should return width small relative to container', () => {
-    const result = getImageMaxWidth({
+    const result = getImageSizes({
       parents: [
         {
           renderType: 'container',
@@ -812,13 +842,16 @@ describe('getImageMaxWidth()', () => {
       breakpoints
     })
 
-    const expectedResult = 1200
+    const expectedResult = {
+      maxWidth: 1200,
+      sizes: '(min-width: 75rem) 37.5rem, (min-width: 56.25rem) 50vw, 100vw'
+    }
 
-    expect(result).toBe(expectedResult)
+    expect(result).toEqual(expectedResult)
   })
 
   it('should return width medium relative to container rounded to config size if source is local', () => {
-    const result = getImageMaxWidth({
+    const result = getImageSizes({
       source: 'local',
       parents: [
         {
@@ -839,11 +872,15 @@ describe('getImageMaxWidth()', () => {
       ],
       widths,
       maxWidths,
+      viewportWidth: 80,
       breakpoints
     })
 
-    const expectedResult = 1600
+    const expectedResult = {
+      maxWidth: 1600,
+      sizes: '(min-width: 75rem) 37.5rem, (min-width: 37.5rem) 66.664vw, 80vw'
+    }
 
-    expect(result).toBe(expectedResult)
+    expect(result).toEqual(expectedResult)
   })
 })

@@ -171,14 +171,6 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     data.prev = prevPage
   }
 
-  if (firstParamsStr) {
-    data.firstParams = firstParams
-  }
-
-  if (lastParamsStr) {
-    data.lastParams = lastParams
-  }
-
   if (currentParamsStr) {
     data.currentParams = currentParams
   }
@@ -189,6 +181,14 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
 
   if (prevParamsStr) {
     data.prevParams = prevParams
+  }
+
+  if (firstParamsStr) {
+    data.firstParams = firstParams
+  }
+
+  if (lastParamsStr) {
+    data.lastParams = lastParams
   }
 
   if (current > 1) {

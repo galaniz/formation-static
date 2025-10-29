@@ -16,14 +16,15 @@ import type sharp from 'sharp'
  * @prop {string} [classes]
  * @prop {string} [attr]
  * @prop {string} [alt='inherit']
- * @prop {string|number} [width]
- * @prop {string|number} [height]
- * @prop {boolean} [lazy]
- * @prop {boolean} [picture]
- * @prop {number} [quality]
+ * @prop {string|number} [width='auto']
+ * @prop {string|number} [height='auto']
+ * @prop {boolean} [lazy=true]
+ * @prop {boolean} [picture=false]
+ * @prop {number} [quality=75]
  * @prop {Source|'remote'} [source]
- * @prop {number} [maxWidth]
- * @prop {number} [viewportWidth]
+ * @prop {number} [maxWidth=1200]
+ * @prop {number} [viewportWidth=100]
+ * @prop {string} [sizes]
  * @prop {string} [format='webp']
  * @prop {Record<string, string>} [params={fm: '%format', q: '%quality', w: '%width', h: '%height'}]
  */
@@ -40,6 +41,7 @@ export interface ImageArgs {
   source?: Source | 'remote'
   maxWidth?: number
   viewportWidth?: number
+  sizes?: string
   format?: string
   params?: Record<string, string>
 }
@@ -72,29 +74,41 @@ export interface ImageReturn {
 export type ImageReturnType<V extends false | true> = V extends true ? ImageReturn : string
 
 /**
- * @typedef {ParentArgs|ColumnProps|ContainerProps} ImageMaxWidthParents
+ * @typedef {ParentArgs|ColumnProps|ContainerProps} ImageSizesParents
  */
-export type ImageMaxWidthParents = ParentArgs & ColumnProps & ContainerProps
+export type ImageSizesParents = ParentArgs & ColumnProps & ContainerProps
 
 /**
- * @typedef {ParentArgs|ColumnProps|ContainerProps} ImageMaxWidthParentsArgs
+ * @typedef {ParentArgs|ColumnProps|ContainerProps} ImageSizesParentsArgs
  */
-export type ImageMaxWidthParentsArgs = ParentArgs & ColumnProps<string, string | number> & ContainerProps<string, string | number>
+export type ImageSizesParentsArgs = ParentArgs & ColumnProps<string, string | number> & ContainerProps<string, string | number>
 
 /**
- * @typedef {object} ImageMaxWidthArgs
- * @prop {ImageMaxWidthParents[]} parents
+ * @typedef {object} ImageSizesArgs
+ * @prop {ImageSizesParents[]} parents
  * @prop {GenericNumbers} widths
  * @prop {GenericNumbers} maxWidths
  * @prop {number[]} breakpoints
  * @prop {Source} [source]
+ * @prop {number} [viewportWidth=100]
  */
-export interface ImageMaxWidthArgs<T = ImageMaxWidthParents> {
+export interface ImageSizesArgs<T = ImageSizesParents> {
   parents: T[]
   widths: GenericNumbers
   maxWidths: GenericNumbers
   breakpoints: number[]
   source?: Source
+  viewportWidth?: number
+}
+
+/**
+ * @typedef {object} ImageSizesReturn
+ * @prop {number} maxWidth
+ * @prop {string} sizes
+ */
+export interface ImageSizesReturn {
+  maxWidth: number
+  sizes: string
 }
 
 /**

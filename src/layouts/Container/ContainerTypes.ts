@@ -11,7 +11,7 @@ import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js
  * @typedef {object} ContainerArgs
  * @extends {Generic}
  * @prop {string} [tag='div']
- * @prop {string|number} [maxWidth] - Used in getImageMaxWidth()
+ * @prop {string|number} [maxWidth] - Used in image utilities.
  * @prop {string} [layoutClasses]
  * @prop {string} [classes]
  * @prop {string} [style]

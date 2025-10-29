@@ -7,8 +7,9 @@
 import type {
   ImageArgs,
   ImageReturnType,
-  ImageMaxWidthArgs,
-  ImageMaxWidthParentsArgs
+  ImageSizesArgs,
+  ImageSizesReturn,
+  ImageSizesParentsArgs
 } from './imageTypes.js'
 import { config } from '../../config/config.js'
 import { isString, isStringStrict } from '../string/string.js'
@@ -88,6 +89,7 @@ const getImage = <V extends boolean = false>(
     source = config.source,
     maxWidth = 1200,
     viewportWidth = 100,
+    sizes,
     format = 'webp',
     params = {
       fm: '%format',
@@ -204,7 +206,7 @@ const getImage = <V extends boolean = false>(
     srcFallback = getImageUrl(url, naturalFormat, quality, w, h, params)
   }
 
-  const sizes = `(min-width: ${w / 16}rem) ${w / 16}rem, ${viewportWidth}vw`
+  const sizesValue = sizes || `(min-width: ${w / 16}rem) ${w / 16}rem, ${viewportWidth}vw`
   const srcsetFallback: string[] = []
 
   let srcset: number[] = [...config.image.sizes]
@@ -247,7 +249,7 @@ const getImage = <V extends boolean = false>(
   let sourceOutput = ''
 
   if (picture) {
-    sourceOutput = `<source srcset="${srcsetSource.join(', ')}" sizes="${sizes}" type="image/${format}">`
+    sourceOutput = `<source srcset="${srcsetSource.join(', ')}" sizes="${sizesValue}" type="image/${format}">`
   }
 
   let eagerHackOutput = ''
@@ -271,7 +273,7 @@ const getImage = <V extends boolean = false>(
       alt="${alt}"
       src="${picture ? srcFallback : src}"
       srcset="${picture ? srcsetFallback.join(', ') : srcsetSource.join(', ')}"
-      sizes="${sizes}"
+      sizes="${sizesValue}"
       width="${w}"
       height="${h}"
       ${isStringStrict(attr) ? ` ${attr}` : ''}
@@ -288,7 +290,7 @@ const getImage = <V extends boolean = false>(
       src,
       srcFallback,
       srcset: srcsetSource,
-      sizes
+      sizes: sizesValue
     } as ImageReturnType<V>
   }
 
@@ -313,16 +315,23 @@ const getImageClosestSize = (size: number, sizes: number[] = []): number => {
 }
 
 /**
- * Calculate max width from column and container parents.
+ * Calculate sizes from column and container parents.
  *
- * @param {ImageMaxWidthArgs} args
- * @return {number}
+ * @param {ImageSizesArgs} args
+ * @return {ImageSizesReturn}
  */
-const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
+const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
+  /* Fallback */
+
+  const fallback = {
+    maxWidth: 0,
+    sizes: ''
+  }
+
   /* Args required */
 
   if (!isObjectStrict(args)) {
-    return 0
+    return fallback
   }
 
   const {
@@ -330,10 +339,11 @@ const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
     widths,
     maxWidths,
     breakpoints,
-    source = config.source
+    source = config.source,
+    viewportWidth = 100
   } = args
 
-  /* Parents, widths, maxWidths and breakpoints required */
+  /* Parents, widths, max widths and breakpoints required */
 
   const required =
     isArrayStrict(parents) &&
@@ -342,16 +352,16 @@ const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
     isArrayStrict(breakpoints)
 
   if (!required) {
-    return 0
+    return fallback
   }
-
-  /* Widths as floats */
-
-  const w: number[] = []
 
   /* Max width */
 
-  let m = 0
+  let newMaxWidth = 0
+
+  /* Widths as floats */
+
+  const newWidths: number[] = []
 
   /* Width strings to numbers */
 
@@ -360,7 +370,7 @@ const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
       return
     }
 
-    const { renderType, args } = parent as ImageMaxWidthParentsArgs
+    const { renderType, args } = parent as ImageSizesParentsArgs
 
     if (!isObjectStrict(args)) {
       return
@@ -374,62 +384,91 @@ const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
         widthLarge = 'Default'
       } = args
 
-      w[0] = isNumber(widths[width]) && widths[width] > 0 ? widths[width] : 1
-      w[1] = isNumber(widths[widthSmall]) && widths[widthSmall] > 0 ? widths[widthSmall] : w[0]
-      w[2] = isNumber(widths[widthMedium]) && widths[widthMedium] > 0 ? widths[widthMedium] : w[1]
-      w[3] = isNumber(widths[widthLarge]) && widths[widthLarge] > 0 ? widths[widthLarge] : w[2]
+      newWidths[0] = isNumber(widths[width]) && widths[width] ? widths[width] : 1
+      newWidths[1] = isNumber(widths[widthSmall]) && widths[widthSmall] ? widths[widthSmall] : newWidths[0]
+      newWidths[2] = isNumber(widths[widthMedium]) && widths[widthMedium] ? widths[widthMedium] : newWidths[1]
+      newWidths[3] = isNumber(widths[widthLarge]) && widths[widthLarge] ? widths[widthLarge] : newWidths[2]
     }
 
     if (renderType === 'container') {
       const { maxWidth = 'Default' } = args
 
       if (isNumber(maxWidths[maxWidth])) {
-        m = maxWidths[maxWidth]
+        newMaxWidth = maxWidths[maxWidth]
       }
     }
   })
 
-  if (!w.length && m === 0) {
-    return 0
+  if (!newWidths.length && newMaxWidth === 0) {
+    return fallback
   }
 
-  /* Convert to fixed widths */
+  /* Convert to fixed widths and determine sizes */
 
-  const bk = [...breakpoints]
-  const calc: number[] = []
+  const newBreakpoints = [...breakpoints]
+  const newBreakpointsLen = newBreakpoints.length
+  const maxWidthArr: number[] = []
+  const sizesArr: string[] = []
+  const sizesSet: Set<string> = new Set()
+  const sizeFactor = viewportWidth / 100
 
-  let lastW = 1
+  let lastWidth = 1
 
-  bk.forEach((b, i) => {
-    const wd = w[i]
+  for (let i = 0; i < newBreakpointsLen; i += 1) {
+    const breakpoint = newBreakpoints[i] as number
+    const width = newWidths[i]
 
-    if (!isNumber(wd)) {
-      return
+    if (!isNumber(width)) {
+      continue
     }
 
-    lastW = wd
+    lastWidth = width
 
-    if (m > 0 && b > m) {
-      calc.push(wd * m)
-      return
+    const exceedsMaxWidth = newMaxWidth && breakpoint > newMaxWidth
+    const breakpointWidth = exceedsMaxWidth ? Math.round(width * newMaxWidth) : Math.round(width * breakpoint)
+    const sizeWidth =
+      i === newBreakpointsLen - 1 && newMaxWidth ? `${breakpointWidth / 16}rem` : `${(width * 100) * sizeFactor}vw`
+
+    maxWidthArr.push(breakpointWidth)
+
+    if (!sizesSet.has(sizeWidth)) {
+      sizesSet.add(sizeWidth)
+      sizesArr.push(breakpoint ? `(min-width: ${breakpoint / 16}rem) ${sizeWidth}` : sizeWidth)
     }
 
-    calc.push(wd * b)
-  })
+    if (exceedsMaxWidth) {
+      break
+    }
+  }
 
-  if (m > 0) {
-    calc.push(lastW * m)
+  if (newMaxWidth) {
+    maxWidthArr.push(Math.round(lastWidth * newMaxWidth))
   }
 
   /* Output */
 
-  const res = Math.max(...calc) * 2
+  const maxWidth = Math.max(...maxWidthArr) * 2
 
-  if (source === 'local') {
-    return getImageClosestSize(res)
+  if (sizesSet.size <= 1) {
+    const sizeWidth = `${(maxWidth / 32)}rem`
+
+    sizesArr[0] = `${100 * sizeFactor}vw`
+    sizesArr[1] = `(min-width: ${sizeWidth}) ${sizeWidth}`
   }
 
-  return res
+  const sizes = sizesArr.reverse().join(', ')
+
+  if (source === 'local') {
+    return {
+      maxWidth: getImageClosestSize(maxWidth),
+      sizes
+    }
+  }
+
+  return {
+    maxWidth,
+    sizes
+  }
 }
 
 /* Exports */
@@ -437,5 +476,5 @@ const getImageMaxWidth = (args: ImageMaxWidthArgs): number => {
 export {
   getImage,
   getImageClosestSize,
-  getImageMaxWidth
+  getImageSizes
 }
