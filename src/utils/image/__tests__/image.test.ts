@@ -743,8 +743,8 @@ describe('getImageSizes()', () => {
     })
 
     const expectedResult = {
-      maxWidth: 1600,
-      sizes: '(min-width: 93.75rem) 50rem, (min-width: 23.4375rem) 83.33vw, 100vw'
+      maxWidth: 2000,
+      sizes: '(min-width: 93.75rem) 50rem, (min-width: 75rem) 62.5rem, (min-width: 23.4375rem) 83.33vw, 100vw'
     }
 
     expect(result).toEqual(expectedResult)
@@ -878,7 +878,7 @@ describe('getImageSizes()', () => {
 
     const expectedResult = {
       maxWidth: 1600,
-      sizes: '(min-width: 75rem) 37.5rem, (min-width: 37.5rem) 66.664vw, 80vw'
+      sizes: '(min-width: 75rem) 37.5rem, (min-width: 37.5rem) 66.66vw, 80vw'
     }
 
     expect(result).toEqual(expectedResult)

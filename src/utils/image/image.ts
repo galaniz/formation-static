@@ -355,13 +355,18 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
     return fallback
   }
 
-  /* Max width */
+  /* Container width */
 
-  let newMaxWidth = 0
+  let containerWidth = 0
 
-  /* Widths as floats */
+  /* Column widths as floats */
 
-  const newWidths: number[] = []
+  const columnWidths: number[] = []
+
+  let col = 1
+  let colSmall = 1
+  let colMedium = 1
+  let colLarge = 1
 
   /* Width strings to numbers */
 
@@ -384,75 +389,101 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
         widthLarge = 'Default'
       } = args
 
-      newWidths[0] = isNumber(widths[width]) && widths[width] ? widths[width] : 1
-      newWidths[1] = isNumber(widths[widthSmall]) && widths[widthSmall] ? widths[widthSmall] : newWidths[0]
-      newWidths[2] = isNumber(widths[widthMedium]) && widths[widthMedium] ? widths[widthMedium] : newWidths[1]
-      newWidths[3] = isNumber(widths[widthLarge]) && widths[widthLarge] ? widths[widthLarge] : newWidths[2]
+      const base = (isNumber(widths[width]) && widths[width] ? widths[width] : 1)
+      const baseSmall = isNumber(widths[widthSmall]) && widths[widthSmall] ? widths[widthSmall] : base
+      const baseMedium = isNumber(widths[widthMedium]) && widths[widthMedium] ? widths[widthMedium] : baseSmall
+      const baseLarge = isNumber(widths[widthLarge]) && widths[widthLarge] ? widths[widthLarge] : baseMedium
+
+      col *= base
+      colSmall *= baseSmall
+      colMedium *= baseMedium
+      colLarge *= baseLarge
+
+      columnWidths[0] = col
+      columnWidths[1] = colSmall
+      columnWidths[2] = colMedium
+      columnWidths[3] = colLarge
     }
 
     if (renderType === 'container') {
       const { maxWidth = 'Default' } = args
 
       if (isNumber(maxWidths[maxWidth])) {
-        newMaxWidth = maxWidths[maxWidth]
+        containerWidth = maxWidths[maxWidth]
       }
     }
   })
 
-  if (!newWidths.length && newMaxWidth === 0) {
+  const columnWidthsLen = columnWidths.length
+  const hasContainerWidth = !!containerWidth
+
+  if (!columnWidthsLen && !hasContainerWidth) {
     return fallback
   }
 
   /* Convert to fixed widths and determine sizes */
 
-  const newBreakpoints = [...breakpoints]
-  const newBreakpointsLen = newBreakpoints.length
+  const breakpointsLen = breakpoints.length
   const maxWidthArr: number[] = []
   const sizesArr: string[] = []
-  const sizesSet: Set<string> = new Set()
   const sizeFactor = viewportWidth / 100
 
   let lastWidth = 1
+  let lastBreakpoint = 0
+  let lastSize = ''
+  let containerWidthAdded = false
 
-  for (let i = 0; i < newBreakpointsLen; i += 1) {
-    const breakpoint = newBreakpoints[i] as number
-    const width = newWidths[i]
+  for (let i = 0; i < breakpointsLen; i += 1) {
+    const breakpoint = breakpoints[i] as number
+    const width = columnWidths[i]
 
     if (!isNumber(width)) {
       continue
     }
 
-    lastWidth = width
+    const gteContainerWidth = hasContainerWidth && breakpoint >= containerWidth
+    const breakpointWidth = Math.round(width * (gteContainerWidth ? containerWidth : breakpoint))
+    const sizeWidth = gteContainerWidth ? breakpointWidth / 16 : ((width * 100) * sizeFactor)
+    const size = gteContainerWidth ? `${sizeWidth}rem` : `${sizeWidth % 1 === 0 ? sizeWidth : sizeWidth.toFixed(2)}vw`
 
-    const exceedsMaxWidth = newMaxWidth && breakpoint > newMaxWidth
-    const breakpointWidth = exceedsMaxWidth ? Math.round(width * newMaxWidth) : Math.round(width * breakpoint)
-    const sizeWidth =
-      i === newBreakpointsLen - 1 && newMaxWidth ? `${breakpointWidth / 16}rem` : `${(width * 100) * sizeFactor}vw`
+    if (hasContainerWidth && containerWidth > lastBreakpoint && containerWidth < breakpoint) {
+      const relMaxWidth = Math.round(lastWidth * containerWidth)
+      const relSize = `${relMaxWidth / 16}rem`
+
+      maxWidthArr.push(relMaxWidth)
+      sizesArr.push(`(min-width: ${containerWidth / 16}rem) ${relSize}`)
+
+      containerWidthAdded = true
+      lastSize = relSize
+    }
 
     maxWidthArr.push(breakpointWidth)
 
-    if (!sizesSet.has(sizeWidth)) {
-      sizesSet.add(sizeWidth)
-      sizesArr.push(breakpoint ? `(min-width: ${breakpoint / 16}rem) ${sizeWidth}` : sizeWidth)
+    if (lastSize !== size) {
+      sizesArr.push(breakpoint ? `(min-width: ${breakpoint / 16}rem) ${size}` : size)
     }
 
-    if (exceedsMaxWidth) {
-      break
-    }
+    lastWidth = width
+    lastBreakpoint = breakpoint
+    lastSize = size
   }
 
-  if (newMaxWidth) {
-    maxWidthArr.push(Math.round(lastWidth * newMaxWidth))
+  if (!containerWidthAdded && hasContainerWidth && containerWidth > lastBreakpoint) {
+    const relMaxWidth = Math.round(lastWidth * containerWidth)
+    const relSize = `${relMaxWidth / 16}rem`
+
+    maxWidthArr.push(relMaxWidth)
+    sizesArr.push(`(min-width: ${containerWidth / 16}rem) ${relSize}`)
   }
 
   /* Output */
 
   const maxWidth = Math.max(...maxWidthArr) * 2
 
-  if (sizesSet.size <= 1) {
+  if (!columnWidthsLen || (col === 1 && colSmall === 1 && colMedium === 1 && colLarge === 1)) {
     const sizeWidth = `${(maxWidth / 32)}rem`
 
-    sizesArr[0] = `${100 * sizeFactor}vw`
+    sizesArr[0] = `${viewportWidth}vw`
     sizesArr[1] = `(min-width: ${sizeWidth}) ${sizeWidth}`
   }
 
