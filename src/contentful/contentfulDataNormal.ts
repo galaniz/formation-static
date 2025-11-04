@@ -122,8 +122,8 @@ const normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
 
     /* Link */
 
-    let link
-    let internalLink
+    let link: string | undefined
+    let internalLink: ContentfulDataItem | undefined
 
     if (isObjectStrict(data)) {
       link = isString(data.uri) ? data.uri : ''
@@ -131,7 +131,7 @@ const normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
       if (isObjectStrict(data.target)) {
         const target = data.target
 
-        if (nodeType === 'entry-hyperlink') {
+        if (nodeType === 'entry-hyperlink' || nodeType === 'embedded-entry-inline') {
           internalLink = target
         }
 

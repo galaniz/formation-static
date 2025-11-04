@@ -354,7 +354,7 @@ const RichText = (props: RichTextProps): string => {
         props.headings.push({
           id,
           title: headingContents,
-          type: tag
+          tag
         })
       }
     }

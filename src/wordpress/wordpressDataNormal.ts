@@ -374,7 +374,11 @@ const normalizeBlocks = (blocks: ReturnType<typeof parse>): RenderItem[] => {
 
   /* Recurse */
 
-  type GenericBlock = ReturnType<typeof parse>[number] & { attrs: Generic }
+  interface GenericBlockAttrs {
+    attrs: Generic
+  }
+
+  type GenericBlock = ReturnType<typeof parse>[number] & GenericBlockAttrs
 
   blocks.forEach(block => {
     const {
@@ -589,10 +593,10 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
       id = '',
       title = '',
       menu_order = 0,
-      menus = 0,
-      parent
-    } = item as WordPressDataMenuItem & { parent: number }
+      menus = 0
+    } = item
 
+    const parent = item.parent as unknown as number
     const hasMenuOrder = isNumber(menu_order)
 
     if (hasMenuOrder && isObjectStrict(itemsObj[parent])) {

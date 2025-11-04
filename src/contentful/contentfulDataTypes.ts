@@ -8,23 +8,28 @@ import type { Generic } from '../global/globalTypes.js'
 import type { RenderServerlessData, RenderPreviewData } from '../render/renderTypes.js'
 
 /**
- * @typedef {Object<string, (string|number|boolean)>} ContentfulDataParams
+ * @typedef {Object<string, string|number|boolean>} ContentfulDataParams
  */
 export type ContentfulDataParams = Record<string, string | number | boolean>
 
 /**
+ * @typedef {object} ContentfulDataErrorSys
+ * @prop {string} type
+ * @prop {string} id
+ */
+interface ContentfulDataErrorSys {
+  type: string
+  id: string
+}
+
+/**
  * @typedef {object} ContentfulDataError
  * @prop {string} message
- * @prop {object} sys
- * @prop {string} sys.type
- * @prop {string} sys.id
+ * @prop {ContentfulDataErrorSys} sys
  */
 export interface ContentfulDataError {
   message: string
-  sys: {
-    type: string
-    id: string
-  }
+  sys: ContentfulDataErrorSys
 }
 
 /**
@@ -42,14 +47,27 @@ export interface ContentfulData {
 }
 
 /**
+ * @typedef {object} ContentfulDataId
+ * @prop {string} [id]
+ */
+interface ContentfulDataId {
+  id?: string
+}
+
+/**
  * @typedef {object} ContentfulDataTag
- * @prop {object} [sys]
- * @prop {string} [sys.id]
+ * @prop {ContentfulDataId} [sys]
  */
 export interface ContentfulDataTag {
-  sys?: {
-    id?: string
-  }
+  sys?: ContentfulDataId
+}
+
+/**
+ * @typedef {object} ContentfulDataMeta
+ * @prop {ContentfulDataTag[]} [tags]
+ */
+interface ContentfulDataMeta {
+  tags?: ContentfulDataTag[]
 }
 
 /**
@@ -61,27 +79,37 @@ export interface ContentfulDataMark {
 }
 
 /**
+ * @typedef {object} ContentfulDataFileImage
+ * @prop {number} [width]
+ * @prop {number} [height]
+ */
+interface ContentfulDataFileImage {
+  width?: number
+  height?: number
+}
+
+/**
+ * @typedef {object} ContentfulDataFileDetails
+ * @prop {number} [size]
+ * @prop {ContentfulDataFileImage} [image]
+ */
+interface ContentfulDataFileDetails {
+  size?: number
+  image?: ContentfulDataFileImage
+}
+
+/**
  * @typedef {object} ContentfulDataFile
  * @prop {string} [url]
  * @prop {string} [contentType]
  * @prop {string} [fileName]
- * @prop {object} [details]
- * @prop {number} [details.size]
- * @prop {object} [details.image]
- * @prop {number} [details.image.width]
- * @prop {number} [details.image.height]
+ * @prop {ContentfulDataFileDetails} [details]
  */
 export interface ContentfulDataFile {
   url?: string
   contentType?: string
   fileName?: string
-  details?: {
-    size?: number
-    image?: {
-      width?: number
-      height?: number
-    }
-  }
+  details?: ContentfulDataFileDetails
 }
 
 /**
@@ -102,23 +130,35 @@ export interface ContentfulDataFields extends Generic {
 }
 
 /**
+ * @typedef {object} ContentfulDataSysType
+ * @prop {ContentfulDataId} [sys]
+ */
+interface ContentfulDataSysType {
+  sys?: ContentfulDataId
+}
+
+/**
  * @typedef {object} ContentfulDataSys
  * @prop {string} [id]
  * @prop {string} [type]
  * @prop {string} [locale]
- * @prop {object} [contentType]
- * @prop {object} [contentType.sys]
- * @prop {string} [contentType.sys.id]
+ * @prop {ContentfulDataSysType} [contentType]
  */
 export interface ContentfulDataSys {
   id?: string
   type?: string
   locale?: string
-  contentType?: {
-    sys?: {
-      id?: string
-    }
-  }
+  contentType?: ContentfulDataSysType
+}
+
+/**
+ * @typedef {object} ContentfulDataDatum
+ * @prop {string} [uri]
+ * @prop {ContentfulDataItem} [target]
+ */
+interface ContentfulDataDatum {
+  uri?: string
+  target?: ContentfulDataItem
 }
 
 /**
@@ -126,12 +166,9 @@ export interface ContentfulDataSys {
  * @prop {string} [value]
  * @prop {string} [nodeType]
  * @prop {ContentfulDataMark[]} [marks]
- * @prop {object} [data]
- * @prop {string} [data.uri]
- * @prop {ContentfulDataItem} [data.target]
+ * @prop {ContentfulDataDatum} [data]
  * @prop {ContentfulDataItem[]|string} [content]
- * @prop {object} [metadata]
- * @prop {ContentfulDataTag[]} [metadata.tags]
+ * @prop {ContentfulDataMeta} [metadata]
  * @prop {ContentfulDataSys} [sys]
  * @prop {ContentfulDataFields} [fields]
  */
@@ -139,14 +176,9 @@ export interface ContentfulDataItem {
   value?: string
   nodeType?: string
   marks?: ContentfulDataMark[]
-  data?: {
-    uri?: string
-    target?: ContentfulDataItem
-  }
+  data?: ContentfulDataDatum
   content?: ContentfulDataItem[] | string
-  metadata?: {
-    tags?: ContentfulDataTag[]
-  }
+  metadata?: ContentfulDataMeta
   sys?: ContentfulDataSys
   fields?: ContentfulDataFields
 }

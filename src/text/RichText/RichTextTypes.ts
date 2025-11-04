@@ -11,12 +11,12 @@ import type { RenderRichText, RenderFunctionArgs, RenderItem } from '../../rende
  * @typedef {object} RichTextHeading
  * @prop {string} title
  * @prop {string} id
- * @prop {string} type
+ * @prop {string} tag
  */
 export interface RichTextHeading {
   title: string
   id: string
-  type: string
+  tag: string
 }
 
 /**

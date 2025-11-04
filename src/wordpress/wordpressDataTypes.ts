@@ -13,27 +13,32 @@ import type {
 } from '../render/renderTypes.js'
 
 /**
- * @typedef {Object<string, (string|number|boolean)>} WordPressDataParams
+ * @typedef {Object<string, string|number|boolean>} WordPressDataParams
  */
 export type WordPressDataParams = Record<string, string | number | boolean>
+
+/**
+ * @typedef {object} WordPressDataErrorData
+ * @prop {number} [status]
+ * @prop {GenericStrings} [params]
+ * @prop {Generic} [details]
+ */
+interface WordPressDataErrorData {
+  status?: number
+  params?: GenericStrings
+  details?: Generic
+}
 
 /**
  * @typedef {object} WordPressDataError
  * @prop {string} [code]
  * @prop {string} [message]
- * @prop {object} [data]
- * @prop {number} [data.status]
- * @prop {GenericStrings} [data.params]
- * @prop {Generic} [data.details]
+ * @prop {WordPressDataErrorData} [data]
  */
 export interface WordPressDataError {
   code?: string
   message?: string
-  data?: {
-    status?: number
-    params?: GenericStrings
-    details?: Generic
-  }
+  data?: WordPressDataErrorData
 }
 
 /**
@@ -290,6 +295,18 @@ export interface WordPressDataFileSize {
 }
 
 /**
+ * @typedef {object} WordPressDataFileNonces
+ * @prop {string} update
+ * @prop {string} delete
+ * @prop {string} edit
+ */
+interface WordPressDataFileNonces {
+  update: string
+  delete: string
+  edit: string
+}
+
+/**
  * @typedef {object} WordPressDataFile
  * @prop {string} [contentType]
  * @prop {number} [id]
@@ -312,10 +329,7 @@ export interface WordPressDataFileSize {
  * @prop {string} [subtype]
  * @prop {string} [icon]
  * @prop {string} [dateFormatted]
- * @prop {object} [nonces]
- * @prop {string} nonces.update
- * @prop {string} nonces.delete
- * @prop {string} nonces.edit
+ * @prop {WordPressDataFileNonces} [nonces]
  * @prop {string} [editLink]
  * @prop {boolean} [meta]
  * @prop {string} [authorName]
@@ -350,11 +364,7 @@ export interface WordPressDataFile {
   subtype?: string
   icon?: string
   dateFormatted?: string
-  nonces?: {
-    update: string
-    delete: string
-    edit: string
-  }
+  nonces?: WordPressDataFileNonces
   editLink?: string
   meta?: boolean
   authorName?: string

@@ -602,8 +602,10 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     meta.description = item.metaDescription
   }
 
-  if (isStringStrict((item as { metaImage?: { url?: string } }).metaImage?.url)) { // Cast one off for Contentful image
-    meta.image = (item as { metaImage: { url: string } }).metaImage.url
+  // @ts-expect-error - nested image URL
+  if (isStringStrict(item.metaImage?.url)) {
+    // @ts-expect-error - nested image URL
+    meta.image = item.metaImage.url // eslint-disable-line @typescript-eslint/no-unsafe-assignment
   }
 
   if (!isStringStrict(meta.title) && isStringStrict(title)) {

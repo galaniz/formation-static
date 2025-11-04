@@ -304,20 +304,25 @@ export interface RenderItemArgs {
 }
 
 /**
+ * @typedef {object} RenderItemReturnData
+ * @prop {string} slug
+ * @prop {string} output
+ */
+interface RenderItemReturnData {
+  slug: string
+  output: string
+}
+
+/**
  * @typedef {object} RenderItemReturn
  * @prop {boolean} [serverlessRender]
  * @prop {RenderItem} [itemData]
- * @prop {object} [data]
- * @prop {string} data.slug
- * @prop {string} data.output
+ * @prop {RenderItemReturnData} [data]
  */
 export interface RenderItemReturn {
   serverlessRender?: boolean
   itemData?: RenderItem
-  data?: {
-    slug: string
-    output: string
-  }
+  data?: RenderItemReturnData
 }
 
 /**
@@ -391,22 +396,26 @@ export interface RenderLayoutArgs {
 export type RenderLayout = (args: RenderLayoutArgs) => string | Promise<string>
 
 /**
+ * @typedef {Object<string, RenderItem[]>} RenderAllDataContent
+ */
+interface RenderAllDataContent {
+  page: RenderItem[]
+  [key: string]: RenderItem[]
+}
+
+/**
  * @typedef {object} RenderAllData
  * @extends {Generic}
  * @prop {NavigationList[]} [navigation]
  * @prop {NavigationItem[]} [navigationItem]
  * @prop {RenderRedirect[]} [redirect]
- * @prop {Object<string, RenderItem[]>} content
- * @prop {RenderItem[]} content.page
+ * @prop {RenderAllDataContent} content
  */
 export interface RenderAllData extends Generic {
   navigation?: NavigationList[]
   navigationItem?: NavigationItem[]
   redirect?: RenderRedirect[]
-  content: {
-    page: RenderItem[]
-    [key: string]: RenderItem[]
-  }
+  content: RenderAllDataContent
 }
 
 /**
@@ -448,15 +457,22 @@ export type RenderContentFilter = <T>(content: string[], args: ParentArgs<T>) =>
 export type RenderItemFilter = (output: string, args: RenderItemActionArgs) => Promise<string> | string
 
 /**
+ * @typedef {object} RenderItemDataFilterArgs
+ * @prop {string} contentType
+ */
+interface RenderItemDataFilterArgs {
+  contentType: string
+}
+
+/**
  * @typedef {function} RenderItemDataFilter
  * @param {RenderItem} item
- * @param {object} args
- * @param {string} args.contentType
+ * @param {RenderItemDataFilterArgs} args
  * @return {Promise<RenderItem>|RenderItem}
  */
 export type RenderItemDataFilter = (
   item: RenderItem,
-  args: { contentType: string }
+  args: RenderItemDataFilterArgs
 ) => Promise<RenderItem> | RenderItem
 
 /**

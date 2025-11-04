@@ -32,6 +32,30 @@ import {
 } from '../render.js'
 
 /**
+ * @typedef {object} TestArgs
+ * @prop {string} testAttr
+ */
+interface TestArgs {
+  testAttr: string
+}
+
+/**
+ * @typedef {object} TestChildArgs
+ * @prop {string} id
+ */
+interface TestChildArgs {
+  id: string
+}
+
+/**
+ * @typedef {object} TestChildChildrenArgs
+ * @prop {string} content
+ */
+interface TestChildChildrenArgs {
+  content: string
+}
+
+/**
  * Minify render return item output.
  *
  * @param {RenderReturn[]} items
@@ -260,7 +284,7 @@ describe('render()', () => {
         container: Container,
         column: Column,
         richText: RichText,
-        test (props: RenderFunctionArgs<{ testAttr: string }>) {
+        test (props: RenderFunctionArgs<TestArgs>) {
           const { args } = props
           const { testAttr = '' } = args
           return [
@@ -268,7 +292,7 @@ describe('render()', () => {
             '</ul>'
           ]
         },
-        testChild (props: RenderFunctionArgs<{ id: string }, RenderItem, ParentArgs, { content: string }>) {
+        testChild (props: RenderFunctionArgs<TestChildArgs, RenderItem, ParentArgs, TestChildChildrenArgs>) {
           const { args, children } = props
           const { id } = args
           const innerContent = children?.[0]?.content // Test skipping content loop if string returned
@@ -1004,19 +1028,19 @@ describe('render()', () => {
         {
           id: 'test-two',
           title: 'Test Two',
-          type: 'h2'
+          tag: 'h2'
         }
       ],
       [
         {
           id: 'test-three',
           title: 'Test Three',
-          type: 'h2'
+          tag: 'h2'
         },
         {
           id: 'test-four',
           title: 'Test Four',
-          type: 'h3'
+          tag: 'h3'
         }
       ]
     ])

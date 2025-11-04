@@ -41,7 +41,14 @@ export type StoreImageMeta = Record<string, ImageProps>
 export type StoreTaxonomies = Record<string, Taxonomy>
 
 /**
- * @typedef {string|number|boolean|null|undefined|StorePrimitive[]|Object<string, StorePrimitive>} StorePrimitive
+ * @typedef {Object<string, StorePrimitive>} StorePrimitiveGeneric
+ */
+interface StorePrimitiveGeneric {
+  [key: string]: StorePrimitive
+}
+
+/**
+ * @typedef {string|number|boolean|null|undefined|StorePrimitive[]|StorePrimitiveGeneric} StorePrimitive
  */
 export type StorePrimitive = 
   | string 
@@ -50,7 +57,7 @@ export type StorePrimitive =
   | null 
   | undefined
   | StorePrimitive[]
-  | { [key: string]: StorePrimitive }
+  | StorePrimitiveGeneric
 
 /**
  * @typedef {Object<string, StorePrimitive[]>} StoreServerless

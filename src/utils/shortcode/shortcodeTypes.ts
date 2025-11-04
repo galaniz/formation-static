@@ -4,7 +4,6 @@
 
 /* Imports */
 
-import type { GenericStrings } from '../../global/globalTypes.js'
 import type { RenderItem } from '../../render/renderTypes.js'
 
 /**
@@ -16,6 +15,11 @@ export type ShortcodeAttrValue = string | number | boolean | undefined
  * @typedef {Object<string, ShortcodeAttrValue>} ShortcodeAttrs
  */
 export type ShortcodeAttrs = Record<string, ShortcodeAttrValue>
+
+/**
+ * @typedef {Object<string, 'string'|'number'|'boolean'>} ShortcodeAttrTypes
+ */
+export type ShortcodeAttrTypes = Record<string, 'string' | 'number' | 'boolean'>
 
 /**
  * @typedef {object} ShortcodeData
@@ -45,12 +49,12 @@ export type ShortcodeCallback = (args: ShortcodeData) => string | Promise<string
 /**
  * @typedef {object} Shortcode
  * @prop {ShortcodeCallback} callback
- * @prop {GenericStrings} [attrTypes] - Property values: number | boolean | string
+ * @prop {ShortcodeAttrTypes} [attrTypes]
  * @prop {string} [child]
  */
 export interface Shortcode {
   callback: ShortcodeCallback
-  attrTypes?: GenericStrings
+  attrTypes?: ShortcodeAttrTypes
   child?: string
 }
 

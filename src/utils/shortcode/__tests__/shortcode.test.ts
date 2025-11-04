@@ -4,6 +4,7 @@
 
 /* Imports */
 
+import type { ShortcodeAttrs } from '../shortcodeTypes.js'
 import { it, expect, describe, afterEach, vi } from 'vitest'
 import {
   shortcodes,
@@ -14,6 +15,37 @@ import {
   setShortcodes,
   stripShortcodes
 } from '../shortcode.js'
+
+/**
+ * @typedef {object} TestAttrs
+ * @extends {ShortcodeAttrs}
+ * @prop {string} type
+ * @prop {boolean} required
+ * @prop {number} size
+ */
+interface TestAttrs extends ShortcodeAttrs {
+  type: string
+  required: boolean
+  size: number
+}
+
+/**
+ * @typedef {object} TestAttr
+ * @extends {ShortcodeAttrs}
+ * @prop {string} tag
+ */
+interface TestAttr extends ShortcodeAttrs {
+  tag: string
+}
+
+/**
+ * @typedef {object} TestChildAttr
+ * @extends {ShortcodeAttrs}
+ * @prop {string} subtype
+ */
+interface TestChildAttr extends ShortcodeAttrs {
+  subtype: string
+}
 
 /* Test addShortcode */
 
@@ -161,11 +193,7 @@ describe('doShortcodes()', () => {
           type = 'default',
           required = false,
           size = 0
-        } = attr as {
-          type: string
-          required: boolean
-          size: number
-        }
+        } = attr as TestAttrs
 
         return `<${type} ${required.toString()} ${size}${content} />`
       },
@@ -198,9 +226,7 @@ describe('doShortcodes()', () => {
   it('should return content with parent and child shortcodes replaced', async () => {
     addShortcode('child', {
       callback ({ attr, content = '' }) {
-        const { subtype = 'default' } = attr as {
-          subtype: string
-        }
+        const { subtype = 'default' } = attr as TestChildAttr
 
         return `<child ${subtype}>${content}</child>`
       },
@@ -216,11 +242,7 @@ describe('doShortcodes()', () => {
           type = 'default',
           required = false,
           size = 0
-        } = attr as {
-          type: string
-          required: boolean
-          size: number
-        }
+        } = attr as TestAttrs
 
         return `<parent ${type} ${required.toString()} ${size}>${content}</parent>`
       },
@@ -304,9 +326,7 @@ describe('setShortcodes()', () => {
     const result = setShortcodes({
       test: {
         callback ({ attr, content = '' }) {
-          const { tag = 'p' } = attr as {
-            tag: string
-          }
+          const { tag = 'p' } = attr as TestAttr
 
           return `<${tag}>${content}</${tag}>`
         },
@@ -349,9 +369,7 @@ describe('stripShortcodes()', () => {
   it('should remove shortcodes from content', () => {
     addShortcode('child', {
       callback ({ attr, content = '' }) {
-        const { subtype = 'default' } = attr as {
-          subtype: string
-        }
+        const { subtype = 'default' } = attr as TestChildAttr
 
         return `<child ${subtype}>${content}</child>`
       },
@@ -367,11 +385,7 @@ describe('stripShortcodes()', () => {
           type = 'default',
           required = false,
           size = 0
-        } = attr as {
-          type: string
-          required: boolean
-          size: number
-        }
+        } = attr as TestAttrs
 
         return `<parent ${type} ${required.toString()} ${size}>${content}</parent>`
       },
