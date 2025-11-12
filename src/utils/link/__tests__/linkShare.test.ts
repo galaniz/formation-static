@@ -11,7 +11,7 @@ import { getShareLinks } from '../linkShare.js'
 /* Tests */
 
 describe('getShareLinks()', () => {
-  it('should return empty array if no url or platforms provided', () => {
+  it('should return empty array if no URL or platforms provided', () => {
     // @ts-expect-error - test undefined params
     const result = getShareLinks()
     const expectedResult: LinkShareReturn[] = []

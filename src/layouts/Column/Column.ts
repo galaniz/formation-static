@@ -5,7 +5,7 @@
 /* Imports */
 
 import type { ColumnProps } from './ColumnTypes.js'
-import { applyFilters } from '../../utils/filter/filter.js'
+import { applyFilters } from '../../filters/filters.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 
@@ -23,12 +23,6 @@ const Column = (props: ColumnProps): string[] => {
   }
 
   props = applyFilters('columnProps', props)
-
-  /* Filtered props required */
-
-  if (!isObjectStrict(props)) {
-    return []
-  }
 
   const { args } = props
   const {

@@ -63,7 +63,7 @@ describe('Pagination()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return empty output and data if url is empty', () => {
+  it('should return empty output and data if URL is empty', () => {
     const result = Pagination({
       url: ''
     })

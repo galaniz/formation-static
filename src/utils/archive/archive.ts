@@ -74,7 +74,7 @@ const getArchiveMeta = (contentType: string, locale?: string): ArchiveMeta => {
 }
 
 /**
- * Archive id, slug and title.
+ * Archive ID, slug and title.
  *
  * @param {string} contentType
  * @param {string} [locale]

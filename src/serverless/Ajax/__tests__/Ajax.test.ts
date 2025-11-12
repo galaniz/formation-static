@@ -6,7 +6,7 @@
 
 import { it, expect, describe, vi, afterEach, beforeAll } from 'vitest'
 import { testRequest } from '../../../../tests/utils.js'
-import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
+import { addFilter, resetFilters } from '../../../filters/filters.js'
 import { setServerless } from '../../serverless.js'
 import { Ajax } from '../Ajax.js'
 
@@ -78,7 +78,7 @@ describe('Ajax()', () => {
     expect(message).toEqual(expectedMessage)
   })
 
-  it('should return success if honeypot exists', async () => {
+  it('should return empty success if honeypot exists', async () => {
     const result = await Ajax(testRequest('http://test.com/', 'POST', {
       inputs: {
         frm_hp: {
@@ -93,7 +93,7 @@ describe('Ajax()', () => {
     const expectedContentType = 'application/json'
     const expectedStatus = 200
     const expectedMessage = {
-      success: 'Form successully sent'
+      success: ''
     }
 
     expect(status).toBe(expectedStatus)
@@ -101,7 +101,42 @@ describe('Ajax()', () => {
     expect(contentType).toEqual(expectedContentType)
   })
 
-  it('should return success message from test action', async () => {
+  it('should return empty success if action returns empty object', async () => {
+    setServerless({
+      test: async () => {
+        return await Promise.resolve({})
+      }
+    })
+
+    const result = await Ajax(testRequest('http://test.com/', 'POST', 
+      {
+        action: 'test',
+        inputs: {
+          frm_hp: {
+            value: ''
+          },
+          test: {
+            value: 'ipsum'
+          }
+        }
+      }),
+      {},
+      undefined,
+      'frm_hp'
+    )
+
+    const status = result.status
+    const message = await result.json()
+    const expectedStatus = 200
+    const expectedMessage = {
+      success: ''
+    }
+
+    expect(status).toBe(expectedStatus)
+    expect(message).toEqual(expectedMessage)
+  })
+
+  it('should return success from test action', async () => {
     setServerless({
       test: async () => {
         return await Promise.resolve({
@@ -149,6 +184,50 @@ describe('Ajax()', () => {
     expect(message).toEqual(expectedMessage)
     expect(contentType).toEqual(expectedContentType)
     expect(allowOrigin).toEqual(expectedAllowOrigin)
+  })
+
+  it('should return empty success', async () => {
+    setServerless({
+      // @ts-expect-error - test null message and headers
+      test: async () => {
+        return await Promise.resolve({
+          success: {
+            message: null,
+            headers: null
+          }
+        })
+      }
+    })
+
+    const result = await Ajax(testRequest('http://test.com/', 'POST', 
+      {
+        action: 'test',
+        inputs: {
+          frm_hp: {
+            value: ''
+          },
+          test: {
+            value: 'ipsum'
+          }
+        }
+      }),
+      {},
+      undefined,
+      'frm_hp'
+    )
+
+    const status = result.status
+    const contentType = result.headers.get('Content-Type')
+    const message = await result.json()
+    const expectedStatus = 200
+    const expectedContentType = 'application/json'
+    const expectedMessage = {
+      success: ''
+    }
+
+    expect(status).toBe(expectedStatus)
+    expect(message).toEqual(expectedMessage)
+    expect(contentType).toEqual(expectedContentType)
   })
 
   it('should filter result', async () => {
@@ -218,13 +297,12 @@ describe('Ajax()', () => {
     )
   })
 
-  it('should return error message from test action', async () => {
+  it('should return error from test action', async () => {
     setServerless({
       test: async () => {
         return await Promise.resolve({
           error: {
-            message: 'Error',
-            response: new Response(null, { status: 400 })
+            message: 'Error'
           }
         })
       }
@@ -244,7 +322,7 @@ describe('Ajax()', () => {
 
     const status = result.status
     const message = await result.json()
-    const expectedStatus = 400
+    const expectedStatus = 500
     const expectedMessage = {
       error: 'Error'
     }

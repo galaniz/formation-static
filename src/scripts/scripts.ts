@@ -1,13 +1,13 @@
 /**
- * Utils - Script Style
+ * Utils - Scripts
  */
 
 /* Imports */
 
-import type { Scripts, Styles } from './scriptStyleTypes.js'
-import { isArrayStrict } from '../array/array.js'
-import { isStringStrict } from '../string/string.js'
-import { config } from '../../config/config.js'
+import type { Scripts, Styles } from './scriptsTypes.js'
+import { isArrayStrict } from '../utils/array/array.js'
+import { isStringStrict } from '../utils/string/string.js'
+import { config } from '../config/config.js'
 
 /**
  * Scripts data per render item.

@@ -5,14 +5,14 @@
 /* Imports */
 
 import type { LocalData } from '../localDataTypes.js'
-import type { CacheData } from '../../utils/filter/filterTypes.js'
+import type { CacheData } from '../../filters/filtersTypes.js'
 import type { StoreImageMeta } from '../../store/storeTypes.js'
 import { it, describe, beforeEach, afterEach, vi, expect } from 'vitest'
 import { getLocalData, getAllLocalData } from '../localData.js'
 import { config } from '../../config/config.js'
 import { testResetStore } from '../../../tests/utils.js'
 import { setStoreItem } from '../../store/store.js'
-import { addFilter, resetFilters } from '../../utils/filter/filter.js'
+import { addFilter, resetFilters } from '../../filters/filters.js'
 import { navigationPrimary } from '../../../tests/data/local/navigation--primary.js'
 import { navigationItemOne } from '../../../tests/data/local/navigationItem--one.js'
 import { navigationItemTwo } from '../../../tests/data/local/navigationItem--two.js'
@@ -29,7 +29,7 @@ vi.unmock('node:fs')
 vi.unmock('node:fs/promises')
 
 /**
- * Image data
+ * Image data.
  *
  * @type {StoreImageMeta}
  */
@@ -86,6 +86,7 @@ describe('getLocalData()', () => {
   afterEach(() => {
     config.source = 'cms'
     config.local.dir = 'json'
+    config.env.cache = false
     testResetStore()
     resetFilters()
   })

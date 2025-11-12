@@ -25,18 +25,18 @@ import type {
 } from './renderTypes.js'
 import type { ParentArgs, RefString } from '../global/globalTypes.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
-import { doActions } from '../utils/action/action.js'
-import { applyFilters } from '../utils/filter/filter.js'
+import { doActions } from '../actions/actions.js'
+import { applyFilters } from '../filters/filters.js'
 import { getSlug, getPermalink } from '../utils/link/link.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
 import { isArray, isArrayStrict } from '../utils/array/array.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isFunction } from '../utils/function/function.js'
-import { doShortcodes } from '../utils/shortcode/shortcode.js'
+import { doShortcodes } from '../shortcodes/shortcodes.js'
 import { tagExists } from '../utils/tag/tag.js'
 import { setStoreData, setStoreItem, getStoreItem } from '../store/store.js'
 import { setRedirects } from '../redirects/redirects.js'
-import { scripts, styles } from '../utils/scriptStyle/scriptStyle.js'
+import { scripts, styles } from '../scripts/scripts.js'
 import { config } from '../config/config.js'
 
 /**
@@ -47,14 +47,14 @@ import { config } from '../config/config.js'
 let renderFunctions: RenderFunctions = {}
 
 /**
- * Output html element.
+ * Output HTML element.
  *
  * @type {RenderLayout}
  */
 let renderLayout: RenderLayout = () => ''
 
 /**
- * Output http error page.
+ * Output HTTP error page.
  *
  * @type {RenderHttpError}
  */
@@ -439,13 +439,8 @@ const renderContent = async (args: RenderContentArgs, _html: RefString = { ref: 
     const [filterRenderStart, filterRenderEnd] =
       await applyFilters('renderContent', [renderStart, renderEnd], renderContentFilterArgs, true)
 
-    if (isString(filterRenderStart)) {
-      renderStart = filterRenderStart
-    }
-
-    if (isString(filterRenderEnd)) {
-      renderEnd = filterRenderEnd
-    }
+    renderStart = filterRenderStart
+    renderEnd = filterRenderEnd
 
     /* Add to output object */
 
@@ -530,7 +525,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     return null
   }
 
-  /* Item id required */
+  /* Item ID required */
 
   const id = item.id
 
@@ -605,7 +600,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
   // @ts-expect-error - nested image URL
   if (isStringStrict(item.metaImage?.url)) {
     // @ts-expect-error - nested image URL
-    meta.image = item.metaImage.url // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+    meta.image = item.metaImage.url as unknown as string
   }
 
   if (!isStringStrict(meta.title) && isStringStrict(title)) {
@@ -761,24 +756,20 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
 
   /* Output */
 
-  let layoutOutput = ''
-
-  if (isFunction(renderLayout)) {
-    const layoutArgs: RenderLayoutArgs = {
-      id,
-      meta,
-      contentType,
-      content: contentOutput,
-      slug: formattedSlug,
-      itemContains,
-      itemHeadings,
-      itemData,
-      serverlessData,
-      previewData
-    }
-
-    layoutOutput = await renderLayout(layoutArgs)
+  const layoutArgs: RenderLayoutArgs = {
+    id,
+    meta,
+    contentType,
+    content: contentOutput,
+    slug: formattedSlug,
+    itemContains,
+    itemHeadings,
+    itemData,
+    serverlessData,
+    previewData
   }
+
+  let layoutOutput = await renderLayout(layoutArgs)
 
   const renderItemFilterArgs: RenderItemActionArgs = {
     id,
@@ -878,12 +869,10 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
 
   /* Navigation */
 
-  if (isFunction(renderNavigation)) {
-    await renderNavigation({
-      navigations: getStoreItem('navigations'),
-      items: getStoreItem('navigationItems')
-    })
-  }
+  await renderNavigation({
+    navigations: getStoreItem('navigations'),
+    items: getStoreItem('navigationItems')
+  })
 
   /* Redirects data */
 

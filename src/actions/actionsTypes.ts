@@ -1,16 +1,16 @@
 /**
- * Utils - Action Types
+ * Utils - Actions Types
  */
 
 /* Imports */
 
-import type { GenericFunction } from '../../global/globalTypes.js'
+import type { GenericFunction } from '../global/globalTypes.js'
 import type {
   RenderStartAction,
   RenderEndAction,
   RenderItemStartAction,
   RenderItemEndAction
-} from '../../render/renderTypes.js'
+} from '../render/renderTypes.js'
 
 /**
  * @typedef {Object<string, GenericFunction>} Actions

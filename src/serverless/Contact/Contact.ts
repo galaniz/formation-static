@@ -13,7 +13,7 @@ import { isArray } from '../../utils/array/array.js'
 import { isString, isStringStrict } from '../../utils/string/string.js'
 import { isObject, isObjectStrict } from '../../utils/object/object.js'
 import { getObjectKeys } from '../../utils/object/objectUtils.js'
-import { applyFilters } from '../../utils/filter/filter.js'
+import { applyFilters } from '../../filters/filters.js'
 import { getPermalink } from '../../utils/link/link.js'
 import { getStoreItem } from '../../store/store.js'
 import { minify } from '../../utils/minify/minify.js'
@@ -103,7 +103,7 @@ const Contact: ServerlessAction = async (args) => {
   if (!isStringStrict(id)) {
     return {
       error: {
-        message: 'No id'
+        message: 'No ID'
       }
     }
   }

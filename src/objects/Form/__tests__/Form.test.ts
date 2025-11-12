@@ -6,7 +6,7 @@
 
 import { it, expect, describe, afterEach, vi } from 'vitest'
 import { testMinify } from '../../../../tests/utils.js'
-import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
+import { addFilter, resetFilters } from '../../../filters/filters.js'
 import { Form } from '../Form.js'
 
 /* Tests */
@@ -35,7 +35,7 @@ describe('Form()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return empty array if filtered props are undefined', () => {
+  it('should throw error if filtered props are undefined', () => {
     const formProps = vi.fn()
 
     // @ts-expect-error - test undefined filtered props
@@ -45,15 +45,12 @@ describe('Form()', () => {
       return undefined
     })
 
-    const result = Form({
+    expect(() => Form({
       args: {
         formTag: 'frm-form'
       }
-    })
+    })).toThrowError()
 
-    const expectedResult: string[] = []
-
-    expect(result).toEqual(expectedResult)
     expect(formProps).toHaveBeenCalledTimes(1)
     expect(formProps).toHaveBeenCalledWith({
       args: {
@@ -74,10 +71,10 @@ describe('Form()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return empty array if id is null', () => {
+  it('should return empty array if ID is null', () => {
     const result = Form({
       args: {
-        // @ts-expect-error - test null id
+        // @ts-expect-error - test null ID
         id: null
       }
     })
@@ -100,7 +97,7 @@ describe('Form()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return form with id and submit button', () => {
+  it('should return form with ID and submit button', () => {
     const result = Form({
       args: {
         id: 'frm-id'
@@ -128,7 +125,7 @@ describe('Form()', () => {
     expect(resultEnd).toEqual(expectedResultEnd)
   })
 
-  it('should return form with honeypot, id and submit button', () => {
+  it('should return form with honeypot, ID and submit button', () => {
     const result = Form({
       args: {
         id: 'frm-id',

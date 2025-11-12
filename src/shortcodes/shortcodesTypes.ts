@@ -1,10 +1,10 @@
 /**
- * Utils - Shortcode Types
+ * Utils - Shortcodes Types
  */
 
 /* Imports */
 
-import type { RenderItem } from '../../render/renderTypes.js'
+import type { RenderItem } from '../render/renderTypes.js'
 
 /**
  * @typedef {string|number|boolean} ShortcodeAttrValue

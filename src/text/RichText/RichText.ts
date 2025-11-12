@@ -14,7 +14,7 @@ import type {
 } from './RichTextTypes.js'
 import { getLink } from '../../utils/link/link.js'
 import { getExcerpt } from '../../utils/excerpt/excerpt.js'
-import { applyFilters } from '../../utils/filter/filter.js'
+import { applyFilters } from '../../filters/filters.js'
 import { isString, isStringStrict } from '../../utils/string/string.js'
 import { isArray, isArrayStrict } from '../../utils/array/array.js'
 import { isObjectStrict } from '../../utils/object/object.js'
@@ -70,16 +70,14 @@ const getContent = (args: RichTextContentProps): string => {
 
   for (const item of content) {
     const newItem = applyFilters('richTextContentItem', item, props)
-    const itemObj = isObjectStrict(newItem) ? newItem : {}
-
     const {
       link,
       attr,
       internalLink,
       content: itemContent
-    } = itemObj
+    } = newItem
 
-    let { tag = '' } = itemObj
+    let { tag = '' } = newItem
     let newContent = itemContent
 
     /* Single tag */
@@ -138,13 +136,7 @@ const getContent = (args: RichTextContentProps): string => {
         props
       }
 
-      const filteredContent = applyFilters('richTextContent', newContent, richTextContentFilterArgs)
-
-      if (isString(filteredContent)) {
-        newContent = filteredContent
-      }
-
-      outputStr += newContent
+      outputStr += applyFilters('richTextContent', newContent, richTextContentFilterArgs)
     }
 
     if (containsShortcode(tag, outputStr)) {
@@ -178,9 +170,7 @@ const getContent = (args: RichTextContentProps): string => {
       }
     }
 
-    outputStr = applyFilters('richTextContentOutput', outputStr, richTextContentOutputArgs)
-
-    _output += outputStr
+    _output += applyFilters('richTextContentOutput', outputStr, richTextContentOutputArgs)
   }
 
   /* Output */
@@ -238,11 +228,7 @@ const RichText = (props: RichTextProps): string => {
 
   props = applyFilters('richTextProps', props)
 
-  /* Filtered props required */
-
-  if (!isObjectStrict(props)) {
-    return ''
-  }
+  /* Args required */
 
   const { args } = props
 
@@ -418,9 +404,7 @@ const RichText = (props: RichTextProps): string => {
     }
   }
 
-  output = applyFilters('richTextOutput', output, richTextOutputArgs)
-
-  return output
+  return applyFilters('richTextOutput', output, richTextOutputArgs)
 }
 
 /* Exports */

@@ -1,10 +1,10 @@
 /**
- * Utils - Filter Test
+ * Utils - Filters Test
  */
 
 /* Imports */
 
-import type { Filters } from '../filterTypes.js'
+import type { Filters } from '../filtersTypes.js'
 import { it, expect, describe, beforeEach, vi } from 'vitest'
 import {
   filters,
@@ -13,17 +13,17 @@ import {
   applyFilters,
   setFilters,
   resetFilters
-} from '../filter.js'
+} from '../filters.js'
 
 /**
- * First test filter name
+ * First test filter name.
  *
  * @type {string}
  */
 const testNameOne: string = 'testName'
 
 /**
- * Second test filter name
+ * Second test filter name.
  *
  * @type {string}
  */
@@ -153,6 +153,19 @@ describe('applyFilters()', () => {
     expect(testFilterOne).toHaveResolvedWith(40)
     expect(testFilterTwo).toHaveBeenCalledTimes(1)
     expect(testFilterTwo).toHaveResolvedWith(32)
+    expect(result).toBe(expectedResult)
+  })
+
+  it('should call async filter and catch rejection', async () => {
+    const testFilterOne = vi.fn(() => new Promise((_resolve, reject) => {
+      reject(new Error('Test error'))
+    }))
+
+    addFilter(testNameOne, testFilterOne)
+    const result = await applyFilters(testNameOne, 36, {}, true)
+    const expectedResult = 36
+
+    expect(testFilterOne).toHaveBeenCalledTimes(1)
     expect(result).toBe(expectedResult)
   })
 

@@ -91,6 +91,7 @@ export type ImageSizesParentsArgs = ParentArgs & ColumnProps<string, string | nu
  * @prop {number[]} breakpoints
  * @prop {Source} [source]
  * @prop {number} [viewportWidth=100]
+ * @prop {number} [maxWidth]
  */
 export interface ImageSizesArgs<T = ImageSizesParents> {
   parents: T[]
@@ -99,6 +100,7 @@ export interface ImageSizesArgs<T = ImageSizesParents> {
   breakpoints: number[]
   source?: Source
   viewportWidth?: number
+  maxWidth?: number
 }
 
 /**

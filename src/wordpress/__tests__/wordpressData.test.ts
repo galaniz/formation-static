@@ -4,14 +4,14 @@
 
 /* Imports */
 
-import type { CacheData } from '../../utils/filter/filterTypes.js'
+import type { CacheData } from '../../filters/filtersTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach, beforeAll } from 'vitest'
 import { testResetStore } from '../../../tests/utils.js'
 import { getWordPressData, getAllWordPressData } from '../wordpressData.js'
 import { normalMetaKeys } from '../wordpressDataNormal.js'
 import { mockFetchErrorMessage } from '../../../tests/types.js'
 import { mockWordPressFetch } from './wordpressDataMock.js'
-import { addFilter, resetFilters } from '../../utils/filter/filter.js'
+import { addFilter, resetFilters } from '../../filters/filters.js'
 import { setStoreItem } from '../../store/store.js'
 import { config } from '../../config/config.js'
 import { posts } from '../../../tests/data/wordpress/posts.js'
@@ -120,7 +120,7 @@ describe('getWordPressData()', () => {
     })).rejects.toThrowError(mockFetchErrorMessage.route)
   })
 
-  it('should throw an error if id does not exist', async () => {
+  it('should throw an error if ID does not exist', async () => {
     await expect(async () => await getWordPressData({
       key: 'posts_key_1',
       route: 'posts/0'
@@ -240,7 +240,7 @@ describe('getWordPressData()', () => {
     })
   })
 
-  it('should return array of one post with specified id', async () => {
+  it('should return array of one post with specified ID', async () => {
     const result = await getWordPressData({
       key: 'posts_key_4',
       route: 'posts/1'
@@ -287,7 +287,7 @@ describe('getWordPressData()', () => {
 
     expect(result).toEqual({
       items: media,
-      total: 2,
+      total: 3,
       pages: 0
     })
   })
@@ -463,7 +463,7 @@ describe('getAllWordPressData()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return menu items, menus and one post with id 1 from preview data', async () => {
+  it('should return menu items, menus and one post with ID 1 from preview data', async () => {
     const result = await getAllWordPressData({
       previewData: {
         id: '1',
@@ -483,7 +483,7 @@ describe('getAllWordPressData()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return menu items, menus and one post with id 1 from serverless data', async () => {
+  it('should return menu items, menus and one post with ID 1 from serverless data', async () => {
     setStoreItem('slugs', ['1', 'post'], '/posts/1/')
 
     const result = await getAllWordPressData({
@@ -510,6 +510,27 @@ describe('getAllWordPressData()', () => {
 
     // @ts-expect-error - test null data
     setStoreItem('slugs', [null, null], '/posts/5/')
+
+    const result = await getAllWordPressData({
+      serverlessData: {
+        path: '/posts/5/',
+        query: {}
+      }
+    })
+
+    const expectedResult = {
+      navigationItem: [],
+      navigation: [],
+      content: {
+        page: []
+      }
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return empty data if serverless data does not exist', async () => {
+    config.wholeTypes = ['post']
 
     const result = await getAllWordPressData({
       serverlessData: {

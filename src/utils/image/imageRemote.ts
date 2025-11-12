@@ -39,7 +39,7 @@ const getRemoteImages = async (images: ImageRemote[]): Promise<string[]> => {
       const { path, url, format = 'jpg' } = image
 
       if (!isStringStrict(path) || !isStringStrict(url) || !isStringStrict(format)) {
-        throw new Error('No path, url or format')
+        throw new Error('No path, URL or format')
       }
 
       const resp = await fetch(url)

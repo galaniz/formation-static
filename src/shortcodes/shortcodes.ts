@@ -1,5 +1,5 @@
 /**
- * Utils - Shortcode
+ * Utils - Shortcodes
  */
 
 /* Imports */
@@ -11,14 +11,13 @@ import type {
   Shortcode,
   Shortcodes,
   ShortcodesSet
-} from './shortcodeTypes.js'
-import type { RenderItem } from '../../render/renderTypes.js'
-import { isObjectStrict } from '../object/object.js'
-import { isArrayStrict } from '../array/array.js'
-import { isStringStrict } from '../string/string.js'
-import { isFunction } from '../function/function.js'
-import { isNumber } from '../number/number.js'
-import { escape } from '../escape/escape.js'
+} from './shortcodesTypes.js'
+import type { RenderItem } from '../render/renderTypes.js'
+import { isObjectStrict } from '../utils/object/object.js'
+import { isArrayStrict } from '../utils/array/array.js'
+import { isStringStrict } from '../utils/string/string.js'
+import { isFunction } from '../utils/function/function.js'
+import { escape } from '../utils/escape/escape.js'
 
 /**
  * Shortcode callbacks by name.
@@ -119,26 +118,19 @@ const getShortcodeData = (
 
     if (isArrayStrict(attr)) {
       attr.forEach(a => {
-        const [key, value] = a.split('=')
-
-        if (!isStringStrict(key) || !isStringStrict(value)) {
-          return
-        }
+        const [key, value] = a.split('=') as [string, string] // Cast as key and value always exists
+        const type = attrTypes[key]
 
         let val: ShortcodeAttrValue = escape(value.replace(/"/g, ''))
 
-        if (isStringStrict(attrTypes[key])) {
-          const type = attrTypes[key]
+        if (type === 'number') {
+          const num = parseInt(val, 10)
 
-          if (type === 'number') {
-            const num = parseInt(val, 10)
+          val = isNaN(num) ? 0 : num
+        }
 
-            val = isNaN(num) ? 0 : num
-          }
-
-          if (type === 'boolean') {
-            val = val === 'true'
-          }
+        if (type === 'boolean') {
+          val = val === 'true'
         }
 
         attrs[key] = val
@@ -147,13 +139,8 @@ const getShortcodeData = (
 
     /* Content including and excluding tags */
 
-    let replaceContent = ''
-    let innerContent = ''
-
-    if (isNumber(startIndex) && isNumber(endIndex)) {
-      replaceContent = content.slice(startIndex, endIndex + endLen)
-      innerContent = content.slice(startIndex + startLen, endIndex)
-    }
+    const replaceContent = content.slice(startIndex, endIndex + endLen)
+    const innerContent = content.slice(startIndex + startLen, endIndex)
 
     /* Handle nested shortcodes */
 
@@ -243,11 +230,7 @@ const doShortcodes = async (content: string, itemData?: RenderItem): Promise<str
     const callback = shortcodes.get(name)?.callback
 
     if (isFunction(callback)) {
-      const res = await callback({ ...datum, itemData })
-
-      if (isStringStrict(res)) {
-        newContent = newContent.replace(replaceContent, res)
-      }
+      newContent = newContent.replace(replaceContent, await callback({ ...datum, itemData }))
     }
   }
 

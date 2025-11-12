@@ -444,7 +444,7 @@
     "type_label": "Category",
     "object": "category",
     "object_id": 1,
-    "parent": 0,
+    "parent": 10,
     "menu_order": 3,
     "target": "",
     "classes": [

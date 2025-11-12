@@ -16,6 +16,11 @@ export const menuItems = [
         id: '11',
         menu_order: 2,
         title: 'Test'
+      },
+      {
+        id: '15',
+        menu_order: 3,
+        title: 'Uncategorized'
       }
     ],
     locale: 'en-CA',

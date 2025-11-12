@@ -13,11 +13,6 @@ export const menus = [
         menu_order: 1
       },
       {
-        id: '15',
-        title: 'Uncategorized',
-        menu_order: 3
-      },
-      {
         id: '16',
         title: 'Example',
         menu_order: 4

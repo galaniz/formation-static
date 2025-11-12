@@ -6,7 +6,7 @@
 
 import type { FormProps } from './FormTypes.js'
 import { v4 as uuid } from 'uuid'
-import { applyFilters } from '../../utils/filter/filter.js'
+import { applyFilters } from '../../filters/filters.js'
 import { isStringStrict } from '../../utils/string/string.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 
@@ -24,12 +24,6 @@ const Form = (props: FormProps): string[] => {
   }
 
   props = applyFilters('formProps', props)
-
-  /* Filtered props required */
-
-  if (!isObjectStrict(props)) {
-    return []
-  }
 
   const { args } = props
   const {

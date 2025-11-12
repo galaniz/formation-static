@@ -111,5 +111,56 @@ export const media = [
     },
     post: null,
     source_url: 'http://wp.com/wp-content/uploads/2024/12/screenshot.png'
+  },
+  {
+    id: '23',
+    date: '2025-11-09T20:49:02',
+    date_gmt: '2025-11-09T20:49:02',
+    guid: 'http://wp.com/wp-content/uploads/2025/11/il_794xN.7160576648_q6vy.jpg.zip',
+    modified: '2025-11-09T20:49:02',
+    modified_gmt: '2025-11-09T20:49:02',
+    slug: 'il_794xn-7160576648_q6vy-jpg',
+    status: 'inherit',
+    contentType: 'attachment',
+    link: 'http://wp.com/il_794xn-7160576648_q6vy-jpg/',
+    title: 'il_794xN.7160576648_q6vy.jpg',
+    author: {
+      id: '1',
+      name: 'demo',
+      url: 'http://wp.com',
+      description: '',
+      link: 'http://wp.com/author/demo/',
+      slug: 'demo'
+    },
+    featured_media: 0,
+    comment_status: 'open',
+    ping_status: 'closed',
+    template: '',
+    meta: [],
+    class_list: [
+      'post-5',
+      'attachment',
+      'type-attachment',
+      'status-inherit',
+      'hentry'
+    ],
+    description: "<p class=\"attachment\"><a href='http://wp.com/wp-content/uploads/2025/11/il_794xN.7160576648_q6vy.jpg.zip'>il_794xN.7160576648_q6vy.jpg</a></p>\n",
+    caption: "<p>il_794xN.7160576648_q6vy.jpg</p>\n",
+    alt_text: '',
+    media_type: 'file',
+    mime_type: 'application/zip',
+    media_details: {
+      url: 'http://wp.com/wp-content/uploads/2025/11/il_794xN.7160576648_q6vy.jpg.zip',
+      name: 'il_794xN.7160576648_q6vy.jpg.zip',
+      alt: '',
+      width: 0,
+      height: 0,
+      size: 28235,
+      format: 'zip',
+      type: 'application/zip',
+      sizes: undefined
+    },
+    post: null,
+    source_url: 'http://wp.com/wp-content/uploads/2025/11/il_794xN.7160576648_q6vy.jpg.zip'
   }
 ]

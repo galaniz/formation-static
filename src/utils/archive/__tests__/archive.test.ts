@@ -169,7 +169,7 @@ describe('getArchiveInfo()', () => {
         contentType: 'post'
       },
       test: {
-        // @ts-expect-error - test null id
+        // @ts-expect-error - test null ID
         id: null,
         // @ts-expect-error - test null slug
         slug: null,
@@ -317,7 +317,7 @@ describe('getTaxonomyInfo()', () => {
       title: 'Test',
       slug: 'test',
       taxonomy: {
-        // @ts-expect-error - test null id
+        // @ts-expect-error - test null ID
         id: null,
         // @ts-expect-error - test null slug
         slug: null,

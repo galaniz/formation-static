@@ -8,7 +8,7 @@ import type { LinkSlugArgs, LinkSlugReturnType } from './linkTypes.js'
 import type { InternalLink, Taxonomy } from '../../global/globalTypes.js'
 import { isObjectStrict } from '../object/object.js'
 import { isString, isStringStrict } from '../string/string.js'
-import { applyFilters } from '../filter/filter.js'
+import { applyFilters } from '../../filters/filters.js'
 import { getArchiveInfo, getTaxonomyInfo } from '../archive/archive.js'
 import { getStoreItem } from '../../store/store.js'
 import { config } from '../../config/config.js'
@@ -282,7 +282,7 @@ const getSlug = <T extends boolean = false>(
 }
 
 /**
- * Absolute or relative url.
+ * Absolute or relative URL.
  *
  * @param {string} [slug]
  * @param {boolean} [trailingSlash]

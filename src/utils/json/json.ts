@@ -6,7 +6,7 @@
 
 import { isObject } from '../object/object.js'
 import { getPath } from '../path/path.js'
-import { applyFilters } from '../filter/filter.js'
+import { applyFilters } from '../../filters/filters.js'
 
 /**
  * Check and return valid JSON or fallback.
@@ -39,13 +39,9 @@ const getJsonFile = async <T>(path: string, store: boolean = false): Promise<obj
   let res: object & T | undefined
   let newPath = path
 
-  interface JsonImport {
-    default: object & T
-  }
-
   try {
     newPath = store ? getPath(path, 'store') : path
-    const { default: obj } = await import(newPath) as JsonImport // Removed assert json as not all exports are esnext
+    const { default: obj } = await import(newPath) as { default: object & T }  // Removed assert json as not all exports are esnext
 
     if (isObject(obj)) {
       res = obj

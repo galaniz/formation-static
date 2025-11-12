@@ -60,7 +60,7 @@ describe('getRemoteImages()', () => {
     await expect(async () => await getRemoteImages([])).rejects.toThrowError('No images array')
   })
 
-  it('should throw an error if empty path, url or format', async () => {
+  it('should throw an error if empty path, URL or format', async () => {
     await expect(async () => await getRemoteImages([
       {
         // @ts-expect-error - test undefined path
@@ -69,7 +69,7 @@ describe('getRemoteImages()', () => {
         // @ts-expect-error - test null format
         format: null
       }
-    ])).rejects.toThrowError('No path, url or format')
+    ])).rejects.toThrowError('No path, URL or format')
   })
 
   it('should throw an error if image does not exist', async () => {

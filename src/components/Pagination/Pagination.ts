@@ -130,18 +130,14 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     }
   }
 
+  const lastParamsStr = `?${new URLSearchParams(lastParams).toString()}`
   let firstParamsStr = new URLSearchParams(firstParams).toString()
-  let lastParamsStr = new URLSearchParams(lastParams).toString()
   let prevParamsStr = new URLSearchParams(prevParams).toString()
   let nextParamsStr = new URLSearchParams(nextParams).toString()
   let currentParamsStr = new URLSearchParams(currentParams).toString()
 
   if (firstParamsStr) {
     firstParamsStr = `?${firstParamsStr}`
-  }
-
-  if (lastParamsStr) {
-    lastParamsStr = `?${lastParamsStr}`
   }
 
   if (prevParamsStr) {
@@ -156,7 +152,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     currentParamsStr = `?${currentParamsStr}`
   }
 
-  /* Meta data for head tags and urls */
+  /* Meta data for head tags and URLs */
 
   const data: PaginationData = {
     current,
@@ -187,9 +183,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
     data.firstParams = firstParams
   }
 
-  if (lastParamsStr) {
-    data.lastParams = lastParams
-  }
+  data.lastParams = lastParams
 
   if (current > 1) {
     data.title = titleTemplate.replace('%current', current.toString()).replace('%total', total.toString())

@@ -7,7 +7,7 @@
 import type { FormFieldType } from '../FormTypes.js'
 import { it, expect, describe, afterEach, vi } from 'vitest'
 import { testMinify } from '../../../../tests/utils.js'
-import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
+import { addFilter, resetFilters } from '../../../filters/filters.js'
 import { FormField } from '../FormField.js'
 
 /* Tests */
@@ -43,7 +43,7 @@ describe('FormField()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return empty array if filtered props are undefined', () => {
+  it('should throw error if filtered props are undefined', () => {
     const formFieldProps = vi.fn()
 
     // @ts-expect-error - test undefined filtered props
@@ -53,17 +53,14 @@ describe('FormField()', () => {
       return undefined
     })
 
-    const result = FormField({
+    expect(() => FormField({
       args: {
         type: 'email',
         name: 'email',
         label: 'Email'
       }
-    })
+    })).toThrowError()
 
-    const expectedResult: string[] = []
-
-    expect(result).toEqual(expectedResult)
     expect(formFieldProps).toHaveBeenCalledTimes(1)
     expect(formFieldProps).toHaveBeenCalledWith({
       args: {

@@ -51,7 +51,7 @@ class Navigation<L extends string = string> {
   init: boolean = false
 
   /**
-   * Navigation items by id.
+   * Navigation items by ID.
    *
    * @private
    * @type {NavigationItemsById}
@@ -104,7 +104,7 @@ class Navigation<L extends string = string> {
     this.navigations = navigations
     this.items = items
 
-    /* Items by id */
+    /* Items by ID */
 
     this.items.forEach(item => {
       if (!isObjectStrict(item)) {
@@ -308,7 +308,7 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Loop through items to create html.
+   * Loop through items to create HTML.
    *
    * @private
    * @param {NavigationItem[]} items
@@ -477,7 +477,7 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Navigation html output.
+   * Navigation HTML output.
    *
    * @param {string} location
    * @param {NavigationOutputArgs} [args]
@@ -511,7 +511,7 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Breadcrumbs html output.
+   * Breadcrumbs HTML output.
    *
    * @param {NavigationBreadcrumbItem[]} items
    * @param {NavigationBreadcrumbOutputArgs} [args]
@@ -648,7 +648,7 @@ class Navigation<L extends string = string> {
   }
 
   /**
-   * Items stored by id.
+   * Items stored by ID.
    *
    * @return {NavigationItemsById}
    */

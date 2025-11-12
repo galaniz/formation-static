@@ -1,11 +1,11 @@
 /**
- * Utils - Script Style Test
+ * Utils - Scripts Test
  */
 
 /* Imports */
 
 import { it, expect, describe, afterEach } from 'vitest'
-import { scripts, styles, addStyle, addScript, outputStyles, outputScripts } from '../scriptStyle.js'
+import { scripts, styles, addStyle, addScript, outputStyles, outputScripts } from '../scripts.js'
 
 /* Test addStyle */
 

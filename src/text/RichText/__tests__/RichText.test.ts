@@ -5,7 +5,7 @@
 /* Imports */
 
 import { it, expect, describe, vi, afterEach } from 'vitest'
-import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
+import { addFilter, resetFilters } from '../../../filters/filters.js'
 import { RichText, getPlainText } from '../RichText.js'
 
 /* Test getPlainText */
@@ -140,6 +140,36 @@ describe('RichText()', () => {
     expect(result).toBe(expectedResult)
   })
 
+  it('should return anchors with no href', () => {
+    const result = RichText({
+      args: {
+        tag: 'a',
+        link: '',
+        content: 'link'
+      }
+    })
+
+    const resultNested = RichText({
+      args: {
+        tag: 'p',
+        content: [
+          {
+            tag: 'a',
+            // @ts-expect-error - test null link
+            link: null,
+            content: 'nested link'
+          }
+        ]
+      }
+    })
+
+    const expectedResult = '<a data-rich="a">link</a>'
+    const expectedResultNested = '<p data-rich="p"><a data-rich="a">nested link</a></p>'
+
+    expect(result).toBe(expectedResult)
+    expect(resultNested).toBe(expectedResultNested)
+  })
+
   it('should return anchor with internal link', () => {
     const result = RichText({
       args: {
@@ -159,7 +189,7 @@ describe('RichText()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return heading with id', () => {
+  it('should return heading with ID', () => {
     const result = RichText({
       args: {
         tag: 'h2',
@@ -178,16 +208,11 @@ describe('RichText()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return empty string if filtered props are null', () => {
-    // @ts-expect-error - test filtered null props
-    addFilter('richTextProps', () => {
-      return null
-    })
-
+  it('should return empty string if heading is empty', () => {
     const result = RichText({
       args: {
-        tag: 'p',
-        content: 'test'
+        tag: 'h2',
+        content: ''
       }
     })
 
@@ -196,13 +221,27 @@ describe('RichText()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return empty string if nested filtered item is null', () => {
+  it('should throw error if filtered props are null', () => {
+    // @ts-expect-error - test filtered null props
+    addFilter('richTextProps', () => {
+      return null
+    })
+
+    expect(() => RichText({
+      args: {
+        tag: 'p',
+        content: 'test'
+      }
+    })).toThrowError()
+  })
+
+  it('should throw error if nested filtered item is null', () => {
     // @ts-expect-error - test filtered null item
     addFilter('richTextContentItem', () => {
       return null
     })
 
-    const result = RichText({
+    expect(() => RichText({
       args: {
         tag: 'p',
         dataAttr: false,
@@ -212,11 +251,7 @@ describe('RichText()', () => {
           }
         ]
       }
-    })
-
-    const expectedResult = ''
-
-    expect(result).toBe(expectedResult)
+    })).toThrowError()
   })
 
   it('should return paragraph with filtered props and output', () => {

@@ -8,7 +8,7 @@ import { it, expect, describe, beforeEach, afterEach, vi } from 'vitest'
 import { testResetStore } from '../../../../tests/utils.js'
 import { getSlug, getLink, getPermalink } from '../link.js'
 import { setStoreItem } from '../../../store/store.js'
-import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
+import { addFilter, resetFilters } from '../../../filters/filters.js'
 import { config } from '../../../config/config.js'
 
 /* Test getSlug */
@@ -97,6 +97,29 @@ describe('getSlug()', () => {
 
     const expectedResult = {
       slug: 'es/colores/purple',
+      parents: []
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should slug if locale does not exist', () => {
+    config.typeInSlug = {
+      color: {
+        'es-CL': 'colores'
+      }
+    }
+
+    const result = getSlug({
+      slug: 'violette',
+      contentType: 'color',
+      itemData: {
+        locale: 'fr-CA'
+      }
+    }, true)
+
+    const expectedResult = {
+      slug: 'violette',
       parents: []
     }
 
@@ -540,6 +563,36 @@ describe('getSlug()', () => {
     expect(result).toEqual(expectedResult)
   })
 
+  it('should return taxonomy slug and term slug if locale does not exist', () => {
+    config.taxonomyInSlug = {
+      types: {
+        'es-CL': 'tipo'
+      }
+    }
+
+    const result = getSlug({
+      slug: 'froide',
+      contentType: 'term',
+      itemData: {
+        locale: 'fr-CA',
+        taxonomy: {
+          id: '456',
+          slug: 'types',
+          title: 'Types de couleurs',
+          contentTypes: ['color'],
+          usePrimaryContentTypeSlug: false
+        }
+      }
+    }, true)
+
+    const expectedResult = {
+      slug: 'types/froide',
+      parents: []
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
   it('should return archive, taxonomy and term slug', () => {
     setStoreItem('archiveMeta', {
       color: {
@@ -663,6 +716,18 @@ describe('getSlug()', () => {
     expect(result).toEqual(expectedResult)
   })
 
+  it('should return slug with no params', () => {
+    const result = getSlug({
+      slug: 'colors',
+      contentType: 'page',
+      params: {}
+    })
+
+    const expectedResult = 'colors'
+
+    expect(result).toEqual(expectedResult)
+  })
+
   it('should filter slug parts', () => {
     const filterArgs = vi.fn()
 
@@ -712,35 +777,35 @@ describe('getPermalink()', () => {
     config.env.prodUrl = ''
   })
 
-  it('should return index dev url if no slug provided', () => {
+  it('should return index dev URL if no slug provided', () => {
     const result = getPermalink()
     const expectedResult = '/'
 
     expect(result).toBe(expectedResult)
   })
 
-  it('should return index dev url if slug is slash', () => {
+  it('should return index dev URL if slug is slash', () => {
     const result = getPermalink('/')
     const expectedResult = '/'
 
     expect(result).toBe(expectedResult)
   })
 
-  it('should return dev url with trailing slash', () => {
+  it('should return dev URL with trailing slash', () => {
     const result = getPermalink('test')
     const expectedResult = '/test/'
 
     expect(result).toBe(expectedResult)
   })
 
-  it('should return dev url without trailing slash', () => {
+  it('should return dev URL without trailing slash', () => {
     const result = getPermalink('test', false)
     const expectedResult = '/test'
 
     expect(result).toBe(expectedResult)
   })
 
-  it('should return index prod url if no slug provided', () => {
+  it('should return index prod URL if no slug provided', () => {
     config.env.prod = true
     config.env.prodUrl = 'http://test.com'
 
@@ -750,7 +815,7 @@ describe('getPermalink()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return index prod url if slug is slash', () => {
+  it('should return index prod URL if slug is slash', () => {
     config.env.prod = true
     config.env.prodUrl = 'http://test.com'
 
@@ -760,7 +825,7 @@ describe('getPermalink()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return prod url with trailing slash', () => {
+  it('should return prod URL with trailing slash', () => {
     config.env.prod = true
     config.env.prodUrl = 'http://test.com'
 
@@ -770,7 +835,7 @@ describe('getPermalink()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return prod url without trailing slash', () => {
+  it('should return prod URL without trailing slash', () => {
     config.env.prod = true
     config.env.prodUrl = 'http://test.com'
 

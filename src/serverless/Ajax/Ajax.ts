@@ -8,10 +8,9 @@ import type { AjaxResultOptions, AjaxResultFilterArgs } from './AjaxTypes.js'
 import type { ServerlessActionData, ServerlessActionReturn } from '../serverlessTypes.js'
 import type { Generic, GenericStrings } from '../../global/globalTypes.js'
 import { ResponseError } from '../../utils/ResponseError/ResponseError.js'
-import { applyFilters } from '../../utils/filter/filter.js'
+import { applyFilters } from '../../filters/filters.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isStringStrict } from '../../utils/string/string.js'
-import { isNumber } from '../../utils/number/number.js'
 import { isFunction } from '../../utils/function/function.js'
 import { print } from '../../utils/print/print.js'
 import { serverlessActions } from '../serverless.js'
@@ -62,7 +61,7 @@ const Ajax = async (
       const honeypotValue = data.inputs[honeypotName].value
 
       if (isStringStrict(honeypotValue)) {
-        return new Response(JSON.stringify({ success: 'Form successully sent' }), {
+        return new Response(JSON.stringify({ success: '' }), {
           status: 200,
           headers: ajaxHeaders
         })
@@ -104,7 +103,8 @@ const Ajax = async (
     }
 
     if (res.error) {
-      throw new ResponseError(res.error.message, res.error.response)
+      const errorMessage = res.error.message
+      throw res.error.response ? new ResponseError(errorMessage, res.error.response) : new Error(errorMessage)
     }
 
     /* Result success */
@@ -139,13 +139,8 @@ const Ajax = async (
     let message = error instanceof Error ? error.message : 'Unknown error'
 
     if (error instanceof ResponseError) {
-      if (isNumber(error.response?.status)) {
-        statusCode = error.response.status
-      }
-
-      if (isStringStrict(error.message)) {
-        message = error.message
-      }
+      statusCode = error.response.status
+      message = error.message
     }
 
     return new Response(JSON.stringify({ error: message }), {

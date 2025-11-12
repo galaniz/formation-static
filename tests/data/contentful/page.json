@@ -472,6 +472,10 @@
           "gap": "Default",
           "gapLarge": "Default",
           "richTextStyles": "Full",
+          "null": {
+            "content": null,
+            "nodeType": "document"
+          },
           "content": {
             "data": {},
             "content": [
@@ -497,10 +501,10 @@
               },
               null,
               {
-                "data": {},
+                "data": null,
                 "content": [
                   {
-                    "data": {},
+                    "data": null,
                     "marks": [
                       {
                         "type": "bold"

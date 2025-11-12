@@ -145,7 +145,7 @@ const getImage = <V extends boolean = false>(
   const isRemote = dataSource.isContentful(source) || source === 'remote'
   const isWordpress = dataSource.isWordPress(source)
 
-  /* Local url */
+  /* Local URL */
 
   if (isLocal) {
     if (!isStringStrict(path)) {
@@ -340,7 +340,8 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
     maxWidths,
     breakpoints,
     source = config.source,
-    viewportWidth = 100
+    viewportWidth = 100,
+    maxWidth: max
   } = args
 
   /* Parents, widths, max widths and breakpoints required */
@@ -421,6 +422,12 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
     return fallback
   }
 
+  /* Max width */
+
+  const maxPx = isNumber(max) ? max / 2 : 0
+  const maxRem = `${maxPx / 16}rem`
+  const hasMax = !!maxPx && (!hasContainerWidth || maxPx < containerWidth)
+
   /* Convert to fixed widths and determine sizes */
 
   const breakpointsLen = breakpoints.length
@@ -432,6 +439,8 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
   let lastBreakpoint = 0
   let lastSize = ''
   let containerWidthAdded = false
+  let sizesArrLen = 0
+  let maxIndex = -1
 
   for (let i = 0; i < breakpointsLen; i += 1) {
     const breakpoint = breakpoints[i] as number
@@ -441,8 +450,10 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
       continue
     }
 
+    const bk = (breakpoint === 0 && i === 0 ? breakpoints[i + 1] : breakpoint) as number // Give 0 breakpoint next value
     const gteContainerWidth = hasContainerWidth && breakpoint >= containerWidth
-    const breakpointWidth = Math.round(width * (gteContainerWidth ? containerWidth : breakpoint))
+    const breakpointWidth = Math.round(width * (gteContainerWidth ? containerWidth : bk))
+    const gtMaxWidth = hasMax && breakpointWidth > maxPx
     const sizeWidth = gteContainerWidth ? breakpointWidth / 16 : ((width * 100) * sizeFactor)
     const size = gteContainerWidth ? `${sizeWidth}rem` : `${sizeWidth % 1 === 0 ? sizeWidth : sizeWidth.toFixed(2)}vw`
 
@@ -450,17 +461,24 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
       const relMaxWidth = Math.round(lastWidth * containerWidth)
       const relSize = `${relMaxWidth / 16}rem`
 
-      maxWidthArr.push(relMaxWidth)
-      sizesArr.push(`(min-width: ${containerWidth / 16}rem) ${relSize}`)
-
-      containerWidthAdded = true
-      lastSize = relSize
+      if (!(hasMax && relMaxWidth > maxPx)) {
+        maxWidthArr.push(relMaxWidth)
+        sizesArrLen = sizesArr.push(`(min-width: ${containerWidth / 16}rem) ${relSize}`)
+        containerWidthAdded = true
+        lastSize = relSize
+      }
     }
 
-    maxWidthArr.push(breakpointWidth)
+    if (!gtMaxWidth) {
+      maxWidthArr.push(breakpointWidth)
+    }
 
-    if (lastSize !== size) {
-      sizesArr.push(breakpoint ? `(min-width: ${breakpoint / 16}rem) ${size}` : size)
+    if (!gtMaxWidth && lastSize !== size) {
+      sizesArrLen = sizesArr.push(breakpoint ? `(min-width: ${breakpoint / 16}rem) ${size}` : size)
+    }
+
+    if (hasMax && maxPx > lastBreakpoint && maxPx < breakpoint && maxPx < breakpointWidth) {
+      maxIndex = sizesArrLen
     }
 
     lastWidth = width
@@ -472,15 +490,27 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
     const relMaxWidth = Math.round(lastWidth * containerWidth)
     const relSize = `${relMaxWidth / 16}rem`
 
-    maxWidthArr.push(relMaxWidth)
-    sizesArr.push(`(min-width: ${containerWidth / 16}rem) ${relSize}`)
+    if (!(hasMax && relMaxWidth > maxPx)) {
+      maxWidthArr.push(relMaxWidth)
+      sizesArrLen = sizesArr.push(`(min-width: ${containerWidth / 16}rem) ${relSize}`)
+      containerWidthAdded = true
+    }
+  }
+
+  if (hasMax && maxPx > lastBreakpoint) {
+    maxIndex = sizesArrLen
+  }
+
+  if (maxIndex !== -1) {
+    maxWidthArr.push(maxPx)
+    sizesArr.splice(maxIndex, 0, `(min-width: ${maxRem}) ${maxRem}`)
   }
 
   /* Output */
 
   const maxWidth = Math.max(...maxWidthArr) * 2
 
-  if (!columnWidthsLen || (col === 1 && colSmall === 1 && colMedium === 1 && colLarge === 1)) {
+  if (!hasMax && (!columnWidthsLen || (col === 1 && colSmall === 1 && colMedium === 1 && colLarge === 1))) {
     const sizeWidth = `${(maxWidth / 32)}rem`
 
     sizesArr[0] = `${viewportWidth}vw`

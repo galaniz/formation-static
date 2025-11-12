@@ -5,7 +5,7 @@
 /* Imports */
 
 import type { ContainerProps } from './ContainerTypes.js'
-import { applyFilters } from '../../utils/filter/filter.js'
+import { applyFilters } from '../../filters/filters.js'
 import { isObjectStrict } from '../../utils/object/object.js'
 import { isStringStrict } from '../../utils/string/string.js'
 
@@ -23,12 +23,6 @@ const Container = (props: ContainerProps): string[] => {
   }
 
   props = applyFilters('containerProps', props)
-
-  /* Filtered props required */
-
-  if (!isObjectStrict(props)) {
-    return []
-  }
 
   const { args } = props
   const {
@@ -121,7 +115,7 @@ const Container = (props: ContainerProps): string[] => {
   let end = `</${outerTag}>`
 
   if (innerTag) {
-    start = `${start}<${innerTag}${innerAttrs.length ? ` ${innerAttrs.join(' ')}` : ''}>`
+    start = `${start}<${innerTag} ${innerAttrs.join(' ')}>`
     end = `</${innerTag}>${end}`
   }
 

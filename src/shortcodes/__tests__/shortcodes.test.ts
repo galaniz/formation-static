@@ -1,10 +1,10 @@
 /**
- * Utils - Shortcode Test
+ * Utils - Shortcodes Test
  */
 
 /* Imports */
 
-import type { ShortcodeAttrs } from '../shortcodeTypes.js'
+import type { ShortcodeAttrs } from '../shortcodesTypes.js'
 import { it, expect, describe, afterEach, vi } from 'vitest'
 import {
   shortcodes,
@@ -14,7 +14,7 @@ import {
   resetShortcodes,
   setShortcodes,
   stripShortcodes
-} from '../shortcode.js'
+} from '../shortcodes.js'
 
 /**
  * @typedef {object} TestAttrs
@@ -164,6 +164,16 @@ describe('doShortcodes()', () => {
     expect(result).toBe(expectedResult)
   })
 
+  it('should return content if no callback', async () => {
+    // @ts-expect-error - test null shortcode
+    shortcodes.set('test', {})
+
+    const result = await doShortcodes('Lorem ipsum [test]')
+    const expectedResult = 'Lorem ipsum [test]'
+
+    expect(result).toBe(expectedResult)
+  })
+
   it(
     'should return content with shortcode replaced and skip invalid attributes',
     async () => await new Promise(async (resolve) => { // eslint-disable-line @typescript-eslint/no-misused-promises
@@ -254,10 +264,10 @@ describe('doShortcodes()', () => {
     })
 
     const content =
-      'Before [parent type="foo" required="true" size="5"][child]One[/child][child subtype="bar"]Two[/child][/parent] after.'
+      'Before [parent type="foo" required="true" size="NaN"][child]One[/child][child subtype="bar"]Two[/child][/parent] after.'
 
     const expectedResult =
-      'Before <parent foo true 5><child default>One</child><child bar>Two</child></parent> after.'
+      'Before <parent foo true 0><child default>One</child><child bar>Two</child></parent> after.'
 
     const result = await doShortcodes(content)
 

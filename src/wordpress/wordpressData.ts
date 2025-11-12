@@ -11,14 +11,14 @@ import type {
   WordPressDataArgs
 } from './wordpressDataTypes.js'
 import type { RenderAllData, RenderData } from '../render/renderTypes.js'
-import type { CacheData, DataFilterArgs } from '../utils/filter/filterTypes.js'
+import type { CacheData, DataFilterArgs } from '../filters/filtersTypes.js'
 import {
   normalizeWordPressData,
   normalizeWordPressMenuItems,
   normalizeWordPressMenus,
   normalRoutes
 } from './wordpressDataNormal.js'
-import { applyFilters } from '../utils/filter/filter.js'
+import { applyFilters } from '../filters/filters.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isString, isStringStrict } from '../utils/string/string.js'
 import { isArray } from '../utils/array/array.js'
@@ -188,12 +188,10 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
 
     const { items: pagItems } = pagData
 
-    if (isArray(pagItems)) {
-      newItems = [
-        ...newItems,
-        ...pagItems
-      ]
-    }
+    newItems = [
+      ...newItems,
+      ...pagItems
+    ]
   }
 
   /* Full data */
@@ -265,7 +263,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
       const path = serverlessData.path
       const item = slugs[path]
 
-      if (isArray(item)) {
+      if (item) {
         const [itemId, itemContentType] = item
 
         id = itemId || ''
@@ -292,9 +290,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
         contentType
       })
 
-      if (isArray(items)) {
-        allData.content[contentType] = items
-      }
+      allData.content[contentType] = items
     }
   }
 
@@ -334,9 +330,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
         contentType
       })
 
-      if (isArray(items)) {
-        allData[partialType] = items
-      }
+      allData[partialType] = items
     }
   }
 
@@ -364,9 +358,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
         contentType
       })
 
-      if (isArray(items)) {
-        allData.content[contentType] = items
-      }
+      allData.content[contentType] = items
     }
   }
 

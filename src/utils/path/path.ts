@@ -25,11 +25,7 @@ const getPath = (file: string, type?: string): string => {
   let append = file
 
   if (type === 'store') {
-    const dir = storeDir
-
-    if (isStringStrict(dir)) {
-      append = `${dir}/${file}.json`
-    }
+    append = `${storeDir}/${file}.json`
   }
 
   return `${root}${root.endsWith('/') ? '' : '/'}${append}`

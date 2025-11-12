@@ -71,7 +71,7 @@ describe('serverlessPreview()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return undefined if no id', () => {
+  it('should return undefined if no ID', () => {
     const result = serverlessPreview(testRequest('http://test.com/?content_type=post'))
     const expectedResult = undefined
 
@@ -85,7 +85,7 @@ describe('serverlessPreview()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return id and content type', () => {
+  it('should return ID and content type', () => {
     const result = serverlessPreview(testRequest('http://test.com/?preview=123&content_type=post'))
     const expectedResult = { id: '123', contentType: 'post' }
 

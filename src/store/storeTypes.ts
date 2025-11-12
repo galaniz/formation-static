@@ -11,12 +11,12 @@ import type { ImageProps } from '../utils/image/imageTypes.js'
 import type { FormMeta } from '../objects/Form/FormTypes.js'
 
 /**
- * @typedef {Object<string, string[]>} StoreSlugs - Expect id, contentType and optional locale in array.
+ * @typedef {Object<string, string[]>} StoreSlugs - Expect ID, contentType and optional locale in array.
  */
 export type StoreSlugs = Record<string, [string, string, string?]>
 
 /**
- * @typedef {Object<string, Object<string, string[]>>} StoreParents - Expect id, slug and title in array.
+ * @typedef {Object<string, Object<string, string[]>>} StoreParents - Expect ID, slug and title in array.
  */
 export type StoreParents = Record<string, Record<string, [string, string, string]>>
 

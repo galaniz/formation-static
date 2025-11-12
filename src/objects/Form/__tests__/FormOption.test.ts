@@ -6,7 +6,7 @@
 
 import { it, expect, describe, afterEach, vi } from 'vitest'
 import { testMinify } from '../../../../tests/utils.js'
-import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
+import { addFilter, resetFilters } from '../../../filters/filters.js'
 import { FormOption } from '../FormOption.js'
 
 /* Tests */
@@ -163,7 +163,7 @@ describe('FormOption()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return empty string if filtered props are undefined', () => {
+  it('should throw error if filtered props are undefined', () => {
     const formOptionProps = vi.fn()
 
     // @ts-expect-error - test undefined filtered props
@@ -173,7 +173,7 @@ describe('FormOption()', () => {
       return undefined
     })
 
-    const result = FormOption({
+    expect(() => FormOption({
       args: {
         label: 'Option',
         value: 'option'
@@ -188,11 +188,8 @@ describe('FormOption()', () => {
           }
         }
       ]
-    })
+    })).toThrowError()
 
-    const expectedResult = ''
-
-    expect(result).toEqual(expectedResult)
     expect(formOptionProps).toHaveBeenCalledTimes(1)
     expect(formOptionProps).toHaveBeenCalledWith({
       args: {

@@ -1,10 +1,10 @@
 /**
- * Utils - Action Test
+ * Utils - Actions Test
  */
 
 /* Imports */
 
-import type { Actions } from '../actionTypes.js'
+import type { Actions } from '../actionsTypes.js'
 import { it, expect, describe, beforeEach, vi } from 'vitest'
 import {
   actions,
@@ -13,17 +13,17 @@ import {
   doActions,
   setActions,
   resetActions
-} from '../action.js'
+} from '../actions.js'
 
 /**
- * First test action name
+ * First test action name.
  *
  * @type {string}
  */
 const testNameOne: string = 'testName'
 
 /**
- * Second test action name
+ * Second test action name.
  *
  * @type {string}
  */
@@ -138,6 +138,17 @@ describe('doActions()', () => {
 
     expect(testAction).toHaveBeenCalledTimes(1)
     expect(testAction).toHaveResolvedWith(false)
+  })
+
+  it('should call async action and catch rejection', async () => {
+    const testAction = vi.fn(() => new Promise((_resolve, reject) => {
+      reject(new Error('Test error'))
+    }))
+
+    addAction(testNameOne, testAction)
+    await doActions(testNameOne, '', true)
+
+    expect(testAction).toHaveBeenCalledTimes(1)
   })
 
   it('should call mixed actions and return arg value', async () => {

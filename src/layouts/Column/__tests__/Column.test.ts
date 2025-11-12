@@ -5,7 +5,7 @@
 /* Imports */
 
 import { it, expect, describe, afterEach, vi } from 'vitest'
-import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
+import { addFilter, resetFilters } from '../../../filters/filters.js'
 import { Column } from '../Column.js'
 
 /* Tests */
@@ -23,7 +23,7 @@ describe('Column()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return empty array if filtered props are undefined', () => {
+  it('should throw error if filtered props are undefined', () => {
     const columnProps = vi.fn()
 
     // @ts-expect-error - test undefined filtered props
@@ -33,15 +33,12 @@ describe('Column()', () => {
       return undefined
     })
 
-    const result = Column({
+    expect(() => Column({
       args: {
         tag: 'div'
       }
-    })
+    })).toThrowError()
 
-    const expectedResult: string[] = []
-
-    expect(result).toEqual(expectedResult)
     expect(columnProps).toHaveBeenCalledTimes(1)
     expect(columnProps).toHaveBeenCalledWith({
       args: {

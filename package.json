@@ -40,14 +40,14 @@
   "license": "MIT",
   "devDependencies": {
     "@types/contentful-resolve-response": "^0.1.33",
-    "@types/node": "^24.9.2",
+    "@types/node": "^24.10.0",
     "@vitest/coverage-v8": "^4.0.6",
-    "eslint": "9.39.0",
+    "eslint": "9.39.1",
     "memfs": "4.50.0",
     "release-it": "^19.0.5",
     "terser": "5.44.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "8.46.2",
+    "typescript-eslint": "8.46.3",
     "vitest": "^4.0.6"
   },
   "dependencies": {

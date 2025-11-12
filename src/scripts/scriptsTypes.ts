@@ -1,10 +1,10 @@
 /**
- * Utils - Script Style Types
+ * Utils - Scripts Types
  */
 
 /* Imports */
 
-import type { Generic } from '../../global/globalTypes.js'
+import type { Generic } from '../global/globalTypes.js'
 
 /**
  * @typedef {object} Scripts

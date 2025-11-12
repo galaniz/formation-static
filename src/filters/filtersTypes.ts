@@ -1,23 +1,23 @@
 /**
- * Utils - Filter Types
+ * Utils - Filters Types
  */
 
 /* Imports */
 
-import type { GenericFunction } from '../../global/globalTypes.js'
-import type { ColumnPropsFilter } from '../../layouts/Column/ColumnTypes.js'
-import type { ContainerPropsFilter } from '../../layouts/Container/ContainerTypes.js'
-import type { FormPropsFilter, FormFieldPropsFilter, FormOptionPropsFilter } from '../../objects/Form/FormTypes.js'
-import type { AjaxResultFilter } from '../../serverless/Ajax/AjaxTypes.js'
-import type { ContactResultFilter } from '../../serverless/Contact/ContactTypes.js'
-import type { LinkSlugPartsFilter, LinkSlugFilter } from '../link/linkTypes.js'
+import type { GenericFunction } from '../global/globalTypes.js'
+import type { ColumnPropsFilter } from '../layouts/Column/ColumnTypes.js'
+import type { ContainerPropsFilter } from '../layouts/Container/ContainerTypes.js'
+import type { FormPropsFilter, FormFieldPropsFilter, FormOptionPropsFilter } from '../objects/Form/FormTypes.js'
+import type { AjaxResultFilter } from '../serverless/Ajax/AjaxTypes.js'
+import type { ContactResultFilter } from '../serverless/Contact/ContactTypes.js'
+import type { LinkSlugPartsFilter, LinkSlugFilter } from '../utils/link/linkTypes.js'
 import type {
   RichTextPropsFilter,
   RichTextOutputFilter,
   RichTextContentItemFilter,
   RichTextContentFilter,
   RichTextContentOutputFilter
-} from '../../text/RichText/RichTextTypes.js'
+} from '../text/RichText/RichTextTypes.js'
 import type {
   RenderItem,
   RenderItemFilter,
@@ -27,7 +27,7 @@ import type {
   RenderPreviewData,
   RenderAllData,
   RenderData
-} from '../../render/renderTypes.js'
+} from '../render/renderTypes.js'
 
 /**
  * @typedef {object} DataFilterArgs

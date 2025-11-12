@@ -1,15 +1,15 @@
 /**
- * Utils - Action
+ * Utils - Actions
  */
 
 /* Imports */
 
-import type { Actions, ActionMap, ActionReturnType } from './actionTypes.js'
-import type { GenericFunction } from '../../global/globalTypes.js'
-import { isSet, isSetStrict } from '../set/set.js'
-import { isStringStrict } from '../string/string.js'
-import { isObjectStrict } from '../object/object.js'
-import { isFunction } from '../function/function.js'
+import type { Actions, ActionMap, ActionReturnType } from './actionsTypes.js'
+import type { GenericFunction } from '../global/globalTypes.js'
+import { isSet, isSetStrict } from '../utils/set/set.js'
+import { isStringStrict } from '../utils/string/string.js'
+import { isObjectStrict } from '../utils/object/object.js'
+import { isFunction } from '../utils/function/function.js'
 
 /**
  * Action callbacks by name.
@@ -111,7 +111,7 @@ const doActions = <V extends boolean = false>(
   if (isAsync) {
     doSequentially(callbacks, args)
       .then(result => result)
-      .catch(() => false)
+      .catch(() => undefined)
   }
 
   return undefined as ActionReturnType<V>

@@ -9,23 +9,20 @@ class ResponseError extends Error {
   /**
    * Response data.
    *
-   * @type {Response|undefined}
+   * @type {Response}
    */
-  response: Response | undefined
+  response: Response
 
   /**
    * Create new instance with given message and response.
    *
    * @param {string} message
-   * @param {Response} [resp]
+   * @param {Response} resp
    */
-  constructor (message: string, resp?: Response) {
+  constructor (message: string, resp: Response) {
     super(message)
     this.message = message
-
-    if (resp instanceof Response) {
-      this.response = resp
-    }
+    this.response = resp
   }
 }
 

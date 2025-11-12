@@ -7,7 +7,7 @@
 import { it, expect, describe, beforeEach, afterEach, vi } from 'vitest'
 import { testRequest, testResetStore } from '../../../../tests/utils.js'
 import { store, setStoreItem } from '../../../store/store.js'
-import { addFilter, resetFilters } from '../../../utils/filter/filter.js'
+import { addFilter, resetFilters } from '../../../filters/filters.js'
 import { config } from '../../../config/config.js'
 import { Contact } from '../Contact.js'
 import { minify } from '../../../utils/minify/minify.js'
@@ -23,11 +23,6 @@ describe('Contact()', () => {
       type: 'text',
       value: 'Name',
       label: 'Name'
-    },
-    email: {
-      type: 'email',
-      value: 'email@test.com',
-      label: 'Email'
     },
     subject: {
       type: 'text',
@@ -47,7 +42,7 @@ describe('Contact()', () => {
     number: {
       type: 'number',
       value: 123,
-      label: 'Number'
+      label: 'Numbers'
     },
     numbers: {
       type: 'number',
@@ -76,6 +71,18 @@ describe('Contact()', () => {
         'Two',
         'Three'
       ]
+    },
+    lorem: {
+      type: 'text',
+      legend: 'Legend',
+      label: 'Lorem',
+      value: 'Ipsum'
+    },
+    ipsum: {
+      type: 'text',
+      legend: 'Legend',
+      label: 'Lorem',
+      value: 'Quisque'
     }
   }
 
@@ -91,7 +98,7 @@ describe('Contact()', () => {
     resetFilters()
   })
 
-  it('should return error if id is empty string', async () => {
+  it('should return error if ID is empty string', async () => {
     const result = await Contact({
       action,
       id: '',
@@ -100,7 +107,7 @@ describe('Contact()', () => {
 
     const expectedResult = {
       error: {
-        message: 'No id'
+        message: 'No ID'
       }
     }
 
@@ -257,11 +264,20 @@ describe('Contact()', () => {
   
     config.env.prod = true
     config.env.prodUrl = 'http://test.com'
+
+    const testInputs = {
+      email: {
+        type: 'email',
+        value: 'email@test.com',
+        label: 'Email'
+      },
+      ...inputs
+    }
   
     const result = await Contact({
       action,
       id: 'test',
-      inputs
+      inputs: testInputs
     }, request, env)
 
     const expectedResult = {
@@ -273,24 +289,23 @@ describe('Contact()', () => {
     const expectedArgs = {
       id: 'test',
       action,
-      inputs,
+      inputs: testInputs,
       to: ['to@test.com'],
       sender: 'from@test.com',
       subject: 'Meta Subject - Test Subject',
       replyTo: 'email@test.com',
       text: minify(`
         Test contact form submission\n\n
-        Name\n
-        Name\n
         Email\n
         email@test.com\n
+        Name\n
+        Name\n
         [message]\n
         Message\n
         Boolean\n
         false\n
-        Number\n
-        123\n
         Numbers\n
+        123\n
         1\n
         2\n
         3\n
@@ -304,6 +319,9 @@ describe('Contact()', () => {
         One\n
         Two\n
         Three\n
+        Lorem\n
+        Ipsum\n
+        Quisque\n
         This email was sent from a contact form on Test (http://test.com/)
       `),
       html: minify(`
@@ -324,20 +342,20 @@ describe('Contact()', () => {
                       <tr>
                         <td style="padding: 16px 0; border-bottom: 2px solid #ccc;">
                           <h2 style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
-                            Name
+                            Email
                           </h2>
                           <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
-                            Name
+                            <a href="mailto:email@test.com">email@test.com</a>
                           </p>
                         </td>
                       </tr>
                       <tr>
                         <td style="padding: 16px 0; border-bottom: 2px solid #ccc;">
                           <h2 style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
-                            Email
+                            Name
                           </h2>
                           <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
-                            <a href="mailto:email@test.com">email@test.com</a>
+                            Name
                           </p>
                         </td>
                       </tr>
@@ -364,18 +382,11 @@ describe('Contact()', () => {
                       <tr>
                         <td style="padding: 16px 0; border-bottom: 2px solid #ccc;">
                           <h2 style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
-                            Number
+                            Numbers
                           </h2>
                           <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
                             123
                           </p>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 16px 0; border-bottom: 2px solid #ccc;">
-                          <h2 style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
-                            Numbers
-                          </h2>
                           <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
                             1<br>2<br>3
                           </p>
@@ -411,6 +422,15 @@ describe('Contact()', () => {
                           </h3>
                           <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
                             One<br>Two<br>Three
+                          </p>
+                          <h3 style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.3em">
+                            Lorem
+                          </h3>
+                          <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
+                            Ipsum
+                          </p>
+                          <p style="font-family: sans-serif; color: #222; margin: 16px 0; line-height: 1.5em;">
+                            Quisque
                           </p>
                         </td>
                       </tr>

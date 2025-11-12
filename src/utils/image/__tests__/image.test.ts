@@ -537,9 +537,9 @@ describe('getImageSizes()', () => {
     10: 0.8333,
     9: 0.75,
     8: 0.6667,
-    7: 0.6,
+    7: 0.5833,
     6: 0.5,
-    5: 0.4,
+    5: 0.4167,
     4: 0.3333,
     3: 0.25,
     2: 0.1666
@@ -629,7 +629,7 @@ describe('getImageSizes()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return container width if single container parent', () => {
+  it('should return max width and sizes matching container width', () => {
     const result = getImageSizes({
       parents: [
         {
@@ -652,7 +652,7 @@ describe('getImageSizes()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return large breakpoint 2x if empty column widths and container', () => {
+  it('should return max width and sizes matching large breakpoint', () => {
     const result = getImageSizes({
       parents: [
         {
@@ -684,7 +684,7 @@ describe('getImageSizes()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return width relative to container', () => {
+  it('should return max width and sizes matching 5/12 of viewport and container', () => {
     const result = getImageSizes({
       parents: [
         {
@@ -706,14 +706,14 @@ describe('getImageSizes()', () => {
     })
 
     const expectedResult = {
-      maxWidth: 960,
-      sizes: '(min-width: 75rem) 30rem, 40vw'
+      maxWidth: 1000,
+      sizes: '(min-width: 75rem) 31.25rem, 41.67vw'
     }
 
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return width large relative to container when large breakpoint > container', () => {
+  it('should return max width matching 5/6 of container and sizes matching 5/6 and 2/3 of container, viewport and large breakpoint', () => {
     const result = getImageSizes({
       parents: [
         {
@@ -750,7 +750,7 @@ describe('getImageSizes()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return width medium relative to medium breakpoint if container none', () => {
+  it('should return max width matching medium breakpoint and sizes matching 5/12 of viewport', () => {
     const result = getImageSizes({
       parents: [
         {
@@ -781,13 +781,13 @@ describe('getImageSizes()', () => {
 
     const expectedResult = {
       maxWidth: 1500,
-      sizes: '(min-width: 93.75rem) 40vw, 100vw'
+      sizes: '(min-width: 93.75rem) 41.67vw, 100vw'
     }
 
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return width large relative to large breakpoint if no container parent', () => {
+  it('should return max width matching 2/3 of large breakpoint and sizes matching 5/6 and 2/3 of viewport', () => {
     const result = getImageSizes({
       parents: [
         {
@@ -818,7 +818,7 @@ describe('getImageSizes()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return width small relative to container', () => {
+  it('should return max width matching small breakpoint and sizes matching 1/2 of viewport and container', () => {
     const result = getImageSizes({
       parents: [
         {
@@ -850,7 +850,7 @@ describe('getImageSizes()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return width medium relative to container rounded to config size if source is local', () => {
+  it('should return max width matching 5/6 of medium breakpoint rounded to closest config size and sizes matching 5/6 and 1/2 of viewport and container', () => {
     const result = getImageSizes({
       source: 'local',
       parents: [
@@ -879,6 +879,302 @@ describe('getImageSizes()', () => {
     const expectedResult = {
       maxWidth: 1600,
       sizes: '(min-width: 75rem) 37.5rem, (min-width: 37.5rem) 66.66vw, 80vw'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return args max width and sizes matching args viewport and max width and 7/12 of container', () => {
+    const result = getImageSizes({
+      parents: [
+        {
+          renderType: 'container',
+          args: {
+            maxWidth: 'container'
+          }
+        },
+        {
+          renderType: 'column',
+          args: {
+            width: '12',
+            widthLarge: '7'
+          }
+        }
+      ],
+      widths,
+      maxWidths,
+      breakpoints,
+      viewportWidth: 80,
+      maxWidth: 1440
+    })
+
+    const expectedResult = {
+      maxWidth: 1440,
+      sizes: '(min-width: 75rem) 43.75rem, (min-width: 45rem) 45rem, 80vw'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return args max width and sizes matching args viewport, max width and 1/2 of container', () => {
+    const result = getImageSizes({
+      parents: [
+        {
+          renderType: 'container',
+          args: {
+            maxWidth: 'container'
+          }
+        },
+        {
+          renderType: 'column',
+          args: {
+            width: '12',
+            widthLarge: '6'
+          }
+        }
+      ],
+      widths,
+      maxWidths: {
+        container: 1000
+      },
+      breakpoints,
+      viewportWidth: 80,
+      maxWidth: 1300
+    })
+
+    const expectedResult = {
+      maxWidth: 1300,
+      sizes: '(min-width: 75rem) 31.25rem, (min-width: 40.625rem) 40.625rem, 80vw'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return args max width and sizes matching args viewport and max width', () => {
+    const result = getImageSizes({
+      parents: [
+        {
+          renderType: 'container',
+          args: {
+            maxWidth: 'container'
+          }
+        },
+        {
+          renderType: 'column',
+          args: {
+            width: '12'
+          }
+        }
+      ],
+      widths,
+      maxWidths,
+      breakpoints,
+      viewportWidth: 80,
+      maxWidth: 1440
+    })
+
+    const expectedResult = {
+      maxWidth: 1440,
+      sizes: '(min-width: 45rem) 45rem, 80vw'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return args max width and sizes matching args max width', () => {
+    const result = getImageSizes({
+      parents: [
+        {
+          renderType: 'container',
+          args: {
+            maxWidth: 'none'
+          }
+        },
+        {
+          renderType: 'column',
+          args: {
+            width: '',
+            widthSmall: '',
+            widthMedium: '',
+            widthLarge: ''
+          }
+        }
+      ],
+      widths,
+      maxWidths,
+      breakpoints,
+      maxWidth: 1440
+    })
+
+    const expectedResult = {
+      maxWidth: 1440,
+      sizes: '(min-width: 45rem) 45rem, 100vw'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should ignore args max width and return max width matching medium breakpoint and sizes matching 7/12 of container', () => {
+    const result = getImageSizes({
+      parents: [
+        {
+          renderType: 'container',
+          args: {
+            maxWidth: 'container'
+          }
+        },
+        {
+          renderType: 'column',
+          args: {
+            width: '12',
+            widthLarge: '7'
+          }
+        }
+      ],
+      widths,
+      maxWidths,
+      breakpoints,
+      maxWidth: 2500
+    })
+
+    const expectedResult = {
+      maxWidth: 1800,
+      sizes: '(min-width: 75rem) 43.75rem, 100vw'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return max width matching small breakpoint and sizes matching 1/2 and 1/3 of viewport and 1/4 of container', () => {
+    const result = getImageSizes({
+      parents: [
+        {
+          renderType: 'container',
+          args: {
+            maxWidth: 'container'
+          }
+        },
+        {
+          renderType: 'column',
+          args: {
+            width: '12',
+            widthSmall: '6',
+            widthMedium: '4',
+            widthLarge: '3'
+          }
+        }
+      ],
+      widths,
+      maxWidths,
+      breakpoints
+    })
+
+    const expectedResult = {
+      maxWidth: 1200,
+      sizes: '(min-width: 75rem) 18.75rem, (min-width: 56.25rem) 33.33vw, (min-width: 37.5rem) 50vw, 100vw'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should ignore args max width and return max width matching small breakpoint and sizes matching 1/2 and 1/3 of viewport and 1/4 of container', () => {
+    const result = getImageSizes({
+      parents: [
+        {
+          renderType: 'container',
+          args: {
+            maxWidth: 'container'
+          }
+        },
+        {
+          renderType: 'column',
+          args: {
+            width: '12',
+            widthSmall: '6',
+            widthMedium: '4',
+            widthLarge: '3'
+          }
+        }
+      ],
+      widths,
+      maxWidths,
+      breakpoints,
+      maxWidth: 1440
+    })
+
+    const expectedResult = {
+      maxWidth: 1200,
+      sizes: '(min-width: 75rem) 18.75rem, (min-width: 56.25rem) 33.33vw, (min-width: 37.5rem) 50vw, 100vw'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return args max width and sizes matching 5/6 of viewport and args max width', () => {
+    const result = getImageSizes({
+      parents: [
+        {
+          renderType: 'column',
+          args: {
+            width: '12',
+            widthSmall: '10',
+            widthMedium: '',
+            widthLarge: '8'
+          }
+        }
+      ],
+      widths,
+      maxWidths,
+      maxWidth: 1200,
+      breakpoints: [
+        0,
+        375,
+        750,
+        1500
+      ]
+    })
+
+    const expectedResult = {
+      maxWidth: 1200,
+      sizes: '(min-width: 37.5rem) 37.5rem, (min-width: 23.4375rem) 83.33vw, 100vw'
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return args max width and sizes matching 5/6 and 3/4 of viewport and args max width', () => {
+    const result = getImageSizes({
+      parents: [
+        {
+          renderType: 'container',
+          args: {
+            maxWidth: 'container'
+          }
+        },
+        {
+          renderType: 'column',
+          args: {
+            width: '12',
+            widthSmall: '10',
+            widthMedium: '',
+            widthLarge: '9'
+          }
+        }
+      ],
+      widths,
+      maxWidths,
+      maxWidth: 1600,
+      breakpoints: [
+        0,
+        208,
+        400,
+        608
+      ]
+    })
+
+    const expectedResult = {
+      maxWidth: 1600,
+      sizes: '(min-width: 50rem) 50rem, (min-width: 38rem) 75vw, (min-width: 13rem) 83.33vw, 100vw'
     }
 
     expect(result).toEqual(expectedResult)

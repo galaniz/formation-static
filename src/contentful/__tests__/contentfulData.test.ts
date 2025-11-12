@@ -5,13 +5,13 @@
 /* Imports */
 
 import type { RenderItem } from '../../render/renderTypes.js'
-import type { CacheData } from '../../utils/filter/filterTypes.js'
+import type { CacheData } from '../../filters/filtersTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach, beforeAll } from 'vitest'
 import { testResetStore } from '../../../tests/utils.js'
 import { getContentfulData, getAllContentfulData } from '../contentfulData.js'
 import { mockFetchErrorMessage } from '../../../tests/types.js'
 import { mockContentfulFetch } from './contentfulDataMock.js'
-import { addFilter, resetFilters } from '../../utils/filter/filter.js'
+import { addFilter, resetFilters } from '../../filters/filters.js'
 import { setStoreItem } from '../../store/store.js'
 import { config } from '../../config/config.js'
 import { pages } from '../../../tests/data/contentful/page.js'
@@ -176,7 +176,7 @@ describe('getContentfulData()', () => {
     })
   })
 
-  it('should return array of one page with specified id and prod credentials', async () => {
+  it('should return array of one page with specified ID and prod credentials', async () => {
     config.env.prod = true
 
     const result = await getContentfulData('page_key_1', {
@@ -347,6 +347,25 @@ describe('getAllContentfulData()', () => {
     const result = await getAllContentfulData({
       serverlessData: {
         path: '/null/',
+        query: {}
+      }
+    })
+
+    const expectedResult = {
+      navigationItem: [],
+      navigation: [],
+      content: {
+        page: []
+      }
+    }
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return empty data if serverless data does not exist', async () => {
+    const result = await getAllContentfulData({
+      serverlessData: {
+        path: '/test/',
         query: {}
       }
     })

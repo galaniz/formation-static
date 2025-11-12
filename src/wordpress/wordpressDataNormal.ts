@@ -55,7 +55,7 @@ const normalRoutes: Map<string, string> = new Map([
 const normalMetaKeys: Map<string, string> = new Map()
 
 /**
- * Menu items grouped by menu id.
+ * Menu items grouped by menu ID.
  *
  * @private
  * @type {Map<string, WordPressDataMenuChild[]>}
@@ -74,7 +74,7 @@ const excludeProps: string[] = [
 ]
 
 /**
- * Taxonomy from taxonomies given id.
+ * Taxonomy from taxonomies given ID.
  *
  * @private
  * @param {string} id
@@ -118,10 +118,10 @@ const normalizeFile = (file: WordPressDataFile): RenderFile => {
     sizes
   } = file
 
-  let s: Record<number, string> | undefined
+  let newSizes: Record<number, string> | undefined
 
   if (isObjectStrict(sizes)) {
-    s = {}
+    newSizes = {}
 
     for (const [, value] of Object.entries(sizes)) {
       const {
@@ -139,7 +139,7 @@ const normalizeFile = (file: WordPressDataFile): RenderFile => {
         continue
       }
 
-      s[width] = url
+      newSizes[width] = url
     }
   }
 
@@ -152,7 +152,7 @@ const normalizeFile = (file: WordPressDataFile): RenderFile => {
     size: isNumber(filesizeInBytes) ? filesizeInBytes : 0,
     format: subtype === 'jpeg' ? 'jpg' : subtype,
     type: mime,
-    sizes: s
+    sizes: newSizes
   }
 }
 
@@ -374,11 +374,7 @@ const normalizeBlocks = (blocks: ReturnType<typeof parse>): RenderItem[] => {
 
   /* Recurse */
 
-  interface GenericBlockAttrs {
-    attrs: Generic
-  }
-
-  type GenericBlock = ReturnType<typeof parse>[number] & GenericBlockAttrs
+  type GenericBlock = ReturnType<typeof parse>[number] & { attrs: Generic }
 
   blocks.forEach(block => {
     const {

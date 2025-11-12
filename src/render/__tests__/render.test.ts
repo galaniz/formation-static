@@ -5,7 +5,7 @@
 /* Imports */
 
 import type { RenderAllData, RenderFunctionArgs, RenderItem, RenderReturn } from '../renderTypes.js'
-import type { Scripts, Styles } from '../../utils/scriptStyle/scriptStyleTypes.js'
+import type { Scripts, Styles } from '../../scripts/scriptsTypes.js'
 import type { ParentArgs } from '../../global/globalTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach } from 'vitest'
 import { testMinify, testResetRenderFunctions, testResetStore } from '../../../tests/utils.js'
@@ -13,12 +13,12 @@ import { Navigation } from '../../components/Navigation/Navigation.js'
 import { Container } from '../../layouts/Container/Container.js'
 import { Column } from '../../layouts/Column/Column.js'
 import { RichText } from '../../text/RichText/RichText.js'
-import { addAction, resetActions } from '../../utils/action/action.js'
-import { addFilter, resetFilters } from '../../utils/filter/filter.js'
+import { addAction, resetActions } from '../../actions/actions.js'
+import { addFilter, resetFilters } from '../../filters/filters.js'
 import { getStoreItem } from '../../store/store.js'
 import { setRedirects, redirects } from '../../redirects/redirects.js'
 import { isStringStrict } from '../../utils/string/string.js'
-import { addScript, addStyle, scripts, styles } from '../../utils/scriptStyle/scriptStyle.js'
+import { addScript, addStyle, scripts, styles } from '../../scripts/scripts.js'
 import { config } from '../../config/config.js'
 import {
   render,
@@ -48,10 +48,10 @@ interface TestChildArgs {
 }
 
 /**
- * @typedef {object} TestChildChildrenArgs
+ * @typedef {object} TestChildrenArgs
  * @prop {string} content
  */
-interface TestChildChildrenArgs {
+interface TestChildrenArgs {
   content: string
 }
 
@@ -101,12 +101,16 @@ describe('setRenderFunctions()', () => {
   it('should return false and not set any functions if no functions or layout', () => {
     // @ts-expect-error - test empty args
     const result = setRenderFunctions({})
-    // @ts-expect-error - test undefined args
-    const resultLayout = renderLayout()
-    // @ts-expect-error - test undefined args
-    const resultHttpError = renderHttpError()
-    // @ts-expect-error - test undefined args
-    const resultNavigation = renderNavigation()
+    const resultHttpError = renderHttpError({ code: 500 })
+    const resultNavigation = renderNavigation({ items: [], navigations: [] })
+    const resultLayout = renderLayout({
+      id: '123',
+      slug: 'test',
+      contentType: 'page',
+      content: '',
+      itemData: {},
+      meta: {}
+    })
 
     const expectedResult = false
     const expectedRenderFunctions = {}
@@ -143,9 +147,38 @@ describe('setRenderFunctions()', () => {
     expect(renderHttpError).toEqual(httpError)
     expect(renderNavigation).toEqual(navigation)
   })
+
+  it('should return true and set render functions except navigation and http error', () => {
+    const test = (): string => 'test'
+    const layout = (): string => 'layout'
+    const httpError = null
+    const navigation = null
+
+    const resultHttpError = renderHttpError({ code: 500 })
+    const resultNavigation = renderNavigation({ items: [], navigations: [] })
+    const result = setRenderFunctions({
+      functions: { test },
+      layout,
+      // @ts-expect-error - test null function
+      navigation,
+      // @ts-expect-error - test null function
+      httpError
+    })
+
+    const expectedResult = true
+    const expectedRenderFunctions = { test }
+    const expectedHttpError = ''
+    const expectedNavigation = undefined
+
+    expect(result).toBe(expectedResult)
+    expect(renderFunctions).toEqual(expectedRenderFunctions)
+    expect(renderLayout).toEqual(layout)
+    expect(resultHttpError).toBe(expectedHttpError)
+    expect(resultNavigation).toBe(expectedNavigation)
+  })
 })
 
-/* Test renderContent - most coverage in render() */
+/* Test renderContent - most coverage in render */
 
 describe('renderContent()', () => {
   it('should return empty string if no args', async () => {
@@ -191,7 +224,7 @@ describe('renderContent()', () => {
   })
 })
 
-/* Test renderItem - most coverage in render() */
+/* Test renderItem - most coverage in render */
 
 describe('renderItem()', () => {
   it('should return null if no args', async () => {
@@ -228,12 +261,12 @@ describe('renderItem()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return null if item id is null', async () => {
+  it('should return null if item ID is null', async () => {
     const result = await renderItem({
       contentType: 'page',
       item: {
         contentType: 'page',
-        // @ts-expect-error - test null id
+        // @ts-expect-error - test null ID
         id: null
       }
     })
@@ -292,7 +325,7 @@ describe('render()', () => {
             '</ul>'
           ]
         },
-        testChild (props: RenderFunctionArgs<TestChildArgs, RenderItem, ParentArgs, TestChildChildrenArgs>) {
+        testChild (props: RenderFunctionArgs<TestChildArgs, RenderItem, ParentArgs, TestChildrenArgs>) {
           const { args, children } = props
           const { id } = args
           const innerContent = children?.[0]?.content // Test skipping content loop if string returned
@@ -301,7 +334,7 @@ describe('render()', () => {
         },
         // @ts-expect-error - test null output
         testEmpty () {
-          return [null]
+          return [null, null]
         },
         testScript () {
           addScript('test/script.js', ['test/dep.js'])
@@ -586,6 +619,10 @@ describe('render()', () => {
               {
                 renderType: 'testScript',
                 content: ''
+              },
+              {
+                renderType: 'testEmpty',
+                content: ''
               }
             ]
           }
@@ -679,7 +716,7 @@ describe('render()', () => {
     expect(renderItemEnd).toHaveBeenCalledTimes(1)
     expect(renderItem).toHaveBeenCalledTimes(1)
     expect(renderItemData).toHaveBeenCalledTimes(1)
-    expect(renderContent).toHaveBeenCalledTimes(2)
+    expect(renderContent).toHaveBeenCalledTimes(3)
     expect(renderStart).toHaveBeenCalledWith({ allData })
     expect(renderEnd).toHaveBeenCalledWith({ allData, data: expectedResult })
     expect(renderItemData).toHaveBeenCalledWith({
@@ -699,6 +736,10 @@ describe('render()', () => {
           },
           {
             renderType: 'testScript',
+            content: ''
+          },
+          {
+            renderType: 'testEmpty',
             content: ''
           }
         ]
@@ -722,7 +763,8 @@ describe('render()', () => {
       },
       itemContains: new Set([
         'test',
-        'testScript'
+        'testScript',
+        'testEmpty'
       ]),
       itemHeadings: [],
       serverlessData: undefined,
@@ -746,7 +788,8 @@ describe('render()', () => {
       },
       itemContains: new Set([
         'test',
-        'testScript'
+        'testScript',
+        'testEmpty'
       ]),
       itemHeadings: [],
       serverlessData: undefined,
@@ -768,6 +811,10 @@ describe('render()', () => {
           },
           {
             renderType: 'testScript',
+            content: ''
+          },
+          {
+            renderType: 'testEmpty',
             content: ''
           }
         ]
@@ -1086,6 +1133,98 @@ describe('render()', () => {
     const slugs = getStoreItem('slugs')
     const expectedSlugs = {
       '/lorem.html': ['7', 'page', 'fr-CA']
+    }
+
+    expect(resultMin).toEqual(expectedResultMin)
+    expect(slugs).toEqual(expectedSlugs)
+  })
+
+  it('should return item and store default slug data if locale not found', async () => {
+    config.cms.locales = ['en-CA']
+
+    const result = await render({
+      allData: {
+        content: {
+          page: [
+            {
+              id: '7',
+              title: 'Lorem',
+              contentType: 'page',
+              slug: 'lorem',
+              content: 'lorem',
+              locale: 'fr-CA'
+            }
+          ]
+        }
+      }
+    }) as RenderReturn[]
+
+    const expectedResult = [
+      {
+        slug: '/lorem/',
+        output: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Lorem</title>
+            </head>
+            <body>lorem</body>
+          </html>
+        `
+      }
+    ]
+
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
+    const slugs = getStoreItem('slugs')
+    const expectedSlugs = {
+      '/lorem/': ['7', 'page']
+    }
+
+    expect(resultMin).toEqual(expectedResultMin)
+    expect(slugs).toEqual(expectedSlugs)
+  })
+
+  it('should return item and store default slug data if locale is default locale', async () => {
+    config.cms.locales = ['en-CA', 'fr-CA']
+
+    const result = await render({
+      allData: {
+        content: {
+          page: [
+            {
+              id: '7',
+              title: 'Lorem',
+              contentType: 'page',
+              slug: 'lorem',
+              content: 'lorem',
+              locale: 'en-CA'
+            }
+          ]
+        }
+      }
+    }) as RenderReturn[]
+
+    const expectedResult = [
+      {
+        slug: '/lorem/',
+        output: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Lorem</title>
+            </head>
+            <body>lorem</body>
+          </html>
+        `
+      }
+    ]
+
+    const resultMin = testMinifyOutput(result)
+    const expectedResultMin = testMinifyOutput(expectedResult)
+    const slugs = getStoreItem('slugs')
+    const expectedSlugs = {
+      '/lorem/': ['7', 'page']
     }
 
     expect(resultMin).toEqual(expectedResultMin)
@@ -2204,7 +2343,7 @@ describe('render()', () => {
               title: 'Blog',
               contentType: 'page',
               slug: 'blog',
-              pagination: {
+              pagination: { // Test no title
                 current: 2,
                 total: 5,
                 nextParams: {
@@ -2213,7 +2352,6 @@ describe('render()', () => {
                 currentParams: {
                   page: '2'
                 },
-                title: 'Page 2 of 5',
                 next: 3,
                 prev: 1
               }
@@ -2321,8 +2459,7 @@ describe('render()', () => {
           <!DOCTYPE html>
           <html>
             <head>
-              <title>Blog - Page 2 of 5</title>
-              <link rel="canonical" href="/blog/?page=2">
+              <title>Blog</title>
               <link rel="prev" href="/blog/">
               <link rel="next" href="/blog/?page=3">
             </head>

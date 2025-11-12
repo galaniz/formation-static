@@ -51,7 +51,7 @@ describe('getTag()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return undefined if no tag with specified id exists', () => {
+  it('should return undefined if no tag with specified ID exists', () => {
     const result = getTag({
       metadata: {
         tags: [
@@ -67,7 +67,7 @@ describe('getTag()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return tag associated with specified id', () => {
+  it('should return tag associated with specified ID', () => {
     const result = getTag({
       metadata: {
         tags: [
@@ -105,7 +105,7 @@ describe('tagExists()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return false if no tag with specified id exists', () => {
+  it('should return false if no tag with specified ID exists', () => {
     const result = tagExists({
       metadata: {
         tags: [
@@ -121,7 +121,7 @@ describe('tagExists()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return true if tag with specified id exists', () => {
+  it('should return true if tag with specified ID exists', () => {
     const result = tagExists({
       metadata: {
         tags: [

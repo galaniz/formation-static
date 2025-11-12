@@ -36,7 +36,7 @@ describe('setStore()', () => {
   })
 
   it('should return default store object if empty args', () => {
-    const result = setStore({})
+    const result = setStore({}, '')
     const expectedResult = testDefaultStore()
     const expectedStoreDir = 'lib/store'
 
@@ -150,16 +150,6 @@ describe('setStoreItem()', () => {
 
 describe('setStoreData()', () => {
   beforeEach(() => {
-    setStoreItem('parents ', {
-      page: {
-        1: {
-          id: '3',
-          title: 'Parent',
-          slug: 'parent'
-        }
-      }
-    })
-
     config.partialTypes = [
       'navigationItem',
       'navigation',
@@ -207,6 +197,12 @@ describe('setStoreData()', () => {
         term: {
           singular: 'Category',
           plural: 'Categories'
+        },
+        color: {
+          'es-CL': {
+            singular: 'Color',
+            plural: 'Colores'
+          }
         }
       }
     })
@@ -257,16 +253,27 @@ describe('setStoreData()', () => {
       slug: 'term-parent'
     }
 
-    const pageParent = {
+    const pageParentOne = {
       id: '3',
-      title: 'Parent',
-      slug: 'parent'
+      title: 'Parent One',
+      slug: 'parent-one'
+    }
+
+    const pageParentTwo = {
+      id: '23',
+      title: 'Parent Two',
+      slug: 'parent-two',
+      parent: {
+        ...pageParentOne,
+        contentType: 'page'
+      }
     }
 
     const result = setStoreData({
       navigation: navigations,
       navigationItem: navigationItems,
       term: [
+        termParent,
         {
           id: '5',
           title: 'Term',
@@ -298,6 +305,8 @@ describe('setStoreData()', () => {
       ],
       content: {
         page: [
+          pageParentOne,
+          pageParentTwo,
           {
             id: '3',
             slug: 'parent',
@@ -312,7 +321,7 @@ describe('setStoreData()', () => {
             slug: 'child',
             content: 'test',
             parent: {
-              ...pageParent,
+              ...pageParentTwo,
               contentType: 'page'
             }
           },
@@ -334,6 +343,24 @@ describe('setStoreData()', () => {
             locale: 'en-CA'
           },
           {
+            id: '18',
+            title: 'Le Blog',
+            contentType: 'page',
+            slug: 'le-blog',
+            content: 'archive',
+            archive: 'Post',
+            locale: 'fr-CA'
+          },
+          {
+            id: '27',
+            title: 'Colores',
+            contentType: 'page',
+            slug: 'colores',
+            content: 'archive',
+            archive: 'color',
+            locale: 'es-CL'
+          },
+          {
             id: '4',
             title: 'Categories',
             contentType: 'page',
@@ -341,7 +368,7 @@ describe('setStoreData()', () => {
             content: 'archive',
             archive: 'term'
           },
-          { // Test no id
+          { // Test no ID
             title: 'Services',
             contentType: 'page',
             slug: 'services',
@@ -368,7 +395,8 @@ describe('setStoreData()', () => {
       slugs: {},
       parents: {
         page: {
-          1: [pageParent.id, pageParent.slug, pageParent.title]
+          23: [pageParentOne.id, pageParentOne.slug, pageParentOne.title],
+          1: [pageParentTwo.id, pageParentTwo.slug, pageParentTwo.title]
         },
         term: {
           5: [termParent.id, termParent.slug, termParent.title]
@@ -384,6 +412,22 @@ describe('setStoreData()', () => {
             title: 'Blog',
             contentType: 'page',
             slug: 'blog'
+          },
+          'fr-CA': {
+            id: '18',
+            title: 'Le Blog',
+            contentType: 'page',
+            slug: 'le-blog'
+          }
+        },
+        color: {
+          'es-CL': {
+            id: '27',
+            title: 'Colores',
+            contentType: 'page',
+            slug: 'colores',
+            singular: 'Color',
+            plural: 'Colores'
           }
         },
         term: {

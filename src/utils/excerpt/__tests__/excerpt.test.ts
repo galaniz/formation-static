@@ -5,7 +5,7 @@
 /* Imports */
 
 import { it, expect, describe, afterEach, beforeEach } from 'vitest'
-import { addShortcode, removeShortcode } from '../../shortcode/shortcode.js'
+import { addShortcode, removeShortcode } from '../../../shortcodes/shortcodes.js'
 import { getExcerpt } from '../excerpt.js'
 
 /* Tests */
@@ -93,6 +93,20 @@ describe('getExcerpt()', () => {
     })
 
     const expectedResult = 'Test content shortcode excerpt'
+
+    expect(result).toBe(expectedResult)
+  })
+
+  it('should return empty string if content is shortcode', () => {
+    const result = getExcerpt({
+      content: [
+        {
+          content: '[shortcode]'
+        }
+      ]
+    })
+
+    const expectedResult = ''
 
     expect(result).toBe(expectedResult)
   })

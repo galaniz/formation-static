@@ -12,12 +12,11 @@ import type {
   AllContentfulDataArgs
 } from './contentfulDataTypes.js'
 import type { RenderAllData, RenderData, RenderItem } from '../render/renderTypes.js'
-import type { CacheData, DataFilterArgs } from '../utils/filter/filterTypes.js'
+import type { CacheData, DataFilterArgs } from '../filters/filtersTypes.js'
 import resolveResponse from 'contentful-resolve-response'
-import { applyFilters } from '../utils/filter/filter.js'
+import { applyFilters } from '../filters/filters.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
-import { isArray } from '../utils/array/array.js'
 import { config } from '../config/config.js'
 import { getStoreItem } from '../store/store.js'
 import { normalizeContentfulData } from './contentfulDataNormal.js'
@@ -190,7 +189,7 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
       const path = serverlessData.path
       const item = slugs[path]
 
-      if (isArray(item)) {
+      if (item) {
         const [itemId, itemContentType, itemLocale] = item
 
         id = itemId || ''
@@ -226,9 +225,7 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
         contentType
       })
 
-      if (isArray(items)) {
-        allData.content[contentType] = items
-      }
+      allData.content[contentType] = items
     }
   }
 
@@ -258,12 +255,10 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
           contentType
         })
 
-        if (isArray(items)) {
-          newItems = [
-            ...newItems,
-            ...items
-          ]
-        }
+        newItems = [
+          ...newItems,
+          ...items
+        ]
       }
 
       allData[contentType] = newItems
@@ -297,12 +292,10 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
           contentType
         })
 
-        if (isArray(items)) {
-          newItems = [
-            ...newItems,
-            ...items
-          ]
-        }
+        newItems = [
+          ...newItems,
+          ...items
+        ]
       }
 
       allData.content[contentType] = newItems

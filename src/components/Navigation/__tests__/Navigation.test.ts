@@ -11,7 +11,7 @@ import { Navigation } from '../Navigation.js'
 import { setStore } from '../../../store/store.js'
 
 /**
- * Nav props with specified current link and type
+ * Nav props with specified current link and type.
  *
  * @return {NavigationProps}
  */
@@ -159,7 +159,7 @@ describe('Navigation', () => {
       expect(result).toBe(expectedResult)
     })
 
-    it('should contain navigation items by id', () => {
+    it('should contain navigation items by ID', () => {
       const items = primary.getItemsById()
 
       expect(items.get('1')).toBeDefined()
@@ -356,7 +356,7 @@ describe('Navigation', () => {
 
     it('should return list markup string with classes and attributes from filter args', () => {
       const res = primary.getOutput('header', {
-        currentLink: '/',
+        currentLink: '/blog/',
         currentType: ['page'],
         listClass: 'x',
         listAttr: 'data-x',
@@ -423,15 +423,13 @@ describe('Navigation', () => {
         <!-- Before List -->
         <ul data-nav-depth="0" class="x-0-3" data-x-0>
           <!-- Before Item -->
-          <li data-nav-depth="0" class="y-0-0-3" data-y="Home" data-nav-current>
+          <li data-nav-depth="0" class="y-0-0-3" data-y="Home">
             <!-- Before Link -->
             <a
               data-nav-depth="0"
               class="z-0-0-3 in"
               href="/"
               data-z="Home"
-              data-nav-current
-              aria-current="page"
             >
               <!-- Before Link Text: z-0-0-3-Home-0-3-0 -->
               Home
@@ -441,9 +439,9 @@ describe('Navigation', () => {
           </li>
           <!-- After Item: y-0-0-3-Home-0-3-0 -->
           <!-- Before Item -->
-          <li data-nav-depth="0" class="y-0-1-3" data-y="About Us">
+          <li data-nav-depth="0" class="y-0-1-3" data-y="About Us" data-nav-descendent-current>
             <!-- Before Link -->
-            <a data-nav-depth="0" class="z-0-1-3 in" href="/about-us/" data-z="About Us">
+            <a data-nav-depth="0" class="z-0-1-3 in" href="/about-us/" data-z="About Us" data-nav-descendent-current>
               <!-- Before Link Text: z-0-1-3-About Us-1-3-0 -->
               About Us
               <!-- After Link Text: z-0-1-3-About Us-1-3-0 -->
@@ -452,9 +450,9 @@ describe('Navigation', () => {
             <!-- Before List -->
             <ul data-nav-depth="1" class="x-1-1" data-x-1>
               <!-- Before Item -->
-              <li data-nav-depth="1" class="y-1-0-1" data-y="Blog">
+              <li data-nav-depth="1" class="y-1-0-1" data-y="Blog" data-nav-current>
                 <!-- Before Link -->
-                <button data-nav-depth="1" class="z-1-0-1 in" type="button" data-z="Blog">
+                <button data-nav-depth="1" class="z-1-0-1 in" type="button" data-z="Blog" data-nav-current>
                   <!-- Before Link Text: z-1-0-1-Blog-0-1-1 -->
                   Blog
                   <!-- After Link Text: z-1-0-1-Blog-0-1-1 -->

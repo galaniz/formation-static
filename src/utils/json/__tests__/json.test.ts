@@ -8,7 +8,7 @@ import { it, expect, describe, vi, beforeEach, afterEach } from 'vitest'
 import { vol } from 'memfs'
 import { setStore } from '../../../store/store.js'
 import { config } from '../../../config/config.js'
-import { addFilter, resetFilters } from '../../filter/filter.js'
+import { addFilter, resetFilters } from '../../../filters/filters.js'
 import { getJson, getJsonFile } from '../json.js'
 
 /* Test getJson */
