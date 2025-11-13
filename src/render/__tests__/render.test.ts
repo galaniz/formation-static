@@ -403,6 +403,9 @@ describe('render()', () => {
   afterEach(() => {
     config.hierarchicalTypes = []
     config.cms.locales = undefined
+    config.env.prod = false
+    config.env.dev = true
+
     testResetRenderFunctions()
     resetActions()
     resetFilters()
@@ -1093,7 +1096,7 @@ describe('render()', () => {
     ])
   })
 
-  it('should return item with unformatted slug and store slug data', async () => {
+  it('should return items with formatted and unformatted slugs and store slug data', async () => {
     config.cms.locales = ['en-CA', 'fr-CA']
 
     const result = await render({
@@ -1107,6 +1110,22 @@ describe('render()', () => {
               slug: 'lorem.html',
               content: 'lorem',
               locale: 'fr-CA'
+            },
+            {
+              id: '14',
+              title: 'Dolorem',
+              contentType: 'page',
+              slug: 'dolorem',
+              content: 'ipsum',
+              locale: 'es-CL'
+            },
+            {
+              id: '21',
+              title: 'Ipsum',
+              contentType: 'page',
+              slug: 'ipsum',
+              content: 'lorem',
+              locale: 'en-CA'
             }
           ]
         }
@@ -1125,48 +1144,26 @@ describe('render()', () => {
             <body>lorem</body>
           </html>
         `
-      }
-    ]
-
-    const resultMin = testMinifyOutput(result)
-    const expectedResultMin = testMinifyOutput(expectedResult)
-    const slugs = getStoreItem('slugs')
-    const expectedSlugs = {
-      '/lorem.html': ['7', 'page', 'fr-CA']
-    }
-
-    expect(resultMin).toEqual(expectedResultMin)
-    expect(slugs).toEqual(expectedSlugs)
-  })
-
-  it('should return item and store default slug data if locale not found', async () => {
-    config.cms.locales = ['en-CA']
-
-    const result = await render({
-      allData: {
-        content: {
-          page: [
-            {
-              id: '7',
-              title: 'Lorem',
-              contentType: 'page',
-              slug: 'lorem',
-              content: 'lorem',
-              locale: 'fr-CA'
-            }
-          ]
-        }
-      }
-    }) as RenderReturn[]
-
-    const expectedResult = [
+      },
       {
-        slug: '/lorem/',
+        slug: '/dolorem/',
         output: `
           <!DOCTYPE html>
           <html>
             <head>
-              <title>Lorem</title>
+              <title>Dolorem</title>
+            </head>
+            <body>ipsum</body>
+          </html>
+        `
+      },
+      {
+        slug: '/ipsum/',
+        output: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Ipsum</title>
             </head>
             <body>lorem</body>
           </html>
@@ -1178,27 +1175,38 @@ describe('render()', () => {
     const expectedResultMin = testMinifyOutput(expectedResult)
     const slugs = getStoreItem('slugs')
     const expectedSlugs = {
-      '/lorem/': ['7', 'page']
+      '/lorem.html': ['7', 'page', 'fr-CA'],
+      '/dolorem/': ['14', 'page'],
+      '/ipsum/': ['21', 'page']
     }
 
     expect(resultMin).toEqual(expectedResultMin)
     expect(slugs).toEqual(expectedSlugs)
   })
 
-  it('should return item and store default slug data if locale is default locale', async () => {
-    config.cms.locales = ['en-CA', 'fr-CA']
+  it('should return items and only store slug data for archive', async () => {
+    config.env.dev = false
+    config.env.prod = true
 
     const result = await render({
       allData: {
         content: {
           page: [
             {
-              id: '7',
-              title: 'Lorem',
+              id: '28',
+              title: 'Not serverless',
               contentType: 'page',
-              slug: 'lorem',
-              content: 'lorem',
-              locale: 'en-CA'
+              slug: 'not-serverless',
+              content: 'content'
+            },
+            {
+              id: '35',
+              title: 'Serverless',
+              contentType: 'page',
+              archive: 'post',
+              slug: 'serverless',
+              content: 'content',
+              pagination: {}
             }
           ]
         }
@@ -1207,14 +1215,26 @@ describe('render()', () => {
 
     const expectedResult = [
       {
-        slug: '/lorem/',
+        slug: '/not-serverless/',
         output: `
           <!DOCTYPE html>
           <html>
             <head>
-              <title>Lorem</title>
+              <title>Not serverless</title>
             </head>
-            <body>lorem</body>
+            <body>content</body>
+          </html>
+        `
+      },
+      {
+        slug: '/serverless/',
+        output: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Serverless</title>
+            </head>
+            <body>content</body>
           </html>
         `
       }
@@ -1224,7 +1244,7 @@ describe('render()', () => {
     const expectedResultMin = testMinifyOutput(expectedResult)
     const slugs = getStoreItem('slugs')
     const expectedSlugs = {
-      '/lorem/': ['7', 'page']
+      '/serverless/': ['35', 'page']
     }
 
     expect(resultMin).toEqual(expectedResultMin)

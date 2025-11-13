@@ -634,26 +634,13 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
   item.baseUrl = permalink
   item.baseType = isObjectStrict(taxonomy) && isArrayStrict(taxonomy.contentTypes) ? taxonomy.contentTypes : contentType
 
-  /* Format and add to slug store */
+  /* Format slug */
 
   let formattedSlug = slug !== 'index' && slug !== '' ? `/${slug}/` : '/'
 
   if (slugIsHtml) {
     formattedSlug = slug
   }
-
-  const cmsLocales = config.cms.locales
-  const slugData = [id, isStringStrict(_contentType) ? _contentType : contentType] as [string, string, string?]
-
-  if (isStringStrict(item.locale) && cmsLocales) {
-    const locale = item.locale
-
-    if (cmsLocales.includes(locale) && locale !== cmsLocales[0]) {
-      slugData.push(locale)
-    }
-  }
-
-  setStoreItem('slugs', slugData, slugIsHtml ? `/${slug}` : formattedSlug)
 
   /* Check if index */
 
@@ -752,6 +739,23 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
     }
 
     serverlessRender = true
+  }
+
+  /* Add slug to store */
+
+  const cmsLocales = config.cms.locales
+  const slugData = [id, isStringStrict(_contentType) ? _contentType : contentType] as [string, string, string?]
+
+  if (isStringStrict(item.locale) && cmsLocales) {
+    const locale = item.locale
+
+    if (cmsLocales.includes(locale) && locale !== cmsLocales[0]) {
+      slugData.push(locale)
+    }
+  }
+
+  if (config.env.dev || (config.env.prod && serverlessRender)) {
+    setStoreItem('slugs', slugData, slugIsHtml ? `/${slug}` : formattedSlug)
   }
 
   /* Output */
