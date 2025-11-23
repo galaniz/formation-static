@@ -8,7 +8,7 @@ import type { GenericFunction } from '../global/globalTypes.js'
 import type { ColumnPropsFilter } from '../layouts/Column/ColumnTypes.js'
 import type { ContainerPropsFilter } from '../layouts/Container/ContainerTypes.js'
 import type { FormPropsFilter, FormFieldPropsFilter, FormOptionPropsFilter } from '../objects/Form/FormTypes.js'
-import type { AjaxResultFilter } from '../serverless/Ajax/AjaxTypes.js'
+import type { ServerlessResultFilter } from '../serverless/serverlessTypes.js'
 import type { ContactResultFilter } from '../serverless/Contact/ContactTypes.js'
 import type { LinkSlugPartsFilter, LinkSlugFilter } from '../utils/link/linkTypes.js'
 import type {
@@ -142,7 +142,7 @@ export type StoreDataFilter = (
  * @prop {RenderItemFilter} renderItem
  * @prop {RenderItemDataFilter} renderItemData
  * @prop {RenderContentFilter} renderContent
- * @prop {AjaxResultFilter} ajaxResult
+ * @prop {ServerlessResultFilter} serverlessResult
  * @prop {ContactResultFilter} contactResult
  * @prop {CacheDataFilter} cacheData
  * @prop {StoreDataFilter} storeData
@@ -167,7 +167,7 @@ export interface Filters extends Record<string, GenericFunction> {
   renderItem: RenderItemFilter
   renderItemData: RenderItemDataFilter
   renderContent: RenderContentFilter
-  ajaxResult: AjaxResultFilter
+  serverlessResult: ServerlessResultFilter
   contactResult: ContactResultFilter
   cacheData: CacheDataFilter
   storeData: StoreDataFilter
@@ -194,7 +194,7 @@ export interface Filters extends Record<string, GenericFunction> {
  * @prop {Set<RenderItemFilter>} renderItem
  * @prop {Set<RenderItemDataFilter>} renderItemData
  * @prop {Set<RenderContentFilter>} renderContent
- * @prop {Set<AjaxResultFilter>} ajaxResult
+ * @prop {Set<ServerlessResultFilter>} serverlessResult
  * @prop {Set<ContactResultFilter>} contactResult
  * @prop {Set<CacheDataFilter>} cacheData
  * @prop {Set<StoreDataFilter>} storeData
@@ -219,7 +219,7 @@ export type FilterMap = Map<string, Set<GenericFunction>> & Map<
 'renderItem' |
 'renderItemData' |
 'renderContent' |
-'ajaxResult' |
+'serverlessResult' |
 'contactResult' |
 'cacheData' |
 'storeData' |
@@ -243,7 +243,7 @@ RichTextContentOutputFilter |
 RenderItemFilter |
 RenderItemDataFilter |
 RenderContentFilter |
-AjaxResultFilter |
+ServerlessResultFilter |
 ContactResultFilter |
 CacheDataFilter |
 StoreDataFilter |

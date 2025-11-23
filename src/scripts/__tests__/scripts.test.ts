@@ -13,6 +13,7 @@ describe('addStyle()', () => {
   afterEach(() => {
     styles.item.clear()
     styles.build.clear()
+    styles.priority.clear()
   })
 
   it('should return false if path is null', () => {
@@ -30,29 +31,41 @@ describe('addStyle()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return true and add path to config styles', () => {
+  it('should return true and add path to styles', () => {
     const result = addStyle('style')
     const expectedResult = true
-
-    const expectedConfig = new Map()
-    expectedConfig.set('css/style', 'src/style.scss')
+    const expectedStyles = new Map([
+      ['css/style', 'src/style.scss']
+    ])
 
     expect(result).toBe(expectedResult)
-    expect(styles.item).toEqual(expectedConfig)
-    expect(styles.build).toEqual(expectedConfig)
+    expect(styles.item).toEqual(expectedStyles)
+    expect(styles.build).toEqual(expectedStyles)
   })
 
-  it('should return true and add path and dependencies to config styles', () => {
+  it('should return true and add path and dependencies to styles', () => {
     const result = addStyle('style', ['depOne'])
     const expectedResult = true
-
-    const expectedConfig = new Map()
-    expectedConfig.set('css/style', 'src/style.scss')
-    expectedConfig.set('css/depOne', 'src/depOne.scss')
+    const expectedStyles = new Map([
+      ['css/style', 'src/style.scss'],
+      ['css/depOne', 'src/depOne.scss']
+    ])
 
     expect(result).toBe(expectedResult)
-    expect(styles.item).toEqual(expectedConfig)
-    expect(styles.build).toEqual(expectedConfig)
+    expect(styles.item).toEqual(expectedStyles)
+    expect(styles.build).toEqual(expectedStyles)
+  })
+
+  it('should return true and add path and priority to styles', () => {
+    const result = addStyle('style', [], 'high')
+    const expectedResult = true
+    const expectedStyles = new Map([['css/style', 'src/style.scss']])
+    const expectPriority = new Map([['css/style', 'high']])
+
+    expect(result).toBe(expectedResult)
+    expect(styles.item).toEqual(expectedStyles)
+    expect(styles.build).toEqual(expectedStyles)
+    expect(styles.priority).toEqual(expectPriority)
   })
 })
 
@@ -62,6 +75,7 @@ describe('addScript()', () => {
   afterEach(() => {
     scripts.item.clear()
     scripts.build.clear()
+    scripts.priority.clear()
   })
 
   it('should return false if path is null', () => {
@@ -79,29 +93,41 @@ describe('addScript()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return true and add path to config scripts', () => {
+  it('should return true and add path to scripts', () => {
     const result = addScript('script')
     const expectedResult = true
-
-    const expectedConfig = new Map()
-    expectedConfig.set('js/script', 'lib/script.js')
+    const expectedScripts = new Map([
+      ['js/script', 'lib/script.js']
+    ])
 
     expect(result).toBe(expectedResult)
-    expect(scripts.item).toEqual(expectedConfig)
-    expect(scripts.build).toEqual(expectedConfig)
+    expect(scripts.item).toEqual(expectedScripts)
+    expect(scripts.build).toEqual(expectedScripts)
   })
 
-  it('should return true and add path and dependencies to config scripts', () => {
+  it('should return true and add path and dependencies to scripts', () => {
     const result = addScript('script', ['depOne'])
     const expectedResult = true
-
-    const expectedConfig = new Map()
-    expectedConfig.set('js/script', 'lib/script.js')
-    expectedConfig.set('js/depOne', 'lib/depOne.js')
+    const expectedScripts = new Map([
+      ['js/script', 'lib/script.js'],
+      ['js/depOne', 'lib/depOne.js']
+    ])
 
     expect(result).toBe(expectedResult)
-    expect(scripts.item).toEqual(expectedConfig)
-    expect(scripts.build).toEqual(expectedConfig)
+    expect(scripts.item).toEqual(expectedScripts)
+    expect(scripts.build).toEqual(expectedScripts)
+  })
+
+  it('should return true and add path and priority to scripts', () => {
+    const result = addScript('script', [], 'low')
+    const expectedResult = true
+    const expectedScripts = new Map([['js/script', 'lib/script.js']])
+    const expectPriority = new Map([['js/script', 'low']])
+
+    expect(result).toBe(expectedResult)
+    expect(scripts.item).toEqual(expectedScripts)
+    expect(scripts.build).toEqual(expectedScripts)
+    expect(scripts.priority).toEqual(expectPriority)
   })
 })
 
@@ -111,6 +137,7 @@ describe('outputStyles()', () => {
   afterEach(() => {
     styles.item.clear()
     styles.build.clear()
+    styles.priority.clear()
   })
 
   it('should return empty string if link is empty string', () => {
@@ -120,7 +147,7 @@ describe('outputStyles()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return empty string if config styles item map is empty', () => {
+  it('should return empty string if styles item map is empty', () => {
     const result = outputStyles('http://example.com/')
     const expectedResult = ''
 
@@ -145,6 +172,7 @@ describe('outputScripts()', () => {
   afterEach(() => {
     scripts.item.clear()
     scripts.build.clear()
+    scripts.priority.clear()
   })
 
   it('should return empty string if link is empty string', () => {
@@ -154,7 +182,7 @@ describe('outputScripts()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should return empty string if config scripts item map is empty', () => {
+  it('should return empty string if scripts item map is empty', () => {
     const result = outputScripts('http://example.com/')
     const expectedResult = ''
 
@@ -165,9 +193,10 @@ describe('outputScripts()', () => {
     addScript('button', ['global'])
     addScript('component')
     addScript('header', ['button', 'collapsible'])
+    addScript('global', [], 'high')
 
     const result = outputScripts('http://example.com/')
-    const expectedResult = '<script type="module" src="http://example.com/js/global.js"></script><script type="module" src="http://example.com/js/button.js"></script><script type="module" src="http://example.com/js/component.js"></script><script type="module" src="http://example.com/js/collapsible.js"></script><script type="module" src="http://example.com/js/header.js"></script>'
+    const expectedResult = '<script type="module" src="http://example.com/js/global.js" fetchpriority="high"></script><script type="module" src="http://example.com/js/button.js"></script><script type="module" src="http://example.com/js/component.js"></script><script type="module" src="http://example.com/js/collapsible.js"></script><script type="module" src="http://example.com/js/header.js"></script>'
 
     expect(result).toBe(expectedResult)
   })

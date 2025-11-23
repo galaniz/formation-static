@@ -1,19 +1,15 @@
-name: Lint and Test
+name: Lint Test
 
 on:
-  push:
-    branches:
-      - beta
-      - main
   pull_request:
     branches:
-      - beta
       - main
 
 jobs:
-  lint-and-test:
+  lint-test:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
     steps:
       # Checkout the repository
       - name: Checkout code
@@ -27,17 +23,19 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
           cache: 'pnpm'
 
       # Install PNPM dependencies
       - name: Install PNPM dependencies
         run: pnpm install --frozen-lockfile
 
-      # Lint TS files
+      # Lint files
       - name: Lint files
         run: pnpm lint
 
-      # Test TS files
+      # Test files
       - name: Test files
         run: pnpm test
+        env:
+          TEMP: ${{ runner.temp }} # Use GitHub's temp directory

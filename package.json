@@ -1,9 +1,9 @@
 {
   "name": "@alanizcreative/formation-static",
   "version": "1.3.0-beta.52",
-  "description": "Foundation and utilities to build static sites using local JSON files, Contentful, or WordPress",
+  "description": "Minimal static-site HTML renderer from local JSON, Contentful, or WordPress data",
   "main": "./lib/config/config.js",
-  "packageManager": "pnpm@10.20.0",
+  "packageManager": "pnpm@10.23.0",
   "type": "module",
   "files": [
     "./lib",
@@ -16,7 +16,7 @@
     }
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "build:lib": "npx tsc --project tsconfig.build.json",
@@ -25,9 +25,14 @@
     "minify": "find lib cjs -name \"*.js\" -exec terser {} -o {} --compress \\;",
     "test": "vitest --run --reporter verbose --coverage",
     "lint": "npx eslint .",
-    "release": "release-it",
-    "release:beta": "release-it --preRelease=beta"
+    "release": "release-it"
   },
+  "keywords": [
+    "static-site",
+    "renderer",
+    "html",
+    "nodejs"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/galaniz/formation-static.git"
@@ -40,15 +45,15 @@
   "license": "MIT",
   "devDependencies": {
     "@types/contentful-resolve-response": "^0.1.33",
-    "@types/node": "^24.10.0",
-    "@vitest/coverage-v8": "^4.0.6",
+    "@types/node": "^24.10.1",
+    "@vitest/coverage-v8": "^4.0.13",
     "eslint": "9.39.1",
-    "memfs": "4.50.0",
-    "release-it": "^19.0.5",
-    "terser": "5.44.0",
+    "memfs": "4.51.0",
+    "release-it": "^19.0.6",
+    "terser": "5.44.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "8.46.3",
-    "vitest": "^4.0.6"
+    "typescript-eslint": "8.47.0",
+    "vitest": "^4.0.13"
   },
   "dependencies": {
     "uuid": "^13.0.0"
@@ -72,13 +77,20 @@
   "release-it": {
     "git": {
       "requireCommits": true,
-      "commitMessage": "chore: release ${version} [ci skip]"
+      "commitMessage": "chore: release ${version} [ci skip]",
+      "tag": true,
+      "push": true
     },
     "github": {
       "release": true
+    },
+    "npm": {
+      "publish": true,
+      "skipChecks": true
     }
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   }
 }

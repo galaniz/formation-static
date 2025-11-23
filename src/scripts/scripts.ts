@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { Scripts, Styles } from './scriptsTypes.js'
+import type { Scripts, Styles, ScriptsPriority } from './scriptsTypes.js'
 import { isArrayStrict } from '../utils/array/array.js'
 import { isStringStrict } from '../utils/string/string.js'
 import { config } from '../config/config.js'
@@ -15,6 +15,7 @@ import { config } from '../config/config.js'
  * @type {Scripts}
  */
 const scripts: Scripts = {
+  priority: new Map(),
   deps: new Map(),
   item: new Map(),
   build: new Map(),
@@ -27,6 +28,7 @@ const scripts: Scripts = {
  * @type {Styles}
  */
 const styles: Styles = {
+  priority: new Map(),
   deps: new Map(),
   item: new Map(),
   build: new Map()
@@ -39,12 +41,14 @@ const styles: Styles = {
  * @param {'styles'|'scripts'} type
  * @param {string} path
  * @param {string[]} [deps]
+ * @param {ScriptsPriority} [priority]
  * @return {boolean}
  */
 const addScriptStyle = (
   type: 'styles' | 'scripts',
   path: string,
-  deps: string[] = []
+  deps: string[] = [],
+  priority?: ScriptsPriority
 ): boolean => {
   /* Path required */
 
@@ -85,6 +89,12 @@ const addScriptStyle = (
     })
   }
 
+  /* Add priority */
+
+  if (priority) {
+    assets.priority.set(output, priority)
+  }
+
   /* Append success */
 
   return true
@@ -95,10 +105,11 @@ const addScriptStyle = (
  *
  * @param {string} path
  * @param {string[]} [deps]
+ * @param {ScriptsPriority} [priority]
  * @return {boolean}
  */
-const addScript = (path: string, deps: string[] = []): boolean => {
-  return addScriptStyle('scripts', path, deps)
+const addScript = (path: string, deps: string[] = [], priority?: ScriptsPriority): boolean => {
+  return addScriptStyle('scripts', path, deps, priority)
 }
 
 /**
@@ -106,10 +117,11 @@ const addScript = (path: string, deps: string[] = []): boolean => {
  *
  * @param {string} path
  * @param {string[]} [deps]
+ * @param {ScriptsPriority} [priority]
  * @return {boolean}
  */
-const addStyle = (path: string, deps: string[] = []): boolean => {
-  return addScriptStyle('styles', path, deps)
+const addStyle = (path: string, deps: string[] = [], priority?: ScriptsPriority): boolean => {
+  return addScriptStyle('styles', path, deps, priority)
 }
 
 /**
@@ -129,7 +141,7 @@ const outputScriptsStyles = (type: 'styles' | 'scripts', link: string): string =
 
   /* Vars */
 
-  const { item, deps } = type === 'scripts' ? scripts : styles
+  const { item, deps, priority } = type === 'scripts' ? scripts : styles
 
   /* Check if scripts exist */
 
@@ -161,12 +173,14 @@ const outputScriptsStyles = (type: 'styles' | 'scripts', link: string): string =
   let output = ''
 
   itemOut.forEach(out => {
+    const fetchPriority = priority.has(out) ? ` fetchpriority="${priority.get(out)}"` : ''
+
     if (type === 'scripts') {
-      output += `<script type="module" src="${link}${out}.js"></script>`
+      output += `<script type="module" src="${link}${out}.js"${fetchPriority}></script>`
     }
 
     if (type === 'styles') {
-      output += `<link rel="stylesheet" href="${link}${out}.css" media="all">`
+      output += `<link rel="stylesheet" href="${link}${out}.css" media="all"${fetchPriority}>`
     }
   })
 

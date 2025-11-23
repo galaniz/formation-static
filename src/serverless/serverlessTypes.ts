@@ -95,3 +95,36 @@ export type ServerlessAction = (
  * @typedef {Object<string, ServerlessAction>} ServerlessActions
  */
 export type ServerlessActions = Record<string, ServerlessAction>
+
+/**
+ * @typedef {object} ServerlessResultOptions
+ * @prop {number} status
+ * @prop {GenericStrings} [headers]
+ */
+export interface ServerlessResultOptions {
+  status: number
+  headers?: GenericStrings
+}
+
+/**
+ * @typedef {object} ServerlessResultFilterArgs
+ * @prop {ServerlessActionData} data
+ * @prop {Request} request
+ * @prop {Generic} env
+ */
+export interface ServerlessResultFilterArgs {
+  data: ServerlessActionData
+  request: Request
+  env: Generic
+}
+
+/**
+ * @typedef {function} ServerlessResultFilter
+ * @param {ServerlessActionReturn|null} res
+ * @param {ServerlessResultFilterArgs} args
+ * @return {Promise<ServerlessActionReturn|null>}
+ */
+export type ServerlessResultFilter = (
+  res: ServerlessActionReturn | null,
+  args: ServerlessResultFilterArgs
+) => Promise<ServerlessActionReturn | null>

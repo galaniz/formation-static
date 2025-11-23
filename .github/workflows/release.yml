@@ -1,25 +1,26 @@
-name: Publish Release
+name: Release
 
 on:
   push:
     branches:
       - main
-      - beta
 
 jobs:
-  publish-release:
-    if: github.ref == 'refs/heads/main'
+  release:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
     steps:
-      # Checkout the repository
+      # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
       # Set GitHub user
       - name: Set GitHub user
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
 
       # Install PNPM
       - name: Install PNPM
@@ -29,12 +30,9 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
-
-      # NPM authentication
-      - name: Set NPM auth token
-        run: pnpm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
 
       # Install PNPM dependencies
       - name: Install dependencies
@@ -47,46 +45,6 @@ jobs:
       # Release
       - name: Publish release
         run: pnpm release
-
-  publish-release-beta:
-    if: github.ref == 'refs/heads/beta'
-    runs-on: ubuntu-latest
-    steps:
-      # Checkout the repository
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: beta
-
-      # Set GitHub user
-      - name: Set GitHub user
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-
-      # Install PNPM
-      - name: Install PNPM
-        uses: pnpm/action-setup@v4
-
-      # Set up Node.js for PNPM
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-
-      # NPM authentication
-      - name: Set NPM auth token
-        run: pnpm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
-
-      # Install PNPM dependencies
-      - name: Install dependencies
-        run: pnpm install
-
-      # Build lib files
-      - name: Build project
-        run: pnpm build
-
-      # Release beta
-      - name: Publish beta release
-        run: pnpm release:beta
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true

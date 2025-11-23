@@ -4,13 +4,22 @@
 
 /* Import */
 
-import type { ServerlessActions } from './serverlessTypes.js'
+import type {
+  ServerlessActions,
+  ServerlessActionData,
+  ServerlessActionReturn,
+  ServerlessResultFilterArgs,
+  ServerlessResultOptions
+} from './serverlessTypes.js'
 import type { RenderPreviewData, RenderServerlessData } from '../render/renderTypes.js'
+import type { Generic, GenericStrings } from '../global/globalTypes.js'
 import type { getAllContentfulData } from '../contentful/contentfulData.js'
 import type { getAllWordPressData } from '../wordpress/wordpressData.js'
+import { ResponseError } from '../utils/ResponseError/ResponseError.js'
 import { isStringStrict } from '../utils/string/string.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isFunction } from '../utils/function/function.js'
+import { applyFilters } from '../filters/filters.js'
 import { render, renderHttpError } from '../render/render.js'
 import { minify } from '../utils/minify/minify.js'
 import { print } from '../utils/print/print.js'
@@ -183,6 +192,141 @@ const setServerless = (actions?: ServerlessActions): void => {
   serverlessActions = { ...actions }
 }
 
+/**
+ * Handle POST requests to serverless action.
+ *
+ * @param {Request} request
+ * @param {Generic} env
+ * @param {GenericStrings} [headers]
+ * @param {string} [honeypotName]
+ * @return {Promise<Response>}
+ */
+const doServerlessAction = async (
+  request: Request,
+  env: Generic,
+  headers?: GenericStrings,
+  honeypotName?: string
+): Promise<Response> => {
+  const serverlessHeaders = {
+    'Content-Type': 'application/json',
+    ...headers
+  }
+
+  try {
+    /* Request must be post */
+
+    if (request.method !== 'POST') {
+      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+        status: 405,
+        headers: serverlessHeaders
+      })
+    }
+
+    /* Form data */
+
+    const data = await request.json() as ServerlessActionData | undefined
+
+    /* Data must be object */
+
+    if (!isObjectStrict(data)) {
+      throw new Error('Data not an object')
+    }
+
+    /* Honeypot check */
+
+    if (isStringStrict(honeypotName) && isObjectStrict(data.inputs?.[honeypotName])) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+      const honeypotValue = data.inputs[honeypotName].value
+
+      if (isStringStrict(honeypotValue)) {
+        return new Response(JSON.stringify({ success: '' }), {
+          status: 200,
+          headers: serverlessHeaders
+        })
+      }
+
+      delete data.inputs[honeypotName] // eslint-disable-line @typescript-eslint/no-dynamic-delete
+    }
+
+    /* Action required */
+
+    const action = data.action
+
+    if (!isStringStrict(action)) {
+      throw new Error('No action')
+    }
+
+    /* Call functions by action */
+
+    let res: ServerlessActionReturn | null = null
+
+    const serverlessAction = serverlessActions[action]
+
+    if (isFunction(serverlessAction)) {
+      res = await serverlessAction(data, request, env)
+    }
+
+    const serverlessResultFilterArgs: ServerlessResultFilterArgs = {
+      data,
+      request,
+      env
+    }
+
+    res = await applyFilters('serverlessResult', res, serverlessResultFilterArgs, true)
+
+    /* Result error */
+
+    if (!res) {
+      throw new Error('No result')
+    }
+
+    if (res.error) {
+      const errorMessage = res.error.message
+      throw res.error.response ? new ResponseError(errorMessage, res.error.response) : new Error(errorMessage)
+    }
+
+    /* Result success */
+
+    const options: ServerlessResultOptions = {
+      status: 200,
+      headers: serverlessHeaders
+    }
+
+    let message = ''
+
+    if (res.success) {
+      const {
+        message: successMessage,
+        headers: successHeaders
+      } = res.success
+
+      if (isStringStrict(successMessage)) {
+        message = successMessage
+      }
+
+      if (isObjectStrict(successHeaders)) {
+        options.headers = { ...options.headers, ...successHeaders }
+      }
+    }
+
+    return new Response(JSON.stringify({ success: message }), options)
+  } catch (error) {
+    print('[FRM] Error with serverless action', error)
+
+    let statusCode = 500
+    let message = error instanceof Error ? error.message : 'Unknown error'
+
+    if (error instanceof ResponseError) {
+      statusCode = error.response.status
+      message = error.message
+    }
+
+    return new Response(JSON.stringify({ error: message }), {
+      status: statusCode,
+      headers: serverlessHeaders
+    })
+  }
+}
+
 /* Exports */
 
 export {
@@ -190,5 +334,6 @@ export {
   serverlessPreview,
   serverlessReload,
   serverlessRender,
-  setServerless
+  setServerless,
+  doServerlessAction
 }
