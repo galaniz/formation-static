@@ -76,7 +76,7 @@
   },
   "release-it": {
     "git": {
-      "requireCommits": true,
+      "requireCommits": false,
       "commitMessage": "chore: release ${version} [ci skip]",
       "tag": true,
       "push": true
@@ -85,8 +85,8 @@
       "release": true
     },
     "npm": {
-      "publish": true,
-      "skipChecks": true
+      "publish": false,
+      "skipChecks": false
     }
   },
   "publishConfig": {
