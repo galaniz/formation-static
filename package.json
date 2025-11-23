@@ -1,7 +1,7 @@
 {
   "name": "@alanizcreative/formation-static",
   "version": "1.3.0-beta.52",
-  "description": "Minimal static-site HTML renderer from local JSON, Contentful, or WordPress data",
+  "description": "Minimal static-site HTML renderer from JSON, Contentful, or WordPress data",
   "main": "./lib/config/config.js",
   "packageManager": "pnpm@10.23.0",
   "type": "module",

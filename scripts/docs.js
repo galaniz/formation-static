@@ -9,14 +9,18 @@ import { renderMarkdownDocs } from '@alanizcreative/formation-docs/docs.js'
 /* Create README */
 
 await renderMarkdownDocs({
-  include: 'src/**\/*.ts',
-  exclude: 'src/**\/*.test.ts',
-  docsExclude: 'src/**\/*Types.ts',
+  include: 'src/**/*.ts',
+  exclude: [
+    'src/**/*.test.ts',
+    'src/**/*Mock.ts'
+  ],
+  docsExclude: 'src/**/!(*global)Types.ts',
+  docsTypes: 'src/**/*Types.ts',
   index: `
   /**
    * @file
    * title: Formation Static
-   * Minimal static-site renderer from local JSON, Contentful, or WordPress data. Outputs HTML strings (not files) for build and serverless contexts.
+   * Minimal static-site HTML renderer from JSON, Contentful, or WordPress data. No file output, just HTML strings.
    *
    * @example
    * title: Installation
@@ -24,5 +28,12 @@ await renderMarkdownDocs({
    *
    * @index
    */
-  `
+  `,
+  filterTitle (title, dir) {
+    if (dir === 'wordpress') {
+      return 'WordPress'
+    }
+
+    return title
+  }
 })
