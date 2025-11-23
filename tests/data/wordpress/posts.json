@@ -1,0 +1,471 @@
+[
+  {
+    "id": 19,
+    "date": "2024-12-18T03:19:31",
+    "date_gmt": "2024-12-18T03:19:31",
+    "guid": {
+      "rendered": "http://wp.com/?p=19"
+    },
+    "modified": "2024-12-18T03:19:31",
+    "modified_gmt": "2024-12-18T03:19:31",
+    "slug": "test",
+    "status": "publish",
+    "type": "post",
+    "link": "http://wp.com/test/",
+    "title": {
+      "rendered": "Test"
+    },
+    "content": {
+      "rendered": "",
+      "protected": false
+    },
+    "excerpt": {
+      "rendered": "",
+      "protected": false
+    },
+    "author": 1,
+    "featured_media": 0,
+    "comment_status": "open",
+    "ping_status": "open",
+    "sticky": false,
+    "template": "",
+    "format": "standard",
+    "meta": {
+      "customMeta": "Meta test",
+      "footnotes": ""
+    },
+    "categories": [
+      1
+    ],
+    "tags": [],
+    "class_list": [
+      "post-19",
+      "post",
+      "type-post",
+      "status-publish",
+      "format-standard",
+      "hentry",
+      "category-uncategorized"
+    ],
+    "_links": {
+      "self": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/posts/19",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/posts"
+        }
+      ],
+      "about": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/types/post"
+        }
+      ],
+      "author": [
+        {
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/users/1"
+        }
+      ],
+      "replies": [
+        {
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/comments?post=19"
+        }
+      ],
+      "version-history": [
+        {
+          "count": 1,
+          "href": "http://wp.com/wp-json/wp/v2/posts/19/revisions"
+        }
+      ],
+      "predecessor-version": [
+        {
+          "id": 20,
+          "href": "http://wp.com/wp-json/wp/v2/posts/19/revisions/20"
+        }
+      ],
+      "wp:attachment": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/media?parent=19"
+        }
+      ],
+      "wp:term": [
+        {
+          "taxonomy": "category",
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/categories?post=19"
+        },
+        {
+          "taxonomy": "post_tag",
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/tags?post=19"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    },
+    "_embedded": {
+      "author": [
+        {
+          "id": 1,
+          "name": "demo",
+          "url": "http://wp.com",
+          "description": "",
+          "link": "http://wp.com/author/demo/",
+          "slug": "demo",
+          "avatar_urls": {
+            "24": "https://secure.gravatar.com/avatar/729ae85bf62b9917e93538db2f2688ca?s=24&d=mm&r=g",
+            "48": "https://secure.gravatar.com/avatar/729ae85bf62b9917e93538db2f2688ca?s=48&d=mm&r=g",
+            "96": "https://secure.gravatar.com/avatar/729ae85bf62b9917e93538db2f2688ca?s=96&d=mm&r=g"
+          },
+          "_links": {
+            "self": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/users/1",
+                "targetHints": {
+                  "allow": [
+                    "GET"
+                  ]
+                }
+              }
+            ],
+            "collection": [
+              {
+                "href": "http://wp.com/wp-json/wp/v2/users"
+              }
+            ]
+          }
+        }
+      ],
+      "wp:term": [
+        [
+          {
+            "id": 1,
+            "link": "http://wp.com/category/uncategorized/",
+            "name": "Uncategorized",
+            "slug": "uncategorized",
+            "taxonomy": "category",
+            "_links": {
+              "self": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/categories/1",
+                  "targetHints": {
+                    "allow": [
+                      "GET"
+                    ]
+                  }
+                }
+              ],
+              "collection": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/categories"
+                }
+              ],
+              "about": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/taxonomies/category"
+                }
+              ],
+              "wp:post_type": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/posts?categories=1"
+                }
+              ],
+              "curies": [
+                {
+                  "name": "wp",
+                  "href": "https://api.w.org/{rel}",
+                  "templated": true
+                }
+              ]
+            }
+          }
+        ],
+        []
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "date": "2024-12-14T19:58:13",
+    "date_gmt": "2024-12-14T19:58:13",
+    "guid": {
+      "rendered": "http://wp.com/?p=1"
+    },
+    "modified": "2024-12-14T19:58:13",
+    "modified_gmt": "2024-12-14T19:58:13",
+    "slug": "hello-world",
+    "status": "publish",
+    "type": "post",
+    "link": "http://wp.com/hello-world/",
+    "title": {
+      "rendered": "Hello world!"
+    },
+    "content": {
+      "rendered": "\n<p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p>\n",
+      "protected": false
+    },
+    "excerpt": {
+      "rendered": "<p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p>\n",
+      "protected": false
+    },
+    "author": 1,
+    "featured_media": 0,
+    "comment_status": "open",
+    "ping_status": "open",
+    "sticky": false,
+    "template": "",
+    "format": "standard",
+    "meta": {
+      "customMeta": "",
+      "footnotes": ""
+    },
+    "categories": [
+      1,
+      2
+    ],
+    "tags": [
+      4
+    ],
+    "class_list": [
+      "post-1",
+      "post",
+      "type-post",
+      "status-publish",
+      "format-standard",
+      "hentry",
+      "category-uncategorized"
+    ],
+    "_links": {
+      "self": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/posts/1",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/posts"
+        }
+      ],
+      "about": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/types/post"
+        }
+      ],
+      "author": [
+        {
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/users/1"
+        }
+      ],
+      "replies": [
+        {
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/comments?post=1"
+        }
+      ],
+      "version-history": [
+        {
+          "count": 0,
+          "href": "http://wp.com/wp-json/wp/v2/posts/1/revisions"
+        }
+      ],
+      "wp:attachment": [
+        {
+          "href": "http://wp.com/wp-json/wp/v2/media?parent=1"
+        }
+      ],
+      "wp:term": [
+        {
+          "taxonomy": "category",
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/categories?post=1"
+        },
+        {
+          "taxonomy": "post_tag",
+          "embeddable": true,
+          "href": "http://wp.com/wp-json/wp/v2/tags?post=1"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    },
+    "_embedded": {
+      "author": [
+        {},
+        null
+      ],
+      "replies": [
+        [
+          {
+            "id": 1,
+            "parent": 0,
+            "author": 0,
+            "author_name": "A WordPress Commenter",
+            "author_url": "https://wordpress.org/",
+            "date": "2024-12-14T19:58:13",
+            "content": {
+              "rendered": "<p>Hi, this is a comment.<br />\nTo get started with moderating, editing, and deleting comments, please visit the Comments screen in the dashboard.<br />\nCommenter avatars come from <a href=\"https://gravatar.com/\">Gravatar</a>.</p>\n"
+            },
+            "link": "http://wp.com/hello-world/#comment-1",
+            "type": "comment",
+            "author_avatar_urls": {
+              "24": "https://secure.gravatar.com/avatar/d7a973c7dab26985da5f961be7b74480?s=24&d=mm&r=g",
+              "48": "https://secure.gravatar.com/avatar/d7a973c7dab26985da5f961be7b74480?s=48&d=mm&r=g",
+              "96": "https://secure.gravatar.com/avatar/d7a973c7dab26985da5f961be7b74480?s=96&d=mm&r=g"
+            },
+            "_links": {
+              "self": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/comments/1",
+                  "targetHints": {
+                    "allow": [
+                      "GET"
+                    ]
+                  }
+                }
+              ],
+              "collection": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/comments"
+                }
+              ],
+              "up": [
+                {
+                  "embeddable": true,
+                  "post_type": "post",
+                  "href": "http://wp.com/wp-json/wp/v2/posts/1"
+                }
+              ]
+            }
+          }
+        ]
+      ],
+      "wp:term": [
+        [
+          {
+            "id": 1,
+            "link": "http://wp.com/category/uncategorized/",
+            "name": "Uncategorized",
+            "slug": "uncategorized",
+            "taxonomy": "category",
+            "_links": {
+              "self": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/categories/1",
+                  "targetHints": {
+                    "allow": [
+                      "GET"
+                    ]
+                  }
+                }
+              ],
+              "collection": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/categories"
+                }
+              ],
+              "about": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/taxonomies/category"
+                }
+              ],
+              "wp:post_type": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/posts?categories=1"
+                }
+              ],
+              "curies": [
+                {
+                  "name": "wp",
+                  "href": "https://api.w.org/{rel}",
+                  "templated": true
+                }
+              ]
+            }
+          }
+        ],
+        [
+          {
+            "id": 4,
+            "link": "http://wp.com/tag/sample/",
+            "name": "Sample",
+            "slug": "sample",
+            "taxonomy": "post_tag",
+            "_links": {
+              "self": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/tags/4",
+                  "targetHints": {
+                    "allow": [
+                      "GET"
+                    ]
+                  }
+                }
+              ],
+              "collection": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/tags"
+                }
+              ],
+              "about": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/taxonomies/post_tag"
+                }
+              ],
+              "wp:post_type": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/posts?tags=4"
+                }
+              ],
+              "curies": [
+                {
+                  "name": "wp",
+                  "href": "https://api.w.org/{rel}",
+                  "templated": true
+                }
+              ]
+            }
+          }
+        ],
+        [
+          {
+            "id": 5,
+            "link": "http://wp.com/custom/custom/",
+            "name": "Custom",
+            "slug": "custom",
+            "taxonomy": "custom"
+          }
+        ],
+        [
+          null
+        ],
+        null
+      ],
+      "test": []
+    }
+  }
+]

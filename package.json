@@ -1,0 +1,96 @@
+{
+  "name": "@alanizcreative/formation-static",
+  "version": "0.0.0",
+  "description": "Minimal static-site HTML renderer from JSON, Contentful, or WordPress data",
+  "main": "./lib/config/config.js",
+  "packageManager": "pnpm@10.23.0",
+  "type": "module",
+  "files": [
+    "./lib",
+    "./cjs"
+  ],
+  "exports": {
+    "./*": {
+      "import": "./lib/*",
+      "require": "./cjs/*"
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build:lib": "npx tsc --project tsconfig.build.json",
+    "build:cjs": "npx tsc --project tsconfig.build.json --moduleResolution node --module commonjs --esModuleInterop --outDir cjs/",
+    "build": "pnpm build:lib && pnpm build:cjs && node scripts/packageFile.js && pnpm minify",
+    "minify": "find lib cjs -name \"*.js\" -exec terser {} -o {} --compress \\;",
+    "test": "vitest --run --reporter verbose --coverage",
+    "lint": "npx eslint .",
+    "release": "release-it"
+  },
+  "keywords": [
+    "static-site",
+    "renderer",
+    "html",
+    "nodejs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/galaniz/formation-static.git"
+  },
+  "bugs": {
+    "url": "https://github.com/galaniz/formation-static/issues"
+  },
+  "homepage": "https://github.com/galaniz/formation-static#readme",
+  "author": "Graciela Alaniz (https://alanizcreative.com/)",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/contentful-resolve-response": "^0.1.33",
+    "@types/node": "^24.10.1",
+    "@vitest/coverage-v8": "^4.0.13",
+    "eslint": "9.39.1",
+    "memfs": "4.51.0",
+    "release-it": "^19.0.6",
+    "terser": "5.44.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "8.47.0",
+    "vitest": "^4.0.13"
+  },
+  "dependencies": {
+    "uuid": "^13.0.0"
+  },
+  "peerDependencies": {
+    "@wordpress/block-serialization-default-parser": "^5.25.0",
+    "contentful-resolve-response": "^1.9.3",
+    "sharp": "0.34.2"
+  },
+  "peerDependenciesMeta": {
+    "@wordpress/block-serialization-default-parser": {
+      "optional": true
+    },
+    "contentful-resolve-response": {
+      "optional": true
+    },
+    "sharp": {
+      "optional": true
+    }
+  },
+  "release-it": {
+    "git": {
+      "requireCommits": true,
+      "commitMessage": "chore: release ${version} [ci skip]",
+      "tag": true,
+      "push": true
+    },
+    "github": {
+      "release": true
+    },
+    "npm": {
+      "publish": true,
+      "skipChecks": true
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

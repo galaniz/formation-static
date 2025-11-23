@@ -1,0 +1,106 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "abc123"
+          }
+        },
+        "type": "Entry",
+        "id": "3qYzxsC9GBmPpXrim8PPJ2",
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "term"
+          }
+        },
+        "revision": 0,
+        "createdAt": "2025-04-27T00:25:09.160Z",
+        "updatedAt": "2025-04-27T00:25:57.718Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "locale": "en-CA"
+      },
+      "fields": {
+        "title": "Test",
+        "slug": "test",
+        "taxonomy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Entry",
+            "id": "2MMIOOmHqakBbKL8lDsZKM"
+          }
+        },
+        "order": 0
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "abc123"
+            }
+          },
+          "type": "Entry",
+          "id": "2MMIOOmHqakBbKL8lDsZKM",
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "taxonomy"
+            }
+          },
+          "revision": 1,
+          "createdAt": "2024-01-31T15:55:52.325Z",
+          "updatedAt": "2024-04-24T03:03:49.212Z",
+          "publishedAt": "2024-01-31T15:56:14.980Z",
+          "firstPublishedAt": "2024-01-31T15:56:14.980Z",
+          "publishedVersion": 4,
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "locale": "en-CA"
+        },
+        "fields": {
+          "title": "Category",
+          "contentTypes": ["Post"],
+          "slug": "category",
+          "usePrimaryContentTypeSlug": true,
+          "isPage": false
+        }
+      }
+    ]
+  }
+}

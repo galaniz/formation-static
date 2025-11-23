@@ -1,0 +1,61 @@
+/**
+ * Utils - Path
+ */
+
+/* Imports */
+
+import { isStringStrict } from '../string/string.js'
+import { config } from '../../config/config.js'
+import { storeDir } from '../../store/store.js'
+
+/**
+ * Absolute path to file.
+ *
+ * @param {string} file
+ * @param {string} [type]
+ * @return {string}
+ */
+const getPath = (file: string, type?: string): string => {
+  const root = config.env.dir
+
+  if (!isStringStrict(root) || !isStringStrict(file)) {
+    return ''
+  }
+
+  let append = file
+
+  if (type === 'store') {
+    append = `${storeDir}/${file}.json`
+  }
+
+  return `${root}${root.endsWith('/') ? '' : '/'}${append}`
+}
+
+/**
+ * Relative ascendent path as string.
+ *
+ * @param {string} path
+ * @return {string}
+ */
+const getPathDepth = (path: string = ''): string => {
+  if (!isStringStrict(path)) {
+    return ''
+  }
+
+  let pathDepth = path.split('/')
+
+  pathDepth.pop()
+
+  pathDepth = pathDepth.map(() => {
+    return '../'
+  })
+
+  return pathDepth.join('')
+}
+
+/* Exports */
+
+export {
+  getPath,
+  getPathDepth
+}

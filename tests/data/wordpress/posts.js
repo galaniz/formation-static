@@ -1,0 +1,122 @@
+export const posts = [
+  {
+    id: '19',
+    date: '2024-12-18T03:19:31',
+    date_gmt: '2024-12-18T03:19:31',
+    guid: 'http://wp.com/?p=19',
+    modified: '2024-12-18T03:19:31',
+    modified_gmt: '2024-12-18T03:19:31',
+    slug: 'test',
+    status: 'publish',
+    contentType: 'post',
+    link: 'http://wp.com/test/',
+    title: 'Test',
+    content: '',
+    excerpt: '',
+    author: {
+      id: '1',
+      name: 'demo',
+      url: 'http://wp.com',
+      description: '',
+      link: 'http://wp.com/author/demo/',
+      slug: 'demo'
+    },
+    featured_media: 0,
+    comment_status: 'open',
+    ping_status: 'open',
+    sticky: false,
+    template: '',
+    format: 'standard',
+    custom: 'Meta test',
+    footnotes: '',
+    categories: [
+      {
+        id: '1',
+        link: 'http://wp.com/category/uncategorized/',
+        title: 'Uncategorized',
+        slug: 'uncategorized',
+        contentType: 'term',
+        taxonomy: {
+          id: 'category',
+          title: '',
+          slug: '',
+          contentTypes: []
+        }
+      }
+    ],
+    tags: [],
+    class_list: [
+      'post-19',
+      'post',
+      'type-post',
+      'status-publish',
+      'format-standard',
+      'hentry',
+      'category-uncategorized'
+    ]
+  },
+  {
+    id: '1',
+    date: '2024-12-14T19:58:13',
+    date_gmt: '2024-12-14T19:58:13',
+    guid: 'http://wp.com/?p=1',
+    modified: '2024-12-14T19:58:13',
+    modified_gmt: '2024-12-14T19:58:13',
+    slug: 'hello-world',
+    status: 'publish',
+    contentType: 'post',
+    link: 'http://wp.com/hello-world/',
+    title: 'Hello world!',
+    content: '\n<p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p>\n',
+    excerpt: 'Welcome to WordPress. This is your first post. Edit or delete it, then start writing!',
+    author: 1,
+    featured_media: 0,
+    comment_status: 'open',
+    ping_status: 'open',
+    sticky: false,
+    template: '',
+    format: 'standard',
+    custom: '',
+    footnotes: '',
+    categories: [
+      {
+        id: '1',
+        link: 'http://wp.com/category/uncategorized/',
+        title: 'Uncategorized',
+        slug: 'uncategorized',
+        contentType: 'term',
+        taxonomy: {
+          id: 'category',
+          title: '',
+          slug: '',
+          contentTypes: []
+        }
+      },
+      2
+    ],
+    tags: [
+      {
+        id: '4',
+        link: 'http://wp.com/tag/sample/',
+        title: 'Sample',
+        slug: 'sample',
+        contentType: 'term',
+        taxonomy: {
+          id: 'post_tag',
+          title: '',
+          slug: '',
+          contentTypes: []
+        }
+      }
+    ],
+    class_list: [
+      'post-1',
+      'post',
+      'type-post',
+      'status-publish',
+      'format-standard',
+      'hentry',
+      'category-uncategorized'
+    ]
+  }
+]

@@ -1,0 +1,100 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 2,
+  "skip": 0,
+  "limit": 100,
+  "items": [
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "abc123"
+          }
+        },
+        "type": "Entry",
+        "id": "2MMIOOmHqakBbKL8lDsZKM",
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "taxonomy"
+          }
+        },
+        "revision": 1,
+        "createdAt": "2024-01-31T15:55:52.325Z",
+        "updatedAt": "2024-04-24T03:03:49.212Z",
+        "publishedAt": "2024-01-31T15:56:14.980Z",
+        "firstPublishedAt": "2024-01-31T15:56:14.980Z",
+        "publishedVersion": 4,
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "locale": "en-CA"
+      },
+      "fields": {
+        "title": "Category",
+        "contentTypes": ["Post"],
+        "slug": "category",
+        "usePrimaryContentTypeSlug": true,
+        "isPage": false
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "abc123"
+          }
+        },
+        "type": "Entry",
+        "id": "64ua0zal8hIqPsQc7eTbWb",
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "taxonomy"
+          }
+        },
+        "revision": 1,
+        "createdAt": "2024-01-31T15:50:09.041Z",
+        "updatedAt": "2024-04-24T03:03:40.868Z",
+        "publishedAt": "2024-01-31T15:51:31.471Z",
+        "firstPublishedAt": "2024-01-31T15:51:31.471Z",
+        "publishedVersion": 7,
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "locale": "en-CA"
+      },
+      "fields": {
+        "title": "Lorem",
+        "contentTypes": ["Ipsum"],
+        "slug": "lorem",
+        "usePrimaryContentTypeSlug": true,
+        "isPage": false
+      }
+    }
+  ]
+}

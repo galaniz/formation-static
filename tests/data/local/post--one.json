@@ -1,0 +1,24 @@
+{
+  "contentType": "post",
+  "title": "Post One",
+  "slug": "post-one",
+  "date": "2025-03-24T00:00:00",
+  "featuredMedia": "2025/04/hero",
+  "term": [
+    "term--category-one",
+    "does-not-exist",
+    null
+  ],
+  "content": [
+    {
+      "renderType": "richText",
+      "tag": "h1",
+      "content": "Post One"
+    },
+    {
+      "renderType": "richText",
+      "tag": "p",
+      "content": "This is a post."
+    }
+  ]
+}
