@@ -52,6 +52,7 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
   const {
     listClass,
     listAttr,
+    itemsWrap = true,
     itemClass,
     itemAttr,
     linkClass,
@@ -363,11 +364,11 @@ const Pagination = (props: PaginationProps): PaginationReturn => {
   /* Output */
 
   return {
-    output: `
+    output: itemsWrap ? `
       <ol${listAttrs.length ? ` ${listAttrs.join(' ')}` : ''}>
         ${output}
       </ol>
-    `,
+    ` : output,
     data
   }
 }

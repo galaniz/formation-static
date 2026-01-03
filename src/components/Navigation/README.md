@@ -48,20 +48,6 @@ Navigation HTML output.
 
 <code>string</code> HTMLUListElement
 
-### getBreadcrumbs  
-
-**<code>getBreadcrumbs(items: NavigationBreadcrumbItem[], args?: NavigationBreadcrumbOutputArgs): string</code>**  
-
-Breadcrumbs HTML output.
-
-#### Parameters  
-- **`items`** <code><a href="#navigationbreadcrumbitem">NavigationBreadcrumbItem</a>[]</code> required  
-- **`args`** <code><a href="#navigationbreadcrumboutputargs">NavigationBreadcrumbOutputArgs</a></code> optional
-
-#### Returns  
-
-<code>string</code> HTMLOListElement
-
 ### getItemsById  
 
 **<code>getItemsById(): NavigationItemsById</code>**  
@@ -149,7 +135,9 @@ Single navigation by location.
 - **`internalLinkClass`** <code>string</code> optional  
 - **`linkAttr`** <code>string</code> optional  
 - **`depthAttr`** <code>boolean</code> optional  
-- **`dataAttr`** <code>string</code> optional
+Default: `false`  
+- **`dataAttr`** <code>string</code> optional  
+Default: `'data-nav'`
 
 ### NavigationOutputListFilterArgs  
 
@@ -216,49 +204,6 @@ Current content type(s) to compare against.
 - **`filterAfterLink`** <code><a href="#navigationfilter">NavigationFilter</a></code> optional  
 - **`filterBeforeLinkText`** <code><a href="#navigationfilter">NavigationFilter</a></code> optional  
 - **`filterAfterLinkText`** <code><a href="#navigationfilter">NavigationFilter</a></code> optional
-
-### NavigationBreadcrumbItem  
-
-**Type:** <code>object</code>  
-
-**Augments:** <code><a href="#navigationitem">NavigationItem</a></code>
-
-#### Properties  
-- **`slug`** <code>string</code> required  
-- **`contentType`** <code>string</code> required
-
-### NavigationBreadcrumbOutputFilterArgs  
-
-**Type:** <code>object</code>
-
-#### Properties  
-- **`output`** <code><a href="/src/global/README.md#refstring">RefString</a></code> required  
-- **`lastLevel`** <code>boolean</code> required
-
-### NavigationBreadcrumbOutputFilter  
-
-**Type:** <code>function</code>
-
-#### Parameters  
-- **`args`** <code><a href="#navigationbreadcrumboutputfilterargs">NavigationBreadcrumbOutputFilterArgs</a></code> required
-
-#### Returns  
-
-<code>void</code>
-
-### NavigationBreadcrumbOutputArgs  
-
-**Type:** <code>object</code>  
-
-**Augments:** <code><a href="#navigationoutputbaseargs">NavigationOutputBaseArgs</a></code>
-
-#### Properties  
-- **`current`** <code>string</code> optional  
-- **`currentClass`** <code>string</code> optional  
-- **`currentLabel`** <code>string</code> optional  
-- **`a11yClass`** <code>string</code> optional  
-- **`filterBeforeLink`** <code><a href="#navigationbreadcrumboutputfilter">NavigationBreadcrumbOutputFilter</a></code> optional  
-- **`filterAfterLink`** <code><a href="#navigationbreadcrumboutputfilter">NavigationBreadcrumbOutputFilter</a></code> optional
 
 ### NavigationItemsById  
 

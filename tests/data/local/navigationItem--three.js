@@ -29,7 +29,7 @@ export const navigationItemThree = {
           contentType: 'taxonomy',
           title: 'Category',
           slug: 'category',
-          usePrimaryContentTypeSlug: true,
+          useContentTypeSlug: true,
           contentTypes: [
             'post'
           ]

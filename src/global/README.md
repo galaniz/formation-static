@@ -13,7 +13,8 @@
 - **`slug`** <code>string</code> optional  
 - **`link`** <code>string</code> optional  
 - **`isPage`** <code>boolean</code> optional  
-- **`usePrimaryContentTypeSlug`** <code>boolean</code> optional  
+Default: `false`  
+- **`useContentTypeSlug`** <code>boolean</code> optional  
 Default: `true`
 
 ### Generic  

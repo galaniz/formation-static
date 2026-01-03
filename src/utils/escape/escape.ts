@@ -9,7 +9,7 @@ import { isString } from '../string/string.js'
 /**
  * Check string validity and escape special characters.
  *
- * @see {@link https://github.com/validatorjs/validator.js/blob/master/src/lib/escape.js|Validator}
+ * @see {@link https://github.com/validatorjs/validator.js/blob/master/src/lib/escape.js|Validator} for source.
  * @param {string} value
  * @return {string}
  */

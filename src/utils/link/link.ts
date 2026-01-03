@@ -111,7 +111,7 @@ const getSlug = <T extends boolean = false>(
     id: taxonomyId,
     slug: taxonomySlug,
     primaryContentType: taxonomyType,
-    usePrimaryContentTypeSlug: taxonomyUseTypeSlug,
+    useContentTypeSlug: taxonomyUseTypeSlug,
     isPage: taxonomyIsPage
   } = taxonomyInfo
 

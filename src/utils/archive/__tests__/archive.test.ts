@@ -259,7 +259,7 @@ describe('getTaxonomyInfo()', () => {
       title: '',
       contentTypes: [],
       primaryContentType: '',
-      usePrimaryContentTypeSlug: true,
+      useContentTypeSlug: true,
       isPage: false
     }
 
@@ -281,7 +281,7 @@ describe('getTaxonomyInfo()', () => {
       title: '',
       contentTypes: [],
       primaryContentType: '',
-      usePrimaryContentTypeSlug: true,
+      useContentTypeSlug: true,
       isPage: false
     }
 
@@ -294,7 +294,7 @@ describe('getTaxonomyInfo()', () => {
       title: 'Test',
       slug: 'test',
       contentTypes: ['post'],
-      usePrimaryContentTypeSlug: false,
+      useContentTypeSlug: false,
       isPage: true
     })
 
@@ -304,7 +304,7 @@ describe('getTaxonomyInfo()', () => {
       title: 'Test',
       contentTypes: ['post'],
       primaryContentType: 'post',
-      usePrimaryContentTypeSlug: false,
+      useContentTypeSlug: false,
       isPage: true
     }
 
@@ -334,7 +334,7 @@ describe('getTaxonomyInfo()', () => {
       title: '',
       contentTypes: [],
       primaryContentType: '',
-      usePrimaryContentTypeSlug: true,
+      useContentTypeSlug: true,
       isPage: false
     }
 
@@ -362,7 +362,7 @@ describe('getTaxonomyInfo()', () => {
       title: 'Test',
       contentTypes: ['post', 'test'],
       primaryContentType: 'post',
-      usePrimaryContentTypeSlug: true,
+      useContentTypeSlug: true,
       isPage: false
     }
 
@@ -412,7 +412,7 @@ describe('getArchiveLink()', () => {
       slug: 'test',
       title: 'Test',
       contentTypes: ['post'],
-      usePrimaryContentTypeSlug: false
+      useContentTypeSlug: false
     })
 
     const expectedResult = {
@@ -429,7 +429,7 @@ describe('getArchiveLink()', () => {
       slug: 'test',
       title: 'Test',
       contentTypes: ['post'],
-      usePrimaryContentTypeSlug: true,
+      useContentTypeSlug: true,
       isPage: true
     })
 
@@ -451,7 +451,7 @@ describe('getArchiveLink()', () => {
         slug: 'test',
         title: 'Test',
         contentTypes: ['post'],
-        usePrimaryContentTypeSlug: false
+        useContentTypeSlug: false
       }
     })
 
@@ -473,7 +473,7 @@ describe('getArchiveLink()', () => {
         slug: 'test',
         title: 'Test',
         contentTypes: ['post'],
-        usePrimaryContentTypeSlug: true
+        useContentTypeSlug: true
       }
     })
 
@@ -495,7 +495,7 @@ describe('getArchiveLink()', () => {
         slug: 'test',
         title: 'Test',
         contentTypes: ['post'],
-        usePrimaryContentTypeSlug: true,
+        useContentTypeSlug: true,
         isPage: true
       }
     })
@@ -518,7 +518,7 @@ describe('getArchiveLink()', () => {
         slug: 'test',
         title: 'Test',
         contentTypes: ['test', 'post'],
-        usePrimaryContentTypeSlug: true
+        useContentTypeSlug: true
       }
     })
 
@@ -659,7 +659,7 @@ describe('getArchiveLabels()', () => {
         title: 'Test Taxonomy',
         slug: 'test-taxonomy',
         contentTypes: ['testContentType'],
-        usePrimaryContentTypeSlug: true,
+        useContentTypeSlug: true,
         isPage: false
       }
     })

@@ -38,16 +38,9 @@ let serverlessActions: ServerlessActions = {}
  * @return {RenderPreviewData|undefined}
  */
 const serverlessPreview = (request: Request): RenderPreviewData | undefined => {
-  const { method, url } = request
-
-  /* Request must be get */
-
-  if (method !== 'GET') {
-    return
-  }
-
   /* Params */
 
+  const { url } = request
   const { searchParams } = new URL(url)
   const contentType = searchParams.get('content_type')
   const locale = searchParams.get('locale')
@@ -81,16 +74,9 @@ const serverlessReload = (
   request: Request,
   allowedParams: string[] = ['page', 'filters']
 ): RenderServerlessData | undefined => {
-  const { method, url } = request
-
-  /* Request must be get */
-
-  if (method !== 'GET') {
-    return
-  }
-
   /* Query */
 
+  const { url } = request
   const { searchParams, pathname } = new URL(url)
   const path = pathname
   const query: Record<string, string> = {}

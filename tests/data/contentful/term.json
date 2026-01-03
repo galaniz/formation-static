@@ -97,7 +97,7 @@
           "title": "Category",
           "contentTypes": ["Post"],
           "slug": "category",
-          "usePrimaryContentTypeSlug": true,
+          "useContentTypeSlug": true,
           "isPage": false
         }
       }

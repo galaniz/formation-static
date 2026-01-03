@@ -61,9 +61,9 @@ const addDataAttr = (dataAttr: boolean | string[] = true, tag: string = ''): boo
  */
 const getContent = (args: RichTextContentProps): string => {
   const {
-    content = [],
+    content,
     props,
-    dataAttr = false
+    dataAttr
   } = args
 
   let { _output = '' } = args

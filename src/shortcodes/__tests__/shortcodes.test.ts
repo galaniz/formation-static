@@ -19,32 +19,32 @@ import {
 /**
  * @typedef {object} TestAttrs
  * @extends {ShortcodeAttrs}
- * @prop {string} type
- * @prop {boolean} required
- * @prop {number} size
+ * @prop {string} [type]
+ * @prop {boolean} [required]
+ * @prop {number} [size]
  */
 interface TestAttrs extends ShortcodeAttrs {
-  type: string
-  required: boolean
-  size: number
+  type?: string
+  required?: boolean
+  size?: number
 }
 
 /**
  * @typedef {object} TestAttr
  * @extends {ShortcodeAttrs}
- * @prop {string} tag
+ * @prop {string} [tag]
  */
 interface TestAttr extends ShortcodeAttrs {
-  tag: string
+  tag?: string
 }
 
 /**
  * @typedef {object} TestChildAttr
  * @extends {ShortcodeAttrs}
- * @prop {string} subtype
+ * @prop {string} [subtype]
  */
 interface TestChildAttr extends ShortcodeAttrs {
-  subtype: string
+  subtype?: string
 }
 
 /* Test addShortcode */
@@ -196,7 +196,7 @@ describe('doShortcodes()', () => {
     const itemDataProps = vi.fn()
 
     addShortcode('test', {
-      callback ({ attr, content = '', itemData }) {
+      callback ({ attr, content, itemData }) {
         itemDataProps(itemData)
 
         const {
@@ -235,7 +235,7 @@ describe('doShortcodes()', () => {
 
   it('should return content with parent and child shortcodes replaced', async () => {
     addShortcode('child', {
-      callback ({ attr, content = '' }) {
+      callback ({ attr, content }) {
         const { subtype = 'default' } = attr as TestChildAttr
 
         return `<child ${subtype}>${content}</child>`
@@ -335,7 +335,7 @@ describe('setShortcodes()', () => {
   it('should return true and add shortcodes to shortcodes map', () => {
     const result = setShortcodes({
       test: {
-        callback ({ attr, content = '' }) {
+        callback ({ attr, content }) {
           const { tag = 'p' } = attr as TestAttr
 
           return `<${tag}>${content}</${tag}>`
@@ -378,7 +378,7 @@ describe('stripShortcodes()', () => {
 
   it('should remove shortcodes from content', () => {
     addShortcode('child', {
-      callback ({ attr, content = '' }) {
+      callback ({ attr, content }) {
         const { subtype = 'default' } = attr as TestChildAttr
 
         return `<child ${subtype}>${content}</child>`

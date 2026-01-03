@@ -123,7 +123,7 @@ const getTaxonomyInfo = (contentType: string, itemData?: RenderItem): ArchiveTax
     title: '',
     contentTypes: [],
     primaryContentType: '',
-    usePrimaryContentTypeSlug: true,
+    useContentTypeSlug: true,
     isPage: false
   }
 
@@ -139,7 +139,7 @@ const getTaxonomyInfo = (contentType: string, itemData?: RenderItem): ArchiveTax
     link,
     title,
     contentTypes,
-    usePrimaryContentTypeSlug,
+    useContentTypeSlug,
     isPage
   } = taxObj
 
@@ -151,7 +151,7 @@ const getTaxonomyInfo = (contentType: string, itemData?: RenderItem): ArchiveTax
   value.title = isStringStrict(title) ? title : ''
   value.contentTypes = taxonomyTypes
   value.primaryContentType = isStringStrict(primaryTaxonomyType) ? primaryTaxonomyType : ''
-  value.usePrimaryContentTypeSlug = isBoolean(usePrimaryContentTypeSlug) ? usePrimaryContentTypeSlug : true
+  value.useContentTypeSlug = isBoolean(useContentTypeSlug) ? useContentTypeSlug : true
   value.isPage = isBoolean(isPage) ? isPage : false
 
   if (isStringStrict(link)) {
@@ -186,7 +186,7 @@ const getArchiveLink = (contentType: string, itemData?: RenderItem): ArchiveLink
     title: taxonomyTitle,
     isPage: taxonomyIsPage,
     contentTypes: taxonomyTypes,
-    usePrimaryContentTypeSlug: taxonomyUseTypeSlug
+    useContentTypeSlug: taxonomyUseTypeSlug
   } = taxonomyInfo
 
   if (contentType === 'term' && taxonomyIsPage) {
@@ -285,7 +285,7 @@ const getArchiveLabels = (contentType: string, itemData?: RenderItem): ArchiveLa
     title: taxonomyTitle,
     isPage: taxonomyIsPage,
     primaryContentType: taxonomyType,
-    usePrimaryContentTypeSlug: taxonomyUseTypeSlug
+    useContentTypeSlug: taxonomyUseTypeSlug
   } = taxonomyInfo
 
   if (contentType === 'term' && taxonomyIsPage && isStringStrict(taxonomyTitle)) {

@@ -12,7 +12,7 @@ import { getYear } from '../year.js'
 describe('getYear()', () => {
   it('should return current year', () => {
     const result = getYear()
-    const expectedResult = 2025
+    const expectedResult = 2026
 
     expect(result).toBe(expectedResult)
   })

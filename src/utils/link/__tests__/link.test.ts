@@ -333,7 +333,7 @@ describe('getSlug()', () => {
         slug: 'types',
         title: 'Color Types',
         contentTypes: ['color'],
-        usePrimaryContentTypeSlug: false
+        useContentTypeSlug: false
       }
     }, true)
 
@@ -372,7 +372,7 @@ describe('getSlug()', () => {
         slug: 'types',
         title: 'Color Types',
         contentTypes: ['color'],
-        usePrimaryContentTypeSlug: true
+        useContentTypeSlug: true
       }
     }, true)
 
@@ -411,7 +411,7 @@ describe('getSlug()', () => {
         slug: 'types',
         title: 'Color Types',
         contentTypes: ['color'],
-        usePrimaryContentTypeSlug: true,
+        useContentTypeSlug: true,
         locale: 'en-CA'
       }
     }, true)
@@ -458,7 +458,7 @@ describe('getSlug()', () => {
         slug: 'types',
         title: 'Color Types',
         contentTypes: ['color'],
-        usePrimaryContentTypeSlug: true,
+        useContentTypeSlug: true,
         locale: 'en-CA'
       }
     }, true)
@@ -512,7 +512,7 @@ describe('getSlug()', () => {
           slug: 'types',
           title: 'Color Types',
           contentTypes: ['color'],
-          usePrimaryContentTypeSlug: false
+          useContentTypeSlug: false
         }
       }
     }, true)
@@ -550,7 +550,7 @@ describe('getSlug()', () => {
           slug: 'types',
           title: 'Color Types',
           contentTypes: ['color'],
-          usePrimaryContentTypeSlug: false
+          useContentTypeSlug: false
         }
       }
     }, true)
@@ -580,7 +580,7 @@ describe('getSlug()', () => {
           slug: 'types',
           title: 'Types de couleurs',
           contentTypes: ['color'],
-          usePrimaryContentTypeSlug: false
+          useContentTypeSlug: false
         }
       }
     }, true)
@@ -608,7 +608,7 @@ describe('getSlug()', () => {
       slug: 'types',
       title: 'Color Types',
       contentTypes: ['color'],
-      usePrimaryContentTypeSlug: true,
+      useContentTypeSlug: true,
       isPage: true
     }
 
@@ -636,7 +636,7 @@ describe('getSlug()', () => {
           title: 'Color Types',
           contentTypes: ['color'],
           primaryContentType: 'color',
-          usePrimaryContentTypeSlug: true,
+          useContentTypeSlug: true,
           isPage: true,
           contentType: 'taxonomy',
           locale: undefined
@@ -663,7 +663,7 @@ describe('getSlug()', () => {
       slug: 'types',
       title: 'Color Types',
       contentTypes: ['color'],
-      usePrimaryContentTypeSlug: true,
+      useContentTypeSlug: true,
       isPage: true
     }
 

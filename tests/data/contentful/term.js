@@ -16,7 +16,7 @@ export const terms = {
         title: 'Category',
         contentTypes: ['Post'],
         slug: 'category',
-        usePrimaryContentTypeSlug: true,
+        useContentTypeSlug: true,
         isPage: false
       },
       order: 0
