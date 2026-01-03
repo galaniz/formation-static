@@ -260,7 +260,10 @@ const normalizeItem = (item: ContentfulDataItem, data: RenderItem[], isInternalL
     const file = fields.file
 
     if (isObjectStrict(file)) {
-      return Object.assign(normalizeFile(file, fields), newItem)
+      return {
+        ...normalizeFile(file, fields),
+        ...newItem
+      }
     }
 
     getObjectKeys(fields).forEach(prop => {

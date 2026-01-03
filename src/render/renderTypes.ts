@@ -137,13 +137,14 @@ export interface RenderFile {
 
 /**
  * @typedef {object} RenderRichText
+ * @extends {Generic}
  * @prop {string} [tag]
  * @prop {string} [link]
  * @prop {InternalLink} [internalLink]
  * @prop {RenderItem[]|string} [content]
  * @prop {string|GenericStrings} [attr]
  */
-export interface RenderRichText {
+export interface RenderRichText extends Generic {
   tag?: string
   link?: string
   internalLink?: InternalLink

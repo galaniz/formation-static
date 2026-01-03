@@ -9,7 +9,7 @@ export const termCategoryOne = {
     contentType: 'taxonomy',
     title: 'Category',
     slug: 'category',
-    usePrimaryContentTypeSlug: true,
+    useContentTypeSlug: true,
     contentTypes: [
       'post'
     ]

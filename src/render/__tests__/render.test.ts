@@ -33,18 +33,18 @@ import {
 
 /**
  * @typedef {object} TestArgs
- * @prop {string} testAttr
+ * @prop {string} [testAttr]
  */
 interface TestArgs {
-  testAttr: string
+  testAttr?: string
 }
 
 /**
  * @typedef {object} TestChildArgs
- * @prop {string} id
+ * @prop {string} [id]
  */
 interface TestChildArgs {
-  id: string
+  id?: string
 }
 
 /**

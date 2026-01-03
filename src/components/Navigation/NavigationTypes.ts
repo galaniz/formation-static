@@ -81,17 +81,6 @@ export interface NavigationItem extends Generic {
 export type NavigationItemsById = Map<string, NavigationItem>
 
 /**
- * @typedef {object} NavigationBreadcrumbItem
- * @extends {NavigationItem}
- * @prop {string} slug
- * @prop {string} contentType
- */
-export interface NavigationBreadcrumbItem extends NavigationItem {
-  slug: string
-  contentType: string
-}
-
-/**
  * @typedef {object} NavigationOutputBaseArgs
  * @prop {string} [listClass]
  * @prop {string} [listAttr]
@@ -100,8 +89,8 @@ export interface NavigationBreadcrumbItem extends NavigationItem {
  * @prop {string} [linkClass]
  * @prop {string} [internalLinkClass]
  * @prop {string} [linkAttr]
- * @prop {boolean} [depthAttr]
- * @prop {string} [dataAttr]
+ * @prop {boolean} [depthAttr=false]
+ * @prop {string} [dataAttr='data-nav']
  */
 export interface NavigationOutputBaseArgs {
   listClass?: string
@@ -190,40 +179,4 @@ export interface NavigationOutputArgs extends NavigationOutputBaseArgs {
   filterAfterLink?: NavigationFilter
   filterBeforeLinkText?: NavigationFilter
   filterAfterLinkText?: NavigationFilter
-}
-
-/**
- * @typedef {object} NavigationBreadcrumbOutputFilterArgs
- * @prop {RefString} output
- * @prop {boolean} lastLevel
- */
-export interface NavigationBreadcrumbOutputFilterArgs {
-  output: RefString
-  lastLevel: boolean
-}
-
-/**
- * @typedef {function} NavigationBreadcrumbOutputFilter
- * @param {NavigationBreadcrumbOutputFilterArgs} args
- * @return {void}
- */
-export type NavigationBreadcrumbOutputFilter = (args: NavigationBreadcrumbOutputFilterArgs) => void
-
-/**
- * @typedef {object} NavigationBreadcrumbOutputArgs
- * @extends {NavigationOutputBaseArgs}
- * @prop {string} [current]
- * @prop {string} [currentClass]
- * @prop {string} [currentLabel]
- * @prop {string} [a11yClass]
- * @prop {NavigationBreadcrumbOutputFilter} [filterBeforeLink]
- * @prop {NavigationBreadcrumbOutputFilter} [filterAfterLink]
- */
-export interface NavigationBreadcrumbOutputArgs extends NavigationOutputBaseArgs {
-  current?: string
-  currentClass?: string
-  currentLabel?: string
-  a11yClass?: string
-  filterBeforeLink?: NavigationBreadcrumbOutputFilter
-  filterAfterLink?: NavigationBreadcrumbOutputFilter
 }

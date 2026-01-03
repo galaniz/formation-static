@@ -299,13 +299,13 @@ const renderContent = async (args: RenderContentArgs, _html: RefString = { ref: 
   }
 
   const {
-    content = [],
+    content,
     serverlessData,
     previewData,
     itemData,
-    itemContains = new Set(),
-    itemHeadings = [],
-    parents = [],
+    itemContains,
+    itemHeadings,
+    parents,
     depth = 0
   } = args
 

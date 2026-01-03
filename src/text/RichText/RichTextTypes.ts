@@ -140,10 +140,10 @@ export type RichTextOutputFilter = (output: string, args: RichTextContentOutputF
 /**
  * @typedef {function} RichTextContentItemFilter
  * @param {RenderRichText} item
- * @param {RichTextProps} args
+ * @param {RichTextProps} props
  * @return {RenderRichText}
  */
-export type RichTextContentItemFilter = (item: RenderRichText, args: RichTextProps) => RenderRichText
+export type RichTextContentItemFilter = (item: RenderRichText, props: RichTextProps) => RenderRichText
 
 /**
  * @typedef {function} RichTextContentFilter

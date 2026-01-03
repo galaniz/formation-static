@@ -10,7 +10,7 @@ export const taxonomies = {
       title: 'Category',
       contentTypes: ['Post'],
       slug: 'category',
-      usePrimaryContentTypeSlug: true,
+      useContentTypeSlug: true,
       isPage: false
     },
     {
@@ -20,7 +20,7 @@ export const taxonomies = {
       title: 'Lorem',
       contentTypes: ['Ipsum'],
       slug: 'lorem',
-      usePrimaryContentTypeSlug: true,
+      useContentTypeSlug: true,
       isPage: false
     }
   ]

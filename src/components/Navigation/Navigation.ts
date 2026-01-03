@@ -10,16 +10,14 @@ import type {
   NavigationByLocation,
   NavigationItem,
   NavigationItemsById,
-  NavigationBreadcrumbItem,
   NavigationOutputArgs,
-  NavigationBreadcrumbOutputArgs,
   NavigationByLocationItem
 } from './NavigationTypes.js'
 import type { RefString } from '../../global/globalTypes.js'
-import { getSlug, getPermalink, getLink } from '../../utils/link/link.js'
+import { getLink } from '../../utils/link/link.js'
 import { isArrayStrict } from '../../utils/array/array.js'
 import { isObjectStrict } from '../../utils/object/object.js'
-import { isStringStrict, isString } from '../../utils/string/string.js'
+import { isStringStrict } from '../../utils/string/string.js'
 import { isFunction } from '../../utils/function/function.js'
 import { isNumber } from '../../utils/number/number.js'
 import { normalizeContentType } from '../../utils/contentType/contentType.js'
@@ -124,7 +122,7 @@ class Navigation<L extends string = string> {
       const {
         title,
         location,
-        items = []
+        items
       } = nav
 
       const locations = isArrayStrict(location) ? location : [location]
@@ -491,10 +489,13 @@ class Navigation<L extends string = string> {
       return ''
     }
 
-    args = Object.assign({ depthAttr: false }, args || {})
+    const newArgs = {
+      depthAttr: false,
+      ...args
+    }
 
     const items = nav.items
-    const { currentLink, currentType } = args
+    const { currentLink, currentType } = newArgs
     const currLink = isStringStrict(currentLink) ? currentLink : ''
     const currType = (isArrayStrict(currentType) ? currentType : [currentType]).map(type => normalizeContentType(type))
     const normalizedItems = this.#getItems(items, currLink, currType)
@@ -505,146 +506,9 @@ class Navigation<L extends string = string> {
 
     const output = { ref: '' }
 
-    this.#recurseOutput(normalizedItems, output, args, 0, maxDepth)
+    this.#recurseOutput(normalizedItems, output, newArgs, 0, maxDepth)
 
     return output.ref
-  }
-
-  /**
-   * Breadcrumbs HTML output.
-   *
-   * @param {NavigationBreadcrumbItem[]} items
-   * @param {NavigationBreadcrumbOutputArgs} [args]
-   * @return {string} HTMLOListElement
-   */
-  getBreadcrumbs (
-    items: NavigationBreadcrumbItem[],
-    args?: NavigationBreadcrumbOutputArgs
-  ): string {
-    /* Items required */
-
-    if (!isArrayStrict(items)) {
-      return ''
-    }
-
-    /* Args defaults */
-
-    args = Object.assign({ a11yClass: 'a-hide-vis' }, args || {})
-
-    /* Current */
-
-    const current = args.current
-
-    /* Data attributes */
-
-    const dataAttr = isStringStrict(args.dataAttr) ? args.dataAttr : 'data-nav'
-
-    /* List attributes */
-
-    const listClasses = isStringStrict(args.listClass) ? ` class="${args.listClass}"` : ''
-    const listAttrs = isStringStrict(args.listAttr) ? ` ${args.listAttr}` : ''
-
-    /* Remove items that do not have title or slug */
-
-    const filteredItems = items.filter(item => {
-      if (!isStringStrict(item.title)) {
-        return false
-      }
-
-      if (!isString(item.slug)) {
-        return false
-      }
-
-      item.slug = getSlug({
-        id: item.id,
-        slug: item.slug,
-        contentType: item.contentType,
-        itemData: item.internalLink
-      })
-
-      return true
-    })
-
-    /* Loop through items */
-
-    const itemClasses = isStringStrict(args.itemClass) ? ` class="${args.itemClass}"` : ''
-    const itemAttrs = isStringStrict(args.itemAttr) ? ` ${args.itemAttr}` : ''
-    const lastItemIndex = filteredItems.length - 1
-
-    const itemsArr = filteredItems.map((item, index) => {
-      const { title, slug } = item
-
-      /* Link */
-
-      const link = getPermalink(slug)
-
-      /* Output */
-
-      const output = { ref: '' }
-
-      /* Check if last */
-
-      const lastLevel = lastItemIndex === index
-
-      /* Filter args */
-
-      const filterArgs = { output, lastLevel }
-
-      /* Item */
-
-      output.ref += `<li${itemClasses}${itemAttrs}${lastLevel ? ` ${dataAttr}-last` : ''}>`
-
-      /* Link */
-
-      if (isFunction(args.filterBeforeLink)) {
-        args.filterBeforeLink(filterArgs)
-      }
-
-      const linkClassesArr: string[] = []
-
-      if (isStringStrict(args.linkClass)) {
-        linkClassesArr.push(args.linkClass)
-      }
-
-      if (isStringStrict(args.internalLinkClass)) {
-        linkClassesArr.push(args.internalLinkClass)
-      }
-
-      const linkClasses = linkClassesArr.length ? ` class="${linkClassesArr.join(' ')}"` : ''
-      const linkAttrs = isStringStrict(args.linkAttr) ? ` ${args.linkAttr}` : ''
-
-      output.ref += `<a${linkClasses} href="${link}"${linkAttrs}>${title}</a>`
-
-      if (isFunction(args.filterAfterLink)) {
-        args.filterAfterLink(filterArgs)
-      }
-
-      /* Close item */
-
-      output.ref += '</li>'
-
-      return output.ref
-    })
-
-    /* Current item */
-
-    const currentLabel = isStringStrict(args.currentLabel) ? args.currentLabel : '(current page)'
-    const currentClasses = isStringStrict(args.currentClass) ? ` class="${args.currentClass}"` : ''
-    const a11yClasses = isStringStrict(args.a11yClass) ? ` class="${args.a11yClass}"` : ''
-    const currentItem = isStringStrict(current) ? `
-      <li${itemClasses}${itemAttrs} ${dataAttr}-current>
-        <span${currentClasses}>${current}<span${a11yClasses}> ${currentLabel}</span></span>
-      </li>
-    ` : ''
-
-    /* Output */
-
-    return `
-      <ol${listClasses}${listAttrs}>
-        ${itemsArr.join('')}
-        ${currentItem}
-      </ol>
-    `
   }
 
   /**

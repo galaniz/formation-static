@@ -36,7 +36,7 @@ export const pages = [
         ]
       }
     ],
-    excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque et gravida neque. Nulla commodo eleifend turpis, vel bibendum urna euismod et. Maecenas consectetur dolor in justo congue, vel accumsan augue venenatis. Duis malesuada id turpis id cursus. Ut mollis, sem lacinia scelerisque tristique, ante ante dignissim ante, non viverra massa enim quis velit. Etiam in',
+    excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque et gravida neque. Nulla commodo eleifend turpis, vel bibendum urna euismod et. Maecenas consectetur dolor in justo congue, vel accumsan augue venenatis. Duis malesuada id turpis id cursus. Ut mollis, sem lacinia scelerisque tristique, ante ante dignissim ante, non viverra massa enim quis velit. Etiam in [&hellip;]',
     author: {
       id: '1',
       name: 'demo',
@@ -163,7 +163,7 @@ export const pages = [
         ]
       }
     ],
-    excerpt: 'This is an example page. It&#8217;s different from a blog post because it will stay in one place and will show up in your site navigation (in most themes). Most people start with an About page that introduces them to potential site visitors. It might say something like this: Hi there! I&#8217;m a bike messenger',
+    excerpt: 'This is an example page. It&#8217;s different from a blog post because it will stay in one place and will show up in your site navigation (in most themes). Most people start with an About page that introduces them to potential site visitors. It might say something like this: Hi there! I&#8217;m a bike messenger [&hellip;]',
     author: {
       id: '1',
       name: 'demo',

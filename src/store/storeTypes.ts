@@ -51,13 +51,13 @@ interface StorePrimitiveGeneric {
  * @typedef {string|number|boolean|null|undefined|StorePrimitive[]|StorePrimitiveGeneric} StorePrimitive
  */
 export type StorePrimitive = 
-  | string 
-  | number 
-  | boolean 
-  | null 
-  | undefined
-  | StorePrimitive[]
-  | StorePrimitiveGeneric
+  string |
+  number |
+  boolean |
+  null |
+  undefined |
+  StorePrimitive[] |
+  StorePrimitiveGeneric
 
 /**
  * @typedef {Object<string, StorePrimitive[]>} StoreServerless

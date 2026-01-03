@@ -48,6 +48,7 @@ export interface PaginationProps {
  * @typedef {object} PaginationArgs
  * @prop {string} [listClass]
  * @prop {string} [listAttr]
+ * @prop {boolean} [itemsWrap=true] - Wrap items in <ol> tag.
  * @prop {string} [itemClass]
  * @prop {string} [itemAttr]
  * @prop {string} [linkClass]
@@ -64,6 +65,7 @@ export interface PaginationProps {
 export interface PaginationArgs {
   listClass?: string
   listAttr?: string
+  itemsWrap?: boolean
   itemClass?: string
   itemAttr?: string
   linkClass?: string

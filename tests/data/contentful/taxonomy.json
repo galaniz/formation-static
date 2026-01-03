@@ -47,7 +47,7 @@
         "title": "Category",
         "contentTypes": ["Post"],
         "slug": "category",
-        "usePrimaryContentTypeSlug": true,
+        "useContentTypeSlug": true,
         "isPage": false
       }
     },
@@ -92,7 +92,7 @@
         "title": "Lorem",
         "contentTypes": ["Ipsum"],
         "slug": "lorem",
-        "usePrimaryContentTypeSlug": true,
+        "useContentTypeSlug": true,
         "isPage": false
       }
     }

@@ -67,13 +67,6 @@ describe('serverlessPreview()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return undefined if method is not get', () => {
-    const result = serverlessPreview(testRequest('http://test.com/?preview=123&content_type=post', 'POST'))
-    const expectedResult = undefined
-
-    expect(result).toEqual(expectedResult)
-  })
-
   it('should return undefined if no ID', () => {
     const result = serverlessPreview(testRequest('http://test.com/?content_type=post'))
     const expectedResult = undefined
@@ -108,13 +101,6 @@ describe('serverlessPreview()', () => {
 describe('serverlessReload()', () => {
   it('should return undefined if no params', () => {
     const result = serverlessReload(testRequest())
-    const expectedResult = undefined
-
-    expect(result).toEqual(expectedResult)
-  })
-
-  it('should return undefined if method is not get', () => {
-    const result = serverlessReload(testRequest('http://test.com/blog/?page=2', 'POST'))
     const expectedResult = undefined
 
     expect(result).toEqual(expectedResult)

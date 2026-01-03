@@ -441,7 +441,7 @@ describe('Pagination()', () => {
     expect(data).toEqual(expectedData)
   })
 
-  it('should return list of 6 items with first as current and filters', () => {
+  it('should return 6 items with first as current and filters', () => {
     const result = Pagination({
       total: 5,
       display: 3,
@@ -451,44 +451,45 @@ describe('Pagination()', () => {
       filters: {
         filters: 'cat:1'
       },
-      args: { ...args }
+      args: {
+        ...args,
+        itemsWrap: false
+      }
     })
 
     const { output, data } = result
 
     const expectedOutput = `
-      <ol class="list" data-test="list">
-        <li class="item" data-test="item" data-pag-prev="text">
-          <span class="prev-span"></span>
-        </li>
-        <li class="item" data-test="item" data-pag-current>
-          <span class="current">
-            <span class="a11y">Current page </span>
-            1
-          </span>
-        </li>
-        <li class="item" data-test="item">
-          <a href="${url}?page=2&filters=cat%3A1" class="link" data-test="link">
-            <span class="a11y">Page </span>
-            2
-          </a>
-        </li>
-        <li class="item" data-test="item">
-          <a href="${url}?page=3&filters=cat%3A1" class="link" data-test="link">
-            <span class="a11y">Page </span>
-            3
-          </a>
-        </li>
-        <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
-        <li class="item" data-test="item" data-pag-next="link">
-          <a
-            href="${url}?page=2&filters=cat%3A1"
-            aria-label="Next page"
-            class="next-link"
-          >
-          </a>
-        </li>
-      </ol>
+      <li class="item" data-test="item" data-pag-prev="text">
+        <span class="prev-span"></span>
+      </li>
+      <li class="item" data-test="item" data-pag-current>
+        <span class="current">
+          <span class="a11y">Current page </span>
+          1
+        </span>
+      </li>
+      <li class="item" data-test="item">
+        <a href="${url}?page=2&filters=cat%3A1" class="link" data-test="link">
+          <span class="a11y">Page </span>
+          2
+        </a>
+      </li>
+      <li class="item" data-test="item">
+        <a href="${url}?page=3&filters=cat%3A1" class="link" data-test="link">
+          <span class="a11y">Page </span>
+          3
+        </a>
+      </li>
+      <li class="item" data-test="item" aria-hidden="true" data-pag-ellipsis>&hellip;</li>
+      <li class="item" data-test="item" data-pag-next="link">
+        <a
+          href="${url}?page=2&filters=cat%3A1"
+          aria-label="Next page"
+          class="next-link"
+        >
+        </a>
+      </li>
     `
 
     const expectedData = {

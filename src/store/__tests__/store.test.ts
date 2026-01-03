@@ -158,7 +158,10 @@ describe('setStoreData()', () => {
 
     config.hierarchicalTypes = [
       'page',
-      'term'
+      'term',
+      '__proto__',
+      'constructor',
+      'prototype'
     ]
 
     config.normalTypes = {
@@ -325,12 +328,13 @@ describe('setStoreData()', () => {
               contentType: 'page'
             }
           },
-          { // Test empty parent
+          { // Test empty parent and proto archive
             id: '1',
             title: 'Child',
             contentType: 'page',
             slug: 'child',
             content: 'test',
+            archive: '__proto__',
             parent: {}
           },
           {

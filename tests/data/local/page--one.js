@@ -31,7 +31,7 @@ export const pageOne = {
           contentType: 'taxonomy',
           title: 'Category',
           slug: 'category',
-          usePrimaryContentTypeSlug: true,
+          useContentTypeSlug: true,
           contentTypes: [
             'post'
           ]

@@ -11,6 +11,7 @@ import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
 import { isArrayStrict } from '../utils/array/array.js'
+import { isProto } from '../utils/proto/proto.js'
 import { getArchiveMeta } from '../utils/archive/archive.js'
 import { config } from '../config/config.js'
 
@@ -130,6 +131,10 @@ const setStoreData = (allData: RenderAllData): boolean => {
   }
 
   config.hierarchicalTypes.forEach(type => {
+    if (isProto(type)) {
+      return
+    }
+
     const items = data[type]
 
     if (!isArrayStrict(items)) {
@@ -162,7 +167,7 @@ const setStoreData = (allData: RenderAllData): boolean => {
 
       const archiveType = normalizeContentType(archive)
 
-      if (isStringStrict(archiveType)) {
+      if (isStringStrict(archiveType) && !isProto(archiveType)) {
         const hasLocale = isStringStrict(locale)
         const archiveMeta = getArchiveMeta(archiveType)
         const newArchive = {

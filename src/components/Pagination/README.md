@@ -20,6 +20,9 @@ Output pagination navigation.
 #### Properties  
 - **`listClass`** <code>string</code> optional  
 - **`listAttr`** <code>string</code> optional  
+- **`itemsWrap`** <code>boolean</code> optional  
+Wrap items in <ol> tag.  
+Default: `true`  
 - **`itemClass`** <code>string</code> optional  
 - **`itemAttr`** <code>string</code> optional  
 - **`linkClass`** <code>string</code> optional  

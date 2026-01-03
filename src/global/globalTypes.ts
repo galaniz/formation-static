@@ -9,8 +9,8 @@
  * @prop {string[]} contentTypes
  * @prop {string} [slug]
  * @prop {string} [link]
- * @prop {boolean} [isPage]
- * @prop {boolean} [usePrimaryContentTypeSlug=true]
+ * @prop {boolean} [isPage=false]
+ * @prop {boolean} [useContentTypeSlug=true]
  */
 export interface Taxonomy {
   id: string
@@ -19,7 +19,7 @@ export interface Taxonomy {
   slug?: string
   link?: string
   isPage?: boolean
-  usePrimaryContentTypeSlug?: boolean
+  useContentTypeSlug?: boolean
 }
 
 /**
