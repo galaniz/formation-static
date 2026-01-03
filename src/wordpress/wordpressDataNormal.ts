@@ -513,7 +513,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 
     if (isStringStrict(val)) {
       if (key === 'excerpt') {
-        val = val.replace(/<[^>]*>?|\[.*?\]/g, '').trim()
+        val = val.replace(/<p>|<\/p>/g, '').trim()
       }
 
       if (key === 'content') {
