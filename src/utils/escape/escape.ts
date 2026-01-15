@@ -15,7 +15,7 @@ import { isString } from '../string/string.js'
  */
 const escape = (value: string): string => {
   if (!isString(value)) {
-    throw new TypeError('Value is not a string')
+    throw new TypeError('Value not a string')
   }
 
   return value

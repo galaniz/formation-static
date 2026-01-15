@@ -12,16 +12,16 @@ import { applyFilters } from '../../filters/filters.js'
  * Check and return valid JSON or fallback.
  *
  * @param {string} value
- * @return {object|undefined}
+ * @return {object}
  */
-const getJson = <T extends object>(value: string): T | undefined => { // eslint-disable-line @typescript-eslint/no-unnecessary-type-parameters
+const getJson = <T extends object>(value: string): T => { // eslint-disable-line @typescript-eslint/no-unnecessary-type-parameters
   const val: unknown = JSON.parse(value)
 
   if (isObject(val)) {
     return val as T
   }
 
-  throw new Error('Parsed value is not an object')
+  throw new Error('Value not an object')
 }
 
 /**
@@ -29,9 +29,9 @@ const getJson = <T extends object>(value: string): T | undefined => { // eslint-
  *
  * @param {string} path
  * @param {boolean} [store=false]
- * @return {Promise<object|undefined>}
+ * @return {Promise<object>}
  */
-const getJsonFile = async <T>(path: string, store: boolean = false): Promise<object & T | undefined> => {
+const getJsonFile = async <T>(path: string, store: boolean = false): Promise<object & T> => {
   const newPath = store ? getPath(path, 'store') : path
   const { default: obj } = await import(newPath) as { default: object & T } // Removed assert json as not all exports are esnext
 

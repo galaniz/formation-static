@@ -12,7 +12,7 @@ import { escape } from '../escape.js'
 describe('escape()', () => {
   it('should throw error if value is null', () => {
     // @ts-expect-error - test null value
-    expect(() => escape(null)).toThrowError()
+    expect(() => escape(null)).toThrowError('Value not a string')
   })
 
   it('should escape html', () => {

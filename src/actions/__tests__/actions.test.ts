@@ -140,15 +140,14 @@ describe('doActions()', () => {
     expect(testAction).toHaveResolvedWith(false)
   })
 
-  it('should call async action and catch rejection', async () => {
+  it('should call async action and throw error', async () => {
     const testAction = vi.fn(() => new Promise((_resolve, reject) => {
       reject(new Error('Test error'))
     }))
 
     addAction(testNameOne, testAction)
-    await doActions(testNameOne, '', true)
 
-    expect(testAction).toHaveBeenCalledTimes(1)
+    await expect(async () => { await doActions(testNameOne, '', true) }).rejects.toThrowError('Test error')
   })
 
   it('should call mixed actions and return arg value', async () => {

@@ -80,12 +80,9 @@ const getLocalData = async (args: LocalDataArgs): Promise<LocalData> => {
     }
 
     const fileContents = await readFile(resolve(dir, file), { encoding: 'utf8' })
-    const fileJson: RenderItem | undefined = getJson(fileContents)
 
-    if (fileJson) {
-      data[fileName] = fileJson
-      hasData = true
-    }
+    data[fileName] = getJson<RenderItem>(fileContents)
+    hasData = true
   }
 
   /* Data not empty check */
