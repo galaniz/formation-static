@@ -98,6 +98,19 @@ Recurse and output nested content.
 
 <code>Promise&lt;string&gt;</code>
 
+## renderMeta  
+
+**<code>renderMeta(item: RenderItem): RenderMeta</code>**  
+
+Single item meta data.
+
+### Parameters  
+- **`item`** <code><a href="#renderitem">RenderItem</a></code> required
+
+### Returns  
+
+<code><a href="#rendermeta">RenderMeta</a></code>
+
 ## renderItem  
 
 **<code>renderItem(args: RenderItemArgs): Promise&lt;(RenderItemReturn|null)&gt;</code>**  
@@ -137,7 +150,6 @@ Loop through all content types to output pages and posts.
 - **`url`** <code>string</code> optional  
 - **`image`** <code>string</code> optional  
 - **`canonical`** <code>string</code> optional  
-- **`canonicalParams`** <code>string</code> optional  
 - **`prev`** <code>string</code> optional  
 - **`next`** <code>string</code> optional  
 - **`index`** <code>boolean</code> optional  
