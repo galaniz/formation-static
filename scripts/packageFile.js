@@ -15,17 +15,13 @@ import { resolve } from 'node:path'
  * @return {Promise<void>}
  */
 const init = async () => {
-  try {
-    const libDir = resolve('lib')
-    const cjsDir = resolve('cjs')
+  const libDir = resolve('lib')
+  const cjsDir = resolve('cjs')
 
-    await writeFile(`${libDir}/package.json`, '{"type": "module"}')
-    await writeFile(`${cjsDir}/package.json`, '{"type": "commonjs"}')
+  await writeFile(`${libDir}/package.json`, '{"type": "module"}')
+  await writeFile(`${cjsDir}/package.json`, '{"type": "commonjs"}')
 
-    console.info('[FRM] Success creating package json files')
-  } catch (error) {
-    console.error('[FRM] Error creating package json files: ', error)
-  }
+  console.info('[FRM] Success creating package json files')
 }
 
 init()

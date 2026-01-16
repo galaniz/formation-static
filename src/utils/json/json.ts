@@ -12,20 +12,16 @@ import { applyFilters } from '../../filters/filters.js'
  * Check and return valid JSON or fallback.
  *
  * @param {string} value
- * @return {object|undefined}
+ * @return {object}
  */
-const getJson = <T extends object>(value: string): T | undefined => { // eslint-disable-line @typescript-eslint/no-unnecessary-type-parameters
-  try {
-    const val: unknown = JSON.parse(value)
+const getJson = <T extends object>(value: string): T => { // eslint-disable-line @typescript-eslint/no-unnecessary-type-parameters
+  const val: unknown = JSON.parse(value)
 
-    if (isObject(val)) {
-      return val as T
-    }
-
-    throw new Error('Parsed value is not an object')
-  } catch {
-    return undefined
+  if (isObject(val)) {
+    return val as T
   }
+
+  throw new Error('Value not an object')
 }
 
 /**
@@ -33,26 +29,17 @@ const getJson = <T extends object>(value: string): T | undefined => { // eslint-
  *
  * @param {string} path
  * @param {boolean} [store=false]
- * @return {Promise<object|undefined>}
+ * @return {Promise<object>}
  */
-const getJsonFile = async <T>(path: string, store: boolean = false): Promise<object & T | undefined> => {
-  let res: object & T | undefined
-  let newPath = path
+const getJsonFile = async <T>(path: string, store: boolean = false): Promise<object & T> => {
+  const newPath = store ? getPath(path, 'store') : path
+  const { default: obj } = await import(newPath) as { default: object & T } // Removed assert json as not all exports are esnext
 
-  try {
-    newPath = store ? getPath(path, 'store') : path
-    const { default: obj } = await import(newPath) as { default: object & T }  // Removed assert json as not all exports are esnext
-
-    if (isObject(obj)) {
-      res = obj
-    } else {
-      throw new Error('No object in json file')
-    }
-  } catch {
-    res = undefined
+  if (isObject(obj)) {
+    return store ? await applyFilters('storeData', obj, newPath, true) : obj
   }
 
-  return store ? await applyFilters('storeData', res, newPath, true) : res
+  throw new Error('No object in JSON file')
 }
 
 /* Exports */

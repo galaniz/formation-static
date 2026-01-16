@@ -355,7 +355,6 @@ describe('render()', () => {
           description = '',
           image = '',
           canonical = '',
-          canonicalParams = '',
           prev = '',
           next = ''
         } = meta
@@ -367,7 +366,7 @@ describe('render()', () => {
         const prevMeta = prev ? `<link rel="prev" href="${prev}">` : ''
         const nextMeta = next ? `<link rel="next" href="${next}">` : ''
         const canonicalMeta =
-          canonical && isPag ? `<link rel="canonical" href="${canonical}${canonicalParams}">` : ''
+          canonical && isPag ? `<link rel="canonical" href="${canonical}">` : ''
 
         const primary = navInstance?.getOutput('primary', {
           currentLink: itemData.baseUrl,

@@ -2,7 +2,7 @@
 
 ## getJson  
 
-**<code>getJson(value: string): object | undefined</code>**  
+**<code>getJson(value: string): object</code>**  
 
 Check and return valid JSON or fallback.
 
@@ -11,11 +11,11 @@ Check and return valid JSON or fallback.
 
 ### Returns  
 
-<code>object | undefined</code>
+<code>object</code>
 
 ## getJsonFile  
 
-**<code>getJsonFile(path: string, store?: boolean): Promise&lt;(object|undefined)&gt;</code>**  
+**<code>getJsonFile(path: string, store?: boolean): Promise&lt;object&gt;</code>**  
 
 Import JSON file and return contents if object.
 
@@ -26,4 +26,4 @@ Default: `false`
 
 ### Returns  
 
-<code>Promise&lt;(object|undefined)&gt;</code>
+<code>Promise&lt;object&gt;</code>

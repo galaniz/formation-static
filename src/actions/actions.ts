@@ -109,9 +109,8 @@ const doActions = <V extends boolean = false>(
   }
 
   if (isAsync) {
-    doSequentially(callbacks, args)
-      .then(result => result)
-      .catch(() => undefined)
+    return doSequentially(callbacks, args)
+      .then(result => result) as ActionReturnType<V> 
   }
 
   return undefined as ActionReturnType<V>

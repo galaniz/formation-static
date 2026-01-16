@@ -160,7 +160,8 @@ describe('getLocalData()', () => {
         await cacheGet(data)
 
         return {
-          data: testData
+          data: testData,
+          items: []
         }
       }
 

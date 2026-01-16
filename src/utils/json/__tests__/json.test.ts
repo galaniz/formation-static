@@ -14,21 +14,13 @@ import { getJson, getJsonFile } from '../json.js'
 /* Test getJson */
 
 describe('getJson()', () => {
-  it('should return undefined if value is null', () => {
-    const value = null
+  it('should throw error if value is null', () => {
     // @ts-expect-error - test null value
-    const result = getJson(value)
-    const expectedResult = undefined
-
-    expect(result).toBe(expectedResult)
+    expect(() => getJson(null)).toThrowError('Value not an object')
   })
 
-  it('should return undefined if value is not a json string', () => {
-    const value = '123'
-    const result = getJson(value)
-    const expectedResult = undefined
-
-    expect(result).toBe(expectedResult)
+  it('should throw error if value is not a json string', () => {
+    expect(() => getJson('123')).toThrowError('Value not an object')
   })
 
   it('should return object if value is a valid json string', () => {
@@ -96,29 +88,17 @@ describe('getJsonFile()', () => {
     config.env.dir = ''
   })
 
-  it('should return undefined if path is null', async () => {
-    const path = null
-    // @ts-expect-error - test null path
-    const result = await getJsonFile(path)
-    const expectedResult = undefined
-
-    expect(result).toBe(expectedResult)
+  it('should throw error if path is null', async () => {
+    // @ts-expect-error - test null value
+    await expect(async () => await getJsonFile(null)).rejects.toThrowError()
   })
 
-  it('should return undefined if file is a text file', async () => {
-    const path = '/files/invalid.txt'
-    const result = await getJsonFile(path)
-    const expectedResult = undefined
-
-    expect(result).toBe(expectedResult)
+  it('should throw error if file is a text file', async () => {
+    await expect(async () => await getJsonFile('/files/invalid.txt')).rejects.toThrowError('No object in JSON file')
   })
 
-  it('should return undefined if file contains invalid json', async () => {
-    const path = '/files/invalid.json'
-    const result = await getJsonFile(path)
-    const expectedResult = undefined
-
-    expect(result).toBe(expectedResult)
+  it('should throw error if file contains invalid json', async () => {
+    await expect(async () => await getJsonFile('/files/invalid.json')).rejects.toThrowError('No object in JSON file')
   })
 
   it('should return object if file contains valid json', async () => {

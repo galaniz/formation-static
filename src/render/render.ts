@@ -21,7 +21,8 @@ import type {
   RenderLayout,
   RenderHttpError,
   RenderNavigation,
-  RenderFunctionsArgs
+  RenderFunctionsArgs,
+  RenderMeta
 } from './renderTypes.js'
 import type { ParentArgs, RefString } from '../global/globalTypes.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
@@ -487,6 +488,85 @@ const renderContent = async (args: RenderContentArgs, _html: RefString = { ref: 
 }
 
 /**
+ * Single item meta data.
+ *
+ * @param {RenderItem} item
+ * @return {RenderMeta}
+ */
+const renderMeta = (item: RenderItem): RenderMeta => {
+  const {
+    title,
+    slug,
+    baseUrl,
+    pagination
+  } = item
+
+  const meta = {
+    title,
+    description: '',
+    url: baseUrl,
+    image: '',
+    canonical: baseUrl,
+    prev: '',
+    next: '',
+    index: true,
+    isIndex: slug === 'index',
+    ...item.meta
+  }
+
+  if (isStringStrict(item.metaTitle)) {
+    meta.title = item.metaTitle
+  }
+
+  if (isStringStrict(item.metaDescription)) {
+    meta.description = item.metaDescription
+  }
+
+  // @ts-expect-error - nested image URL
+  if (isStringStrict(item.metaImage?.url)) {
+    // @ts-expect-error - nested image URL
+    meta.image = item.metaImage.url as unknown as string
+  }
+
+  if (!isObjectStrict(pagination)) {
+    return meta
+  }
+
+  const {
+    title: paginationTitle,
+    prev: paginationPrev,
+    next: paginationNext,
+    currentParams,
+    prevParams,
+    nextParams
+  } = pagination
+
+  const currentParamsStr = new URLSearchParams(currentParams).toString()
+
+  if (currentParamsStr) {
+    meta.canonical = `${baseUrl}?${currentParamsStr}`
+  }
+
+  if (isStringStrict(paginationTitle)) {
+    meta.paginationTitle = paginationTitle
+  }
+
+  if (paginationPrev) {
+    const prevParamsStr = new URLSearchParams(prevParams).toString()
+
+    meta.prev = `${baseUrl}${prevParamsStr ? `?${prevParamsStr}` : ''}`
+  }
+
+  if (paginationNext) {
+    const nextParamsStr = new URLSearchParams(nextParams).toString()
+
+    meta.next = `${baseUrl}?${nextParamsStr}`
+  }
+
+  return meta
+}
+
+/**
  * Output single post or page.
  *
  * @param {RenderItemArgs} args
@@ -573,40 +653,6 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
 
   await doActions('renderItemStart', renderItemStartArgs, true)
 
-  /* Meta */
-
-  const title = item.title
-  const meta = {
-    title: '',
-    description: '',
-    url: '',
-    image: '',
-    canonical: '',
-    prev: '',
-    next: '',
-    index: true,
-    isIndex: false,
-    ...item.meta
-  }
-
-  if (isStringStrict(item.metaTitle)) {
-    meta.title = item.metaTitle
-  }
-
-  if (isStringStrict(item.metaDescription)) {
-    meta.description = item.metaDescription
-  }
-
-  // @ts-expect-error - nested image URL
-  if (isStringStrict(item.metaImage?.url)) {
-    // @ts-expect-error - nested image URL
-    meta.image = item.metaImage.url as unknown as string
-  }
-
-  if (!isStringStrict(meta.title) && isStringStrict(title)) {
-    meta.title = title
-  }
-
   /* Permalink */
 
   const slugArgs = {
@@ -624,9 +670,6 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
   const permalink = getPermalink(slug, !slugIsHtml)
   const parents = s.parents
 
-  meta.url = permalink
-  meta.canonical = permalink
-
   /* Base */
 
   const taxonomy = contentType === 'term' ? item.taxonomy : contentType === 'taxonomy' ? item : null
@@ -641,12 +684,6 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
   if (slugIsHtml) {
     formattedSlug = slug
   }
-
-  /* Check if index */
-
-  const index = item.slug === 'index'
-
-  meta.isIndex = index
 
   /* Serverless data */
 
@@ -697,47 +734,9 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
 
   contentOutput = await doShortcodes(contentOutput, itemData)
 
-  /* Pagination variables for meta object */
+  /* Pagination serverless */
 
-  const pag = itemData.pagination
-
-  if (isObjectStrict(pag)) {
-    const {
-      currentParams,
-      prevParams,
-      nextParams
-    } = pag
-
-    const currentParamsStr = new URLSearchParams(currentParams).toString()
-
-    if (currentParamsStr) {
-      meta.canonicalParams = `?${currentParamsStr}`
-    }
-
-    if (isStringStrict(pag.title)) {
-      meta.paginationTitle = pag.title
-    }
-
-    if (pag.prev) {
-      const prevSlugArgs = {
-        ...slugArgs,
-        params: prevParams
-      }
-
-      const p = getSlug(prevSlugArgs, true)
-      meta.prev = getPermalink(p.slug, pag.prev === 1 && !prevParams)
-    }
-
-    if (pag.next) {
-      const nextSlugArgs = {
-        ...slugArgs,
-        params: nextParams
-      }
-
-      const n = getSlug(nextSlugArgs, true)
-      meta.next = getPermalink(n.slug, false)
-    }
-
+  if (isObjectStrict(itemData.pagination)) {
     serverlessRender = true
   }
 
@@ -762,7 +761,7 @@ const renderItem = async (args: RenderItemArgs, _contentType?: string): Promise<
 
   const layoutArgs: RenderLayoutArgs = {
     id,
-    meta,
+    meta: renderMeta(itemData),
     contentType,
     content: contentOutput,
     slug: formattedSlug,
@@ -932,6 +931,7 @@ const render = async (args: RenderArgs): Promise<RenderReturn[] | RenderReturn> 
 export {
   render,
   renderItem,
+  renderMeta,
   renderContent,
   renderFunctions,
   renderLayout,

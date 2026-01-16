@@ -156,17 +156,14 @@ describe('applyFilters()', () => {
     expect(result).toBe(expectedResult)
   })
 
-  it('should call async filter and catch rejection', async () => {
+  it('should call async filter and throw error', async () => {
     const testFilterOne = vi.fn(() => new Promise((_resolve, reject) => {
       reject(new Error('Test error'))
     }))
 
     addFilter(testNameOne, testFilterOne)
-    const result = await applyFilters(testNameOne, 36, {}, true)
-    const expectedResult = 36
 
-    expect(testFilterOne).toHaveBeenCalledTimes(1)
-    expect(result).toBe(expectedResult)
+    await expect(async () => await applyFilters(testNameOne, 36, {}, true)).rejects.toThrowError('Test error')
   })
 
   it('should call mixed filters and return cumulative string', async () => {

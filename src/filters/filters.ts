@@ -134,8 +134,7 @@ const applyFilters = <T, V extends boolean = false>(
 
   if (isAsync) {
     return applySequentially(callbacks, value, args)
-      .then(newValue => newValue)
-      .catch(() => value) as FilterReturnType<T, V>
+      .then(newValue => newValue) as FilterReturnType<T, V>
   }
 
   return value as FilterReturnType<T, V>

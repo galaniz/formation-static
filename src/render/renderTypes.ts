@@ -27,7 +27,6 @@ import type { PaginationData } from '../components/Pagination/PaginationTypes.js
  * @prop {string} [url]
  * @prop {string} [image]
  * @prop {string} [canonical]
- * @prop {string} [canonicalParams]
  * @prop {string} [prev]
  * @prop {string} [next]
  * @prop {boolean} [index=true]
@@ -40,7 +39,6 @@ export interface RenderMeta {
   url?: string
   image?: string
   canonical?: string
-  canonicalParams?: string
   prev?: string
   next?: string
   index?: boolean
