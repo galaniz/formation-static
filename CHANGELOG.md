@@ -34,5 +34,5 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
-- Silent errors in async `doActions`, `applyFilters`, `getJson` and `getJsonFile`.
+- Silent errors in `getJson`, `getJsonFile`, async `doActions` and async `applyFilters`.
 - Fire-and-forget promise in async `doActions` return.
