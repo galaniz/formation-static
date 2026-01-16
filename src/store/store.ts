@@ -11,7 +11,6 @@ import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isStringStrict } from '../utils/string/string.js'
 import { isArrayStrict } from '../utils/array/array.js'
-import { isProto } from '../utils/proto/proto.js'
 import { getArchiveMeta } from '../utils/archive/archive.js'
 import { config } from '../config/config.js'
 
@@ -28,15 +27,15 @@ let storeDir: string = 'lib/store'
  * @type {Store}
  */
 const defaultStore: Store = {
-  slugs: {},
-  parents: {},
+  slugs: Object.create(null) as Store['slugs'],
+  parents: Object.create(null) as Store['parents'],
   navigations: [],
   navigationItems: [],
-  formMeta: {},
-  archiveMeta: {},
-  imageMeta: {},
-  taxonomies: {},
-  serverless: {}
+  formMeta: Object.create(null) as Store['formMeta'],
+  archiveMeta: Object.create(null) as Store['archiveMeta'],
+  imageMeta: Object.create(null) as Store['imageMeta'],
+  taxonomies: Object.create(null) as Store['taxonomies'],
+  serverless: Object.create(null) as Store['serverless']
 }
 
 /**
@@ -131,10 +130,6 @@ const setStoreData = (allData: RenderAllData): boolean => {
   }
 
   config.hierarchicalTypes.forEach(type => {
-    if (isProto(type)) {
-      return
-    }
-
     const items = data[type]
 
     if (!isArrayStrict(items)) {
@@ -167,7 +162,7 @@ const setStoreData = (allData: RenderAllData): boolean => {
 
       const archiveType = normalizeContentType(archive)
 
-      if (isStringStrict(archiveType) && !isProto(archiveType)) {
+      if (isStringStrict(archiveType)) {
         const hasLocale = isStringStrict(locale)
         const archiveMeta = getArchiveMeta(archiveType)
         const newArchive = {
@@ -180,7 +175,7 @@ const setStoreData = (allData: RenderAllData): boolean => {
 
         if (hasLocale) {
           if (!store.archiveMeta[archiveType]) {
-            store.archiveMeta[archiveType] = {}
+            store.archiveMeta[archiveType] = Object.create(null) as Record<string, ArchiveMeta>
           }
 
           (store.archiveMeta[archiveType] as Record<string, ArchiveMeta>)[locale] = newArchive
@@ -198,7 +193,7 @@ const setStoreData = (allData: RenderAllData): boolean => {
 
         if (isStringStrict(parentSlug) && isStringStrict(parentTitle) && isStringStrict(parentId)) {
           if (store.parents[type] == null) {
-            store.parents[type] = {}
+            store.parents[type] = Object.create(null) as Record<string, [string, string, string]>
           }
 
           store.parents[type][id] = [parentId, parentSlug, parentTitle]
