@@ -1,6 +1,6 @@
 {
   "name": "@alanizcreative/formation-static",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Minimal static-site HTML renderer from JSON, Contentful, or WordPress data",
   "main": "./lib/config/config.js",
   "packageManager": "pnpm@10.27.0",
