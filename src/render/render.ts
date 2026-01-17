@@ -137,8 +137,10 @@ const getContentTemplate = (
   const newContent = content.map(c => {
     /* Check name */
 
-    if (named && isString(c.name)) {
-      namedContent[c.name] = { ...c }
+    const { name } = c
+
+    if (named && isString(name)) {
+      namedContent[name] = { ...c }
     }
 
     /* Check if template */
