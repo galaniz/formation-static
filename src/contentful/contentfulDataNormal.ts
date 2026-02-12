@@ -209,7 +209,7 @@ const normalizeItem = (item: ContentfulDataItem, data: RenderItem[], isInternalL
 
   const itemCopy = { ...item }
 
-  /* Id */
+  /* ID */
 
   if (isString(itemCopy.sys?.id)) {
     newItem.id = itemCopy.sys.id

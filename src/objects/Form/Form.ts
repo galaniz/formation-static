@@ -48,7 +48,7 @@ const Form = (props: FormProps): string[] => {
     honeypotAttr
   } = isObjectStrict(args) ? args : {}
 
-  /* Id, form tag and label required */
+  /* ID, form tag and label required */
 
   if (!isStringStrict(id) || !isStringStrict(formTag) || !isStringStrict(submitLabel)) {
     return []

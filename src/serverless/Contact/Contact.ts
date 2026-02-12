@@ -98,7 +98,7 @@ const Contact: ServerlessAction = async (args) => {
 
   const { id, action, inputs } = args
 
-  /* Id required */
+  /* ID required */
 
   if (!isStringStrict(id)) {
     return {

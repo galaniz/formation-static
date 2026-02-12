@@ -464,7 +464,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
     const isObj = isObjectStrict(value)
     const isStr = isStringStrict(value)
 
-    /* Id */
+    /* ID */
 
     if (key === 'id' || k === 'object_id') {
       val = value?.toString()
