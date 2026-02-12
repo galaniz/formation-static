@@ -8,7 +8,7 @@ import type { LocalData, LocalDataItem } from './localDataTypes.js'
 import type { RenderItem } from '../render/renderTypes.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isArray, isArrayStrict } from '../utils/array/array.js'
-import { isStringStrict } from '../utils/string/string.js'
+import { isStringSafe, isStringStrict } from '../utils/string/string.js'
 import { getStoreItem } from '../store/store.js'
 import { StoreImageMeta } from '../store/storeTypes.js'
 
@@ -40,6 +40,10 @@ const normalizeLocalRefs = (
   const isNavigationItem = contentType === 'navigationItem'
 
   for (const [key, value] of Object.entries(data)) {
+    if (!isStringSafe(key)) {
+      continue
+    }
+
     const isRef = refProps.includes(key)
     const isImage = imageProps.includes(key)
     const isStr = isStringStrict(value)
@@ -152,7 +156,7 @@ const normalizeLocalData = (
   const refData: LocalData = {}
 
   for (const [key, item] of Object.entries(data)) {
-    if (!isObjectStrict(item)) {
+    if (!isObjectStrict(item) || !isStringSafe(key)) {
       continue
     }
 
@@ -164,9 +168,9 @@ const normalizeLocalData = (
       item,
       refData,
       imageMeta,
-      refProps,
-      imageProps,
-      unsetProps,
+      refProps?.filter(prop => isStringSafe(prop)),
+      imageProps?.filter(prop => isStringSafe(prop)),
+      unsetProps?.filter(prop => isStringSafe(prop)),
       item.contentType
     )
   }

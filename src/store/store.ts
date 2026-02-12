@@ -156,9 +156,9 @@ const setStoreData = (allData: RenderAllData): boolean => {
         locale
       } = item as RenderItem
 
-      /* Id required */
+      /* ID required */
 
-      if (!isStringStrict(id)) {
+      if (!isStringSafe(id)) {
         return
       }
 

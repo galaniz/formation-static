@@ -129,7 +129,7 @@ describe('setConfigFilter()', () => {
   it('should filter config namespace with default value', () => {
     setConfig({
       filter: (con, env) => {
-        con.namespace = (env?.NAMESPACE ?? 'frm') as string // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+        con.namespace = (env?.NAMESPACE || 'frm') as string // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 
         return con
       }
@@ -147,7 +147,7 @@ describe('setConfigFilter()', () => {
   it('should filter config namespace with environment variable', () => {
     setConfig({
       filter: (con, env) => {
-        con.namespace = (env.NAMESPACE ?? '') as string
+        con.namespace = (env.NAMESPACE || '') as string
 
         return con
       }

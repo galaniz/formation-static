@@ -15,7 +15,7 @@ import type {
 import type { RenderItem } from '../render/renderTypes.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isArrayStrict } from '../utils/array/array.js'
-import { isStringStrict } from '../utils/string/string.js'
+import { isStringSafe, isStringStrict } from '../utils/string/string.js'
 import { isFunction } from '../utils/function/function.js'
 import { escape } from '../utils/escape/escape.js'
 
@@ -95,10 +95,10 @@ const getShortcodeData = (
     /* Indexes */
 
     const startIndex = opening.index
-    const startLen = tag.length
+    const startCount = tag.length
 
     let endIndex = startIndex + tag.length
-    let endLen = 0
+    let endCount = 0
 
     /* Closing tag */
 
@@ -107,7 +107,7 @@ const getShortcodeData = (
 
     if (closingMatch?.[0] === closingTag) {
       endIndex = closingMatch.index
-      endLen = closingTag.length
+      endCount = closingTag.length
     }
 
     /* Attributes from opening tag */
@@ -119,8 +119,12 @@ const getShortcodeData = (
     if (isArrayStrict(attr)) {
       attr.forEach(a => {
         const [key, value] = a.split('=') as [string, string] // Cast as key and value always exists
-        const type = attrTypes[key]
 
+        if (!isStringSafe(key)) {
+          return
+        }
+
+        const type = attrTypes[key]
         let val: ShortcodeAttrValue = escape(value.replace(/"/g, ''))
 
         if (type === 'number') {
@@ -139,8 +143,8 @@ const getShortcodeData = (
 
     /* Content including and excluding tags */
 
-    const replaceContent = content.slice(startIndex, endIndex + endLen)
-    const innerContent = content.slice(startIndex + startLen, endIndex)
+    const replaceContent = content.slice(startIndex, endIndex + endCount)
+    const innerContent = content.slice(startIndex + startCount, endIndex)
 
     /* Handle nested shortcodes */
 

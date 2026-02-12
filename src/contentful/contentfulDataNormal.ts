@@ -14,7 +14,7 @@ import type { GenericStrings, InternalLink } from '../global/globalTypes.js'
 import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { isArrayStrict } from '../utils/array/array.js'
 import { isObjectStrict } from '../utils/object/object.js'
-import { isString, isStringStrict } from '../utils/string/string.js'
+import { isString, isStringSafe, isStringStrict } from '../utils/string/string.js'
 import { getObjectKeys } from '../utils/object/objectUtils.js'
 import { isNumber } from '../utils/number/number.js'
 import { config } from '../config/config.js'
@@ -267,11 +267,11 @@ const normalizeItem = (item: ContentfulDataItem, data: RenderItem[], isInternalL
     }
 
     getObjectKeys(fields).forEach(prop => {
-      const field = fields[prop] as ContentfulDataItem[] | ContentfulDataItem | string
-
-      if (prop === 'content' && isInternalLink) {
+      if (!isStringSafe(prop) || (prop === 'content' && isInternalLink)) {
         return
       }
+
+      const field = fields[prop] as ContentfulDataItem[] | ContentfulDataItem | string
 
       if (isObjectStrict(field)) {
         if (field.nodeType === 'document') {

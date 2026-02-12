@@ -20,7 +20,7 @@ import {
 } from './wordpressDataNormal.js'
 import { applyFilters } from '../filters/filters.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
-import { isString, isStringStrict } from '../utils/string/string.js'
+import { isString, isStringSafe, isStringStrict } from '../utils/string/string.js'
 import { isArray } from '../utils/array/array.js'
 import { getStoreItem } from '../store/store.js'
 import { config } from '../config/config.js'
@@ -276,7 +276,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
       contentType = previewData.contentType
     }
 
-    if (id) {
+    if (id && isStringSafe(contentType)) {
       const key = `serverless_${id}_${contentType}`
       const data = await getWordPressData({
         key,
@@ -297,7 +297,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
   /* Partial data - not serverless */
 
   if (!isServerless) {
-    const partial = config.partialTypes
+    const partial = config.partialTypes.filter(type => isStringSafe(type))
 
     for (const contentType of partial) {
       const isMenu = contentType === 'nav_menu'
@@ -337,7 +337,7 @@ const getAllWordPressData = async (args?: AllWordPressDataArgs): Promise<RenderA
   /* Whole data (render items) - not serverless or preview */
 
   if (!isServerless && !isPreview) {
-    const whole = config.wholeTypes
+    const whole = config.wholeTypes.filter(type => isStringSafe(type))
 
     for (const contentType of whole) {
       allData.content[contentType] = []
