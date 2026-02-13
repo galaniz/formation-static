@@ -36,3 +36,17 @@ All notable changes to this project will be documented in this file.
 
 - Silent errors in `getJson`, `getJsonFile`, async `doActions` and async `applyFilters`.
 - Fire-and-forget promise in async `doActions` return.
+
+## [0.0.4] - 2026-02-12
+
+### Changed
+
+- URL constructor for Contentful and WordPress fetch URLs.
+
+### Added
+
+- `isStringSafe` utility for prototype key check.
+
+### Fixed
+
+- Prototype key checks for dynamic object properties.
