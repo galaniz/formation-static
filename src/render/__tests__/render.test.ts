@@ -1820,11 +1820,23 @@ describe('render()', () => {
                       name: 'custom-name-2'
                     },
                     {
-                      content: '[2.5]' // Test skipping non-named content
+                      content: '[3]' // Test skipping non-named content
+                    },
+                    {
+                      content: '[3.5]', // Test skipping invalid name
+                      name: '__proto__'
                     },
                     {
                       content: '[4]',
                       name: 'custom-name-2' // Test overriding named content
+                    },
+                    {
+                      content: '[4.5]', // Test skipping invalid name
+                      name: 'constructor'
+                    },
+                    {
+                      content: '[5]', // Test skipping invalid name
+                      name: 'prototype'
                     }
                   ]
                 }

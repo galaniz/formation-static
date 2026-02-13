@@ -16,7 +16,7 @@ import type { Generic, GenericStrings } from '../global/globalTypes.js'
 import type { getAllContentfulData } from '../contentful/contentfulData.js'
 import type { getAllWordPressData } from '../wordpress/wordpressData.js'
 import { ResponseError } from '../utils/ResponseError/ResponseError.js'
-import { isStringStrict } from '../utils/string/string.js'
+import { isStringSafe, isStringStrict } from '../utils/string/string.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isFunction } from '../utils/function/function.js'
 import { applyFilters } from '../filters/filters.js'
@@ -46,7 +46,7 @@ const serverlessPreview = (request: Request): RenderPreviewData | undefined => {
   const locale = searchParams.get('locale')
   const id = searchParams.get('preview')
 
-  /* Id and content type required */
+  /* ID and content type required */
 
   if (!isStringStrict(id) || !isStringStrict(contentType)) {
     return
@@ -86,7 +86,7 @@ const serverlessReload = (
   for (const param of allowedParams) {
     const value = searchParams.get(param)
 
-    if (isStringStrict(value)) {
+    if (isStringSafe(param) && isStringStrict(value) ) {
       query[param] = value
       hasParams = true
     }

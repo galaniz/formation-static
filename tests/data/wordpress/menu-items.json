@@ -28,6 +28,9 @@
       "lorem": "Ipsum"
     },
     "menus": 3,
+    "__proto__": "test",
+    "constructor": "test",
+    "prototype": "test",
     "_links": {
       "self": [
         {

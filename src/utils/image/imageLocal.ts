@@ -9,7 +9,7 @@ import { extname, resolve, basename, dirname } from 'node:path'
 import { mkdir, stat } from 'node:fs/promises'
 import sharp from 'sharp'
 import { getFilePaths } from '../file/filePath.js'
-import { isStringStrict } from '../string/string.js'
+import { isStringSafe, isStringStrict } from '../string/string.js'
 import { setStoreItem } from '../../store/store.js'
 import { config } from '../../config/config.js'
 
@@ -49,7 +49,7 @@ const setLocalImages = async (): Promise<sharp.OutputInfo[]> => {
 
     const [base] = baseName.split(ext)
 
-    if (!isStringStrict(base?.trim())) {
+    if (!isStringSafe(base?.trim())) {
       continue
     }
 

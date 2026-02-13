@@ -10,7 +10,7 @@ import type { AllDataFilterArgs, CacheData } from '../filters/filtersTypes.js'
 import { readdir, readFile } from 'node:fs/promises'
 import { extname, basename, resolve } from 'node:path'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
-import { isStringStrict } from '../utils/string/string.js'
+import { isStringSafe, isStringStrict } from '../utils/string/string.js'
 import { applyFilters } from '../filters/filters.js'
 import { getJson } from '../utils/json/json.js'
 import { config } from '../config/config.js'
@@ -75,7 +75,7 @@ const getLocalData = async (args: LocalDataArgs): Promise<LocalData> => {
     const fileExt = extname(file)
     const fileName = basename(file, fileExt)
 
-    if (fileExt !== '.json') {
+    if (fileExt !== '.json' || !isStringSafe(fileName)) {
       continue
     }
 
@@ -143,7 +143,7 @@ const getAllLocalData = async (args?: AllLocalDataArgs): Promise<RenderAllData |
   for (const [, value] of Object.entries(data)) {
     const { contentType } = value
 
-    if (!isStringStrict(contentType)) {
+    if (!isStringSafe(contentType)) {
       continue
     }
 

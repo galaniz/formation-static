@@ -16,7 +16,7 @@ import type { CacheData, DataFilterArgs } from '../filters/filtersTypes.js'
 import resolveResponse from 'contentful-resolve-response'
 import { applyFilters } from '../filters/filters.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
-import { isStringStrict } from '../utils/string/string.js'
+import { isStringSafe, isStringStrict } from '../utils/string/string.js'
 import { config } from '../config/config.js'
 import { getStoreItem } from '../store/store.js'
 import { normalizeContentfulData } from './contentfulDataNormal.js'
@@ -75,17 +75,17 @@ const getContentfulData = async (key: string, params?: ContentfulDataParams): Pr
 
   /* Params */
 
-  let url = `https://${host}/spaces/${space}/environments/${env}/entries?access_token=${accessToken}`
+  const url = new URL(`https://${host}/spaces/${space}/environments/${env}/entries?access_token=${accessToken}`)
 
   if (isObjectStrict(params)) {
     for (const [key, value] of Object.entries(params)) {
-      url += `&${key}=${value.toString()}`
+      url.searchParams.set(key, value.toString())
     }
   }
 
   /* Request */
 
-  const resp = await fetch(url)
+  const resp = await fetch(url.toString())
   const data = await resp.json() as ContentfulData | ContentfulDataError
 
   /* Check if error */
@@ -204,7 +204,7 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
       locale = previewData.locale
     }
 
-    if (id) {
+    if (id && isStringSafe(contentType)) {
       const key = `serverless_${id}_${contentType}`
       const params: ContentfulDataParams = {
         content_type: contentType,
@@ -232,7 +232,7 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
   /* Partial data - not serverless */
 
   if (!isServerless) {
-    const partial = config.partialTypes
+    const partial = config.partialTypes.filter(type => isStringSafe(type))
 
     for (const contentType of partial) {
       const key = `all_${contentType}`
@@ -268,7 +268,7 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
   /* Whole data (render items) - not serverless or preview */
 
   if (!isServerless && !isPreview) {
-    const whole = config.wholeTypes
+    const whole = config.wholeTypes.filter(type => isStringSafe(type))
 
     for (const contentType of whole) {
       const key = `all_${contentType}`

@@ -182,9 +182,9 @@ describe('getLocalData()', () => {
 
     const data = await getLocalData({
       key: 'all_local_data',
-      refProps: ['internalLink', 'term', 'taxonomy', 'ref'],
-      imageProps: ['image', 'featuredMedia'],
-      unsetProps: ['content', 'unset', 'ref']
+      refProps: ['internalLink', 'term', 'taxonomy', 'ref', '__proto__'],
+      imageProps: ['image', 'featuredMedia', 'constructor'],
+      unsetProps: ['content', 'unset', 'ref', 'prototype']
     })
 
     expect(data).toEqual(testData)

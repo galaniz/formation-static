@@ -29,7 +29,7 @@ import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
 import { doActions } from '../actions/actions.js'
 import { applyFilters } from '../filters/filters.js'
 import { getSlug, getPermalink } from '../utils/link/link.js'
-import { isString, isStringStrict } from '../utils/string/string.js'
+import { isString, isStringSafe, isStringStrict } from '../utils/string/string.js'
 import { isArray, isArrayStrict } from '../utils/array/array.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isFunction } from '../utils/function/function.js'
@@ -137,8 +137,10 @@ const getContentTemplate = (
   const newContent = content.map(c => {
     /* Check name */
 
-    if (named && isString(c.name)) {
-      namedContent[c.name] = { ...c }
+    const { name } = c
+
+    if (named && isStringSafe(name)) {
+      namedContent[name] = { ...c }
     }
 
     /* Check if template */

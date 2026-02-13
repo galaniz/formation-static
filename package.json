@@ -3,7 +3,7 @@
   "version": "0.0.3",
   "description": "Minimal static-site HTML renderer from JSON, Contentful, or WordPress data",
   "main": "./lib/config/config.js",
-  "packageManager": "pnpm@10.27.0",
+  "packageManager": "pnpm@10.29.1",
   "type": "module",
   "files": [
     "./lib",
@@ -45,15 +45,15 @@
   "license": "MIT",
   "devDependencies": {
     "@types/contentful-resolve-response": "^0.1.33",
-    "@types/node": "^25.0.3",
-    "@vitest/coverage-v8": "^4.0.16",
+    "@types/node": "^25.2.2",
+    "@vitest/coverage-v8": "^4.0.18",
     "eslint": "9.39.2",
-    "memfs": "4.51.1",
-    "release-it": "^19.2.0",
-    "terser": "5.44.1",
+    "memfs": "4.56.10",
+    "release-it": "^19.2.4",
+    "terser": "5.46.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "8.50.0",
-    "vitest": "^4.0.16"
+    "typescript-eslint": "8.54.0",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
     "uuid": "^13.0.0"

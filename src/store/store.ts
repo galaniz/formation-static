@@ -9,7 +9,7 @@ import type { ArchiveMeta } from '../utils/archive/archiveTypes.js'
 import type { RenderAllData, RenderItem } from '../render/renderTypes.js'
 import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
-import { isStringStrict } from '../utils/string/string.js'
+import { isStringStrict, isStringSafe } from '../utils/string/string.js'
 import { isArrayStrict } from '../utils/array/array.js'
 import { getArchiveMeta } from '../utils/archive/archive.js'
 import { config } from '../config/config.js'
@@ -27,15 +27,15 @@ let storeDir: string = 'lib/store'
  * @type {Store}
  */
 const defaultStore: Store = {
-  slugs: Object.create(null) as Store['slugs'],
-  parents: Object.create(null) as Store['parents'],
+  slugs: {},
+  parents: {},
   navigations: [],
   navigationItems: [],
-  formMeta: Object.create(null) as Store['formMeta'],
-  archiveMeta: Object.create(null) as Store['archiveMeta'],
-  imageMeta: Object.create(null) as Store['imageMeta'],
-  taxonomies: Object.create(null) as Store['taxonomies'],
-  serverless: Object.create(null) as Store['serverless']
+  formMeta: {},
+  archiveMeta: {},
+  imageMeta: {},
+  taxonomies: {},
+  serverless: {}
 }
 
 /**
@@ -84,11 +84,11 @@ const setStoreItem = <T extends Store, K extends keyof T, V extends keyof T[K] |
   value: V extends keyof T[K] ? T[K][V] : T[K],
   subProp?: V
 ): boolean => {
-  if (!isStringStrict(prop) || !isObject(value) || store[prop] == null) {
+  if (!isStringSafe(prop) || !isObject(value) || store[prop] == null) {
     return false
   }
 
-  if (isStringStrict(subProp)) {
+  if (isStringSafe(subProp)) {
     // @ts-expect-error - store prop checked above
     store[prop][subProp] = value
   } else {
@@ -130,6 +130,10 @@ const setStoreData = (allData: RenderAllData): boolean => {
   }
 
   config.hierarchicalTypes.forEach(type => {
+    if (!isStringSafe(type)) {
+      return
+    }
+
     const items = data[type]
 
     if (!isArrayStrict(items)) {
@@ -152,9 +156,9 @@ const setStoreData = (allData: RenderAllData): boolean => {
         locale
       } = item as RenderItem
 
-      /* Id required */
+      /* ID required */
 
-      if (!isStringStrict(id)) {
+      if (!isStringSafe(id)) {
         return
       }
 
@@ -162,8 +166,8 @@ const setStoreData = (allData: RenderAllData): boolean => {
 
       const archiveType = normalizeContentType(archive)
 
-      if (isStringStrict(archiveType)) {
-        const hasLocale = isStringStrict(locale)
+      if (isStringSafe(archiveType)) {
+        const hasLocale = isStringSafe(locale)
         const archiveMeta = getArchiveMeta(archiveType)
         const newArchive = {
           id,
@@ -175,7 +179,7 @@ const setStoreData = (allData: RenderAllData): boolean => {
 
         if (hasLocale) {
           if (!store.archiveMeta[archiveType]) {
-            store.archiveMeta[archiveType] = Object.create(null) as Record<string, ArchiveMeta>
+            store.archiveMeta[archiveType] = {}
           }
 
           (store.archiveMeta[archiveType] as Record<string, ArchiveMeta>)[locale] = newArchive
@@ -191,9 +195,9 @@ const setStoreData = (allData: RenderAllData): boolean => {
         const parentTitle = parent.title
         const parentId = parent.id
 
-        if (isStringStrict(parentSlug) && isStringStrict(parentTitle) && isStringStrict(parentId)) {
+        if (isStringStrict(parentSlug) && isStringStrict(parentTitle) && isStringSafe(parentId)) {
           if (store.parents[type] == null) {
-            store.parents[type] = Object.create(null) as Record<string, [string, string, string]>
+            store.parents[type] = {}
           }
 
           store.parents[type][id] = [parentId, parentSlug, parentTitle]

@@ -25,7 +25,7 @@ import { parse } from '@wordpress/block-serialization-default-parser'
 import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { getObjectKeys } from '../utils/object/objectUtils.js'
 import { getStoreItem, setStoreItem } from '../store/store.js'
-import { isString, isStringStrict } from '../utils/string/string.js'
+import { isString, isStringSafe, isStringStrict } from '../utils/string/string.js'
 import { isArrayStrict } from '../utils/array/array.js'
 import { isObjectStrict } from '../utils/object/object.js'
 import { isNumber } from '../utils/number/number.js'
@@ -200,7 +200,7 @@ const normalizeEmbedded = (
         }
 
         Object.entries(embed).forEach(([key, val]) => {
-          if (exclude.includes(key)) {
+          if (exclude.includes(key) || !isStringSafe(key)) {
             return
           }
 
@@ -328,9 +328,9 @@ const normalizeEmbedded = (
             taxonomyLookup = 'tags'
           }
 
-          const itemTaxonomy = newItem[taxonomyLookup] ?? item[taxonomyLookup]
+          const itemTaxonomy = newItem[taxonomyLookup] || item[taxonomyLookup]
 
-          if (!isArrayStrict(itemTaxonomy)) {
+          if (!isStringSafe(taxonomyLookup) || !isArrayStrict(itemTaxonomy)) {
             return
           }
 
@@ -347,7 +347,7 @@ const normalizeEmbedded = (
             }
 
             Object.entries(e).forEach(([key, val]) => {
-              if (exclude.includes(key)) {
+              if (exclude.includes(key) || !isStringSafe(key)) {
                 return
               }
 
@@ -392,26 +392,28 @@ const normalizeBlocks = (blocks: ReturnType<typeof parse>): RenderItem[] => {
     const { isItem } = attrs
     const attrItemArr = (isStringStrict(isItem) ? isItem : '').split(',')
     const attrItemExists = attrItemArr.length
+    const newItem: RenderItem = { contentType }
 
     for (const [key, value] of Object.entries(attrs)) {
-      if (!isObjectStrict(value)) {
+      if (!isStringSafe(key)) {
         continue
       }
 
-      if (attrItemExists && attrItemArr.includes(key)) {
+      const isObj = isObjectStrict(value)
+
+      if (isObj && attrItemExists && attrItemArr.includes(key)) {
         const itemValue = normalizeItem(value as WordPressDataItem)
         itemValue.content = undefined
-        attrs[key] = itemValue
+        newItem[key] = itemValue
+        continue
       }
 
-      if (isStringStrict((value as WordPressDataFile).mime)) {
-        attrs[key] = normalizeFile(value as WordPressDataFile)
+      if (isObj && isStringStrict((value as WordPressDataFile).mime)) {
+        newItem[key] = normalizeFile(value as WordPressDataFile)
+        continue
       }
-    }
 
-    const newItem: RenderItem = {
-      contentType,
-      ...attrs
+      newItem[key] = value
     }
 
     const renderType = config.renderTypes[contentType]
@@ -447,7 +449,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
   for (const [key, value] of Object.entries(item)) {
     /* Skip prop */
 
-    if (excludeProps.includes(key)) {
+    if (excludeProps.includes(key) || !isStringSafe(key)) {
       continue
     }
 
@@ -464,7 +466,7 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
     const isObj = isObjectStrict(value)
     const isStr = isStringStrict(value)
 
-    /* Id */
+    /* ID */
 
     if (key === 'id' || k === 'object_id') {
       val = value?.toString()
@@ -532,8 +534,11 @@ const normalizeItem = (item: WordPressDataItem): RenderItem => {
 
     if (key === 'meta' && isObj) {
       for (const [metaKey, metaValue] of Object.entries(val as WordPressDataMeta)) {
-        const normalKey = normalMetaKeys.get(metaKey) ?? metaKey
-        newItem[normalKey] = metaValue
+        if (!isStringSafe(metaKey)) {
+          continue
+        }
+
+        newItem[normalMetaKeys.get(metaKey) || metaKey] = metaValue
       }
 
       continue
@@ -678,7 +683,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
       newItem.children = children.sort((a, b) => a.menu_order - b.menu_order)
     }
 
-    /* Outstanding props (eg. rest api field) */
+    /* Outstanding props */
 
     const exclude = [
       ...excludeProps,
@@ -693,11 +698,12 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
       'menus',
       'parent',
       'contentType',
-      'status'
+      'status',
+      'xfn'
     ]
 
     Object.entries(obj).forEach(([key, val]) => {
-      if (exclude.includes(key)) {
+      if (exclude.includes(key) || !isStringSafe(key)) {
         return
       }
 
@@ -739,7 +745,7 @@ const normalizeWordPressMenus = (menus: WordPressDataMenu[]): NavigationList[] =
       description,
       meta,
       location: locations,
-      items: menusById.get(id)?.sort((a, b) => a.menu_order - b.menu_order) ?? []
+      items: menusById.get(id)?.sort((a, b) => a.menu_order - b.menu_order) || []
     }
 
     newMenus.push(newMenu)

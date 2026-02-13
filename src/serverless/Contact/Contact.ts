@@ -10,7 +10,7 @@ import type { RefString } from '../../global/globalTypes.js'
 import { config } from '../../config/config.js'
 import { escape } from '../../utils/escape/escape.js'
 import { isArray } from '../../utils/array/array.js'
-import { isString, isStringStrict } from '../../utils/string/string.js'
+import { isString, isStringSafe, isStringStrict } from '../../utils/string/string.js'
 import { isObject, isObjectStrict } from '../../utils/object/object.js'
 import { getObjectKeys } from '../../utils/object/objectUtils.js'
 import { applyFilters } from '../../filters/filters.js'
@@ -98,7 +98,7 @@ const Contact: ServerlessAction = async (args) => {
 
   const { id, action, inputs } = args
 
-  /* Id required */
+  /* ID required */
 
   if (!isStringStrict(id)) {
     return {
@@ -184,8 +184,12 @@ const Contact: ServerlessAction = async (args) => {
 
   for (const [name, input] of Object.entries(inputs)) {
     const inputType = input.type
-    const inputLabel = input.label?.trim() || `[${name}]`
+    const inputLabel = escape(input.label?.trim() || `[${name}]`)
     const inputValue = input.value
+
+    if (!isStringSafe(inputLabel)) {
+      continue
+    }
 
     /* Escape value */
 
@@ -194,13 +198,13 @@ const Contact: ServerlessAction = async (args) => {
     if (isArray(inputValue)) {
       inputValueStr = inputValue.map(v => {
         if (isFile(v)) {
-          return v.name
+          return escape(v.name)
         }
 
         return escape(v.toString().trim())
       }).join('<br>')
     } else {
-      inputValueStr = isFile(inputValue) ? inputValue.name : escape(inputValue.toString().trim())
+      inputValueStr = isFile(inputValue) ? escape(inputValue.name) : escape(inputValue.toString().trim())
     }
 
     /* Subject */
@@ -226,9 +230,9 @@ const Contact: ServerlessAction = async (args) => {
     let hasLegend = false
     let legend = ''
 
-    if (isStringStrict(input.legend)) {
+    if (isStringSafe(input.legend)) {
+      legend = escape(input.legend)
       hasLegend = true
-      legend = input.legend
     }
 
     if (hasLegend) {

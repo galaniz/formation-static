@@ -26,10 +26,10 @@ const getContentWords = <T>(args: ExcerptContentWordArgs<T>): string[] => {
   let { _words = [] } = args
 
   const max = limit + 1
-  const wordsLen = _words.length
+  const wordsCount = _words.length
 
-  if (isObject(content) && wordsLen < max) {
-    const addMax = max - wordsLen
+  if (isObject(content) && wordsCount < max) {
+    const addMax = max - wordsCount
 
     for (const [key, value] of Object.entries(content)) {
       if (key === prop && isStringStrict(value)) {
@@ -84,9 +84,9 @@ const getExcerpt = <T extends object>(args: ExcerptArgs<T>): string => {
     if (limitExcerpt) {
       let excerptArr = excerpt.split(' ')
 
-      const excerptLen = excerptArr.length
+      const excerptCount = excerptArr.length
 
-      if (excerptLen > limit) {
+      if (excerptCount > limit) {
         excerptArr = excerptArr.slice(0, limit)
         output = `${excerptArr.join(' ')}${more}`
       }
@@ -98,14 +98,14 @@ const getExcerpt = <T extends object>(args: ExcerptArgs<T>): string => {
       limit
     })
 
-    const wordsLen = words.length
+    const wordsCount = words.length
 
-    if (wordsLen > 0) {
-      if (wordsLen > limit && more) {
+    if (wordsCount > 0) {
+      if (wordsCount > limit && more) {
         words.pop()
       }
 
-      output = `${words.join(' ')}${wordsLen > limit ? more : ''}`
+      output = `${words.join(' ')}${wordsCount > limit ? more : ''}`
     }
   }
 

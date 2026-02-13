@@ -29,9 +29,6 @@ export const menuItems = [
     target: '',
     classes: [
       ''
-    ],
-    xfn: [
-      ''
     ]
   },
   {
@@ -48,9 +45,6 @@ export const menuItems = [
     target: '_blank',
     classes: [
       'test-class'
-    ],
-    xfn: [
-      ''
     ]
   },
   {
@@ -73,9 +67,6 @@ export const menuItems = [
     target: '',
     classes: [
       ''
-    ],
-    xfn: [
-      ''
     ]
   },
   {
@@ -87,9 +78,6 @@ export const menuItems = [
     target: '',
     classes: [
       ''
-    ],
-    xfn: [
-      ''
     ]
   },
   {
@@ -100,9 +88,6 @@ export const menuItems = [
     description: '',
     target: '',
     classes: [
-      ''
-    ],
-    xfn: [
       ''
     ]
   }

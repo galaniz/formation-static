@@ -96,7 +96,7 @@ const FormOption = (props: FormOptionProps): string => {
     return ''
   }
 
-  /* Id */
+  /* ID */
 
   const id = uuid()
 

@@ -50,6 +50,9 @@ describe('setLocalImages()', () => {
     await mkdir(emptyInputDir, { recursive: true })
     await writeFile(join(inputDir, ' .png'), await sharp(sharpArgs).png().toBuffer()) // Test skipping file with empty name
     await writeFile(join(inputDir, '.png'), await sharp(sharpArgs).png().toBuffer()) // Test skipping file without name
+    await writeFile(join(inputDir, '__proto__.png'), await sharp(sharpArgs).png().toBuffer()) // Test skipping invalid file name
+    await writeFile(join(inputDir, 'constructor.png'), await sharp(sharpArgs).png().toBuffer()) // Test skipping invalid file name
+    await writeFile(join(inputDir, 'prototype.png'), await sharp(sharpArgs).png().toBuffer()) // Test skipping invalid file name
     await writeFile(join(inputDir, 'test.jpg'), await sharp(sharpArgs).jpeg().toBuffer())
     await writeFile(join(inputDir, 'test', 'test.png'), await sharp(sharpArgs).png().toBuffer())
 

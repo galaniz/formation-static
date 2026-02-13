@@ -83,7 +83,7 @@ const FormField = (props: FormFieldProps): string[] => {
 
   const hasValue = isStringStrict(value)
 
-  /* Id */
+  /* ID */
 
   const id: string = uuid()
 

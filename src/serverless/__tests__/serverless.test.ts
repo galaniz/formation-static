@@ -88,7 +88,7 @@ describe('serverlessPreview()', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should return id, content type and locale', () => {
+  it('should return ID, content type and locale', () => {
     const result = serverlessPreview(testRequest('http://test.com/?preview=123&content_type=post&locale=es'))
     const expectedResult = { id: '123', contentType: 'post', locale: 'es' }
 
@@ -101,6 +101,20 @@ describe('serverlessPreview()', () => {
 describe('serverlessReload()', () => {
   it('should return undefined if no params', () => {
     const result = serverlessReload(testRequest())
+    const expectedResult = undefined
+
+    expect(result).toEqual(expectedResult)
+  })
+
+  it('should return undefined if invalid params', () => {
+    const url = 'http://test.com/blog/?__proto__=test&constructor=test&prototype=test'
+    const allowedParams = [
+      '__proto__',
+      'constructor',
+      'prototype'
+    ]
+
+    const result = serverlessReload(testRequest(url), allowedParams)
     const expectedResult = undefined
 
     expect(result).toEqual(expectedResult)

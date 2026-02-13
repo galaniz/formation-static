@@ -415,10 +415,10 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
     }
   })
 
-  const columnWidthsLen = columnWidths.length
+  const columnWidthsCount = columnWidths.length
   const hasContainerWidth = !!containerWidth
 
-  if (!columnWidthsLen && !hasContainerWidth) {
+  if (!columnWidthsCount && !hasContainerWidth) {
     return fallback
   }
 
@@ -430,7 +430,7 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
 
   /* Convert to fixed widths and determine sizes */
 
-  const breakpointsLen = breakpoints.length
+  const breakpointsCount = breakpoints.length
   const maxWidthArr: number[] = []
   const sizesArr: string[] = []
   const sizeFactor = viewportWidth / 100
@@ -439,10 +439,10 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
   let lastBreakpoint = 0
   let lastSize = ''
   let containerWidthAdded = false
-  let sizesArrLen = 0
+  let sizesArrCount = 0
   let maxIndex = -1
 
-  for (let i = 0; i < breakpointsLen; i += 1) {
+  for (let i = 0; i < breakpointsCount; i += 1) {
     const breakpoint = breakpoints[i] as number
     const width = columnWidths[i]
 
@@ -463,7 +463,7 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
 
       if (!(hasMax && relMaxWidth > maxPx)) {
         maxWidthArr.push(relMaxWidth)
-        sizesArrLen = sizesArr.push(`(min-width: ${containerWidth / 16}rem) ${relSize}`)
+        sizesArrCount = sizesArr.push(`(min-width: ${containerWidth / 16}rem) ${relSize}`)
         containerWidthAdded = true
         lastSize = relSize
       }
@@ -474,11 +474,11 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
     }
 
     if (!gtMaxWidth && lastSize !== size) {
-      sizesArrLen = sizesArr.push(breakpoint ? `(min-width: ${breakpoint / 16}rem) ${size}` : size)
+      sizesArrCount = sizesArr.push(breakpoint ? `(min-width: ${breakpoint / 16}rem) ${size}` : size)
     }
 
     if (hasMax && maxPx > lastBreakpoint && maxPx < breakpoint && maxPx < breakpointWidth) {
-      maxIndex = sizesArrLen
+      maxIndex = sizesArrCount
     }
 
     lastWidth = width
@@ -492,13 +492,13 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
 
     if (!(hasMax && relMaxWidth > maxPx)) {
       maxWidthArr.push(relMaxWidth)
-      sizesArrLen = sizesArr.push(`(min-width: ${containerWidth / 16}rem) ${relSize}`)
+      sizesArrCount = sizesArr.push(`(min-width: ${containerWidth / 16}rem) ${relSize}`)
       containerWidthAdded = true
     }
   }
 
   if (hasMax && maxPx > lastBreakpoint) {
-    maxIndex = sizesArrLen
+    maxIndex = sizesArrCount
   }
 
   if (maxIndex !== -1) {
@@ -510,7 +510,7 @@ const getImageSizes = (args: ImageSizesArgs): ImageSizesReturn => {
 
   const maxWidth = Math.max(...maxWidthArr) * 2
 
-  if (!hasMax && (!columnWidthsLen || (col === 1 && colSmall === 1 && colMedium === 1 && colLarge === 1))) {
+  if (!hasMax && (!columnWidthsCount || (col === 1 && colSmall === 1 && colMedium === 1 && colLarge === 1))) {
     const sizeWidth = `${(maxWidth / 32)}rem`
 
     sizesArr[0] = `${viewportWidth}vw`
