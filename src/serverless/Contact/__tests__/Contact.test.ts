@@ -83,6 +83,18 @@ describe('Contact()', () => {
       legend: 'Legend',
       label: 'Lorem',
       value: 'Quisque'
+    },
+    protoInput: { // Test skipping invalid input label
+      type: 'text',
+      legend: '__proto__',
+      label: 'constructor',
+      value: 'test'
+    },
+    protoLegend: { // Test skipping invalid legend
+      type: 'text',
+      legend: '__proto__',
+      label: 'prototype',
+      value: 'test'
     }
   }
 

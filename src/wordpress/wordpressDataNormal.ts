@@ -392,26 +392,28 @@ const normalizeBlocks = (blocks: ReturnType<typeof parse>): RenderItem[] => {
     const { isItem } = attrs
     const attrItemArr = (isStringStrict(isItem) ? isItem : '').split(',')
     const attrItemExists = attrItemArr.length
+    const newItem: RenderItem = { contentType }
 
     for (const [key, value] of Object.entries(attrs)) {
-      if (!isObjectStrict(value) || !isStringSafe(key)) {
+      if (!isStringSafe(key)) {
         continue
       }
 
-      if (attrItemExists && attrItemArr.includes(key)) {
+      const isObj = isObjectStrict(value)
+
+      if (isObj && attrItemExists && attrItemArr.includes(key)) {
         const itemValue = normalizeItem(value as WordPressDataItem)
         itemValue.content = undefined
-        attrs[key] = itemValue
+        newItem[key] = itemValue
+        continue
       }
 
-      if (isStringStrict((value as WordPressDataFile).mime)) {
-        attrs[key] = normalizeFile(value as WordPressDataFile)
+      if (isObj && isStringStrict((value as WordPressDataFile).mime)) {
+        newItem[key] = normalizeFile(value as WordPressDataFile)
+        continue
       }
-    }
 
-    const newItem: RenderItem = {
-      contentType,
-      ...attrs
+      newItem[key] = value
     }
 
     const renderType = config.renderTypes[contentType]
@@ -681,7 +683,7 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
       newItem.children = children.sort((a, b) => a.menu_order - b.menu_order)
     }
 
-    /* Outstanding props (eg. rest api field) */
+    /* Outstanding props */
 
     const exclude = [
       ...excludeProps,
@@ -696,7 +698,8 @@ const normalizeWordPressMenuItems = (items: WordPressDataMenuItem[]): Navigation
       'menus',
       'parent',
       'contentType',
-      'status'
+      'status',
+      'xfn'
     ]
 
     Object.entries(obj).forEach(([key, val]) => {

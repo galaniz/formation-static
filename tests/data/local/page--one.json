@@ -4,6 +4,7 @@
   "slug": "index",
   "featuredMedia": "does-not-exist",
   "ref": "post--one",
+  "constructor": "test",
   "content": [
     {
       "renderType": "contentTemplate",
@@ -18,6 +19,7 @@
     },
     {
       "renderType": "container",
+      "__proto__": "test",
       "tag": "section",
       "content": [
         {
@@ -25,6 +27,7 @@
           "content": [
             {
               "renderType": "richText",
+              "prototype": "test",
               "tag": "h2",
               "content": "Lorem ipsum"
             },

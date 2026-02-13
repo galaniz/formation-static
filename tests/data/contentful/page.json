@@ -48,6 +48,7 @@
         "title": "Nulla",
         "slug": "null",
         "archive": "Post",
+        "constructor": "test",
         "content": [
           {
             "sys": {
@@ -2886,6 +2887,7 @@
           "gapLarge": "None",
           "justify": "None",
           "align": "None",
+          "prototype": "test",
           "content": [
             {
               "sys": {
@@ -3246,6 +3248,7 @@
           "locale": "en-CA"
         },
         "fields": {
+          "__proto__": "test",
           "content": [
             {
               "sys": {

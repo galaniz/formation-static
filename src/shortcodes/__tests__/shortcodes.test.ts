@@ -188,7 +188,7 @@ describe('doShortcodes()', () => {
         }
       })
 
-      await doShortcodes('Test [test key="= =value key1= key3=value2 key4=\'\'] content.')
+      await doShortcodes('Test [test constructor="test" prototype="test" key="= =value key1= key3=value2 key4=\'\'] content.')
     })
   )
 

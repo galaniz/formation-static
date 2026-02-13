@@ -37,6 +37,9 @@
     "categories": [
       1
     ],
+    "__proto__": [
+      5
+    ],
     "tags": [],
     "class_list": [
       "post-19",
@@ -158,6 +161,9 @@
             "name": "Uncategorized",
             "slug": "uncategorized",
             "taxonomy": "category",
+            "__proto__": "test",
+            "constructor": "test",
+            "prototype": "test",
             "_links": {
               "self": [
                 {
@@ -182,6 +188,47 @@
               "wp:post_type": [
                 {
                   "href": "http://wp.com/wp-json/wp/v2/posts?categories=1"
+                }
+              ],
+              "curies": [
+                {
+                  "name": "wp",
+                  "href": "https://api.w.org/{rel}",
+                  "templated": true
+                }
+              ]
+            }
+          },
+          {
+            "id": 5,
+            "link": "http://wp.com/__proto__/prototype/",
+            "name": "Prototype",
+            "slug": "prototype",
+            "taxonomy": "__proto__",
+            "_links": {
+              "self": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/__proto__/1",
+                  "targetHints": {
+                    "allow": [
+                      "GET"
+                    ]
+                  }
+                }
+              ],
+              "collection": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/__proto__"
+                }
+              ],
+              "about": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/taxonomies/__proto__"
+                }
+              ],
+              "wp:post_type": [
+                {
+                  "href": "http://wp.com/wp-json/wp/v2/posts?__proto__=1"
                 }
               ],
               "curies": [
