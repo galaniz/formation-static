@@ -156,7 +156,7 @@ const normalizeLocalData = (
   const refData: LocalData = {}
 
   for (const [key, item] of Object.entries(data)) {
-    if (!isObjectStrict(item)) {
+    if (!isObjectStrict(item) || !isStringSafe(key)) {
       continue
     }
 

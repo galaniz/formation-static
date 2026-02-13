@@ -119,7 +119,7 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
 
   /* Params */
 
-  let url = `${ssl ? 'https' : 'http'}://${host}/wp-json/wp/v2/${route}?status=${status}`
+  const urlObj = new URL(`${ssl ? 'https' : 'http'}://${host}/wp-json/wp/v2/${route}?status=${status}`)
   let loop = false
   let embed = false
 
@@ -136,13 +136,15 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
         loop = true
       }
 
-      url += `&${key}=${val.toString()}`
+      urlObj.searchParams.set(key, val.toString())
     }
   }
 
   if (loop) {
-    url += `&page=${_page}`
+    urlObj.searchParams.set('page', _page.toString())
   }
+
+  let url = urlObj.toString()
 
   if (!embed) {
     url += '&_embed'

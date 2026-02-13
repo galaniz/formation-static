@@ -184,7 +184,7 @@ const Contact: ServerlessAction = async (args) => {
 
   for (const [name, input] of Object.entries(inputs)) {
     const inputType = input.type
-    const inputLabel = input.label?.trim() || `[${name}]`
+    const inputLabel = escape(input.label?.trim() || `[${name}]`)
     const inputValue = input.value
 
     if (!isStringSafe(inputLabel)) {
@@ -198,13 +198,13 @@ const Contact: ServerlessAction = async (args) => {
     if (isArray(inputValue)) {
       inputValueStr = inputValue.map(v => {
         if (isFile(v)) {
-          return v.name
+          return escape(v.name)
         }
 
         return escape(v.toString().trim())
       }).join('<br>')
     } else {
-      inputValueStr = isFile(inputValue) ? inputValue.name : escape(inputValue.toString().trim())
+      inputValueStr = isFile(inputValue) ? escape(inputValue.name) : escape(inputValue.toString().trim())
     }
 
     /* Subject */
@@ -231,8 +231,8 @@ const Contact: ServerlessAction = async (args) => {
     let legend = ''
 
     if (isStringSafe(input.legend)) {
+      legend = escape(input.legend)
       hasLegend = true
-      legend = input.legend
     }
 
     if (hasLegend) {

@@ -75,17 +75,17 @@ const getContentfulData = async (key: string, params?: ContentfulDataParams): Pr
 
   /* Params */
 
-  let url = `https://${host}/spaces/${space}/environments/${env}/entries?access_token=${accessToken}`
+  const url = new URL(`https://${host}/spaces/${space}/environments/${env}/entries?access_token=${accessToken}`)
 
   if (isObjectStrict(params)) {
     for (const [key, value] of Object.entries(params)) {
-      url += `&${key}=${value.toString()}`
+      url.searchParams.set(key, value.toString())
     }
   }
 
   /* Request */
 
-  const resp = await fetch(url)
+  const resp = await fetch(url.toString())
   const data = await resp.json() as ContentfulData | ContentfulDataError
 
   /* Check if error */
