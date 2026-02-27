@@ -29,6 +29,8 @@ export const navigationItemsFr = {
       internalLink: {
         id: '4ImCXj3kpsk1vvKtseBvFC',
         contentType: 'post',
+        createdAt: '2023-08-21T02:03:43.211Z',
+        updatedAt: '2024-05-18T01:45:54.808Z',
         locale: 'fr-CA',
         title: 'Praesent non',
         slug: 'praesent-non',
@@ -47,6 +49,8 @@ export const navigationItemsFr = {
       internalLink: {
         id: '2U9O1DL1dojF4ucYd66eC0',
         contentType: 'post',
+        createdAt: '2023-09-03T16:19:38.160Z',
+        updatedAt: '2024-02-17T23:07:01.571Z',
         locale: 'fr-CA',
         title: 'Test',
         slug: 'test',
@@ -65,6 +69,8 @@ export const navigationItemsFr = {
       internalLink: {
         id: '3jOW7HQo0iClCclm1HqcqG',
         contentType: 'post',
+        createdAt: '2023-09-03T16:20:48.956Z',
+        updatedAt: '2024-02-17T23:07:16.288Z',
         locale: 'fr-CA',
         title: 'Suspendisse',
         slug: 'suspendisse',
@@ -83,6 +89,8 @@ export const navigationItemsFr = {
       internalLink: {
         id: 'JH7SZfgxuZ2SQrLvQHjQg',
         contentType: 'page',
+        createdAt: '2023-08-13T21:17:54.211Z',
+        updatedAt: '2025-04-20T23:48:28.817Z',
         locale: 'fr-CA',
         title: 'Nulla',
         slug: 'nulla',
@@ -98,6 +106,8 @@ export const navigationItemsFr = {
       internalLink: {
         id: '7mhBiCAaddjLYKHxDjgTmv',
         contentType: 'page',
+        createdAt: '2023-09-03T16:05:36.689Z',
+        updatedAt: '2024-05-18T01:42:46.029Z',
         locale: 'fr-CA',
         title: 'Sed leo',
         slug: 'sed-leo',
@@ -113,6 +123,8 @@ export const navigationItemsFr = {
           internalLink: {
             id: '4ImCXj3kpsk1vvKtseBvFC',
             contentType: 'post',
+            createdAt: '2023-08-21T02:03:43.211Z',
+            updatedAt: '2024-05-18T01:45:54.808Z',
             locale: 'fr-CA',
             title: 'Praesent non',
             slug: 'praesent-non',
@@ -131,6 +143,8 @@ export const navigationItemsFr = {
           internalLink: {
             id: '2U9O1DL1dojF4ucYd66eC0',
             contentType: 'post',
+            createdAt: '2023-09-03T16:19:38.160Z',
+            updatedAt: '2024-02-17T23:07:01.571Z',
             locale: 'fr-CA',
             title: 'Test',
             slug: 'test',
@@ -149,6 +163,8 @@ export const navigationItemsFr = {
           internalLink: {
             id: '3jOW7HQo0iClCclm1HqcqG',
             contentType: 'post',
+            createdAt: '2023-09-03T16:20:48.956Z',
+            updatedAt: '2024-02-17T23:07:16.288Z',
             locale: 'fr-CA',
             title: 'Suspendisse',
             slug: 'suspendisse',
@@ -169,6 +185,8 @@ export const navigationItemsFr = {
       internalLink: {
         id: '1aAaX8l6oxHuIiC51eqQjv',
         contentType: 'page',
+        createdAt: '2023-09-03T16:16:39.762Z',
+        updatedAt: '2024-05-18T01:42:45.618Z',
         locale: 'fr-CA',
         title: 'Lipsum',
         slug: 'lipsum',
@@ -184,6 +202,8 @@ export const navigationItemsFr = {
       internalLink: {
         id: '6USKmBuKHe83aojaFtYLTN',
         contentType: 'page',
+        createdAt: '2023-03-26T19:01:23.794Z',
+        updatedAt: '2024-05-18T01:42:45.926Z',
         locale: 'fr-CA',
         title: 'Curabitur',
         slug: 'curabitur',

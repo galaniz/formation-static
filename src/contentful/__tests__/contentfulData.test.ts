@@ -238,11 +238,8 @@ describe('getAllContentfulData()', () => {
     config.cms.prodCredential = 'lipsum'
     config.cms.prodHost = 'cdn.contentful.com'
     config.cms.env = 'master'
-    config.wholeTypes = ['page']
-    config.partialTypes = [
-      'navigation',
-      'navigationItem'
-    ]
+    config.wholeTypes = ['page', 'post']
+    config.partialTypes = ['navigation', 'navigationItem']
   })
 
   afterEach(() => {
@@ -288,7 +285,8 @@ describe('getAllContentfulData()', () => {
         page: [
           ...pages.items,
           ...pagesFr.items
-        ]
+        ],
+        post: []
       }
     }
 
@@ -413,7 +411,8 @@ describe('getAllContentfulData()', () => {
             ...page,
             test: 'test'
           }
-        })
+        }),
+        post: []
       }
     }
 
@@ -452,6 +451,7 @@ describe('getAllContentfulData()', () => {
           ...pages.items,
           ...pagesFr.items
         ],
+        post: [],
         test: []
       }
     }

@@ -224,6 +224,7 @@ const normalizeItem = (item: ContentfulDataItem, data: RenderItem[], isInternalL
   /* Type */
 
   let type = ''
+  let normalType = ''
 
   if (isString(itemCopy.sys?.type)) {
     type = itemCopy.sys.type
@@ -234,10 +235,23 @@ const normalizeItem = (item: ContentfulDataItem, data: RenderItem[], isInternalL
   }
 
   if (type && type !== 'Link') {
-    newItem.contentType = normalizeContentType(type)
+    normalType = normalizeContentType(type)
+    newItem.contentType = normalType
 
     if (isString(config.renderTypes[type])) {
       newItem.renderType = config.renderTypes[type]
+    }
+  }
+
+  /* Date */
+
+  if (config.wholeTypes.includes(normalType)) {
+    if (isStringStrict(itemCopy.sys?.createdAt)) {
+      newItem.createdAt = itemCopy.sys.createdAt
+    }
+
+    if (isStringStrict(itemCopy.sys?.updatedAt)) {
+      newItem.updatedAt = itemCopy.sys.updatedAt
     }
   }
 
@@ -283,7 +297,7 @@ const normalizeItem = (item: ContentfulDataItem, data: RenderItem[], isInternalL
             })
           }
         } else {
-          newItem[prop] = normalizeItem(field, data, prop === 'internalLink')
+          newItem[prop] = normalizeItem(field, data, prop === 'internalLink' || isInternalLink)
         }
       } else if (isArrayStrict(field)) {
         newItem[prop] = field.map(f => {

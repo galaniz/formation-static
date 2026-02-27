@@ -86,6 +86,8 @@ export const pages = {
     {
       id: '3g8HZs5AsmslyAHfYfRujE',
       contentType: 'page',
+      createdAt: '2023-03-25T18:16:49.189Z',
+      updatedAt: '2024-05-18T01:42:46.125Z',
       locale: 'en-CA',
       title: 'Home',
       slug: 'index',
@@ -278,6 +280,8 @@ export const pages = {
                   internalLink: {
                     id: '6USKmBuKHe83aojaFtYLTN',
                     contentType: 'page',
+                    createdAt: '2023-03-26T19:01:23.794Z',
+                    updatedAt: '2024-05-18T01:42:45.926Z',
                     locale: 'en-CA',
                     title: 'Curabitur',
                     slug: 'curabitur',
@@ -453,6 +457,8 @@ export const pages = {
               internalLink: {
                 id: '7mhBiCAaddjLYKHxDjgTmv',
                 contentType: 'page',
+                createdAt: '2023-09-03T16:05:36.689Z',
+                updatedAt: '2024-05-18T01:42:46.029Z',
                 locale: 'en-CA',
                 title: 'Sed leo',
                 slug: 'sed-leo',
@@ -712,6 +718,8 @@ export const pages = {
     {
       id: '7mhBiCAaddjLYKHxDjgTmv',
       contentType: 'page',
+      createdAt: '2023-09-03T16:05:36.689Z',
+      updatedAt: '2024-05-18T01:42:46.029Z',
       locale: 'en-CA',
       title: 'Sed leo',
       slug: 'sed-leo',
@@ -792,6 +800,8 @@ export const pages = {
     {
       id: '6USKmBuKHe83aojaFtYLTN',
       contentType: 'page',
+      createdAt: '2023-03-26T19:01:23.794Z',
+      updatedAt: '2024-05-18T01:42:45.926Z',
       locale: 'en-CA',
       title: 'Curabitur',
       slug: 'curabitur',
@@ -913,6 +923,8 @@ export const pages = {
                       internalLink: {
                         id: '7mhBiCAaddjLYKHxDjgTmv',
                         contentType: 'page',
+                        createdAt: '2023-09-03T16:05:36.689Z',
+                        updatedAt: '2024-05-18T01:42:46.029Z',
                         locale: 'en-CA',
                         title: 'Sed leo',
                         slug: 'sed-leo',
@@ -1364,6 +1376,8 @@ export const pages = {
     {
       id: '1aAaX8l6oxHuIiC51eqQjv',
       contentType: 'page',
+      createdAt: '2023-09-03T16:16:39.762Z',
+      updatedAt: '2024-05-18T01:42:45.618Z',
       locale: 'en-CA',
       title: 'Lipsum',
       slug: 'lipsum',

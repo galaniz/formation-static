@@ -14,7 +14,7 @@ import { isObjectStrict } from '../../utils/object/object.js'
  * Output form wrapper.
  *
  * @param {FormProps} props
- * @return {string[]} HTMLFormElement
+ * @return {string[]} HTMLElement
  */
 const Form = (props: FormProps): string[] => {
   /* Props required */

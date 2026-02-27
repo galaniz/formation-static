@@ -6,6 +6,8 @@ export const pagesFr = {
     {
       id: 'JH7SZfgxuZ2SQrLvQHjQg',
       contentType: 'page',
+      createdAt: '2023-08-13T21:17:54.211Z',
+      updatedAt: '2025-04-20T23:48:28.817Z',
       locale: 'fr-CA',
       title: 'Nulla',
       slug: 'null',
@@ -86,6 +88,8 @@ export const pagesFr = {
     {
       id: '3g8HZs5AsmslyAHfYfRujE',
       contentType: 'page',
+      createdAt: '2023-03-25T18:16:49.189Z',
+      updatedAt: '2024-05-18T01:42:46.125Z',
       locale: 'fr-CA',
       title: 'Home',
       slug: 'index',
@@ -278,6 +282,8 @@ export const pagesFr = {
                   internalLink: {
                     id: '6USKmBuKHe83aojaFtYLTN',
                     contentType: 'page',
+                    createdAt: '2023-03-26T19:01:23.794Z',
+                    updatedAt: '2024-05-18T01:42:45.926Z',
                     locale: 'fr-CA',
                     title: 'Curabitur',
                     slug: 'curabitur',
@@ -453,6 +459,8 @@ export const pagesFr = {
               internalLink: {
                 id: '7mhBiCAaddjLYKHxDjgTmv',
                 contentType: 'page',
+                createdAt: '2023-09-03T16:05:36.689Z',
+                updatedAt: '2024-05-18T01:42:46.029Z',
                 locale: 'fr-CA',
                 title: 'Sed leo',
                 slug: 'sed-leo',
@@ -586,6 +594,8 @@ export const pagesFr = {
               internalLink: {
                 id: 'JH7SZfgxuZ2SQrLvQHjQg',
                 contentType: 'page',
+                createdAt: '2023-08-13T21:17:54.211Z',
+                updatedAt: '2025-04-20T23:48:28.817Z',
                 locale: 'fr-CA',
                 title: 'Nulla',
                 slug: 'null',
@@ -712,6 +722,8 @@ export const pagesFr = {
     {
       id: '7mhBiCAaddjLYKHxDjgTmv',
       contentType: 'page',
+      createdAt: '2023-09-03T16:05:36.689Z',
+      updatedAt: '2024-05-18T01:42:46.029Z',
       locale: 'fr-CA',
       title: 'Sed leo',
       slug: 'sed-leo',
@@ -792,6 +804,8 @@ export const pagesFr = {
     {
       id: '6USKmBuKHe83aojaFtYLTN',
       contentType: 'page',
+      createdAt: '2023-03-26T19:01:23.794Z',
+      updatedAt: '2024-05-18T01:42:45.926Z',
       locale: 'fr-CA',
       title: 'Curabitur',
       slug: 'curabitur',
@@ -913,6 +927,8 @@ export const pagesFr = {
                       internalLink: {
                         id: '7mhBiCAaddjLYKHxDjgTmv',
                         contentType: 'page',
+                        createdAt: '2023-09-03T16:05:36.689Z',
+                        updatedAt: '2024-05-18T01:42:46.029Z',
                         locale: 'fr-CA',
                         title: 'Sed leo',
                         slug: 'sed-leo',
@@ -1364,6 +1380,8 @@ export const pagesFr = {
     {
       id: '1aAaX8l6oxHuIiC51eqQjv',
       contentType: 'page',
+      createdAt: '2023-09-03T16:16:39.762Z',
+      updatedAt: '2024-05-18T01:42:45.618Z',
       locale: 'fr-CA',
       title: 'Lipsum',
       slug: 'lipsum',
