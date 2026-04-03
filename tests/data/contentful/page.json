@@ -1906,6 +1906,9 @@
           "gap": "20px",
           "gapLarge": "30px",
           "richTextStyles": "None",
+          "json": {
+            "test": "test"
+          },
           "content": {
             "data": {},
             "content": [

@@ -557,6 +557,9 @@ export const pages = {
               gap: '20px',
               gapLarge: '30px',
               richTextStyles: 'None',
+              json: {
+                test: 'test'
+              },
               content: [
                 {
                   renderType: 'richText',

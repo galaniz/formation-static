@@ -22,6 +22,7 @@ import { navigationItems } from '../../../tests/data/contentful/navigationItem.j
 import { navigationItemsFr } from '../../../tests/data/contentful/navigationItemFr.js'
 import { taxonomies } from '../../../tests/data/contentful/taxonomy.js'
 import { terms } from '../../../tests/data/contentful/term.js'
+import { normalJsonKeys } from '../contentfulDataNormal.js'
 
 /* Mock fetch */
 
@@ -41,10 +42,8 @@ describe('getContentfulData()', () => {
     config.cms.prodHost = 'cdn.contentful.com'
     config.cms.env = 'master'
     config.wholeTypes = ['page']
-    config.partialTypes = [
-      'navigation',
-      'navigationItem'
-    ]
+    config.partialTypes = ['navigation', 'navigationItem']
+    normalJsonKeys.add('json')
   })
 
   afterEach(() => {
@@ -67,6 +66,7 @@ describe('getContentfulData()', () => {
     config.env.cache = false
     config.wholeTypes = []
     config.partialTypes = []
+    normalJsonKeys.clear()
     testResetStore()
     resetFilters()
   })
@@ -240,6 +240,7 @@ describe('getAllContentfulData()', () => {
     config.cms.env = 'master'
     config.wholeTypes = ['page', 'post']
     config.partialTypes = ['navigation', 'navigationItem']
+    normalJsonKeys.add('json')
   })
 
   afterEach(() => {
@@ -260,6 +261,7 @@ describe('getAllContentfulData()', () => {
 
     config.wholeTypes = []
     config.partialTypes = []
+    normalJsonKeys.clear()
     testResetStore()
     resetFilters()
   })

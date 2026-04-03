@@ -20,6 +20,13 @@ import { isNumber } from '../utils/number/number.js'
 import { config } from '../config/config.js'
 
 /**
+ * JSON field keys to skip normalizing.
+ *
+ * @type {Set<string>}
+ */
+const normalJsonKeys: Set<string> = new Set()
+
+/**
  * HTML tag from type.
  *
  * @private
@@ -297,7 +304,7 @@ const normalizeItem = (item: ContentfulDataItem, data: RenderItem[], isInternalL
             })
           }
         } else {
-          newItem[prop] = normalizeItem(field, data, prop === 'internalLink' || isInternalLink)
+          newItem[prop] = normalJsonKeys.has(prop) ? field : normalizeItem(field, data, prop === 'internalLink' || isInternalLink)
         }
       } else if (isArrayStrict(field)) {
         newItem[prop] = field.map(f => {
@@ -365,4 +372,7 @@ const normalizeContentfulData = (data: ContentfulDataItem[], _newData: RenderIte
 
 /* Exports */
 
-export { normalizeContentfulData }
+export {
+  normalizeContentfulData,
+  normalJsonKeys
+}
