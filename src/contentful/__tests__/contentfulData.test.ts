@@ -72,7 +72,7 @@ describe('getContentfulData()', () => {
   })
 
   it('should throw an error if key is empty', async () => {
-    await expect(async () => await getContentfulData('')).rejects.toThrowError('No key')
+    await expect(async () => await getContentfulData('')).rejects.toThrow('No key')
   })
 
   it('should throw an error if no config credentials', async () => {
@@ -82,19 +82,19 @@ describe('getContentfulData()', () => {
     config.cms.prodCredential = ''
     config.cms.prodHost = ''
 
-    await expect(async () => await getContentfulData('key_2')).rejects.toThrowError('No credentials')
+    await expect(async () => await getContentfulData('key_2')).rejects.toThrow('No credentials')
   })
 
   it('should throw an error if invalid credentials', async () => {
     config.cms.devCredential = 'xyz'
 
-    await expect(async () => await getContentfulData('key_4')).rejects.toThrowError(mockFetchErrorMessage.auth)
+    await expect(async () => await getContentfulData('key_4')).rejects.toThrow(mockFetchErrorMessage.auth)
   })
 
   it('should throw an error if content type does not exist', async () => {
     await expect(async () => await getContentfulData('key_5', {
       content_type: 'none'
-    })).rejects.toThrowError(mockFetchErrorMessage.contentType)
+    })).rejects.toThrow(mockFetchErrorMessage.contentType)
   })
 
   it('should return empty array if items is empty', async () => {
@@ -196,7 +196,7 @@ describe('getContentfulData()', () => {
     await expect(async () => await getContentfulData('page_key_none', {
       content_type: 'page',
       'sys.id': 'none'
-    })).rejects.toThrowError('Bad fetch response')
+    })).rejects.toThrow('Bad fetch response')
   })
 
   it('should return array of taxonomies', async () => {
@@ -269,7 +269,7 @@ describe('getAllContentfulData()', () => {
   it('should return throw an error if content type does not exist', async () => {
     config.wholeTypes = ['none']
 
-    await expect(async () => await getAllContentfulData()).rejects.toThrowError(mockFetchErrorMessage.contentType)
+    await expect(async () => await getAllContentfulData()).rejects.toThrow(mockFetchErrorMessage.contentType)
   })
 
   it('should return navigation and page data in all locales', async () => {

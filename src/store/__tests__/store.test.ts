@@ -515,7 +515,7 @@ describe('createStoreFiles()', () => {
 
   it('should throw error if data is invalid json', async () => {
     setStore({ test: { bigInt: 123n } }, '/files')
-    await expect(async () => { await createStoreFiles() }).rejects.toThrowError()
+    await expect(async () => { await createStoreFiles() }).rejects.toThrow()
   })
 
   it('should write json files from store object', async () => {

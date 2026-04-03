@@ -147,7 +147,7 @@ describe('doActions()', () => {
 
     addAction(testNameOne, testAction)
 
-    await expect(async () => { await doActions(testNameOne, '', true) }).rejects.toThrowError('Test error')
+    await expect(async () => { await doActions(testNameOne, '', true) }).rejects.toThrow('Test error')
   })
 
   it('should call mixed actions and return arg value', async () => {

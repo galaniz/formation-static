@@ -93,12 +93,12 @@ describe('getLocalData()', () => {
 
   it('should throw an error if no args are provided', async () => {
     // @ts-expect-error - test undefined params
-    await expect(async () => await getLocalData()).rejects.toThrowError('No args')
+    await expect(async () => await getLocalData()).rejects.toThrow('No args')
   })
 
   it('should throw an error if no key is provided', async () => {
     // @ts-expect-error - test undefined params
-    await expect(async () => await getLocalData({})).rejects.toThrowError('No key')
+    await expect(async () => await getLocalData({})).rejects.toThrow('No key')
   })
 
   it('should throw an error if no data is found', async () => {
@@ -106,7 +106,7 @@ describe('getLocalData()', () => {
 
     await expect(async () => await getLocalData({
       key: 'no_data_key'
-    })).rejects.toThrowError('No data')
+    })).rejects.toThrow('No data')
   })
 
   it('should throw an error if props are not string arrays', async () => {
@@ -120,7 +120,7 @@ describe('getLocalData()', () => {
       imageProps: false,
       // @ts-expect-error - test non-string props
       unsetProps: false
-    })).rejects.toThrowError()
+    })).rejects.toThrow()
   })
 
   it('should return linked data and set cache', async () => {

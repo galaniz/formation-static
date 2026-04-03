@@ -16,11 +16,11 @@ import { getJson, getJsonFile } from '../json.js'
 describe('getJson()', () => {
   it('should throw error if value is null', () => {
     // @ts-expect-error - test null value
-    expect(() => getJson(null)).toThrowError('Value not an object')
+    expect(() => getJson(null)).toThrow('Value not an object')
   })
 
   it('should throw error if value is not a json string', () => {
-    expect(() => getJson('123')).toThrowError('Value not an object')
+    expect(() => getJson('123')).toThrow('Value not an object')
   })
 
   it('should return object if value is a valid json string', () => {
@@ -90,15 +90,15 @@ describe('getJsonFile()', () => {
 
   it('should throw error if path is null', async () => {
     // @ts-expect-error - test null value
-    await expect(async () => await getJsonFile(null)).rejects.toThrowError()
+    await expect(async () => await getJsonFile(null)).rejects.toThrow()
   })
 
   it('should throw error if file is a text file', async () => {
-    await expect(async () => await getJsonFile('/files/invalid.txt')).rejects.toThrowError('No object in JSON file')
+    await expect(async () => await getJsonFile('/files/invalid.txt')).rejects.toThrow('No object in JSON file')
   })
 
   it('should throw error if file contains invalid json', async () => {
-    await expect(async () => await getJsonFile('/files/invalid.json')).rejects.toThrowError('No object in JSON file')
+    await expect(async () => await getJsonFile('/files/invalid.json')).rejects.toThrow('No object in JSON file')
   })
 
   it('should return object if file contains valid json', async () => {

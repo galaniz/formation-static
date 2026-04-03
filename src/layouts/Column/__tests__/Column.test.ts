@@ -37,7 +37,7 @@ describe('Column()', () => {
       args: {
         tag: 'div'
       }
-    })).toThrowError()
+    })).toThrow()
 
     expect(columnProps).toHaveBeenCalledTimes(1)
     expect(columnProps).toHaveBeenCalledWith({

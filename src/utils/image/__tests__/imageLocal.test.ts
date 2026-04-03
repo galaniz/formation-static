@@ -83,14 +83,14 @@ describe('setLocalImages()', () => {
     config.image.inputDir = ''
     config.image.outputDir = ''
 
-    await expect(async () => await setLocalImages()).rejects.toThrowError('No input or output directories')
+    await expect(async () => await setLocalImages()).rejects.toThrow('No input or output directories')
   })
 
   it('should throw an error if empty input directory', async () => {
     config.image.inputDir = emptyInputDir
     config.image.outputDir = emptyOutputDir
 
-    await expect(async () => await setLocalImages()).rejects.toThrowError('No local images to transform')
+    await expect(async () => await setLocalImages()).rejects.toThrow('No local images to transform')
   })
 
   it('should return an array of fulfilled promises and store image meta', async () => {

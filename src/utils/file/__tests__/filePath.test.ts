@@ -27,7 +27,7 @@ describe('getFilePaths()', () => {
       for await (const path of getFilePaths()) {
         result.push(path)
       }
-    }).rejects.toThrowError()
+    }).rejects.toThrow()
   })
 
   it('should return all file paths in specified directory', async () => {

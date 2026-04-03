@@ -37,7 +37,7 @@ describe('Container()', () => {
       args: {
         tag: 'div'
       }
-    })).toThrowError()
+    })).toThrow()
 
     expect(containerProps).toHaveBeenCalledTimes(1)
     expect(containerProps).toHaveBeenCalledWith({
