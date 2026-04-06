@@ -44,9 +44,9 @@
   "license": "MIT",
   "devDependencies": {
     "@types/contentful-resolve-response": "^0.1.33",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.5.2",
     "@vitest/coverage-v8": "^4.1.2",
-    "eslint": "10.1.0",
+    "eslint": "10.2.0",
     "memfs": "4.57.1",
     "terser": "5.46.1",
     "typescript": "^6.0.2",
