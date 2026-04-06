@@ -37,7 +37,7 @@ Output form wrapper.
 
 ### Returns  
 
-<code>string[]</code> HTMLFormElement
+<code>string[]</code> HTMLElement
 
 ## Types
 

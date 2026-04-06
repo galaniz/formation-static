@@ -1,5 +1,11 @@
 # Contentful
 
+## normalJsonKeys  
+
+JSON field keys to skip normalizing.  
+
+**Type:** <code>Set&lt;string&gt;</code>
+
 ## normalizeContentfulData  
 
 **<code>normalizeContentfulData(data: ContentfulDataItem[]): RenderItem[]</code>**  
@@ -93,7 +99,9 @@ Fetch data from all content types or single entry if serverless.
 - **`id`** <code>string</code> optional  
 - **`type`** <code>string</code> optional  
 - **`locale`** <code>string</code> optional  
-- **`contentType`** <code><a href="#contentfuldatasystype">ContentfulDataSysType</a></code> optional
+- **`contentType`** <code><a href="#contentfuldatasystype">ContentfulDataSysType</a></code> optional  
+- **`createdAt`** <code>string</code> optional  
+- **`updatedAt`** <code>string</code> optional
 
 ### ContentfulDataFileImage  
 
