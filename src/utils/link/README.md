@@ -97,13 +97,24 @@ Permalink from external or internal source.
 - **`itemData`** <code><a href="/src/render/README.md#renderitem">RenderItem</a></code> optional  
 - **`params`** <code>Record&lt;string, string&gt; | string</code> optional
 
+### LinkSlugParent  
+
+**Type:** <code>object</code>  
+
+**Augments:** <code><a href="/src/global/README.md#internallink">InternalLink</a></code>
+
+#### Properties  
+- **`id`** <code>string</code> required  
+- **`slug`** <code>string</code> required  
+- **`title`** <code>string</code> required
+
 ### LinkSlugReturn  
 
 **Type:** <code>object</code>
 
 #### Properties  
 - **`slug`** <code>string</code> required  
-- **`parents`** <code><a href="/src/global/README.md#parent">Parent</a>[]</code> required
+- **`parents`** <code><a href="#linkslugparent">LinkSlugParent</a>[]</code> required
 
 ### LinkSlugReturnType  
 

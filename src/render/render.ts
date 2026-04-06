@@ -24,7 +24,7 @@ import type {
   RenderFunctionsArgs,
   RenderMeta
 } from './renderTypes.js'
-import type { ParentArgs, RefString } from '../global/globalTypes.js'
+import type { Parent, RefString } from '../global/globalTypes.js'
 import type { RichTextHeading } from '../text/RichText/RichTextTypes.js'
 import { doActions } from '../actions/actions.js'
 import { applyFilters } from '../filters/filters.js'
@@ -434,7 +434,7 @@ const renderContent = async (args: RenderContentArgs, _html: RefString = { ref: 
 
     /* Filter content output */
 
-    const renderContentFilterArgs: ParentArgs = {
+    const renderContentFilterArgs: Parent = {
       renderType: filterType,
       args: filterArgs
     }

@@ -5,7 +5,7 @@
 /* Imports */
 
 import type { RenderItem } from '../../render/renderTypes.js'
-import type { Parent } from '../../global/globalTypes.js'
+import type { InternalLink } from '../../global/globalTypes.js'
 
 /**
  * @typedef {object} LinkSlugArgs
@@ -24,13 +24,26 @@ export interface LinkSlugArgs {
 }
 
 /**
+ * @typedef {object} LinkSlugParent
+ * @extends {InternalLink}
+ * @prop {string} id
+ * @prop {string} slug
+ * @prop {string} title
+ */
+export interface LinkSlugParent extends InternalLink {
+  id: string
+  slug: string
+  title: string
+}
+
+/**
  * @typedef {object} LinkSlugReturn
  * @prop {string} slug
- * @prop {Parent[]} parents
+ * @prop {LinkSlugParent[]} parents
  */
 export interface LinkSlugReturn {
   slug: string
-  parents: Parent[]
+  parents: LinkSlugParent[]
 }
 
 /**

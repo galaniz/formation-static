@@ -228,7 +228,7 @@ Default: `true`
 
 #### Properties  
 - **`content`** <code><a href="#renderitem">RenderItem</a>[]</code> required  
-- **`parents`** <code><a href="/src/global/README.md#parentargs">ParentArgs</a>[]</code> required  
+- **`parents`** <code><a href="/src/global/README.md#parent">Parent</a>[]</code> required  
 - **`headingsIndex`** <code>number</code> optional  
 - **`depth`** <code>number</code> optional
 
@@ -244,7 +244,7 @@ Default: `true`
 
 #### Properties  
 - **`args`** <code>object</code> required  
-- **`parents`** <code><a href="/src/global/README.md#parentargs">ParentArgs</a>[]</code> optional  
+- **`parents`** <code><a href="/src/global/README.md#parent">Parent</a>[]</code> optional  
 - **`itemData`** <code><a href="#renderitem">RenderItem</a></code> optional  
 - **`itemContains`** <code>Set&lt;string&gt;</code> optional  
 - **`serverlessData`** <code><a href="#renderserverlessdata">RenderServerlessData</a></code> optional  
