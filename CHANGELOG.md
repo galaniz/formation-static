@@ -69,6 +69,8 @@ Prototype key checks for dynamic object properties:
 ### Changed
 
 - Pass `createdAt` and `updatedAt` properties in `normalizeContentfulData`.
+- Move `Parent` type to link utility and rename to `LinkSlugParent`.
+- Rename `ParentArgs` type to `Parent`.
 
 ### Fixed
 
