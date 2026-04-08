@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { Source, GenericNumbers, ParentArgs } from '../../global/globalTypes.js'
+import type { Source, GenericNumbers, Parent } from '../../global/globalTypes.js'
 import type { RenderFile } from '../../render/renderTypes.js'
 import type { ColumnProps } from '../../layouts/Column/ColumnTypes.js'
 import type { ContainerProps } from '../../layouts/Container/ContainerTypes.js'
@@ -74,14 +74,14 @@ export interface ImageReturn {
 export type ImageReturnType<V extends false | true> = V extends true ? ImageReturn : string
 
 /**
- * @typedef {ParentArgs|ColumnProps|ContainerProps} ImageSizesParents
+ * @typedef {Parent|ColumnProps|ContainerProps} ImageSizesParents
  */
-export type ImageSizesParents = ParentArgs & ColumnProps & ContainerProps
+export type ImageSizesParents = Parent & ColumnProps & ContainerProps
 
 /**
- * @typedef {ParentArgs|ColumnProps|ContainerProps} ImageSizesParentsArgs
+ * @typedef {Parent|ColumnProps|ContainerProps} ImageSizesParentsArgs
  */
-export type ImageSizesParentsArgs = ParentArgs & ColumnProps<string, string | number> & ContainerProps<string, string | number>
+export type ImageSizesParentsArgs = Parent & ColumnProps<string, string | number> & ContainerProps<string, string | number>
 
 /**
  * @typedef {object} ImageSizesArgs

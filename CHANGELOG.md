@@ -59,3 +59,19 @@ Prototype key checks for dynamic object properties:
 - Store: `setStoreData`, `setStoreItem`
 - Image: `setLocalImages`
 - WordPress: `getAllWordPressData`, `normalizeWordPressData`, `normalizeWordPressMenuItems`
+
+## [0.0.5] - 2026-04-07
+
+### Added
+
+- `normalJsonKeys` to `normalizeContentfulData` to allow JSON field data.
+
+### Changed
+
+- Pass `createdAt` and `updatedAt` properties in `normalizeContentfulData`.
+- Move `Parent` type to link utility and rename to `LinkSlugParent`.
+- Rename `ParentArgs` type to `Parent`.
+
+### Fixed
+
+- `normalizeContentfulData` internalLink call stack error.

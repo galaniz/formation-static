@@ -37,17 +37,6 @@ Default: `true`
 
 ### Parent  
 
-**Type:** <code>object</code>  
-
-**Augments:** <code><a href="#internallink">InternalLink</a></code>
-
-#### Properties  
-- **`id`** <code>string</code> required  
-- **`slug`** <code>string</code> required  
-- **`title`** <code>string</code> required
-
-### ParentArgs  
-
 **Type:** <code>object</code>
 
 #### Properties  

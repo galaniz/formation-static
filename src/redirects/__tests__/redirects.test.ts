@@ -73,7 +73,7 @@ describe('createRedirectsFile()', () => {
 
   it('should throw error if path is null', async () => {
     // @ts-expect-error - test null path
-    await expect(async () => { await createRedirectsFile(null) }).rejects.toThrowError()
+    await expect(async () => { await createRedirectsFile(null) }).rejects.toThrow()
   })
 
   it('should create redirects file', async () => {

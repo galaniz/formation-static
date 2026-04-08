@@ -49,7 +49,7 @@ describe('Form()', () => {
       args: {
         formTag: 'frm-form'
       }
-    })).toThrowError()
+    })).toThrow()
 
     expect(formProps).toHaveBeenCalledTimes(1)
     expect(formProps).toHaveBeenCalledWith({

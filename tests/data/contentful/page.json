@@ -30,8 +30,8 @@
           }
         },
         "revision": 4,
-        "createdAt": "2023-08-13T21:17:54.211Z",
-        "updatedAt": "2025-04-20T23:48:28.817Z",
+        "createdAt": null,
+        "updatedAt": null,
         "publishedAt": "2024-05-18T01:42:46.076Z",
         "firstPublishedAt": "2023-08-13T21:18:56.194Z",
         "publishedVersion": 10,
@@ -1906,6 +1906,9 @@
           "gap": "20px",
           "gapLarge": "30px",
           "richTextStyles": "None",
+          "json": {
+            "test": "test"
+          },
           "content": {
             "data": {},
             "content": [

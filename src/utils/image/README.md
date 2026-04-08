@@ -127,7 +127,7 @@ Default: `{fm: '%format', q: '%quality', w: '%width', h: '%height'}`
 
 ### ImageSizesParents  
 
-**Type:** <code><a href="/src/global/README.md#parentargs">ParentArgs</a> | <a href="/src/layouts/Column/README.md#columnprops">ColumnProps</a> | <a href="/src/layouts/Container/README.md#containerprops">ContainerProps</a></code>
+**Type:** <code><a href="/src/global/README.md#parent">Parent</a> | <a href="/src/layouts/Column/README.md#columnprops">ColumnProps</a> | <a href="/src/layouts/Container/README.md#containerprops">ContainerProps</a></code>
 
 ### ImageSizesArgs  
 

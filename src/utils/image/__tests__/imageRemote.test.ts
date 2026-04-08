@@ -53,11 +53,11 @@ describe('getRemoteImages()', () => {
   it('should throw an error if no input directory', async () => {
     config.image.inputDir = ''
 
-    await expect(async () => await getRemoteImages([])).rejects.toThrowError('No input directory')
+    await expect(async () => await getRemoteImages([])).rejects.toThrow('No input directory')
   })
 
   it('should throw an error if no image data', async () => {
-    await expect(async () => await getRemoteImages([])).rejects.toThrowError('No images array')
+    await expect(async () => await getRemoteImages([])).rejects.toThrow('No images array')
   })
 
   it('should throw an error if empty path, URL or format', async () => {
@@ -69,7 +69,7 @@ describe('getRemoteImages()', () => {
         // @ts-expect-error - test null format
         format: null
       }
-    ])).rejects.toThrowError('No path, URL or format')
+    ])).rejects.toThrow('No path, URL or format')
   })
 
   it('should throw an error if image does not exist', async () => {
@@ -79,7 +79,7 @@ describe('getRemoteImages()', () => {
         url: 'https://test.com/404.png',
         format: 'png'
       }
-    ])).rejects.toThrowError('Failed to fetch image')
+    ])).rejects.toThrow('Failed to fetch image')
   })
 
   it('should download image and return test image path', async () => {

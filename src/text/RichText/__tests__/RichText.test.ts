@@ -232,7 +232,7 @@ describe('RichText()', () => {
         tag: 'p',
         content: 'test'
       }
-    })).toThrowError()
+    })).toThrow()
   })
 
   it('should throw error if nested filtered item is null', () => {
@@ -251,7 +251,7 @@ describe('RichText()', () => {
           }
         ]
       }
-    })).toThrowError()
+    })).toThrow()
   })
 
   it('should return paragraph with filtered props and output', () => {

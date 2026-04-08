@@ -59,7 +59,7 @@ describe('FormField()', () => {
         name: 'email',
         label: 'Email'
       }
-    })).toThrowError()
+    })).toThrow()
 
     expect(formFieldProps).toHaveBeenCalledTimes(1)
     expect(formFieldProps).toHaveBeenCalledWith({

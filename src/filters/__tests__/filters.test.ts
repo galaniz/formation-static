@@ -163,7 +163,7 @@ describe('applyFilters()', () => {
 
     addFilter(testNameOne, testFilterOne)
 
-    await expect(async () => await applyFilters(testNameOne, 36, {}, true)).rejects.toThrowError('Test error')
+    await expect(async () => await applyFilters(testNameOne, 36, {}, true)).rejects.toThrow('Test error')
   })
 
   it('should call mixed filters and return cumulative string', async () => {

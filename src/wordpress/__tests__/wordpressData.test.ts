@@ -73,19 +73,19 @@ describe('getWordPressData()', () => {
 
   it('should throw an error if no args are provided', async () => {
     // @ts-expect-error - test undefined params
-    await expect(async () => await getWordPressData()).rejects.toThrowError('No args')
+    await expect(async () => await getWordPressData()).rejects.toThrow('No args')
   })
 
   it('should throw an error if no key is provided', async () => {
     // @ts-expect-error - test undefined params
-    await expect(async () => await getWordPressData({})).rejects.toThrowError('No key')
+    await expect(async () => await getWordPressData({})).rejects.toThrow('No key')
   })
 
   it('should throw an error if only key is provided', async () => {
     // @ts-expect-error - test undefined params
     await expect(async () => await getWordPressData({
       key: 'key_1'
-    })).rejects.toThrowError('No route')
+    })).rejects.toThrow('No route')
   })
 
   it('should throw an error if no config credentials', async () => {
@@ -100,7 +100,7 @@ describe('getWordPressData()', () => {
     await expect(async () => await getWordPressData({
       key: 'key_2',
       route: 'route'
-    })).rejects.toThrowError('No credentials')
+    })).rejects.toThrow('No credentials')
   })
 
   it('should throw an error if invalid credentials', async () => {
@@ -110,21 +110,21 @@ describe('getWordPressData()', () => {
     await expect(async () => await getWordPressData({
       key: 'key_4',
       route: 'route'
-    })).rejects.toThrowError(mockFetchErrorMessage.auth)
+    })).rejects.toThrow(mockFetchErrorMessage.auth)
   })
 
   it('should throw an error if route does not exist', async () => {
     await expect(async () => await getWordPressData({
       key: 'key_5',
       route: 'does_not_exist'
-    })).rejects.toThrowError(mockFetchErrorMessage.route)
+    })).rejects.toThrow(mockFetchErrorMessage.route)
   })
 
   it('should throw an error if ID does not exist', async () => {
     await expect(async () => await getWordPressData({
       key: 'posts_key_1',
       route: 'posts/0'
-    })).rejects.toThrowError(mockFetchErrorMessage.data)
+    })).rejects.toThrow(mockFetchErrorMessage.data)
   })
 
   it('should return empty array if data is empty array', async () => {
@@ -441,7 +441,7 @@ describe('getAllWordPressData()', () => {
       'does_not_exist'
     ]
 
-    await expect(async () => await getAllWordPressData()).rejects.toThrowError(mockFetchErrorMessage.route)
+    await expect(async () => await getAllWordPressData()).rejects.toThrow(mockFetchErrorMessage.route)
   })
 
   it('should return menu items, menus, pages and posts data', async () => {

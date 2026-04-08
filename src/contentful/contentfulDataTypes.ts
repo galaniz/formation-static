@@ -143,12 +143,16 @@ interface ContentfulDataSysType {
  * @prop {string} [type]
  * @prop {string} [locale]
  * @prop {ContentfulDataSysType} [contentType]
+ * @prop {string} [createdAt]
+ * @prop {string} [updatedAt]
  */
 export interface ContentfulDataSys {
   id?: string
   type?: string
   locale?: string
   contentType?: ContentfulDataSysType
+  createdAt?: string
+  updatedAt?: string
 }
 
 /**

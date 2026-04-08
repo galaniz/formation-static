@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { Generic, ParentArgs } from '../../global/globalTypes.js'
+import type { Generic, Parent } from '../../global/globalTypes.js'
 import type { RenderFunctionArgs, RenderItem } from '../../render/renderTypes.js'
 
 /**
@@ -200,7 +200,7 @@ export interface FormOptionArgs extends Generic {
  * @prop {FormOptionArgs} args
  * @prop {FormFieldArgs} [parents]
  */
-export interface FormOptionProps<A = FormOptionArgs, R = RenderItem, P = ParentArgs & FormFieldProps> extends RenderFunctionArgs<A, R, P> {
+export interface FormOptionProps<A = FormOptionArgs, R = RenderItem, P = Parent & FormFieldProps> extends RenderFunctionArgs<A, R, P> {
   args: FormOptionArgs & A
   parents?: P[]
 }

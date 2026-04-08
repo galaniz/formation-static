@@ -188,7 +188,7 @@ describe('FormOption()', () => {
           }
         }
       ]
-    })).toThrowError()
+    })).toThrow()
 
     expect(formOptionProps).toHaveBeenCalledTimes(1)
     expect(formOptionProps).toHaveBeenCalledWith({

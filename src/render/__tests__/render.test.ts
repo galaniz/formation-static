@@ -6,7 +6,7 @@
 
 import type { RenderAllData, RenderFunctionArgs, RenderItem, RenderReturn } from '../renderTypes.js'
 import type { Scripts, Styles } from '../../scripts/scriptsTypes.js'
-import type { ParentArgs } from '../../global/globalTypes.js'
+import type { Parent } from '../../global/globalTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach } from 'vitest'
 import { testMinify, testResetRenderFunctions, testResetStore } from '../../../tests/utils.js'
 import { Navigation } from '../../components/Navigation/Navigation.js'
@@ -325,7 +325,7 @@ describe('render()', () => {
             '</ul>'
           ]
         },
-        testChild (props: RenderFunctionArgs<TestChildArgs, RenderItem, ParentArgs, TestChildrenArgs>) {
+        testChild (props: RenderFunctionArgs<TestChildArgs, RenderItem, Parent, TestChildrenArgs>) {
           const { args, children } = props
           const { id } = args
           const innerContent = children?.[0]?.content // Test skipping content loop if string returned

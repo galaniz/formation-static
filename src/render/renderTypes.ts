@@ -9,7 +9,7 @@ import type {
   GenericStrings,
   InternalLink,
   Taxonomy,
-  ParentArgs
+  Parent
 } from '../global/globalTypes.js'
 import type {
   NavigationList,
@@ -188,7 +188,7 @@ export type RenderHttpError = (args: RenderHttpErrorArgs) => string | Promise<st
 /**
  * @typedef {object} RenderFunctionArgs
  * @prop {object} args
- * @prop {ParentArgs[]} [parents]
+ * @prop {Parent[]} [parents]
  * @prop {RenderItem} [itemData]
  * @prop {Set<string>} [itemContains]
  * @prop {RenderServerlessData} [serverlessData]
@@ -196,7 +196,7 @@ export type RenderHttpError = (args: RenderHttpErrorArgs) => string | Promise<st
  * @prop {RichTextHeading[]} [headings]
  * @prop {object[]} [children]
  */
-export interface RenderFunctionArgs<A = any, R = RenderItem, P = ParentArgs, C = any> { // eslint-disable-line @typescript-eslint/no-explicit-any
+export interface RenderFunctionArgs<A = any, R = RenderItem, P = Parent, C = any> { // eslint-disable-line @typescript-eslint/no-explicit-any
   args: 0 extends (1 & A) ? any : A // eslint-disable-line @typescript-eslint/no-explicit-any
   parents?: P[]
   itemData?: R
@@ -212,14 +212,14 @@ export interface RenderFunctionArgs<A = any, R = RenderItem, P = ParentArgs, C =
  * @param {RenderFunctionArgs} props
  * @return {string|string[]|Promise<string|string[]>}
  */
-export type RenderFunction<A = any, R = RenderItem, P = ParentArgs, C = any> = ( // eslint-disable-line @typescript-eslint/no-explicit-any
+export type RenderFunction<A = any, R = RenderItem, P = Parent, C = any> = ( // eslint-disable-line @typescript-eslint/no-explicit-any
   props: RenderFunctionArgs<A, R, P, C>
 ) => string | string[] | Promise<string | string[]>
 
 /**
  * @typedef {Object<string, RenderFunction>} RenderFunctions
  */
-export type RenderFunctions<A = any, R = RenderItem, P = ParentArgs, C = any> = // eslint-disable-line @typescript-eslint/no-explicit-any
+export type RenderFunctions<A = any, R = RenderItem, P = Parent, C = any> = // eslint-disable-line @typescript-eslint/no-explicit-any
   Record<string, RenderFunction<A, R, P, C>>
 
 /**
@@ -240,13 +240,13 @@ export interface RenderFunctionsArgs {
  * @typedef {object} RenderContentArgs
  * @extends {RenderBase}
  * @prop {RenderItem[]} content
- * @prop {ParentArgs[]} parents
+ * @prop {Parent[]} parents
  * @prop {number} [headingsIndex]
  * @prop {number} [depth]
  */
 export interface RenderContentArgs extends RenderBase {
   content: RenderItem[]
-  parents: ParentArgs[]
+  parents: Parent[]
   headingsIndex?: number
   depth?: number
 }
@@ -442,10 +442,10 @@ export interface RenderReturn {
 /**
  * @typedef {function} RenderContentFilter
  * @param {string[]} content
- * @param {ParentArgs} args
+ * @param {Parent} args
  * @return {Promise<string[]>|string[]}
  */
-export type RenderContentFilter = <T>(content: string[], args: ParentArgs<T>) => Promise<string[]> | string[]
+export type RenderContentFilter = <T>(content: string[], args: Parent<T>) => Promise<string[]> | string[]
 
 /**
  * @typedef {function} RenderItemFilter
