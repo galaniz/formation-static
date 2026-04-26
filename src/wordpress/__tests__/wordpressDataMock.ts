@@ -136,7 +136,7 @@ const mockWordPressFetch = vi.fn(async (
     }
 
     if (route === 'taxonomies') {
-      data = await import('../../../tests/data/wordpress/taxonomies.json').then((res) => res.default) as Record<string, WordPressDataItem>
+      data = await import('../../../tests/data/wordpress/taxonomies.json').then((res) => res.default)
       total = '4'
     }
 

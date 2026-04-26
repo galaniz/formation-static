@@ -527,7 +527,7 @@ const renderMeta = (item: RenderItem): RenderMeta => {
   // @ts-expect-error - nested image URL
   if (isStringStrict(item.metaImage?.url)) {
     // @ts-expect-error - nested image URL
-    meta.image = item.metaImage.url as unknown as string
+    meta.image = item.metaImage.url as string
   }
 
   if (!isObjectStrict(pagination)) {

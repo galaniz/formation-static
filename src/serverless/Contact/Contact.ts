@@ -5,7 +5,7 @@
 /* Imports */
 
 import type { ContactData, ContactBody } from './ContactTypes.js'
-import type { ServerlessAction, ServerlessActionReturn } from '../serverlessTypes.js'
+import type { ServerlessAction } from '../serverlessTypes.js'
 import type { RefString } from '../../global/globalTypes.js'
 import { config } from '../../config/config.js'
 import { escape } from '../../utils/escape/escape.js'
@@ -329,7 +329,7 @@ const Contact: ServerlessAction = async (args) => {
 
   /* Result */
 
-  return await applyFilters('contactResult', {} as ServerlessActionReturn, body, true)
+  return await applyFilters('contactResult', {}, body, true)
 }
 
 /* Exports */
