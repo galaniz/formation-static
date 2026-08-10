@@ -23,11 +23,13 @@ export interface NavigationProps {
 /**
  * @typedef {object} NavigationList
  * @extends {Generic}
+ * @prop {string} id
  * @prop {string} title
  * @prop {string|string[]} location
  * @prop {NavigationItem[]} items
  */
 export interface NavigationList extends Generic {
+  id: string
   title: string
   location: string | string[]
   items: NavigationItem[]
@@ -35,10 +37,12 @@ export interface NavigationList extends Generic {
 
 /**
  * @typedef {object} NavigationByLocationItem
+ * @prop {string} id
  * @prop {string} title
  * @prop {NavigationItem[]} items
  */
 export interface NavigationByLocationItem {
+  id: string
   title: string
   items: NavigationItem[]
 }
