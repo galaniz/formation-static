@@ -3,7 +3,7 @@
   "version": "0.0.5",
   "description": "Minimal static-site HTML renderer from JSON, Contentful, or WordPress data",
   "main": "./lib/config/config.js",
-  "packageManager": "pnpm@10.33.2",
+  "packageManager": "pnpm@11.21.0",
   "type": "module",
   "files": [
     "./lib",
@@ -42,24 +42,19 @@
   "homepage": "https://github.com/galaniz/formation-static#readme",
   "author": "Graciela Alaniz (https://alanizcreative.com/)",
   "license": "MIT",
-  "pnpm": {
-    "overrides": {
-      "postcss@<8.5.10": ">=8.5.10"
-    }
-  },
   "devDependencies": {
     "@types/contentful-resolve-response": "^0.1.33",
-    "@types/node": "^25.6.0",
-    "@vitest/coverage-v8": "^4.1.5",
-    "eslint": "10.2.1",
-    "memfs": "4.57.2",
-    "terser": "5.46.2",
+    "@types/node": "^26.2.0",
+    "@vitest/coverage-v8": "^4.1.10",
+    "eslint": "10.8.1",
+    "memfs": "4.68.0",
+    "terser": "5.49.2",
     "typescript": "^6.0.3",
-    "typescript-eslint": "8.59.0",
-    "vitest": "^4.1.5"
+    "typescript-eslint": "8.66.0",
+    "vitest": "^4.1.10"
   },
   "dependencies": {
-    "uuid": "^14.0.0"
+    "uuid": "^14.0.1"
   },
   "peerDependencies": {
     "@wordpress/block-serialization-default-parser": "^5.37.0",
