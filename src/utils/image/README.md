@@ -15,13 +15,13 @@ Download remote images to local images directory.
 
 ## setLocalImages  
 
-**<code>setLocalImages(): Promise&lt;sharp.OutputInfo&gt;[]</code>**  
+**<code>setLocalImages(): Promise&lt;OutputInfo&gt;[]</code>**  
 
 Transform local images (quality and sizes).
 
 ### Returns  
 
-<code>Promise&lt;sharp.OutputInfo&gt;[]</code>
+<code>Promise&lt;OutputInfo&gt;[]</code>
 
 ## getImage  
 

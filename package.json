@@ -3,7 +3,7 @@
   "version": "0.0.5",
   "description": "Minimal static-site HTML renderer from JSON, Contentful, or WordPress data",
   "main": "./lib/config/config.js",
-  "packageManager": "pnpm@11.21.0",
+  "packageManager": "pnpm@11.22.0",
   "type": "module",
   "files": [
     "./lib",
@@ -45,21 +45,21 @@
   "devDependencies": {
     "@types/contentful-resolve-response": "^0.1.33",
     "@types/node": "^26.2.0",
-    "@vitest/coverage-v8": "^4.1.10",
-    "eslint": "10.8.1",
-    "memfs": "4.68.0",
-    "terser": "5.49.2",
+    "@vitest/coverage-v8": "^4.1.11",
+    "eslint": "10.9.0",
+    "memfs": "4.68.1",
+    "terser": "5.50.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "8.66.0",
-    "vitest": "^4.1.10"
+    "typescript-eslint": "8.67.0",
+    "vitest": "^4.1.11"
   },
   "dependencies": {
-    "uuid": "^14.0.1"
+    "uuid": "^14.0.2"
   },
   "peerDependencies": {
-    "@wordpress/block-serialization-default-parser": "^5.37.0",
-    "contentful-resolve-response": "^1.9.4",
-    "sharp": "0.34.5"
+    "@wordpress/block-serialization-default-parser": "^5.53.0",
+    "contentful-resolve-response": "^2.0.1",
+    "sharp": "0.35.3"
   },
   "peerDependenciesMeta": {
     "@wordpress/block-serialization-default-parser": {

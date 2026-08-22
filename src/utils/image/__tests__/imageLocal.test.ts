@@ -104,6 +104,7 @@ describe('setLocalImages()', () => {
         height: 4,
         channels: 3,
         premultiplied: false,
+        hasAlpha: false,
         size: 44
       },
       {
@@ -112,6 +113,7 @@ describe('setLocalImages()', () => {
         height: 8,
         channels: 3,
         premultiplied: false,
+        hasAlpha: false,
         size: 44
       },
       {
@@ -120,6 +122,7 @@ describe('setLocalImages()', () => {
         height: 4,
         channels: 3,
         premultiplied: false,
+        hasAlpha: false,
         size: 44
       },
       {
@@ -128,6 +131,7 @@ describe('setLocalImages()', () => {
         height: 8,
         channels: 3,
         premultiplied: false,
+        hasAlpha: false,
         size: 44
       }
     ]
@@ -169,6 +173,7 @@ describe('setLocalImages()', () => {
         height: 4,
         channels: 3,
         premultiplied: false,
+        hasAlpha: false,
         size: 44
       },
       {
@@ -177,6 +182,7 @@ describe('setLocalImages()', () => {
         height: 8,
         channels: 3,
         premultiplied: false,
+        hasAlpha: false,
         size: 44
       },
       {
@@ -185,6 +191,7 @@ describe('setLocalImages()', () => {
         height: 4,
         channels: 3,
         premultiplied: false,
+        hasAlpha: false,
         size: 44
       },
       {
@@ -193,6 +200,7 @@ describe('setLocalImages()', () => {
         height: 8,
         channels: 3,
         premultiplied: false,
+        hasAlpha: false,
         size: 44
       }
     ]
