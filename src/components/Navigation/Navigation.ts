@@ -120,6 +120,7 @@ class Navigation<L extends string = string> {
       }
 
       const {
+        id,
         title,
         location,
         items
@@ -133,6 +134,7 @@ class Navigation<L extends string = string> {
 
       locations.forEach(loc => {
         this.#navigationsByLocation.set(loc as L, {
+          id,
           title,
           items
         })

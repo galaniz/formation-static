@@ -7,6 +7,7 @@
 import type { ImageLocal, ImageProps } from './imageTypes.js'
 import { extname, resolve, basename, dirname } from 'node:path'
 import { mkdir, stat } from 'node:fs/promises'
+import type { OutputInfo } from 'sharp'
 import sharp from 'sharp'
 import { getFilePaths } from '../file/filePath.js'
 import { isStringSafe, isStringStrict } from '../string/string.js'
@@ -16,9 +17,9 @@ import { config } from '../../config/config.js'
 /**
  * Transform local images (quality and sizes).
  *
- * @return {Promise<sharp.OutputInfo[]>}
+ * @return {Promise<OutputInfo[]>}
  */
-const setLocalImages = async (): Promise<sharp.OutputInfo[]> => {
+const setLocalImages = async (): Promise<OutputInfo[]> => {
   /* Directory paths required */
 
   const inputDir = config.image.inputDir

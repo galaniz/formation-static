@@ -75,3 +75,13 @@ Prototype key checks for dynamic object properties:
 ### Fixed
 
 - `normalizeContentfulData` internalLink call stack error.
+
+## [0.0.6] - 2026-08-22
+
+### Added
+
+- `id` property to `NavigationList` and `NavigationByLocationItem` types.
+
+### Changed
+
+- Update dependencies and peer dependencies.

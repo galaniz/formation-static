@@ -182,6 +182,7 @@ describe('Navigation', () => {
       const nav = primary.getNavigationByLocation('header')
       const expectedNav = {
         title: 'Home',
+        id: '5',
         items: [
           {
             id: '1',

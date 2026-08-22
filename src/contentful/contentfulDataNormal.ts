@@ -10,7 +10,7 @@ import type {
   ContentfulDataFile
 } from './contentfulDataTypes.js'
 import type { RenderItem, RenderFile } from '../render/renderTypes.js'
-import type { GenericStrings, InternalLink } from '../global/globalTypes.js'
+import type { GenericStrings } from '../global/globalTypes.js'
 import { normalizeContentType } from '../utils/contentType/contentType.js'
 import { isArrayStrict } from '../utils/array/array.js'
 import { isObjectStrict } from '../utils/object/object.js'
@@ -165,7 +165,7 @@ const normalizeRichText = (items: ContentfulDataItem[]): RenderItem[] => {
     }
 
     if (isObjectStrict(internalLink)) {
-      newItem.internalLink = normalizeItem(internalLink, [], true) as InternalLink
+      newItem.internalLink = normalizeItem(internalLink, [], true)
     }
 
     return newItems.push(newItem)

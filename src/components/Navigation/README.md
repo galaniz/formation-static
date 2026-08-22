@@ -108,6 +108,7 @@ Single navigation by location.
 **Augments:** <code><a href="/src/global/README.md#generic">Generic</a></code>
 
 #### Properties  
+- **`id`** <code>string</code> required  
 - **`title`** <code>string</code> required  
 - **`location`** <code>string | string[]</code> required  
 - **`items`** <code><a href="#navigationitem">NavigationItem</a>[]</code> required
@@ -218,5 +219,6 @@ Current content type(s) to compare against.
 **Type:** <code>object</code>
 
 #### Properties  
+- **`id`** <code>string</code> required  
 - **`title`** <code>string</code> required  
 - **`items`** <code><a href="#navigationitem">NavigationItem</a>[]</code> required

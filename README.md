@@ -8,7 +8,7 @@ Minimal static-site HTML renderer from JSON, Contentful, or WordPress data. No f
 npm install -D @alanizcreative/formation-static
 ```
 
-## Index
+## Reference
 <details>
 <summary>Actions</summary>
   
@@ -138,7 +138,7 @@ npm install -D @alanizcreative/formation-static
 
 </details>
 <details>
-<summary>Wordpress</summary>
+<summary>WordPress</summary>
   
 - <a href="/src/wordpress/README.md">WordPress</a>
 

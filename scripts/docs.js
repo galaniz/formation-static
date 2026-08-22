@@ -16,7 +16,7 @@ await renderMarkdownDocs({
   ],
   docsExclude: 'src/**/!(*global)Types.ts',
   docsTypes: 'src/**/*Types.ts',
-  index: `
+  root: `
   /**
    * @file
    * title: Formation Static
@@ -26,7 +26,7 @@ await renderMarkdownDocs({
    * title: Installation
    * shell: npm install -D @alanizcreative/formation-static
    *
-   * @index
+   * @reference
    */
   `,
   filterTitle (title, dir) {

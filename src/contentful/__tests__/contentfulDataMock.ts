@@ -98,26 +98,26 @@ const mockContentfulFetch = vi.fn(async (url: string): Promise<MockFetchResult> 
 
     if (contentType === 'navigation' && !data) {
       if (isFr) {
-        data = await import('../../../tests/data/contentful/navigationFr.json').then((res) => res.default) as ContentfulData
+        data = await import('../../../tests/data/contentful/navigationFr.json').then((res) => res.default)
       } else {
-        data = await import('../../../tests/data/contentful/navigation.json').then((res) => res.default) as ContentfulData
+        data = await import('../../../tests/data/contentful/navigation.json').then((res) => res.default)
       }
     }
 
     if (contentType === 'navigationItem' && !data) {
       if (isFr) {
-        data = await import('../../../tests/data/contentful/navigationItemFr.json').then((res) => res.default) as ContentfulData
+        data = await import('../../../tests/data/contentful/navigationItemFr.json').then((res) => res.default)
       } else {
-        data = await import('../../../tests/data/contentful/navigationItem.json').then((res) => res.default) as ContentfulData
+        data = await import('../../../tests/data/contentful/navigationItem.json').then((res) => res.default)
       }
     }
 
     if (contentType === 'taxonomy' && !data) {
-      data = await import('../../../tests/data/contentful/taxonomy.json').then((res) => res.default) as ContentfulData
+      data = await import('../../../tests/data/contentful/taxonomy.json').then((res) => res.default)
     }
 
     if (contentType === 'term' && !data) {
-      data = await import('../../../tests/data/contentful/term.json').then((res) => res.default) as ContentfulData
+      data = await import('../../../tests/data/contentful/term.json').then((res) => res.default)
     }
 
     if (contentType === 'empty' && !data) {

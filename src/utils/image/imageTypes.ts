@@ -8,7 +8,7 @@ import type { Source, GenericNumbers, Parent } from '../../global/globalTypes.js
 import type { RenderFile } from '../../render/renderTypes.js'
 import type { ColumnProps } from '../../layouts/Column/ColumnTypes.js'
 import type { ContainerProps } from '../../layouts/Container/ContainerTypes.js'
-import type sharp from 'sharp'
+import type { Sharp } from 'sharp'
 
 /**
  * @typedef {object} ImageArgs
@@ -122,7 +122,7 @@ export interface ImageSizesReturn {
  * @prop {string} newPath
  */
 export interface ImageLocal {
-  instance: sharp.Sharp
+  instance: Sharp
   size: number
   format: string
   path: string
