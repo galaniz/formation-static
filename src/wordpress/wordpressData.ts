@@ -10,8 +10,8 @@ import type {
   AllWordPressDataArgs,
   WordPressDataArgs
 } from './wordpressDataTypes.js'
-import type { RenderAllData, RenderData } from '../render/renderTypes.js'
-import type { CacheData, DataFilterArgs } from '../filters/filtersTypes.js'
+import type { RenderAllData, RenderData, RenderItem } from '../render/renderTypes.js'
+import type { CacheData, CacheDataFilterArgs, DataFilterArgs } from '../filters/filtersTypes.js'
 import {
   normalizeWordPressData,
   normalizeWordPressMenuItems,
@@ -47,7 +47,7 @@ const getRoute = (type: string): string => {
  * @param {WordPressDataArgs} args
  * @return {Promise<RenderData>}
  */
-const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Promise<RenderData> => {
+const getWordPressData = async (args: WordPressDataArgs): Promise<RenderData> => {
   /* Args required */
 
   if (!isObjectStrict(args)) {
@@ -70,7 +70,9 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
 
   /* Check cache */
 
-  if (config.env.cache) {
+  const hasCache = config.env.cache
+
+  if (hasCache) {
     const cacheDataFilterArgs = {
       key,
       type: 'get'
@@ -140,61 +142,62 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
     }
   }
 
-  if (loop) {
-    urlObj.searchParams.set('page', _page.toString())
-  }
-
-  let url = urlObj.toString()
-
-  if (!embed) {
-    url += '&_embed'
-  }
-
-  /* Request */
+  /* Request - loop through pages if per_page is -1 */
 
   const headers = new Headers()
   headers.set('Authorization', `Basic ${btoa(`${user}:${pass}`)}`)
 
-  const resp = await fetcher(url, { headers, ...options })
-  const data = await resp.json() as WordPressDataError | WordPressDataItem | WordPressDataItem[]
+  const newItems: RenderItem[] = []
+  const rawData: WordPressDataItem[] = []
+  let page = 1
+  let totalNum = 0
+  let totalPagesNum = 0
 
-  /* Check if error */
+  do {
+    if (loop) {
+      urlObj.searchParams.set('page', page.toString())
+    }
 
-  const isErr = isObjectStrict(data) && isStringStrict(data.message)
-  const message = isErr ? data.message : 'Bad fetch response'
+    let url = urlObj.toString()
 
-  if (!resp.ok || isErr) {
-    throw new Error(message as string, { cause: data })
-  }
+    if (!embed) {
+      url += '&_embed'
+    }
 
-  /* Total */
+    const resp = await fetcher(url, { headers, ...options })
+    const data = await resp.json() as WordPressDataError | WordPressDataItem | WordPressDataItem[]
 
-  const total = resp.headers.get('X-WP-Total')
-  const totalPages = resp.headers.get('X-WP-TotalPages')
-  const totalNum = isStringStrict(total) ? parseInt(total, 10) : 0
-  const totalPagesNum = isStringStrict(totalPages) ? parseInt(totalPages, 10) : 0
+    /* Check if error */
 
-  /* Normalize */
+    const isErr = isObjectStrict(data) && isStringStrict(data.message)
+    const message = isErr ? data.message : 'Bad fetch response'
 
-  const dataItems = isArray(data) ? data : [data] as WordPressDataItem[]
-  let newItems = normalizeWordPressData(dataItems, route)
+    if (!resp.ok || isErr) {
+      throw new Error(message as string, { cause: data })
+    }
 
-  if (loop && _page < totalPagesNum) {
-    const pagData = await getWordPressData({
-      key,
-      route,
-      params: {
-        per_page: -1
-      }
-    }, _page + 1)
+    /* Total */
 
-    const { items: pagItems } = pagData
+    if (page === 1) {
+      const total = resp.headers.get('X-WP-Total')
+      const totalPages = resp.headers.get('X-WP-TotalPages')
 
-    newItems = [
-      ...newItems,
-      ...pagItems
-    ]
-  }
+      totalNum = isStringStrict(total) ? parseInt(total, 10) : 0
+      totalPagesNum = isStringStrict(totalPages) ? parseInt(totalPages, 10) : 0
+    }
+
+    /* Normalize */
+
+    const dataItems = isArray(data) ? data : [data] as WordPressDataItem[]
+
+    if (hasCache) {
+      rawData.push(...dataItems)
+    }
+
+    newItems.push(...normalizeWordPressData(dataItems, route))
+
+    page += 1
+  } while (loop && page <= totalPagesNum)
 
   /* Full data */
 
@@ -206,11 +209,11 @@ const getWordPressData = async (args: WordPressDataArgs, _page: number = 1): Pro
 
   /* Add to cache */
 
-  if (config.env.cache) {
-    const cacheDataFilterArgs = {
+  if (hasCache) {
+    const cacheDataFilterArgs: CacheDataFilterArgs<WordPressDataItem[]> = {
       key,
       type: 'set',
-      data
+      rawData
     }
 
     await applyFilters('cacheData', newData, cacheDataFilterArgs, true)

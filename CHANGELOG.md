@@ -85,3 +85,14 @@ Prototype key checks for dynamic object properties:
 ### Changed
 
 - Update dependencies and peer dependencies.
+
+## [0.0.7] - 2026-09-27
+
+### Changed
+
+- Rename `cacheData` filter arg `data` to `rawData`.
+- Update dependencies and `sharp` peer dependency range.
+
+### Fixed
+
+- Contentful and WordPress data pagination.

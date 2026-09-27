@@ -12,11 +12,12 @@ import type {
   AllContentfulDataArgs
 } from './contentfulDataTypes.js'
 import type { RenderAllData, RenderData, RenderItem } from '../render/renderTypes.js'
-import type { CacheData, DataFilterArgs } from '../filters/filtersTypes.js'
+import type { CacheData, CacheDataFilterArgs, DataFilterArgs } from '../filters/filtersTypes.js'
 import resolveResponse from 'contentful-resolve-response'
 import { applyFilters } from '../filters/filters.js'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
 import { isStringSafe, isStringStrict } from '../utils/string/string.js'
+import { isNumber } from '../utils/number/number.js'
 import { config } from '../config/config.js'
 import { getStoreItem } from '../store/store.js'
 import { normalizeContentfulData } from './contentfulDataNormal.js'
@@ -37,7 +38,9 @@ const getContentfulData = async (key: string, params?: ContentfulDataParams): Pr
 
   /* Check cache */
 
-  if (config.env.cache) {
+  const hasCache = config.env.cache
+
+  if (hasCache) {
     const cacheDataFilterArgs = {
       key,
       type: 'get'
@@ -75,40 +78,78 @@ const getContentfulData = async (key: string, params?: ContentfulDataParams): Pr
 
   /* Params */
 
-  const url = new URL(`https://${host}/spaces/${space}/environments/${env}/entries?access_token=${accessToken}`)
+  const urlObj = new URL(`https://${host}/spaces/${space}/environments/${env}/entries?access_token=${accessToken}`)
+  let loop = false
+  let skip = 0
+  let limit = 0
+  const maxLimit = 100
 
   if (isObjectStrict(params)) {
     for (const [key, value] of Object.entries(params)) {
-      url.searchParams.set(key, value.toString())
+      let val = value
+
+      if (key === 'limit' && isNumber(val)) {
+        loop = val === -1
+        limit = loop ? maxLimit : val
+        val = limit
+      }
+
+      if (key === 'skip' && isNumber(val)) {
+        skip = val
+      }
+
+      urlObj.searchParams.set(key, val.toString())
     }
   }
 
-  /* Request */
+  /* Request - loop through entries by skip if limit is -1 */
 
-  const resp = await fetch(url.toString())
-  const data = await resp.json() as ContentfulData | ContentfulDataError
+  const newItems: RenderItem[] = []
+  const rawData: ContentfulData[] = []
+  let initData: ContentfulData | undefined
+  let nextSkip = skip
+  let total = 0
 
-  /* Check if error */
+  do {
+    if (loop) {
+      urlObj.searchParams.set('skip', nextSkip.toString())
+    }
 
-  if (!resp.ok) {
-    const message =
-      isStringStrict((data as ContentfulDataError).message) ? (data as ContentfulDataError).message : 'Bad fetch response'
+    const resp = await fetch(urlObj.toString())
+    const data = await resp.json() as ContentfulData | ContentfulDataError
 
-    throw new Error(message, { cause: data })
-  }
+    /* Check if error */
 
-  /* Normalize */
+    if (!resp.ok) {
+      const message =
+        isStringStrict((data as ContentfulDataError).message) ? (data as ContentfulDataError).message : 'Bad fetch response'
 
-  const resolvedData = resolveResponse(data) as ContentfulDataItem[]
-  const newItems = normalizeContentfulData(resolvedData)
+      throw new Error(message, { cause: data })
+    }
+
+    /* Total */
+
+    if (!initData) {
+      initData = data as ContentfulData
+      total = initData.total
+      limit = initData.limit
+      skip = initData.skip
+    }
+
+    if (hasCache) {
+      rawData.push(data as ContentfulData)
+    }
+
+    /* Normalize */
+
+    const resolvedData = resolveResponse(data) as ContentfulDataItem[]
+
+    newItems.push(...normalizeContentfulData(resolvedData))
+
+    nextSkip += limit
+  } while (loop && limit > 0 && nextSkip < total)
 
   /* Full data */
-
-  const {
-    total,
-    limit,
-    skip
-  } = data as ContentfulData
 
   const newData = {
     items: newItems,
@@ -119,11 +160,11 @@ const getContentfulData = async (key: string, params?: ContentfulDataParams): Pr
 
   /* Add to cache */
 
-  if (config.env.cache) {
-    const cacheDataFilterArgs = {
+  if (hasCache) {
+    const cacheDataFilterArgs: CacheDataFilterArgs<ContentfulData[]> = {
       key,
       type: 'set',
-      data
+      rawData
     }
 
     await applyFilters('cacheData', newData, cacheDataFilterArgs, true)
@@ -235,15 +276,17 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
     const partial = config.partialTypes.filter(type => isStringSafe(type))
 
     for (const contentType of partial) {
-      const key = `all_${contentType}`
       let newItems: RenderItem[] = []
 
       for (const locale of paramLocales) {
+        let key = `all_${contentType}`
         const params: ContentfulDataParams = {
-          content_type: contentType
+          content_type: contentType,
+          limit: -1
         }
 
         if (locale && locale !== defaultLocale) {
+          key += `_${locale}`
           params.locale = locale
         }
 
@@ -271,16 +314,18 @@ const getAllContentfulData = async (args?: AllContentfulDataArgs): Promise<Rende
     const whole = config.wholeTypes.filter(type => isStringSafe(type))
 
     for (const contentType of whole) {
-      const key = `all_${contentType}`
       let newItems: RenderItem[] = []
 
       for (const locale of paramLocales) {
+        let key = `all_${contentType}`
         const params: ContentfulDataParams = {
           content_type: contentType,
-          include: 10
+          include: 10,
+          limit: -1
         }
 
         if (locale && locale !== defaultLocale) {
+          key += `_${locale}`
           params.locale = locale
         }
 

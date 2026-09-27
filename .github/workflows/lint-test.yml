@@ -34,6 +34,10 @@ jobs:
       - name: Lint files
         run: pnpm lint
 
+      # Typecheck files
+      - name: Typecheck files
+        run: pnpm typecheck
+
       # Test files
       - name: Test files
         run: pnpm test

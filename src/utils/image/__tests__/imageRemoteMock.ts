@@ -40,7 +40,7 @@ const mockImageRemoteFetch = vi.fn(async (url: string): Promise<MockFetchImageRe
       status,
       arrayBuffer: async () => {
         return await new Promise((resolve) => {
-          resolve(ok ? jpegBuffer : new ArrayBuffer(0))
+          resolve(ok ? new Uint8Array(jpegBuffer).buffer : new ArrayBuffer(0))
         })
       }
     })

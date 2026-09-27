@@ -97,12 +97,12 @@ export interface CacheData extends RenderData {
  * @typedef {object} CacheDataFilterArgs
  * @prop {string} key
  * @prop {string} type
- * @prop {CacheData} [data]
+ * @prop {*} [rawData]
  */
-export interface CacheDataFilterArgs {
+export interface CacheDataFilterArgs<R = unknown> {
   key: string
   type: string
-  data?: CacheData
+  rawData?: R
 }
 
 /**

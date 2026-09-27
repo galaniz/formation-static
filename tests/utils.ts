@@ -81,11 +81,7 @@ const testRequest = (url: string = 'http://test.com/', method: string = 'GET', d
     ...request,
     url,
     method,
-    clone: () => ({
-      ...request.clone(),
-      fetcher: {},
-      bytes: () => new ArrayBuffer(0)
-    }),
+    clone: () => request.clone(),
     text: () => Promise.resolve(JSON.stringify(data)),
     json: () => Promise.resolve(data)
   }

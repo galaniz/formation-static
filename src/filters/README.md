@@ -92,7 +92,7 @@ Fill filters map.
 #### Properties  
 - **`key`** <code>string</code> required  
 - **`type`** <code>string</code> required  
-- **`data`** <code><a href="#cachedata">CacheData</a></code> optional
+- **`rawData`** <code>&ast;</code> optional
 
 ### CacheDataFilter  
 

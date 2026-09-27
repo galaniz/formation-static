@@ -3,7 +3,7 @@
   "version": "0.0.6",
   "description": "Minimal static-site HTML renderer from JSON, Contentful, or WordPress data",
   "main": "./lib/config/config.js",
-  "packageManager": "pnpm@11.22.0",
+  "packageManager": "pnpm@12.6.0",
   "type": "module",
   "files": [
     "./lib",
@@ -24,7 +24,8 @@
     "build": "pnpm build:lib && pnpm build:cjs && node scripts/packageFile.js && pnpm minify",
     "minify": "find lib cjs -name \"*.js\" -exec terser {} -o {} --compress \\;",
     "test": "vitest --run --reporter verbose --coverage",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "typecheck": "npx tsc --noEmit"
   },
   "keywords": [
     "static-site",
@@ -44,14 +45,14 @@
   "license": "MIT",
   "devDependencies": {
     "@types/contentful-resolve-response": "^0.1.33",
-    "@types/node": "^26.2.0",
-    "@vitest/coverage-v8": "^4.1.11",
-    "eslint": "10.9.0",
-    "memfs": "4.68.1",
-    "terser": "5.50.0",
+    "@types/node": "^26.6.3",
+    "@vitest/coverage-v8": "^5.0.2",
+    "eslint": "10.11.0",
+    "memfs": "4.79.0",
+    "terser": "5.51.2",
     "typescript": "^6.0.3",
-    "typescript-eslint": "8.67.0",
-    "vitest": "^4.1.11"
+    "typescript-eslint": "8.70.1",
+    "vitest": "^5.0.2"
   },
   "dependencies": {
     "uuid": "^14.0.2"
@@ -59,7 +60,7 @@
   "peerDependencies": {
     "@wordpress/block-serialization-default-parser": "^5.53.0",
     "contentful-resolve-response": "^2.0.1",
-    "sharp": "0.35.3"
+    "sharp": "^0.35.3"
   },
   "peerDependenciesMeta": {
     "@wordpress/block-serialization-default-parser": {
