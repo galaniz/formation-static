@@ -5,7 +5,6 @@
 /* Imports */
 
 import type { LocalData } from '../localDataTypes.js'
-import type { CacheData } from '../../filters/filtersTypes.js'
 import type { StoreImageMeta } from '../../store/storeTypes.js'
 import { it, describe, beforeEach, afterEach, vi, expect } from 'vitest'
 import { getLocalData, getAllLocalData } from '../localData.js'
@@ -127,7 +126,7 @@ describe('getLocalData()', () => {
     config.env.cache = true
     const cacheSet = vi.fn((data) => new Promise(resolve => { resolve(data) }))
 
-    addFilter('cacheData', async (data, args): Promise<undefined> => {
+    addFilter('cacheData', async (data, args) => {
       const { key, type } = args
 
       if (key === 'cache_key' && type === 'set') {
@@ -153,7 +152,7 @@ describe('getLocalData()', () => {
     config.env.cache = true
     const cacheGet = vi.fn((data) => new Promise(resolve => { resolve(data) }))
 
-    addFilter('cacheData', async (data, args): Promise<CacheData | undefined> => {
+    addFilter('cacheData', async (data, args) => {
       const { key, type } = args
 
       if (key === 'cache_key' && type === 'get') {

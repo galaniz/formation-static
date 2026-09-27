@@ -49,7 +49,7 @@ const mockContentfulFetch = vi.fn(async (url: string): Promise<MockFetchResult> 
 
     const contentType = urlObj.searchParams.get('content_type') || ''
 
-    if (!['page', 'post', 'navigation', 'navigationItem', 'term', 'taxonomy', 'empty'].includes(contentType) && !data) {
+    if (!['page', 'post', 'navigation', 'navigationItem', 'term', 'taxonomy', 'empty', 'noItem'].includes(contentType) && !data) {
       status = 400
       data = {
         sys: {
@@ -127,6 +127,15 @@ const mockContentfulFetch = vi.fn(async (url: string): Promise<MockFetchResult> 
         limit: 0,
         items: []
       }
+    }
+
+    if (contentType === 'post' && !data) {
+      const posts = isFr
+        ? await import('../../../tests/data/contentful/postFr.json').then((res) => res.default)
+        : await import('../../../tests/data/contentful/post.json').then((res) => res.default)
+      const skip = parseInt(urlObj.searchParams.get('skip') || '0', 10)
+
+      data = posts.find(item => item.skip === skip)
     }
 
     /* Result */

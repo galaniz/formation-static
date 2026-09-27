@@ -24,7 +24,8 @@
     "build": "pnpm build:lib && pnpm build:cjs && node scripts/packageFile.js && pnpm minify",
     "minify": "find lib cjs -name \"*.js\" -exec terser {} -o {} --compress \\;",
     "test": "vitest --run --reporter verbose --coverage",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "typecheck": "npx tsc --noEmit"
   },
   "keywords": [
     "static-site",

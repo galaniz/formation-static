@@ -4,7 +4,6 @@
 
 /* Imports */
 
-import type { CacheData } from '../../filters/filtersTypes.js'
 import { it, expect, describe, vi, beforeEach, afterEach, beforeAll } from 'vitest'
 import { testResetStore } from '../../../tests/utils.js'
 import { getWordPressData, getAllWordPressData } from '../wordpressData.js'
@@ -16,6 +15,7 @@ import { setStoreItem } from '../../store/store.js'
 import { config } from '../../config/config.js'
 import { posts } from '../../../tests/data/wordpress/posts.js'
 import { pages } from '../../../tests/data/wordpress/pages.js'
+import rawPages from '../../../tests/data/wordpress/pages.json' with { type: 'json' }
 import { menus } from '../../../tests/data/wordpress/menus.js'
 import { menuItems } from '../../../tests/data/wordpress/menu-items.js'
 import { categories } from '../../../tests/data/wordpress/categories.js'
@@ -160,7 +160,7 @@ describe('getWordPressData()', () => {
     config.env.cache = true
     const cacheSet = vi.fn((data) => new Promise(resolve => { resolve(data) }))
 
-    addFilter('cacheData', async (data, args): Promise<undefined> => {
+    addFilter('cacheData', async (data, args) => {
       const { key, type } = args
 
       if (key === 'posts_key_2' && type === 'set') {
@@ -191,7 +191,7 @@ describe('getWordPressData()', () => {
     config.env.cache = true
     const cacheGet = vi.fn((data) => new Promise(resolve => { resolve(data) }))
 
-    addFilter('cacheData', async (data, args): Promise<CacheData> => {
+    addFilter('cacheData', async (data, args) => {
       const { key, type } = args
 
       if (key === 'posts_key_3' && type === 'get') {
@@ -218,6 +218,36 @@ describe('getWordPressData()', () => {
       total: 2,
       pages: 0
     })
+  })
+
+  it('should get and set cache once with all items if per_page is -1', async () => {
+    config.env.cache = true
+    const cacheGet = vi.fn()
+    const cacheSet = vi.fn()
+
+    addFilter('cacheData', async (data, args) => {
+      const { key, type } = args
+
+      if (key === 'pages_key_2' && type === 'get') {
+        await cacheGet()
+      }
+
+      if (key === 'pages_key_2' && type === 'set') {
+        await cacheSet(data, args.rawData)
+      }
+    })
+
+    const result = await getWordPressData({
+      key: 'pages_key_2',
+      route: 'pages',
+      params: {
+        per_page: -1
+      }
+    })
+
+    expect(cacheGet).toHaveBeenCalledTimes(1)
+    expect(cacheSet).toHaveBeenCalledTimes(1)
+    expect(cacheSet).toHaveBeenCalledWith(result, rawPages)
   })
 
   it('should return array of pages with prod credentials', async () => {

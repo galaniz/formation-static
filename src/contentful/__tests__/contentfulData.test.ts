@@ -22,6 +22,9 @@ import { navigationItems } from '../../../tests/data/contentful/navigationItem.j
 import { navigationItemsFr } from '../../../tests/data/contentful/navigationItemFr.js'
 import { taxonomies } from '../../../tests/data/contentful/taxonomy.js'
 import { terms } from '../../../tests/data/contentful/term.js'
+import { posts } from '../../../tests/data/contentful/post.js'
+import { postsFr } from '../../../tests/data/contentful/postFr.js'
+import rawPosts from '../../../tests/data/contentful/post.json' with { type: 'json' }
 import { normalJsonKeys } from '../contentfulDataNormal.js'
 
 /* Mock fetch */
@@ -41,7 +44,7 @@ describe('getContentfulData()', () => {
     config.cms.prodCredential = 'lipsum'
     config.cms.prodHost = 'cdn.contentful.com'
     config.cms.env = 'master'
-    config.wholeTypes = ['page']
+    config.wholeTypes = ['page', 'post']
     config.partialTypes = ['navigation', 'navigationItem']
     normalJsonKeys.add('json')
   })
@@ -110,11 +113,80 @@ describe('getContentfulData()', () => {
     })
   })
 
+  it('should return first set of posts if limit is not -1', async () => {
+    const result = await getContentfulData('posts_key', {
+      content_type: 'post'
+    })
+
+    expect(result).toEqual({
+      ...posts,
+      items: posts.items.slice(0, 1)
+    })
+  })
+
+  it('should return all posts in order if limit is -1', async () => {
+    const result = await getContentfulData('posts_key_2', {
+      content_type: 'post',
+      limit: -1
+    })
+
+    const skips = mockContentfulFetch.mock.calls.map(([url]) => new URL(url).searchParams.get('skip'))
+    const limits = mockContentfulFetch.mock.calls.map(([url]) => new URL(url).searchParams.get('limit'))
+
+    expect(skips).toEqual(['0', '1', '2'])
+    expect(limits).toEqual(['100', '100', '100'])
+    expect(result).toEqual(posts)
+  })
+
+  it('should return all posts from skip param if limit is -1', async () => {
+    const result = await getContentfulData('posts_key_skip', {
+      content_type: 'post',
+      limit: -1,
+      skip: 1
+    })
+
+    const skips = mockContentfulFetch.mock.calls.map(([url]) => new URL(url).searchParams.get('skip'))
+
+    expect(skips).toEqual(['1', '2'])
+    expect(result).toEqual({
+      ...posts,
+      skip: 1,
+      items: posts.items.slice(1)
+    })
+  })
+
+  it('should get and set cache once with all posts if limit is -1', async () => {
+    config.env.cache = true
+    const cacheGet = vi.fn()
+    const cacheSet = vi.fn()
+
+    addFilter('cacheData', async (data, args) => {
+      const { key, type } = args
+
+      if (key === 'posts_key_3' && type === 'get') {
+        await cacheGet()
+      }
+
+      if (key === 'posts_key_3' && type === 'set') {
+        await cacheSet(data, args.rawData)
+      }
+    })
+
+    await getContentfulData('posts_key_3', {
+      content_type: 'post',
+      limit: -1
+    })
+
+    expect(cacheGet).toHaveBeenCalledTimes(1)
+    expect(cacheSet).toHaveBeenCalledTimes(1)
+    expect(cacheSet).toHaveBeenCalledWith(posts, rawPosts)
+  })
+
   it('should return array of pages and set cache', async () => {
     config.env.cache = true
     const cacheSet = vi.fn((data) => new Promise(resolve => { resolve(data) }))
 
-    addFilter('cacheData', async (data, args): Promise<undefined> => {
+    addFilter('cacheData', async (data, args) => {
       const { key, type } = args
 
       if (key === 'pages_key_2' && type === 'set') {
@@ -146,7 +218,7 @@ describe('getContentfulData()', () => {
     config.env.cache = true
     const cacheGet = vi.fn((data) => new Promise(resolve => { resolve(data) }))
 
-    addFilter('cacheData', async (data, args): Promise<CacheData> => {
+    addFilter('cacheData', async (data, args) => {
       const { key, type } = args
 
       if (key === 'pages_key_3' && type === 'get') {
@@ -238,7 +310,7 @@ describe('getAllContentfulData()', () => {
     config.cms.prodCredential = 'lipsum'
     config.cms.prodHost = 'cdn.contentful.com'
     config.cms.env = 'master'
-    config.wholeTypes = ['page', 'post']
+    config.wholeTypes = ['page', 'post', 'noItem']
     config.partialTypes = ['navigation', 'navigationItem']
     normalJsonKeys.add('json')
   })
@@ -288,11 +360,62 @@ describe('getAllContentfulData()', () => {
           ...pages.items,
           ...pagesFr.items
         ],
-        post: []
+        post: [
+          ...posts.items,
+          ...postsFr.items
+        ],
+        noItem: []
       }
     }
 
     expect(result).toEqual(expectedResult)
+  })
+
+  it('should cache data by locale', async () => {
+    config.env.cache = true
+    const cache = new Map<string, CacheData>()
+
+    addFilter('cacheData', async (data, args) => {
+      const { key, type } = args
+
+      if (type === 'set') {
+        cache.set(key, data)
+      }
+
+      return await Promise.resolve(type === 'get' ? cache.get(key) : data)
+    })
+
+    await getAllContentfulData()
+    const result = await getAllContentfulData()
+
+    config.env.cache = false
+
+    expect([...cache.keys()]).toEqual([
+      'all_navigation',
+      'all_navigation_fr-CA',
+      'all_navigationItem',
+      'all_navigationItem_fr-CA',
+      'all_page',
+      'all_page_fr-CA',
+      'all_post',
+      'all_post_fr-CA',
+      'all_noItem',
+      'all_noItem_fr-CA'
+    ])
+
+    expect(result?.content.page).toEqual([
+      ...pages.items,
+      ...pagesFr.items
+    ])
+  })
+
+  it('should loop through all entries for whole types', async () => {
+    config.cms.locales = []
+    config.wholeTypes = ['post']
+
+    const result = await getAllContentfulData()
+
+    expect(result?.content.post).toEqual(posts.items)
   })
 
   it('should return navigation and page data from preview data', async () => {
@@ -414,7 +537,13 @@ describe('getAllContentfulData()', () => {
             test: 'test'
           }
         }),
-        post: []
+        post: posts.items.map(post => {
+          return {
+            ...post,
+            test: 'test'
+          }
+        }),
+        noItem: []
       }
     }
 
@@ -453,7 +582,11 @@ describe('getAllContentfulData()', () => {
           ...pages.items,
           ...pagesFr.items
         ],
-        post: [],
+        post: [
+          ...posts.items,
+          ...postsFr.items
+        ],
+        noItem: [],
         test: []
       }
     }
