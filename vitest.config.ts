@@ -10,9 +10,8 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    cache: false,
-    globals: true,
     clearMocks: true,
+    restoreMocks: true,
     environment: 'node',
     setupFiles: [
       './tests/setup.ts'

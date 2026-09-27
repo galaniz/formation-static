@@ -4,15 +4,22 @@
 
 /* Imports */
 
-import { it, expect, describe, vi } from 'vitest'
+import { it, expect, describe, vi, beforeEach } from 'vitest'
+import type { MockInstance } from 'vitest'
 import { print } from '../print.js'
 
 /* Tests */
 
 describe('print()', () => {
-  const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
-  const mockConsoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
-  const mockConsoleInfo = vi.spyOn(console, 'info').mockImplementation(() => undefined)
+  let mockConsoleError: MockInstance<typeof console.error>
+  let mockConsoleWarn: MockInstance<typeof console.warn>
+  let mockConsoleInfo: MockInstance<typeof console.info>
+
+  beforeEach(() => {
+    mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    mockConsoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    mockConsoleInfo = vi.spyOn(console, 'info').mockImplementation(() => undefined)
+  })
 
   it('should print an empty error message on two lines', () => {
     // @ts-expect-error - test undefined params
