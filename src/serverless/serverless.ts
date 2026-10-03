@@ -12,7 +12,7 @@ import type {
   ServerlessResultOptions
 } from './serverlessTypes.js'
 import type { RenderPreviewData, RenderServerlessData } from '../render/renderTypes.js'
-import type { Generic, GenericStrings } from '../global/globalTypes.js'
+import type { GenericStrings } from '../global/globalTypes.js'
 import type { getAllContentfulData } from '../contentful/contentfulData.js'
 import type { getAllWordPressData } from '../wordpress/wordpressData.js'
 import { ResponseError } from '../utils/ResponseError/ResponseError.js'
@@ -29,7 +29,7 @@ import { print } from '../utils/print/print.js'
  *
  * @type {ServerlessActions}
  */
-let serverlessActions: ServerlessActions = {}
+let serverlessActions: ServerlessActions<any> = {} // eslint-disable-line @typescript-eslint/no-explicit-any
 
 /**
  * Check if request is a preview.
@@ -170,7 +170,7 @@ const serverlessRender = async (
  * @param {ServerlessActions} [actions]
  * @return {void}
  */
-const setServerless = (actions?: ServerlessActions): void => {
+const setServerless = <E extends object = object>(actions?: ServerlessActions<E>): void => {
   if (!isObjectStrict(actions)) {
     return
   }
@@ -182,14 +182,14 @@ const setServerless = (actions?: ServerlessActions): void => {
  * Handle POST requests to serverless action.
  *
  * @param {Request} request
- * @param {Generic} env
+ * @param {object} env
  * @param {GenericStrings} [headers]
  * @param {string} [honeypotName]
  * @return {Promise<Response>}
  */
 const doServerlessAction = async (
   request: Request,
-  env: Generic,
+  env: object,
   headers?: GenericStrings,
   honeypotName?: string
 ): Promise<Response> => {

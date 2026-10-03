@@ -6,8 +6,8 @@
 
 import type { Source, GenericNumbers, Parent } from '../../global/globalTypes.js'
 import type { RenderFile } from '../../render/renderTypes.js'
-import type { ColumnProps } from '../../layouts/Column/ColumnTypes.js'
-import type { ContainerProps } from '../../layouts/Container/ContainerTypes.js'
+import type { ColumnArgs, ColumnProps } from '../../layouts/Column/ColumnTypes.js'
+import type { ContainerArgs, ContainerProps } from '../../layouts/Container/ContainerTypes.js'
 import type { Sharp } from 'sharp'
 
 /**
@@ -71,7 +71,7 @@ export interface ImageReturn {
 /**
  * @typedef {ImageReturn|string} ImageReturnType
  */
-export type ImageReturnType<V extends false | true> = V extends true ? ImageReturn : string
+export type ImageReturnType<R extends false | true> = R extends true ? ImageReturn : string
 
 /**
  * @typedef {Parent|ColumnProps|ContainerProps} ImageSizesParents
@@ -79,9 +79,9 @@ export type ImageReturnType<V extends false | true> = V extends true ? ImageRetu
 export type ImageSizesParents = Parent & ColumnProps & ContainerProps
 
 /**
- * @typedef {Parent|ColumnProps|ContainerProps} ImageSizesParentsArgs
+ * @typedef {Parent} ImageSizesParentsArgs
  */
-export type ImageSizesParentsArgs = Parent & ColumnProps<string, string | number> & ContainerProps<string, string | number>
+export type ImageSizesParentsArgs = Parent<ColumnArgs<string, string | number> & ContainerArgs<string, string | number>>
 
 /**
  * @typedef {object} ImageSizesArgs
@@ -93,8 +93,8 @@ export type ImageSizesParentsArgs = Parent & ColumnProps<string, string | number
  * @prop {number} [viewportWidth=100]
  * @prop {number} [maxWidth]
  */
-export interface ImageSizesArgs<T = ImageSizesParents> {
-  parents: T[]
+export interface ImageSizesArgs<P = ImageSizesParents> {
+  parents: P[]
   widths: GenericNumbers
   maxWidths: GenericNumbers
   breakpoints: number[]

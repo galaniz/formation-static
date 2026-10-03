@@ -107,13 +107,13 @@ export interface CacheDataFilterArgs<R = unknown> {
 
 /**
  * @typedef {function} CacheDataFilter
- * @param {CacheData} data
+ * @param {CacheData|undefined} data
  * @param {CacheDataFilterArgs} args
  * @return {Promise<CacheData|undefined>}
  */
-export type CacheDataFilter = (
-  data: CacheData,
-  args: CacheDataFilterArgs
+export type CacheDataFilter<R = unknown> = (
+  data: CacheData | undefined,
+  args: CacheDataFilterArgs<R>
 ) => Promise<CacheData | undefined>
 
 /**
@@ -178,6 +178,11 @@ export interface Filters extends Record<string, GenericFunction> {
   slugParts: LinkSlugPartsFilter
   slug: LinkSlugFilter
 }
+
+/**
+ * @typedef {Object<string, GenericFunction>} FiltersSet
+ */
+export type FiltersSet = { [N in keyof Filters]?: GenericFunction<Filters[N]> }
 
 /**
  * @typedef {Map<string, Set<GenericFunction>>} FilterMap
@@ -259,4 +264,4 @@ LinkSlugFilter
 /**
  * @typedef {*|Promise<*>} FilterReturnType
  */
-export type FilterReturnType<T, V extends false | true> = V extends true ? Promise<T> : T
+export type FilterReturnType<V, A extends false | true> = A extends true ? Promise<V> : V

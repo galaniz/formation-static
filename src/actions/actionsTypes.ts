@@ -27,6 +27,11 @@ export interface Actions extends Record<string, GenericFunction> {
 }
 
 /**
+ * @typedef {Object<string, GenericFunction>} ActionsSet
+ */
+export type ActionsSet = { [N in keyof Actions]?: GenericFunction<Actions[N]> }
+
+/**
  * @typedef {Map<string, Set<GenericFunction>>} ActionMap
  * @prop {Set<RenderStartAction>} renderStart
  * @prop {Set<RenderEndAction>} renderEnd
@@ -49,4 +54,4 @@ RenderItemEndAction
 /**
  * @typedef {void|Promise<void>} ActionReturnType
  */
-export type ActionReturnType<V extends false | true> = V extends true ? Promise<void> : undefined
+export type ActionReturnType<A extends false | true> = A extends true ? Promise<void> : undefined

@@ -61,10 +61,10 @@ const getParentSlug = (
  * @param {boolean} [returnParents]
  * @return {LinkSlugReturnType}
  */
-const getSlug = <T extends boolean = false>(
+const getSlug = <R extends boolean = false>(
   args: LinkSlugArgs,
-  returnParents: T = false as T
-): LinkSlugReturnType<T> => {
+  returnParents: R = false as R
+): LinkSlugReturnType<R> => {
   const {
     id = '',
     slug: initSlug = '',
@@ -273,12 +273,12 @@ const getSlug = <T extends boolean = false>(
       parents
     }
 
-    return res as LinkSlugReturnType<T>
+    return res as LinkSlugReturnType<R>
   }
 
   /* Slug return */
 
-  return fullSlug as LinkSlugReturnType<T>
+  return fullSlug as LinkSlugReturnType<R>
 }
 
 /**

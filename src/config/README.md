@@ -21,12 +21,12 @@ Update default config with user options.
 
 ## setConfigFilter  
 
-**<code>setConfigFilter(env: Generic): Config</code>**  
+**<code>setConfigFilter(env: object): Config</code>**  
 
 Filter config with environment variables.
 
 ### Parameters  
-- **`env`** <code><a href="/src/global/README.md#generic">Generic</a></code> required
+- **`env`** <code>object</code> required
 
 ### Returns  
 
@@ -106,7 +106,7 @@ Relative to site folder.
 
 #### Parameters  
 - **`config`** <code><a href="#config">Config</a></code> required  
-- **`env`** <code><a href="/src/global/README.md#generic">Generic</a></code> required
+- **`env`** <code>object</code> required
 
 #### Returns  
 

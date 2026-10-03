@@ -210,6 +210,6 @@ export interface FormOptionProps<A = FormOptionArgs, R = RenderItem, P = Parent 
  * @param {FormOptionProps} props
  * @return {FormOptionProps}
  */
-export type FormOptionPropsFilter<A = FormOptionArgs, R = RenderItem> = (
-  props: FormOptionProps<A, R>
-) => FormOptionProps<A, R>
+export type FormOptionPropsFilter<A = FormOptionArgs, R = RenderItem, P = Parent & FormFieldProps> = (
+  props: FormOptionProps<A, R, P>
+) => FormOptionProps<A, R, P>

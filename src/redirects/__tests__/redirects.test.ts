@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import { it, expect, describe, vi, afterEach, beforeAll } from 'vitest'
+import { it, expect, describe, vi, afterEach, beforeEach } from 'vitest'
 import { readFile } from 'fs/promises'
 import { redirects, setRedirects } from '../redirects.js'
 import { createRedirectsFile } from '../redirectsFile.js'
@@ -63,7 +63,7 @@ describe('setRedirects()', () => {
 /* Test createRedirectsFile */
 
 describe('createRedirectsFile()', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     vi.spyOn(console, 'info').mockImplementation(() => {})
   })
 

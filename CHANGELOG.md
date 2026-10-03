@@ -96,3 +96,17 @@ Prototype key checks for dynamic object properties:
 ### Fixed
 
 - Contentful and WordPress data pagination.
+
+## [0.0.8] - 2026-10-03
+
+### Changed
+
+- Typed `env` in config and serverless types, defaults to `object`.
+- Filter and action functions allow typed callbacks.
+- `applyFilters` and `doActions` check library names against their types.
+- `cacheData` filter `data` can be `undefined`.
+- Local `cacheData` filter uses `rawData` arg and includes `items`.
+
+### Fixed
+
+- `RichTextOutputFilter` args type.

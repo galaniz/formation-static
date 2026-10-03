@@ -144,7 +144,7 @@ describe('getLocalData()', () => {
     })
 
     expect(cacheSet).toHaveBeenCalledTimes(1)
-    expect(cacheSet).toHaveBeenCalledWith({ data: testData })
+    expect(cacheSet).toHaveBeenCalledWith({ items: [], data: testData })
     expect(result).toEqual(testData)
   })
 

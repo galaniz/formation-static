@@ -72,10 +72,10 @@ const getImageUrl = (
  * @param {boolean} [returnDetails]
  * @return {ImageReturnType}
  */
-const getImage = <V extends boolean = false>(
+const getImage = <R extends boolean = false>(
   args: ImageArgs,
-  returnDetails: V = false as V
-): ImageReturnType<V> => {
+  returnDetails: R = false as R
+): ImageReturnType<R> => {
   const {
     data,
     classes,
@@ -117,7 +117,7 @@ const getImage = <V extends boolean = false>(
   /* Data required */
 
   if (!isObjectStrict(data)) {
-    return fallback as ImageReturnType<V>
+    return fallback as ImageReturnType<R>
   }
 
   const {
@@ -149,7 +149,7 @@ const getImage = <V extends boolean = false>(
 
   if (isLocal) {
     if (!isStringStrict(path)) {
-      return fallback as ImageReturnType<V>
+      return fallback as ImageReturnType<R>
     }
 
     url = `${config.image.localUrl}/${path}`
@@ -291,10 +291,10 @@ const getImage = <V extends boolean = false>(
       srcFallback,
       srcset: srcsetSource,
       sizes: sizesValue
-    } as ImageReturnType<V>
+    } as ImageReturnType<R>
   }
 
-  return output as ImageReturnType<V>
+  return output as ImageReturnType<R>
 }
 
 /**

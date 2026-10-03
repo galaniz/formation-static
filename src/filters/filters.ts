@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { Filters, FilterMap, FilterReturnType } from './filtersTypes.js'
+import type { Filters, FiltersSet, FilterMap, FilterReturnType } from './filtersTypes.js'
 import type { GenericFunction } from '../global/globalTypes.js'
 import { isSet, isSetStrict } from '../utils/set/set.js'
 import { isStringStrict } from '../utils/string/string.js'
@@ -49,7 +49,7 @@ let filters: FilterMap = new Map([
  * @param {GenericFunction} filter
  * @return {boolean}
  */
-const addFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boolean => {
+const addFilter = <N extends keyof Filters>(name: N, filter: NonNullable<FiltersSet[N]>): boolean => {
   if (!isStringStrict(name) || !isFunction(filter)) {
     return false
   }
@@ -70,7 +70,7 @@ const addFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boolea
  * @param {GenericFunction} filter
  * @return {boolean}
  */
-const removeFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boolean => {
+const removeFilter = <N extends keyof Filters>(name: N, filter: NonNullable<FiltersSet[N]>): boolean => {
   if (!isStringStrict(name) || !isFunction(filter)) {
     return false
   }
@@ -93,9 +93,9 @@ const removeFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boo
  * @param {*} [args]
  * @return {*}
  */
-const applySequentially = async <T>(callbacks: GenericFunction[], value: T, args?: unknown): Promise<T> => {
+const applySequentially = async <V>(callbacks: GenericFunction[], value: V, args?: unknown): Promise<V> => {
   for (const callback of callbacks) {
-    value = await callback(value, args) as T
+    value = await callback(value, args) as V
   }
 
   return value
@@ -110,16 +110,20 @@ const applySequentially = async <T>(callbacks: GenericFunction[], value: T, args
  * @param {boolean} [isAsync]
  * @return {*}
  */
-const applyFilters = <T, V extends boolean = false>(
-  name: string,
-  value: T,
-  args?: unknown,
-  isAsync: V = false as V
-): FilterReturnType<T, V> => {
+const applyFilters = <
+  V extends Parameters<Filters[N]>[0],
+  A extends boolean = false,
+  N extends string & keyof Filters = string
+>(
+  name: N,
+  value: V,
+  args?: Parameters<Filters[N]>[1],
+  isAsync: A = false as A
+): FilterReturnType<V, A> => {
   const filterSet = filters.get(name)
 
   if (!isSetStrict(filterSet)) {
-    return value as FilterReturnType<T, V>
+    return value
   }
 
   const callbacks: GenericFunction[] = []
@@ -128,16 +132,16 @@ const applyFilters = <T, V extends boolean = false>(
     if (isAsync) {
       callbacks.push(callback)
     } else {
-      value = callback(value, args) as T
+      value = callback(value, args) as V
     }
   }
 
   if (isAsync) {
     return applySequentially(callbacks, value, args)
-      .then(newValue => newValue) as FilterReturnType<T, V>
+      .then(newValue => newValue) as FilterReturnType<V, A>
   }
 
-  return value as FilterReturnType<T, V>
+  return value
 }
 
 /**
@@ -179,7 +183,7 @@ const resetFilters = (): void => {
  * @param {Filters} args
  * @return {boolean}
  */
-const setFilters = (args: Partial<Filters>): boolean => {
+const setFilters = (args: FiltersSet): boolean => {
   if (!isObjectStrict(args)) {
     return false
   }

@@ -378,7 +378,7 @@ describe('getAllContentfulData()', () => {
     addFilter('cacheData', async (data, args) => {
       const { key, type } = args
 
-      if (type === 'set') {
+      if (type === 'set' && data) {
         cache.set(key, data)
       }
 

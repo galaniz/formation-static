@@ -63,13 +63,13 @@ Set serverless actions.
 
 ## doServerlessAction  
 
-**<code>doServerlessAction(request: Request, env: Generic, headers?: GenericStrings, honeypotName?: string): Promise&lt;Response&gt;</code>**  
+**<code>doServerlessAction(request: Request, env: object, headers?: GenericStrings, honeypotName?: string): Promise&lt;Response&gt;</code>**  
 
 Handle POST requests to serverless action.
 
 ### Parameters  
 - **`request`** <code>Request</code> required  
-- **`env`** <code><a href="/src/global/README.md#generic">Generic</a></code> required  
+- **`env`** <code>object</code> required  
 - **`headers`** <code><a href="/src/global/README.md#genericstrings">GenericStrings</a></code> optional  
 - **`honeypotName`** <code>string</code> optional
 
@@ -135,7 +135,7 @@ Handle POST requests to serverless action.
 #### Parameters  
 - **`args`** <code><a href="#serverlessactiondata">ServerlessActionData</a></code> required  
 - **`request`** <code>Request</code> required  
-- **`env`** <code><a href="/src/global/README.md#generic">Generic</a></code> required
+- **`env`** <code>object</code> required
 
 #### Returns  
 

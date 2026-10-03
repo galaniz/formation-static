@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import { it, expect, describe, vi, afterEach, beforeEach, beforeAll } from 'vitest'
+import { it, expect, describe, vi, afterEach, beforeEach } from 'vitest'
 import { readFile } from 'node:fs/promises'
 import { testDefaultStore, testResetStore } from '../../../tests/utils.js'
 import { config } from '../../config/config.js'
@@ -505,7 +505,7 @@ describe('getStoreItem()', () => {
 /* Test createStoreFiles */
 
 describe('createStoreFiles()', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     vi.spyOn(console, 'info').mockImplementation(() => {})
   })
 
