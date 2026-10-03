@@ -82,19 +82,19 @@ export interface ServerlessActionReturn {
  * @typedef {function} ServerlessAction
  * @param {ServerlessActionData} args
  * @param {Request} request
- * @param {Generic} env
+ * @param {object} env
  * @return {ServerlessActionReturn|Promise<ServerlessActionReturn>}
  */
-export type ServerlessAction = (
+export type ServerlessAction<E extends object = object> = (
   args: ServerlessActionData,
   request: Request,
-  env: Generic
+  env: E
 ) => Promise<ServerlessActionReturn> | ServerlessActionReturn
 
 /**
  * @typedef {Object<string, ServerlessAction>} ServerlessActions
  */
-export type ServerlessActions = Record<string, ServerlessAction>
+export type ServerlessActions<E extends object = object> = Record<string, ServerlessAction<E>>
 
 /**
  * @typedef {object} ServerlessResultOptions
@@ -110,12 +110,12 @@ export interface ServerlessResultOptions {
  * @typedef {object} ServerlessResultFilterArgs
  * @prop {ServerlessActionData} data
  * @prop {Request} request
- * @prop {Generic} env
+ * @prop {object} env
  */
-export interface ServerlessResultFilterArgs {
+export interface ServerlessResultFilterArgs<E extends object = object> {
   data: ServerlessActionData
   request: Request
-  env: Generic
+  env: E
 }
 
 /**
@@ -124,7 +124,7 @@ export interface ServerlessResultFilterArgs {
  * @param {ServerlessResultFilterArgs} args
  * @return {Promise<ServerlessActionReturn|null>}
  */
-export type ServerlessResultFilter = (
+export type ServerlessResultFilter<E extends object = object> = (
   res: ServerlessActionReturn | null,
-  args: ServerlessResultFilterArgs
+  args: ServerlessResultFilterArgs<E>
 ) => Promise<ServerlessActionReturn | null>

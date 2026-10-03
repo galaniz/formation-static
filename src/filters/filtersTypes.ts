@@ -8,7 +8,11 @@ import type { GenericFunction } from '../global/globalTypes.js'
 import type { ColumnPropsFilter } from '../layouts/Column/ColumnTypes.js'
 import type { ContainerPropsFilter } from '../layouts/Container/ContainerTypes.js'
 import type { FormPropsFilter, FormFieldPropsFilter, FormOptionPropsFilter } from '../objects/Form/FormTypes.js'
-import type { ServerlessResultFilter } from '../serverless/serverlessTypes.js'
+import type {
+  ServerlessActionReturn,
+  ServerlessResultFilter,
+  ServerlessResultFilterArgs
+} from '../serverless/serverlessTypes.js'
 import type { ContactResultFilter } from '../serverless/Contact/ContactTypes.js'
 import type { LinkSlugPartsFilter, LinkSlugFilter } from '../utils/link/linkTypes.js'
 import type {
@@ -167,7 +171,10 @@ export interface Filters extends Record<string, GenericFunction> {
   renderItem: RenderItemFilter
   renderItemData: RenderItemDataFilter
   renderContent: RenderContentFilter
-  serverlessResult: ServerlessResultFilter
+  serverlessResult (
+    res: ServerlessActionReturn | null,
+    args: ServerlessResultFilterArgs
+  ): Promise<ServerlessActionReturn | null>
   contactResult: ContactResultFilter
   cacheData: CacheDataFilter
   storeData: StoreDataFilter

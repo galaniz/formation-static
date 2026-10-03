@@ -5,6 +5,7 @@
 /* Imports */
 
 import type { Config } from '../configTypes.js'
+import type { Generic } from '../../global/globalTypes.js'
 import { it, expect, describe, afterEach } from 'vitest'
 import { config, setConfig, setConfigFilter } from '../config.js'
 
@@ -128,7 +129,7 @@ describe('setConfigFilter()', () => {
 
   it('should filter config namespace with default value', () => {
     setConfig({
-      filter: (con, env) => {
+      filter: (con, env: Generic) => {
         con.namespace = (env?.NAMESPACE || 'frm') as string // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 
         return con
@@ -144,18 +145,24 @@ describe('setConfigFilter()', () => {
     expect(namespace).toBe(expectedNamespace)
   })
 
-  it('should filter config namespace with environment variable', () => {
+  it('should filter config namespace with typed environment variables', () => {
+    interface TestEnv {
+      NAMESPACE: string
+    }
+
+    const env: TestEnv = {
+      NAMESPACE: 'ns'
+    }
+
     setConfig({
-      filter: (con, env) => {
-        con.namespace = (env.NAMESPACE || '') as string
+      filter: (con, env: TestEnv) => {
+        con.namespace = env.NAMESPACE
 
         return con
       }
     })
 
-    setConfigFilter({
-      NAMESPACE: 'ns'
-    })
+    setConfigFilter(env)
 
     const namespace = config.namespace
     const expectedNamespace = 'ns'

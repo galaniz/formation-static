@@ -4,8 +4,8 @@
 
 /* Imports */
 
-import type { ServerlessActionReturn } from '../serverlessTypes.js'
-import { it, expect, describe, vi, afterEach, beforeEach, beforeAll } from 'vitest'
+import type { ServerlessActionReturn, ServerlessResultFilterArgs } from '../serverlessTypes.js'
+import { it, expect, describe, vi, afterEach, beforeEach } from 'vitest'
 import {
   testRequest,
   testResetRenderFunctions,
@@ -161,11 +161,8 @@ describe('serverlessReload()', () => {
 /* Test serverlessRender */
 
 describe('serverlessRender()', () => {
-  beforeAll(() => {
-    vi.spyOn(console, 'error').mockImplementation(() => {})
-  })
-
   beforeEach(() => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     vi.stubGlobal('fetch', mockWordPressFetch)
     setConfig({ cms: testWordPressConfig() })
   })
@@ -340,7 +337,7 @@ describe('serverlessRender()', () => {
 /* Test doServerlessAction */
 
 describe('doServerlessAction()', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
   })
 
@@ -510,6 +507,72 @@ describe('doServerlessAction()', () => {
     expect(message).toEqual(expectedMessage)
     expect(contentType).toEqual(expectedContentType)
     expect(allowOrigin).toEqual(expectedAllowOrigin)
+  })
+
+  it('should pass typed environment variables to action', async () => {
+    interface TestEnv {
+      MESSAGE: string
+    }
+
+    const env: TestEnv = {
+      MESSAGE: 'Env success'
+    }
+
+    setServerless<TestEnv>({
+      test: async (_args, _request, env) => {
+        return await Promise.resolve({
+          success: {
+            message: env.MESSAGE
+          }
+        })
+      }
+    })
+
+    const result = await doServerlessAction(testRequest('http://test.com/', 'POST', {
+      action: 'test',
+      inputs: {}
+    }), env)
+
+    const message = await result.json() as ServerlessActionReturn
+    const expectedMessage = {
+      success: 'Env success'
+    }
+
+    expect(message).toEqual(expectedMessage)
+  })
+
+  it('should pass typed environment variables to result filter', async () => {
+    interface TestEnv {
+      MESSAGE: string
+    }
+
+    const env: TestEnv = {
+      MESSAGE: 'Filter env success'
+    }
+
+    setServerless({
+      test: () => ({ success: { message: '' } })
+    })
+
+    addFilter('serverlessResult', async (_result, args: ServerlessResultFilterArgs<TestEnv>) => {
+      return await Promise.resolve({
+        success: {
+          message: args.env.MESSAGE
+        }
+      })
+    })
+
+    const result = await doServerlessAction(testRequest('http://test.com/', 'POST', {
+      action: 'test',
+      inputs: {}
+    }), env)
+
+    const message = await result.json() as ServerlessActionReturn
+    const expectedMessage = {
+      success: 'Filter env success'
+    }
+
+    expect(message).toEqual(expectedMessage)
   })
 
   it('should return empty success', async () => {

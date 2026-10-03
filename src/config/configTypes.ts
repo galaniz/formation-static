@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { Source, GenericStrings, Generic } from '../global/globalTypes.js'
+import type { Source, GenericStrings } from '../global/globalTypes.js'
 
 /**
  * @typedef {object} ConfigMeta
@@ -103,10 +103,10 @@ export interface ConfigImage {
 /**
  * @typedef {function} ConfigFilter
  * @param {Config} config
- * @param {Generic} env
+ * @param {object} env
  * @return {Config}
  */
-export type ConfigFilter = (config: Config, env: Generic) => Config
+export type ConfigFilter<E extends object = object> = (config: Config, env: E) => Config<E>
 
 /**
  * @typedef {object} Config
@@ -130,7 +130,7 @@ export type ConfigFilter = (config: Config, env: Generic) => Config
  * @prop {ConfigImage} image
  * @prop {ConfigFilter} filter
  */
-export interface Config {
+export interface Config<E extends object = object> {
   namespace: string
   source: Source
   title: string
@@ -149,7 +149,7 @@ export interface Config {
   scripts: ConfigAsset
   styles: ConfigAsset
   image: ConfigImage
-  filter: ConfigFilter
+  filter (config: Config, env: E): Config
 }
 
 /**
@@ -157,11 +157,11 @@ export interface Config {
  * @param {Config} args
  * @return {Config}
  */
-export type ConfigSet = (args: Partial<Config>) => Config
+export type ConfigSet = <E extends object = object>(args: Partial<Config<E>>) => Config
 
 /**
  * @typedef {function} ConfigSetFilter
- * @param {Generic} env
+ * @param {object} env
  * @return {Config}
  */
-export type ConfigSetFilter = (env: Generic) => Config
+export type ConfigSetFilter = (env: object) => Config
