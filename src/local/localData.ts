@@ -6,7 +6,7 @@
 
 import type { LocalData, LocalDataArgs, AllLocalDataArgs } from './localDataTypes.js'
 import type { RenderItem, RenderAllData } from '../render/renderTypes.js'
-import type { AllDataFilterArgs, CacheData } from '../filters/filtersTypes.js'
+import type { AllDataFilterArgs, CacheData, CacheDataFilterArgs } from '../filters/filtersTypes.js'
 import { readdir, readFile } from 'node:fs/promises'
 import { extname, basename, resolve } from 'node:path'
 import { isObject, isObjectStrict } from '../utils/object/object.js'
@@ -98,13 +98,13 @@ const getLocalData = async (args: LocalDataArgs): Promise<LocalData> => {
   /* Add to cache */
 
   if (config.env.cache) {
-    const cacheDataFilterArgs = {
+    const cacheDataFilterArgs: CacheDataFilterArgs<LocalData> = {
       key,
       type: 'set',
-      data
+      rawData: data
     }
 
-    await applyFilters('cacheData', { data: newData }, cacheDataFilterArgs, true)
+    await applyFilters('cacheData', { items: [], data: newData }, cacheDataFilterArgs, true)
   }
 
   /* Output */

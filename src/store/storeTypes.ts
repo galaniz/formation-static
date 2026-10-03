@@ -62,7 +62,7 @@ export type StorePrimitive =
 /**
  * @typedef {Object<string, StorePrimitive[]>} StoreServerless
  */
-export type StoreServerless<T extends StorePrimitive[]> = Record<string, T>
+export type StoreServerless<T extends StorePrimitive[] = StorePrimitive[]> = Record<string, T>
 
 /**
  * @typedef {object} Store
@@ -86,5 +86,5 @@ export interface Store extends Generic {
   navigations: NavigationList[]
   navigationItems: NavigationItem[]
   taxonomies: StoreTaxonomies
-  serverless: StoreServerless<StorePrimitive[]>
+  serverless: StoreServerless
 }

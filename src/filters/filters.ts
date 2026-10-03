@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { Filters, FilterMap, FilterReturnType } from './filtersTypes.js'
+import type { Filters, FiltersSet, FilterMap, FilterReturnType } from './filtersTypes.js'
 import type { GenericFunction } from '../global/globalTypes.js'
 import { isSet, isSetStrict } from '../utils/set/set.js'
 import { isStringStrict } from '../utils/string/string.js'
@@ -49,7 +49,7 @@ let filters: FilterMap = new Map([
  * @param {GenericFunction} filter
  * @return {boolean}
  */
-const addFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boolean => {
+const addFilter = <T extends keyof Filters>(name: T, filter: NonNullable<FiltersSet[T]>): boolean => {
   if (!isStringStrict(name) || !isFunction(filter)) {
     return false
   }
@@ -70,7 +70,7 @@ const addFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boolea
  * @param {GenericFunction} filter
  * @return {boolean}
  */
-const removeFilter = <T extends keyof Filters>(name: T, filter: Filters[T]): boolean => {
+const removeFilter = <T extends keyof Filters>(name: T, filter: NonNullable<FiltersSet[T]>): boolean => {
   if (!isStringStrict(name) || !isFunction(filter)) {
     return false
   }
@@ -110,16 +110,20 @@ const applySequentially = async <T>(callbacks: GenericFunction[], value: T, args
  * @param {boolean} [isAsync]
  * @return {*}
  */
-const applyFilters = <T, V extends boolean = false>(
-  name: string,
+const applyFilters = <
+  T extends Parameters<Filters[K]>[0],
+  V extends boolean = false,
+  K extends string & keyof Filters = string
+>(
+  name: K,
   value: T,
-  args?: unknown,
+  args?: Parameters<Filters[K]>[1],
   isAsync: V = false as V
 ): FilterReturnType<T, V> => {
   const filterSet = filters.get(name)
 
   if (!isSetStrict(filterSet)) {
-    return value as FilterReturnType<T, V>
+    return value
   }
 
   const callbacks: GenericFunction[] = []
@@ -137,7 +141,7 @@ const applyFilters = <T, V extends boolean = false>(
       .then(newValue => newValue) as FilterReturnType<T, V>
   }
 
-  return value as FilterReturnType<T, V>
+  return value
 }
 
 /**
@@ -179,7 +183,7 @@ const resetFilters = (): void => {
  * @param {Filters} args
  * @return {boolean}
  */
-const setFilters = (args: Partial<Filters>): boolean => {
+const setFilters = (args: FiltersSet): boolean => {
   if (!isObjectStrict(args)) {
     return false
   }

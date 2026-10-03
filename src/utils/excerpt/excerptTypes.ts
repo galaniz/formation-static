@@ -11,7 +11,7 @@
  * @prop {boolean} [limitExcerpt=false]
  * @prop {string} [more='&hellip;']
  */
-export interface ExcerptArgs<T extends object> {
+export interface ExcerptArgs<T extends object = object> {
   excerpt?: string
   content?: T
   prop?: string
@@ -27,7 +27,7 @@ export interface ExcerptArgs<T extends object> {
  * @prop {number} [limit=25]
  * @prop {string} [more='&hellip;']
  */
-export interface ExcerptContentWordArgs<T> {
+export interface ExcerptContentWordArgs<T = object> {
   content: T
   prop?: string
   limit?: number

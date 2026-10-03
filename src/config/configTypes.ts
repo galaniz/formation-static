@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { Source, GenericStrings } from '../global/globalTypes.js'
+import type { Source, GenericStrings, GenericFunction } from '../global/globalTypes.js'
 
 /**
  * @typedef {object} ConfigMeta
@@ -149,7 +149,7 @@ export interface Config<E extends object = object> {
   scripts: ConfigAsset
   styles: ConfigAsset
   image: ConfigImage
-  filter (config: Config, env: E): Config
+  filter: GenericFunction<ConfigFilter<E>>
 }
 
 /**

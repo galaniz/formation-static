@@ -4,7 +4,7 @@
 
 /* Imports */
 
-import type { Actions, ActionMap, ActionReturnType } from './actionsTypes.js'
+import type { Actions, ActionsSet, ActionMap, ActionReturnType } from './actionsTypes.js'
 import type { GenericFunction } from '../global/globalTypes.js'
 import { isSet, isSetStrict } from '../utils/set/set.js'
 import { isStringStrict } from '../utils/string/string.js'
@@ -30,7 +30,7 @@ let actions: ActionMap = new Map([
  * @param {GenericFunction} action
  * @return {boolean}
  */
-const addAction = <T extends keyof Actions>(name: T, action: Actions[T]): boolean => {
+const addAction = <T extends keyof Actions>(name: T, action: NonNullable<ActionsSet[T]>): boolean => {
   if (!isStringStrict(name) || !isFunction(action)) {
     return false
   }
@@ -51,7 +51,7 @@ const addAction = <T extends keyof Actions>(name: T, action: Actions[T]): boolea
  * @param {GenericFunction} action
  * @return {boolean}
  */
-const removeAction = <T extends keyof Actions>(name: T, action: Actions[T]): boolean => {
+const removeAction = <T extends keyof Actions>(name: T, action: NonNullable<ActionsSet[T]>): boolean => {
   if (!isStringStrict(name) || !isFunction(action)) {
     return false
   }
@@ -87,9 +87,9 @@ const doSequentially = async (callbacks: GenericFunction[], args?: unknown): Pro
  * @param {boolean} [isAsync]
  * @return {*}
  */
-const doActions = <V extends boolean = false>(
-  name: string,
-  args?: unknown,
+const doActions = <V extends boolean = false, K extends string & keyof Actions = string>(
+  name: K,
+  args?: Parameters<Actions[K]>[0],
   isAsync: V = false as V
 ): ActionReturnType<V> => {
   const actionSet = actions.get(name)
@@ -136,7 +136,7 @@ const resetActions = (): void => {
  * @param {Actions} args
  * @return {boolean}
  */
-const setActions = (args: Partial<Actions>): boolean => {
+const setActions = (args: ActionsSet): boolean => {
   if (!isObjectStrict(args)) {
     return false
   }

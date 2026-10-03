@@ -56,6 +56,8 @@ Default: `true`
 
 ### GenericFunction  
 
+Written as a method so functions with more specific parameter types are accepted.  
+
 **Type:** <code>function</code>
 
 #### Parameters  

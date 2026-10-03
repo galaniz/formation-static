@@ -27,6 +27,11 @@ export interface Actions extends Record<string, GenericFunction> {
 }
 
 /**
+ * @typedef {Object<string, GenericFunction>} ActionsSet
+ */
+export type ActionsSet = { [K in keyof Actions]?: GenericFunction<Actions[K]> }
+
+/**
  * @typedef {Map<string, Set<GenericFunction>>} ActionMap
  * @prop {Set<RenderStartAction>} renderStart
  * @prop {Set<RenderEndAction>} renderEnd

@@ -8,11 +8,7 @@ import type { GenericFunction } from '../global/globalTypes.js'
 import type { ColumnPropsFilter } from '../layouts/Column/ColumnTypes.js'
 import type { ContainerPropsFilter } from '../layouts/Container/ContainerTypes.js'
 import type { FormPropsFilter, FormFieldPropsFilter, FormOptionPropsFilter } from '../objects/Form/FormTypes.js'
-import type {
-  ServerlessActionReturn,
-  ServerlessResultFilter,
-  ServerlessResultFilterArgs
-} from '../serverless/serverlessTypes.js'
+import type { ServerlessResultFilter } from '../serverless/serverlessTypes.js'
 import type { ContactResultFilter } from '../serverless/Contact/ContactTypes.js'
 import type { LinkSlugPartsFilter, LinkSlugFilter } from '../utils/link/linkTypes.js'
 import type {
@@ -111,13 +107,13 @@ export interface CacheDataFilterArgs<R = unknown> {
 
 /**
  * @typedef {function} CacheDataFilter
- * @param {CacheData} data
+ * @param {CacheData|undefined} data
  * @param {CacheDataFilterArgs} args
  * @return {Promise<CacheData|undefined>}
  */
-export type CacheDataFilter = (
-  data: CacheData,
-  args: CacheDataFilterArgs
+export type CacheDataFilter<R = unknown> = (
+  data: CacheData | undefined,
+  args: CacheDataFilterArgs<R>
 ) => Promise<CacheData | undefined>
 
 /**
@@ -171,10 +167,7 @@ export interface Filters extends Record<string, GenericFunction> {
   renderItem: RenderItemFilter
   renderItemData: RenderItemDataFilter
   renderContent: RenderContentFilter
-  serverlessResult (
-    res: ServerlessActionReturn | null,
-    args: ServerlessResultFilterArgs
-  ): Promise<ServerlessActionReturn | null>
+  serverlessResult: ServerlessResultFilter
   contactResult: ContactResultFilter
   cacheData: CacheDataFilter
   storeData: StoreDataFilter
@@ -185,6 +178,11 @@ export interface Filters extends Record<string, GenericFunction> {
   slugParts: LinkSlugPartsFilter
   slug: LinkSlugFilter
 }
+
+/**
+ * @typedef {Object<string, GenericFunction>} FiltersSet
+ */
+export type FiltersSet = { [K in keyof Filters]?: GenericFunction<Filters[K]> }
 
 /**
  * @typedef {Map<string, Set<GenericFunction>>} FilterMap

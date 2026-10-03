@@ -127,15 +127,17 @@ export interface RichTextOutputFilterArgs {
  * @param {RichTextProps} props
  * @return {RichTextProps}
  */
-export type RichTextPropsFilter = (props: RichTextProps) => RichTextProps
+export type RichTextPropsFilter<A = RichTextArgs, R = RenderItem> = (
+  props: RichTextProps<A, R>
+) => RichTextProps<A, R>
 
 /**
  * @typedef {function} RichTextOutputFilter
  * @param {string} output
- * @param {RichTextContentOutputFilterArgs} args
+ * @param {RichTextOutputFilterArgs} args
  * @return {string}
  */
-export type RichTextOutputFilter = (output: string, args: RichTextContentOutputFilterArgs) => string
+export type RichTextOutputFilter = (output: string, args: RichTextOutputFilterArgs) => string
 
 /**
  * @typedef {function} RichTextContentItemFilter

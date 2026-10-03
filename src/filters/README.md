@@ -99,7 +99,7 @@ Fill filters map.
 **Type:** <code>function</code>
 
 #### Parameters  
-- **`data`** <code><a href="#cachedata">CacheData</a></code> required  
+- **`data`** <code><a href="#cachedata">CacheData</a> | undefined</code> required  
 - **`args`** <code><a href="#cachedatafilterargs">CacheDataFilterArgs</a></code> required
 
 #### Returns  

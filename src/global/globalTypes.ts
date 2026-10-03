@@ -70,11 +70,14 @@ export type Source = 'cms' | 'local' | (string & Record<never, never>)
 export type Generic = Record<string, unknown>
 
 /**
+ * Written as a method so functions with more specific parameter types are accepted.
+ *
  * @typedef {function} GenericFunction
  * @param {*} args
  * @return {*}
  */
-export type GenericFunction<T extends (...args: any[]) => any = (...args: any[]) => any> = T // eslint-disable-line @typescript-eslint/no-explicit-any
+export type GenericFunction<T extends (...args: any[]) => any = (...args: any[]) => any> = // eslint-disable-line @typescript-eslint/no-explicit-any
+  { fn (...args: Parameters<T>): ReturnType<T> }['fn']
 
 /**
  * @typedef {Object<string, string>} GenericStrings
