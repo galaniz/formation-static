@@ -102,8 +102,8 @@ Prototype key checks for dynamic object properties:
 ### Changed
 
 - Typed `env` in config and serverless types, defaults to `object`.
-- Filter and action functions accept typed callbacks.
-- `applyFilters` and `doActions` check known names against their types.
+- Filter and action functions allow typed callbacks.
+- `applyFilters` and `doActions` check library names against their types.
 - `cacheData` filter `data` can be `undefined`.
 - Local `cacheData` filter uses `rawData` arg and includes `items`.
 
