@@ -182,7 +182,7 @@ export interface Filters extends Record<string, GenericFunction> {
 /**
  * @typedef {Object<string, GenericFunction>} FiltersSet
  */
-export type FiltersSet = { [K in keyof Filters]?: GenericFunction<Filters[K]> }
+export type FiltersSet = { [N in keyof Filters]?: GenericFunction<Filters[N]> }
 
 /**
  * @typedef {Map<string, Set<GenericFunction>>} FilterMap
@@ -264,4 +264,4 @@ LinkSlugFilter
 /**
  * @typedef {*|Promise<*>} FilterReturnType
  */
-export type FilterReturnType<T, V extends false | true> = V extends true ? Promise<T> : T
+export type FilterReturnType<V, A extends false | true> = A extends true ? Promise<V> : V

@@ -46,9 +46,9 @@ export interface InternalLink extends Generic {
  * @prop {string} renderType
  * @prop {object} args
  */
-export interface Parent<T = Generic> {
+export interface Parent<A = Generic> {
   renderType: string
-  args: T
+  args: A
 }
 
 /**

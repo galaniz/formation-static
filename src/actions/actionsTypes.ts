@@ -29,7 +29,7 @@ export interface Actions extends Record<string, GenericFunction> {
 /**
  * @typedef {Object<string, GenericFunction>} ActionsSet
  */
-export type ActionsSet = { [K in keyof Actions]?: GenericFunction<Actions[K]> }
+export type ActionsSet = { [N in keyof Actions]?: GenericFunction<Actions[N]> }
 
 /**
  * @typedef {Map<string, Set<GenericFunction>>} ActionMap
@@ -54,4 +54,4 @@ RenderItemEndAction
 /**
  * @typedef {void|Promise<void>} ActionReturnType
  */
-export type ActionReturnType<V extends false | true> = V extends true ? Promise<void> : undefined
+export type ActionReturnType<A extends false | true> = A extends true ? Promise<void> : undefined

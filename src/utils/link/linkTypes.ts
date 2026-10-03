@@ -49,7 +49,7 @@ export interface LinkSlugReturn {
 /**
  * @typedef {string|LinkSlugReturn} LinkSlugReturnType
  */
-export type LinkSlugReturnType<T extends boolean> = T extends true ? LinkSlugReturn : string
+export type LinkSlugReturnType<R extends boolean> = R extends true ? LinkSlugReturn : string
 
 /**
  * @typedef {object} LinkShare

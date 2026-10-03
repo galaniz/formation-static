@@ -49,7 +49,7 @@ let filters: FilterMap = new Map([
  * @param {GenericFunction} filter
  * @return {boolean}
  */
-const addFilter = <T extends keyof Filters>(name: T, filter: NonNullable<FiltersSet[T]>): boolean => {
+const addFilter = <N extends keyof Filters>(name: N, filter: NonNullable<FiltersSet[N]>): boolean => {
   if (!isStringStrict(name) || !isFunction(filter)) {
     return false
   }
@@ -70,7 +70,7 @@ const addFilter = <T extends keyof Filters>(name: T, filter: NonNullable<Filters
  * @param {GenericFunction} filter
  * @return {boolean}
  */
-const removeFilter = <T extends keyof Filters>(name: T, filter: NonNullable<FiltersSet[T]>): boolean => {
+const removeFilter = <N extends keyof Filters>(name: N, filter: NonNullable<FiltersSet[N]>): boolean => {
   if (!isStringStrict(name) || !isFunction(filter)) {
     return false
   }
@@ -93,9 +93,9 @@ const removeFilter = <T extends keyof Filters>(name: T, filter: NonNullable<Filt
  * @param {*} [args]
  * @return {*}
  */
-const applySequentially = async <T>(callbacks: GenericFunction[], value: T, args?: unknown): Promise<T> => {
+const applySequentially = async <V>(callbacks: GenericFunction[], value: V, args?: unknown): Promise<V> => {
   for (const callback of callbacks) {
-    value = await callback(value, args) as T
+    value = await callback(value, args) as V
   }
 
   return value
@@ -111,15 +111,15 @@ const applySequentially = async <T>(callbacks: GenericFunction[], value: T, args
  * @return {*}
  */
 const applyFilters = <
-  T extends Parameters<Filters[K]>[0],
-  V extends boolean = false,
-  K extends string & keyof Filters = string
+  V extends Parameters<Filters[N]>[0],
+  A extends boolean = false,
+  N extends string & keyof Filters = string
 >(
-  name: K,
-  value: T,
-  args?: Parameters<Filters[K]>[1],
-  isAsync: V = false as V
-): FilterReturnType<T, V> => {
+  name: N,
+  value: V,
+  args?: Parameters<Filters[N]>[1],
+  isAsync: A = false as A
+): FilterReturnType<V, A> => {
   const filterSet = filters.get(name)
 
   if (!isSetStrict(filterSet)) {
@@ -132,13 +132,13 @@ const applyFilters = <
     if (isAsync) {
       callbacks.push(callback)
     } else {
-      value = callback(value, args) as T
+      value = callback(value, args) as V
     }
   }
 
   if (isAsync) {
     return applySequentially(callbacks, value, args)
-      .then(newValue => newValue) as FilterReturnType<T, V>
+      .then(newValue => newValue) as FilterReturnType<V, A>
   }
 
   return value

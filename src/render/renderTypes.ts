@@ -445,7 +445,7 @@ export interface RenderReturn {
  * @param {Parent} args
  * @return {Promise<string[]>|string[]}
  */
-export type RenderContentFilter = <T>(content: string[], args: Parent<T>) => Promise<string[]> | string[]
+export type RenderContentFilter = <A>(content: string[], args: Parent<A>) => Promise<string[]> | string[]
 
 /**
  * @typedef {function} RenderItemFilter

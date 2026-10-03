@@ -30,7 +30,7 @@ let actions: ActionMap = new Map([
  * @param {GenericFunction} action
  * @return {boolean}
  */
-const addAction = <T extends keyof Actions>(name: T, action: NonNullable<ActionsSet[T]>): boolean => {
+const addAction = <N extends keyof Actions>(name: N, action: NonNullable<ActionsSet[N]>): boolean => {
   if (!isStringStrict(name) || !isFunction(action)) {
     return false
   }
@@ -51,7 +51,7 @@ const addAction = <T extends keyof Actions>(name: T, action: NonNullable<Actions
  * @param {GenericFunction} action
  * @return {boolean}
  */
-const removeAction = <T extends keyof Actions>(name: T, action: NonNullable<ActionsSet[T]>): boolean => {
+const removeAction = <N extends keyof Actions>(name: N, action: NonNullable<ActionsSet[N]>): boolean => {
   if (!isStringStrict(name) || !isFunction(action)) {
     return false
   }
@@ -87,15 +87,15 @@ const doSequentially = async (callbacks: GenericFunction[], args?: unknown): Pro
  * @param {boolean} [isAsync]
  * @return {*}
  */
-const doActions = <V extends boolean = false, K extends string & keyof Actions = string>(
-  name: K,
-  args?: Parameters<Actions[K]>[0],
-  isAsync: V = false as V
-): ActionReturnType<V> => {
+const doActions = <A extends boolean = false, N extends string & keyof Actions = string>(
+  name: N,
+  args?: Parameters<Actions[N]>[0],
+  isAsync: A = false as A
+): ActionReturnType<A> => {
   const actionSet = actions.get(name)
 
   if (!isSetStrict(actionSet)) {
-    return undefined as ActionReturnType<V>
+    return undefined as ActionReturnType<A>
   }
 
   const callbacks: GenericFunction[] = []
@@ -110,10 +110,10 @@ const doActions = <V extends boolean = false, K extends string & keyof Actions =
 
   if (isAsync) {
     return doSequentially(callbacks, args)
-      .then(result => result) as ActionReturnType<V> 
+      .then(result => result) as ActionReturnType<A> 
   }
 
-  return undefined as ActionReturnType<V>
+  return undefined as ActionReturnType<A>
 }
 
 /**
